@@ -1,0 +1,76 @@
+{
+  "deck": "Daily Words",
+  "updated": "2026-09-15",
+  "words": [
+    {
+      "id": "reckon",
+      "word": "reckon",
+      "ipa": "/ˈrek.ən/",
+      "pos": "verb",
+      "meaning": "nghĩ rằng, cho là; tính toán",
+      "context": "I reckon we'll be there before midnight.",
+      "contextVi": "Tôi nghĩ tầm trước nửa đêm là tụi mình tới nơi.",
+      "source": "Peaky Blinders — S1E2",
+      "emoji": "🤔",
+      "image": "",
+      "mnemonic": "Đọc như 'réc-cần' — rẹc một cái là biết mình CẦN gì → nghĩ ra ngay.",
+      "outputPrompt": "Dùng 'reckon' để nói một dự đoán của bạn về tối nay."
+    },
+    {
+      "id": "stubborn",
+      "word": "stubborn",
+      "ipa": "/ˈstʌb.ən/",
+      "pos": "adjective",
+      "meaning": "bướng bỉnh, cứng đầu",
+      "context": "You're the most stubborn person I've ever met.",
+      "contextVi": "Em là người cứng đầu nhất mà anh từng gặp.",
+      "source": "The Notebook",
+      "emoji": "🐐",
+      "image": "",
+      "mnemonic": "'Stub' = gốc cây cụt — đá vào gốc cây, nó vẫn trơ ra đó, không nhúc nhích = cứng đầu.",
+      "outputPrompt": "Tả một người bạn quen bằng từ 'stubborn'."
+    },
+    {
+      "id": "overwhelmed",
+      "word": "overwhelmed",
+      "ipa": "/ˌəʊ.vəˈwelmd/",
+      "pos": "adjective",
+      "meaning": "bị quá tải, ngợp (vì cảm xúc hoặc công việc)",
+      "context": "I'm just a bit overwhelmed with everything right now.",
+      "contextVi": "Tớ chỉ hơi ngợp với mọi thứ lúc này thôi.",
+      "source": "Everything Everywhere All at Once",
+      "emoji": "🌊",
+      "image": "",
+      "mnemonic": "'Over' + 'whelm' (sóng trùm) — sóng trùm qua đầu, ngộp thở vì việc.",
+      "outputPrompt": "Viết một câu kể lúc bạn thấy 'overwhelmed' gần đây."
+    },
+    {
+      "id": "reach-out",
+      "word": "reach out",
+      "ipa": "/riːtʃ aʊt/",
+      "pos": "phrasal verb",
+      "meaning": "chủ động liên hệ, ngỏ lời nhờ/giúp",
+      "context": "If you need anything, just reach out to me.",
+      "contextVi": "Cần gì thì cứ nhắn cho tôi nhé.",
+      "source": "Office small talk",
+      "emoji": "🤝",
+      "image": "",
+      "mnemonic": "Vươn (reach) tay ra (out) phía người khác → chủ động bắt liên lạc.",
+      "outputPrompt": "Viết một câu email ngắn dùng 'reach out'."
+    },
+    {
+      "id": "make-up-for",
+      "word": "make up for",
+      "ipa": "/meɪk ʌp fɔː/",
+      "pos": "phrasal verb",
+      "meaning": "bù đắp cho (điều gì đã thiếu/sai)",
+      "context": "Let me make up for last night — dinner's on me.",
+      "contextVi": "Để tôi bù cho tối qua — bữa tối tôi mời.",
+      "source": "Friends — S3",
+      "emoji": "🎁",
+      "image": "",
+      "mnemonic": "'Make up' = đắp lên (như make-up trang điểm đắp che khuyết điểm) + 'for' = cho cái lỗi đó.",
+      "outputPrompt": "Dùng 'make up for' để xin lỗi ai đó."
+    }
+  ]
+}

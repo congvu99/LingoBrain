@@ -1,0 +1,28 @@
+# Claude / AI tooling
+.claude/
+CLAUDE.md
+
+# Dependencies
+node_modules/
+
+# Env & secrets
+.env
+.env.*
+*.pem
+*.key
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Build output
+dist/
+build/
