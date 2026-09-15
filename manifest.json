@@ -1,0 +1,20 @@
+{
+  "name": "LingoBrain — Giáo án & Ôn từ",
+  "short_name": "LingoBrain",
+  "description": "Giáo án tiếng Anh mỗi ngày + ôn từ vựng lặp ngắt quãng SM-2. Không cần mạng.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FBF7EF",
+  "theme_color": "#FBF7EF",
+  "lang": "vi",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%23FBF7EF'/%3E%3Ctext x='256' y='330' font-size='260' text-anchor='middle' font-family='Georgia,serif' fill='%231A1714'%3EL%3C/text%3E%3Crect x='96' y='400' width='320' height='8' fill='%239A3B2E'/%3E%3C/svg%3E",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

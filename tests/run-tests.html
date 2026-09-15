@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><title>LingoBrain tests</title>
+<style>body{font:14px/1.5 ui-monospace,Menlo,Consolas,monospace;padding:16px;white-space:pre-wrap}.f{color:#a32d2d}.p{color:#2f6b3a}</style></head>
+<body><h3>LingoBrain — tests (trình duyệt)</h3><div id="out">đang chạy…</div>
+<script src="test-harness.js"></script>
+<script src="../js/srs-scheduler.js"></script>
+<script src="../js/app-storage.js"></script>
+<script src="../js/recording-store.js"></script>
+<script src="../js/review-mode-picker.js"></script>
+<script src="../js/stats-dashboard.js"></script>
+<script src="../js/word-import.js"></script>
+<script src="srs-scheduler.test.js"></script>
+<script src="review-mode-picker.test.js"></script>
+<script src="stats-dashboard.test.js"></script>
+<script src="word-import.test.js"></script>
+<script src="recording-store.test.js"></script>
+<script>
+(async () => {
+  for (const fn of (window.__asyncTests || [])) {
+    try { await fn(); it('recording-store async', () => {}); } catch (e) { it('recording-store async', () => { throw e; }); }
+  }
+  const lines = [];
+  const ok = __reportTests(s => lines.push(s));
+  document.getElementById('out').innerHTML = lines.map(l => '<div class="' + (l.startsWith('FAIL') ? 'f' : l.startsWith('PASS') ? 'p' : '') + '">' + l.replace(/</g, '&lt;') + '</div>').join('');
+  document.title = (ok ? 'PASS' : 'FAIL') + ' — LingoBrain tests';
+})();
+</script></body></html>
