@@ -50,6 +50,14 @@ function bindUI() {
   $('#setMax').onchange = e => { cfg.maxSession = Math.max(5, +e.target.value || 40); save(K_CFG, cfg); restartSession(); };
   $('#btnExportAll').onclick = () => download('lingobrain-backup-' + dkey() + '.json', { version: APP_VERSION, deck, srs, cfg, plan, day });
   $('#btnExportDeck').onclick = () => download('words.json', deck);
+  // nạp lại bộ từ gốc trên máy chủ (không cần xoá localStorage); trùng id = cập nhật nội dung, tiến độ giữ nguyên
+  $('#btnReloadDeck').onclick = async () => {
+    try {
+      const r = await fetch('words.json?_=' + Date.now(), { cache: 'no-store' });
+      if (!r.ok) throw 0;
+      importWords(await r.text());
+    } catch (e) { toast('❌ Không tải được words.json (mở bằng file:// thì dùng "Chọn file")'); }
+  };
   $('#btnRestore').onclick = () => $('#fileRestore').click();
   $('#fileRestore').onchange = e => {
     const f = e.target.files[0]; if (!f) return;

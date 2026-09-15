@@ -1,5 +1,5 @@
 /* Service worker: cache-first cho toàn bộ file tĩnh. Đổi CACHE mỗi lần deploy để người dùng nhận bản mới. */
-const CACHE = 'lingobrain-v2.0.0';
+const CACHE = 'lingobrain-v2.0.1';
 const ASSETS = [
   './',
   './index.html',
@@ -31,6 +31,16 @@ self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
   const url = new URL(e.request.url);
   if (url.origin !== location.origin) return;
+  // words.json: network-first, bỏ qua query chống cache khi lưu/đọc, để bộ từ mới trên máy chủ luôn thắng cache cũ
+  if (/\/words\.json$/.test(url.pathname)) {
+    e.respondWith(
+      fetch(e.request).then(res => {
+        if (res.ok) { const copy = res.clone(); caches.open(CACHE).then(c => c.put('./words.json', copy)); }
+        return res;
+      }).catch(() => caches.match('./words.json'))
+    );
+    return;
+  }
   e.respondWith(
     caches.match(e.request, { ignoreSearch: true }).then(hit => hit || fetch(e.request).then(res => {
       if (res.ok) { const copy = res.clone(); caches.open(CACHE).then(c => c.put(e.request, copy)); }

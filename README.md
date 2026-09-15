@@ -89,6 +89,8 @@ Dấu tách: `|` (ưu tiên), tab, hoặc ` - `. Dòng bắt đầu `#` bị b�
 
 `id` sinh từ `word`: **nạp lại cùng từ = cập nhật nội dung, tiến độ giữ nguyên**. Muốn lưu vào repo: **Tải words.json** rồi thay file.
 
+App chỉ tự đọc `words.json` lần đầu (khi trình duyệt chưa có bộ từ). Đã thay `words.json` trên hosting mà app vẫn hiện bộ cũ → Quản lý → **Nạp lại words.json** (mở bằng `file://` thì dùng **Chọn file**).
+
 ## Sao lưu
 
 Dữ liệu nằm trong trình duyệt + domain đang dùng. Quản lý → **Tải backup** (bộ từ + tiến độ + giáo án + hôm nay) → **Khôi phục** ở máy khác. Backup của bản cũ (Leitner) tự chuyển sang SM-2 khi khôi phục; tiến độ cũ trong trình duyệt cũng tự chuyển lần đầu mở bản mới (bản cũ giữ nguyên ở key `eng.srs.v1`).
