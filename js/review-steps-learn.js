@@ -3,7 +3,8 @@
    Từ ôn lại: 3 kiểm tra (dạng do pickMode chọn) → 4 → 5. */
 
 function restartSession() {
-  queue = buildQueue(deck, srs, cfg, Date.now());
+  queue = buildQueue(deck, srs, cfg, Date.now(), gameMiss);
+  consumeGameMiss();
   cur = null; session = { streak: {} };
   render();
 }
@@ -24,6 +25,10 @@ function nextCard(silent) {
 function finishTest() { revealed = true; }
 
 function render() {
+  // đang chơi: giấu mọi thứ quanh #app, nếu không người dùng bấm được vào chip/thống kê
+  // và làm đổi hàng đợi ôn ngay giữa ván mà không thấy gì xảy ra
+  renderGameChips();
+  if (game) return;
   const s = deckSummary(deck, srs, Date.now());
   $('#sDue').textContent = s.due; $('#sNew').textContent = s.fresh;
   $('#sLearn').textContent = s.learn; $('#sMature').textContent = s.mature;
@@ -68,7 +73,11 @@ function render() {
 
 function blanked(w, sentence) {
   const s = sentence || w.context;
-  return s ? esc(s).replace(rx(w.word), '<span class="blank" aria-label="chỗ trống"></span>') : '<span class="blank"></span>';
+  if (!s) return '<span class="blank"></span>';
+  const b = '<span class="blank" aria-label="chỗ trống"></span>';
+  // Khớp trên chuỗi ĐÃ escape (nếu không, từ chứa `&` sẽ không khớp và câu hiện nguyên đáp án)
+  // và thay MỌI lần xuất hiện — câu lặp lại từ mà chỉ che lần đầu là lộ đáp án.
+  return esc(s).replace(wordRx(esc(w.word), 'gi'), (m, pre) => pre + b);
 }
 function stepLabel(n, text) { return '<div class="step-label">Bước ' + n + ' · ' + text + '</div>'; }
 

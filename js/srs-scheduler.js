@@ -107,7 +107,7 @@ function dueLabel(rec, g) {
 
 /* Hàng đợi phiên: thẻ đến hạn xếp theo quá hạn lâu nhất trước (cắt maxSession),
    từ mới xen vào sau mỗi 3 thẻ ôn. Không tráo ngẫu nhiên để không bỏ rơi thẻ quá hạn. */
-function buildQueue(deck, srs, cfg, now) {
+function buildQueue(deck, srs, cfg, now, miss) {
   const due = [], fresh = [];
   for (const w of deck.words) {
     const r = srs[w.id];
@@ -124,7 +124,10 @@ function buildQueue(deck, srs, cfg, now) {
     if ((i + 1) % 3 === 0 && ni < news.length) out.push(news[ni++]);
   }
   while (ni < news.length) out.push(news[ni++]);
-  return out;
+  // từ trả lời sai trong game: lên đầu phiên, không nhân đôi, không tính vào cfg.maxSession
+  const front = (miss || []).filter(id =>
+    deck.words.some(w => w.id === id) && srs[id] && srs[id].state !== 'new' && out.indexOf(id) < 0);
+  return front.concat(out);
 }
 
 // tóm tắt bộ từ cho 4 ô số

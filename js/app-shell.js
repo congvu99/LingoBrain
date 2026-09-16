@@ -2,6 +2,7 @@
 
 const TITLES = { plan: 'Giáo án hôm nay', game: 'Ôn từ', manage: 'Quản lý' };
 function showTab(t) {
+  closeGame();                           // bỏ ván đang chơi: không lưu điểm, vẫn lưu từ sai
   tab = t;
   ['plan', 'game', 'manage'].forEach(k => {
     $('#tab-' + k).hidden = t !== k;
@@ -48,7 +49,7 @@ function bindUI() {
   $('#setNew').value = cfg.newPerDay; $('#setMax').value = cfg.maxSession;
   $('#setNew').onchange = e => { cfg.newPerDay = Math.max(1, +e.target.value || 5); save(K_CFG, cfg); restartSession(); };
   $('#setMax').onchange = e => { cfg.maxSession = Math.max(5, +e.target.value || 40); save(K_CFG, cfg); restartSession(); };
-  $('#btnExportAll').onclick = () => download('lingobrain-backup-' + dkey() + '.json', { version: APP_VERSION, deck, srs, cfg, plan, day });
+  $('#btnExportAll').onclick = () => download('lingobrain-backup-' + dkey() + '.json', { version: APP_VERSION, deck, srs, cfg, plan, day, gameScore, gameMiss });
   $('#btnExportDeck').onclick = () => download('words.json', deck);
   // nạp lại bộ từ gốc trên máy chủ (không cần xoá localStorage); trùng id = cập nhật nội dung, tiến độ giữ nguyên
   $('#btnReloadDeck').onclick = async () => {
@@ -65,11 +66,18 @@ function bindUI() {
     rd.onload = () => { try { const j = JSON.parse(rd.result); if (j.deck && j.srs) restoreBackup(j); else importWords(rd.result); } catch (err) { toast('❌ File không hợp lệ'); } };
     rd.readAsText(f); e.target.value = '';
   };
-  $('#btnResetProg').onclick = () => { if (!confirm('Xoá hết tiến độ học từ (bộ từ vẫn giữ)?')) return; srs = {}; save(K_SRS, srs); restartSession(); renderList(); toast('Đã xoá tiến độ'); };
+  $('#btnResetProg').onclick = () => {
+    if (!confirm('Xoá hết tiến độ học từ (bộ từ vẫn giữ)?')) return;
+    srs = {}; save(K_SRS, srs);
+    gameMiss = []; save(K_GAMEMISS, gameMiss);   // từ sai gắn với tiến độ cũ, giữ lại vô nghĩa. Kỷ lục game thì giữ.
+    restartSession(); renderList(); toast('Đã xoá tiến độ');
+  };
 
   // phím tắt desktop: Space tiếp tục · 1–4 chấm · S nghe lại
   document.addEventListener('keydown', e => {
-    if (tab !== 'game' || /INPUT|TEXTAREA/.test(e.target.tagName)) return;
+    if (/INPUT|TEXTAREA/.test(e.target.tagName)) return;
+    if (game) { if (e.key === 'Escape') quitGame(); return; }   // đang chơi: phím của màn ôn không áp dụng
+    if (tab !== 'game') return;
     if (e.key === ' ') { e.preventDefault(); const b = $('#b-next') || $('#b-reveal') || $('#b-check') || $('#b-done'); if (b && !b.hidden) b.click(); }
     if (e.key.toLowerCase() === 's' && cur) speak(cur.context || cur.word);
     if (step === 4 && '1234'.indexOf(e.key) >= 0) { const b = document.querySelector('.grade .g' + (+e.key - 1)); if (b) b.click(); }
@@ -88,7 +96,8 @@ function bindUI() {
   }
   bindUI();
   rollDay();
-  queue = buildQueue(deck, srs, cfg, Date.now());
+  queue = buildQueue(deck, srs, cfg, Date.now(), gameMiss);
+  consumeGameMiss();
   showTab('plan');
   setInterval(() => { if (day.date !== dkey() && tab === 'plan') renderPlan(); }, 60000);
 })();

@@ -1,5 +1,5 @@
 /* Service worker: cache-first cho toàn bộ file tĩnh. Đổi CACHE mỗi lần deploy để người dùng nhận bản mới. */
-const CACHE = 'lingobrain-v2.0.1';
+const CACHE = 'lingobrain-v2.2.1';
 const ASSETS = [
   './',
   './index.html',
@@ -16,6 +16,9 @@ const ASSETS = [
   './js/word-import.js',
   './js/review-steps-learn.js',
   './js/review-tests.js',
+  './js/word-games.js',
+  './js/word-game-rounds.js',
+  './js/word-game-ui.js',
   './js/app-shell.js',
   './js/pwa-register.js'
 ];

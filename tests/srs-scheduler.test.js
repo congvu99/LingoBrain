@@ -105,3 +105,32 @@ describe('summary + dueLabel', () => {
   });
   it('dueLabel', () => { assert.equal(dueLabel({ reps: 0, ivl: 0, ef: 2.5, state: 'new' }, 0), 'gặp lại ngay'); assert.equal(dueLabel({ reps: 5, ivl: 30, ef: 2.5, state: 'review' }, 2), '3 tháng'); });
 });
+
+describe('buildQueue — từ sai trong game', () => {
+  const deck = { words: [] };
+  for (let i = 0; i < 6; i++) deck.words.push({ id: 'w' + i, word: 'w' + i, meaning: 'm' + i });
+  const now = Date.now();
+  const srs = {
+    w0: Object.assign(blankRec(), { state: 'review', due: now - DAY }),   // đến hạn
+    w1: Object.assign(blankRec(), { state: 'review', due: now + DAY }),   // chưa đến hạn
+    w2: Object.assign(blankRec(), { state: 'review', due: now + DAY })
+  };
+  const cfg = { newPerDay: 2, maxSession: 40 };
+
+  it('4 tham số cho kết quả y hệt trước khi thêm miss', () => {
+    assert.deepEqual(buildQueue(deck, srs, cfg, now), buildQueue(deck, srs, cfg, now, []));
+  });
+  it('từ sai lên đầu hàng đợi', () => {
+    assert.equal(buildQueue(deck, srs, cfg, now, ['w2'])[0], 'w2');
+  });
+  it('không nhân đôi từ đã có trong hàng đợi', () => {
+    const q = buildQueue(deck, srs, cfg, now, ['w0']);
+    assert.equal(q.filter(id => id === 'w0').length, 1);
+    assert.equal(q[0], 'w0');
+  });
+  it('bỏ từ chưa học và từ không còn trong bộ', () => {
+    const q = buildQueue(deck, srs, cfg, now, ['w5', 'không-tồn-tại', 'w2']);
+    assert.equal(q[0], 'w2');
+    assert.ok(q.indexOf('không-tồn-tại') < 0);
+  });
+});

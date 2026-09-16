@@ -76,6 +76,22 @@ Chọn nghĩa cần ≥8 từ trong bộ; điền câu cần bạn đã lưu câ
 
 **Thống kê** dưới thẻ: tỉ lệ nhớ 7/30 ngày, lịch tải 7 ngày tới, heatmap 30 ngày, từ hay quên (bấm để ôn ngay).
 
+## Game từ vựng
+
+Hàng **Chơi nhanh** ở đầu tab Ôn từ. Ba game ngắn, luyện ba thứ mà 5 dạng kiểm tra ở trên không chạm tới:
+
+| Game | Luyện gì | Thể thức | Mở khi |
+|---|---|---|---|
+| **Xếp chữ** | chính tả, không cần bàn phím | 10 từ/ván, không đồng hồ — chạm chữ cái ghép thành từ | ≥8 từ đã học |
+| **Chạy 60 giây** | phản xạ nhanh | 60 giây, thấy từ chọn nghĩa, chuỗi đúng 5 → ×1.5, 10 → ×2 | ≥8 từ đã học |
+| **Điền câu tốc độ** | từ nào hợp câu nào | 60 giây, câu ví dụ khoét lỗ, chọn 1 trong 4 từ | ≥8 từ đã học **có câu ví dụ** |
+
+**Chơi game không làm giãn lịch ôn.** Trả lời đúng không ghi gì vào SM-2; trả lời sai thì từ đó được đẩy lên đầu phiên ôn kế tiếp. Nói cách khác game chỉ rút ngắn lịch, không bao giờ kéo dài — đoán mò trong 4 đáp án sẽ không làm hỏng tiến độ.
+
+Chip bị xám nghĩa là chưa đủ điều kiện, chạm vào sẽ nói rõ còn thiếu gì. **Điền câu tốc độ** cần cột thứ 3 (câu ví dụ) lúc nạp từ — nạp kiểu 2 cột `từ | nghĩa` thì game này không mở.
+
+Bỏ ván giữa chừng (đổi tab hoặc bấm ←) thì không tính điểm, nhưng **từ vừa sai vẫn vào hàng đợi ôn**. Kỷ lục mỗi game lưu trên máy và nằm trong file backup.
+
 ## Nạp từ
 
 Quản lý → **Nạp từ mới**: dán mỗi dòng một từ, chỉ 2 cột đầu bắt buộc:
@@ -93,7 +109,7 @@ App chỉ tự đọc `words.json` lần đầu (khi trình duyệt chưa có b�
 
 ## Sao lưu
 
-Dữ liệu nằm trong trình duyệt + domain đang dùng. Quản lý → **Tải backup** (bộ từ + tiến độ + giáo án + hôm nay) → **Khôi phục** ở máy khác. Backup của bản cũ (Leitner) tự chuyển sang SM-2 khi khôi phục; tiến độ cũ trong trình duyệt cũng tự chuyển lần đầu mở bản mới (bản cũ giữ nguyên ở key `eng.srs.v1`).
+Dữ liệu nằm trong trình duyệt + domain đang dùng. Quản lý → **Tải backup** (bộ từ + tiến độ + giáo án + hôm nay + kỷ lục game) → **Khôi phục** ở máy khác. Backup của bản cũ (Leitner) tự chuyển sang SM-2 khi khôi phục; tiến độ cũ trong trình duyệt cũng tự chuyển lần đầu mở bản mới (bản cũ giữ nguyên ở key `eng.srs.v1`).
 
 ## Phím tắt (desktop)
 
@@ -101,6 +117,6 @@ Dữ liệu nằm trong trình duyệt + domain đang dùng. Quản lý → **T�
 
 ## Tài liệu
 
-- `docs/system-architecture.md` — cấu trúc module, dữ liệu, thuật toán
+- `docs/system-architecture.md` — cấu trúc module, dữ liệu, thuật toán, ranh giới game ↔ SM-2
 - `docs/design-guidelines.md` — token màu/chữ giao diện giấy
 - `plans/` — kế hoạch và báo cáo brainstorm

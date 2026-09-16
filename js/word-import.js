@@ -73,10 +73,17 @@ function renderList() {
 }
 // khôi phục backup: chấp nhận cả srs v1 (box) lẫn v2 (ef)
 function restoreBackup(j) {
+  // kiểm trước khi gán: ném lỗi giữa chừng thì deck trong RAM đã hỏng còn localStorage vẫn bản cũ,
+  // lần lưu kế tiếp (thêm/xoá 1 từ) sẽ ghi đè bộ từ thật bằng bộ hỏng
+  if (!j || !j.deck || !Array.isArray(j.deck.words)) return toast('❌ Backup không có bộ từ hợp lệ');
   deck = j.deck; srs = migrateV1(j.srs || {}); Object.assign(cfg, j.cfg || {});
   if (j.plan) plan = j.plan;
   if (j.day) day = j.day;
+  // backup bản cũ không có 2 trường này → về rỗng. Lọc theo bộ từ vừa khôi phục vì có thể khác bộ cũ.
+  gameScore = j.gameScore || {};
+  gameMiss = (j.gameMiss || []).filter(id => deck.words.some(w => w.id === id));
   save(K_DECK, deck); save(K_SRS, srs); save(K_CFG, cfg); save(K_PLAN, plan); save(K_DAY, day);
+  save(K_GAMESCORE, gameScore); save(K_GAMEMISS, gameMiss);
   restartSession(); renderList(); renderPlanEdit(); toast('✅ Đã khôi phục');
 }
 

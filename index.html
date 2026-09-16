@@ -47,12 +47,13 @@
 
 <!-- ============ TAB 2: ÔN TỪ ============ -->
 <section id="tab-game" hidden>
-  <div class="stats" aria-label="tóm tắt bộ từ">
+  <div class="stats" id="deckStats" aria-label="tóm tắt bộ từ">
     <div class="stat"><b id="sDue">0</b><span>Đến hạn</span></div>
     <div class="stat"><b id="sNew">0</b><span>Từ mới</span></div>
     <div class="stat"><b id="sLearn">0</b><span>Đang nhớ</span></div>
     <div class="stat"><b id="sMature">0</b><span>Đã thuộc</span></div>
   </div>
+  <div class="game-chips" id="gameChips" aria-label="game từ vựng"></div>
   <div id="app"></div>
   <div id="statsBox"></div>
 </section>
@@ -145,6 +146,9 @@ stubborn | bướng bỉnh"></textarea>
 <script src="js/word-import.js"></script>
 <script src="js/review-steps-learn.js"></script>
 <script src="js/review-tests.js"></script>
+<script src="js/word-games.js"></script>
+<script src="js/word-game-rounds.js"></script>
+<script src="js/word-game-ui.js"></script>
 <script src="js/app-shell.js"></script>
 <script src="js/pwa-register.js"></script>
 </body>

@@ -1,9 +1,10 @@
 /* Khoá localStorage, helper chung, trạng thái toàn cục của app.
    Nạp sau js/srs-scheduler.js (cần migrateV1). */
 
-const APP_VERSION = '2.0.1';
+const APP_VERSION = '2.2.1';
 const K_DECK = 'eng.deck.v1', K_SRS = 'eng.srs.v2', K_SRS_V1 = 'eng.srs.v1',
-      K_CFG = 'eng.cfg.v1', K_PLAN = 'eng.plan.v1', K_DAY = 'eng.day.v1';
+      K_CFG = 'eng.cfg.v1', K_PLAN = 'eng.plan.v1', K_DAY = 'eng.day.v1',
+      K_GAMEMISS = 'eng.gamemiss.v1', K_GAMESCORE = 'eng.gamescore.v1';
 
 function load(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
 function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { toast('⚠️ Không lưu được (bộ nhớ đầy?)'); } }
@@ -27,6 +28,10 @@ function toast(m, action) {
 const cfg = load(K_CFG, { newPerDay: 5, maxSession: 40 });
 let deck = load(K_DECK, null);
 let plan = null, day = null;                 // daily-plan.js khởi tạo
+let gameMiss = load(K_GAMEMISS, []);      // id từ trả lời sai trong game → lên đầu phiên ôn kế
+let gameScore = load(K_GAMESCORE, {});    // kỷ lục mỗi game
+// từ sai đã vào hàng đợi phiên này rồi thì không cần giữ trong localStorage nữa
+function consumeGameMiss() { if (gameMiss.length) { gameMiss = []; save(K_GAMEMISS, gameMiss); } }
 let queue = [], cur = null, step = 1, mode = 'type', revealed = false, tab = 'plan';
 let session = { streak: {} };                 // learning steps trong phiên (không lưu)
 

@@ -45,6 +45,9 @@ Thang: 12 (nhãn mono, in hoa, tracking .08em) · 14 (phụ) · 16 (body, line-h
 - **Nav dưới:** nền `--paper`, viền trên 1px `--rule`, 3 tab icon SVG stroke 1.5 + nhãn 12px; active = `--accent` + gạch trên 2px. Badge số = nền `--accent` chữ paper.
 - **Thanh tiến độ:** track `--rule`, fill `--ink`, cao 4px, radius 0.
 - **Heatmap/forecast (stats):** 4 mức xám mực (paper-2 → rule → ink-muted → ink); không dùng màu.
+- **Chip game (`.game-chip`):** viên thuốc cao 36px, viền 1px `--rule`, nền `--paper`, chữ 14px sans 500; hàng cuộn ngang, không xuống dòng. Khoá = `aria-disabled="true"` → chữ `--ink-muted`, viền nét đứt (**không** dùng thuộc tính `disabled`: nút disabled không phát `click` nên trên điện thoại chạm vào sẽ không hiện được lý do khoá). Kỷ lục hiện mono 11px `--ink-muted`.
+- **Ô chữ cái (`.tile`):** tối thiểu 44×44, nền `--paper-2`, viền `--rule`, chữ serif 20px 600; pressed = đảo màu; đã dùng = opacity .25. Ô đích (`.slot`) chỉ có gạch chân 2px: `--rule` khi trống, `--ink` khi đã điền, `--ok`/`--bad` khi chấm.
+- **Đồng hồ game (`.bar-track`/`.bar`):** cao 3px, track `--rule`, fill `--ink`; 10 giây cuối đổi sang `--accent`. Combo hiện mono 12px `--accent`.
 - **Toast:** nền `--ink`, chữ `--paper`, không bo, đáy + safe-area.
 - **Hạt giấy:** `body::before` SVG feTurbulence noise, opacity .04, `pointer-events:none`, tắt ở dark nếu nhiễu.
 
