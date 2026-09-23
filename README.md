@@ -93,7 +93,7 @@ Hàng **Chơi nhanh** ở đầu tab Ôn từ. Bốn game ngắn, luyện nhữn
 
 Chip bị xám nghĩa là chưa đủ điều kiện, chạm vào sẽ nói rõ còn thiếu gì. **Điền câu tốc độ** cần từ đã học có trường `context` (câu ví dụ) trong `words.json`.
 
-**Bắn máy bay:** bấm **Bắt đầu** (iPhone: để bật bàn phím; khung chơi tự co vừa phần trên bàn phím). Gõ chữ cái đầu là khoá vào mục tiêu gần tàu nhất có từ bắt đầu bằng chữ đó; chữ đã gõ đúng hiện dần dưới nhãn (`s t u _ _ _ _ _`). Dấu cách, gạch nối tự bỏ qua. **Enter** nhả khoá để đổi mục tiêu. Gõ sai chỉ làm đạn bay trượt, không trừ điểm; sai 3 chữ trên cùng một mục tiêu thì từ đó được ôn trước. Mục tiêu chạm tàu: mất 1 ❤️, từ hiện màu đỏ và vào danh sách ôn trước. Đóng bàn phím, chuyển app, bấm ⏸ hoặc Esc thì tạm dừng. Nên tắt Telex/Unikey khi chơi.
+**Bắn máy bay:** bấm **Bắt đầu** (iPhone: để bật bàn phím; khung chơi tự co vừa phần trên bàn phím). Gõ chữ cái đầu là khoá vào mục tiêu gần tàu nhất có từ bắt đầu bằng chữ đó, tàu của bạn nghiêng mình bay sang phía mục tiêu; chữ đã gõ đúng hiện dần dưới nhãn (`s t u _ _ _ _ _`). Dấu cách, gạch nối tự bỏ qua. **Enter** nhả khoá để đổi mục tiêu. Gõ sai chỉ làm đạn bay trượt, không trừ điểm; sai 3 chữ trên cùng một mục tiêu thì từ đó được ôn trước. Mục tiêu chạm tàu: mất 1 ❤️, từ hiện màu đỏ và vào danh sách ôn trước. Đóng bàn phím, chuyển app, bấm ⏸ hoặc Esc thì tạm dừng. Nên tắt Telex/Unikey khi chơi.
 
 Bỏ ván giữa chừng (đổi tab hoặc bấm ←) thì không tính điểm, nhưng **từ vừa sai vẫn vào hàng đợi ôn**. Kỷ lục mỗi game lưu trên máy và nằm trong file backup.
 

@@ -18,7 +18,8 @@ js/word-import.js        tải backup, danh sách từ chỉ xem, khôi phục t
 js/review-steps-learn.js vòng đời thẻ: bước 1,2,4,5, render, phiên
 js/review-tests.js       bước 3: type · dictation · mcq · owncloze · speak
 js/word-games.js         game: pool có trọng số, xáo chữ, đáp án từ, combo, gom từ sai  [thuần]
-js/plane-game-logic.js   Bắn máy bay: mục tiêu, vật lý, khoá mục tiêu, đạn tự dẫn, va chạm, điểm, mạng  [thuần, cần comboMult]
+js/plane-game-text.js    Bắn máy bay: chuẩn hoá chữ gõ, nhãn nghĩa, loại mục tiêu theo độ dài  [thuần]
+js/plane-game-logic.js   Bắn máy bay: mục tiêu, vật lý, tàu mình bay theo mục tiêu, khoá, đạn tự dẫn, va chạm, điểm  [thuần, cần comboMult + plane-game-text]
 js/plane-game-effects.js Bắn máy bay: nền vũ trụ (tinh vân + 3 lớp sao), hạt nổ, sóng xung kích, chớp, rung, chữ bay
 js/plane-game-render.js  Bắn máy bay: vẽ canvas tàu mình / thiên thạch / tàu địch / tàu mẹ / đạn / nhãn tự xuống dòng
 js/plane-game-ui.js      Bắn máy bay: khung phủ theo visualViewport, canvas DPR, vòng rAF, ô gõ từng chữ, tạm dừng
@@ -80,7 +81,8 @@ Kênh duy nhất từ game sang engine ôn là **danh sách từ sai**: `flushMi
 - **Logic thuần** (`plane-game-logic.js`), thế giới tính bằng px của khung (`st.w × st.h`), mọi ngẫu nhiên đi qua tham số `rand` → test tất định. `resizePlaneState` co giãn vị trí/vận tốc khi bàn phím bật/tắt.
 - Loại mục tiêu theo số chữ cái (bỏ dấu cách): ≤4 thiên thạch (xoay, nảy mép), 5–8 tàu địch (lượn sóng + kéo dần về phía tàu mình), ≥9 tàu mẹ. Thời gian rơi × `0.65 + 0.075 × số chữ` × ngẫu nhiên ±10% → từ dài có nhiều thời gian hơn.
 - `typeChar`: chưa khoá → khoá mục tiêu thấp nhất có chữ kế tiếp khớp; chữ đúng → `progress++`, `pending++`, đạn tự dẫn; chữ cuối → `doomed`, nhả khoá, nổ khi viên cuối tới (`pending` về 0). Chữ sai: đạn lệch, **không trừ điểm/combo** (quyết định của người dùng); sai `PLANE_WRONG_TO_MISS` = 3 chữ trên 1 mục tiêu → vào `miss`. Mục tiêu đã `doomed` chạm khiên vẫn tính là hạ.
-- Mỗi viên trúng: `vy -= BULLET_KICK·h` (giật lên), sau đó `vy` hồi về tốc độ hành trình → chuyển động có quán tính, không đều đều.
+- Mỗi viên trúng: `vy -= BULLET_KICK·h` (giật lên, trần `-cruise`, không vượt mép trên), sau đó `vy` hồi về tốc độ hành trình → chuyển động có quán tính, không đều đều. Đạn còn đang đuổi mục tiêu không bao giờ bị xoá (nếu xoá, `pending` treo và từ gõ xong không nổ).
+- Tàu mình (`moveShip`): lò xo kéo về x của mục tiêu đang khoá (`SHIP_SPRING`, giảm chấn hơi dưới tới hạn → trượt quá chút rồi dừng), trần tốc độ, kẹp trong mép. `bank` tỉ lệ vận tốc ngang → phần vẽ nghiêng thân, co cánh, kéo dài lửa động cơ. Hết mục tiêu: chỉ còn giảm chấn nhẹ, trôi chậm dần rồi đứng tại chỗ.
 - Logic trả mảng sự kiện `fire | hit | explode | shield`; `plane-game-effects.js` biến thành hạt (tối đa 500, giảm 60% khi `prefers-reduced-motion`), sóng xung kích, chớp, rung, chữ tiếng Anh bay lên. Nền tinh vân vẽ sẵn vào canvas phụ mỗi lần đổi cỡ.
 - Nhãn: vế nghĩa trước `;`, giữ ghi chú trong ngoặc ("một (mạo từ không xác định)"), tối đa 50 ký tự, tự xuống dòng khi vẽ (cache theo mục tiêu trong `WeakMap`).
 - Ô gõ ẩn: mỗi ký tự trong sự kiện `input` = 1 phát bắn, rồi xoá ô; bỏ qua khi IME đang soạn (`isComposing`, xử lý ở `compositionend`). Canvas theo `devicePixelRatio` (tối đa 2).

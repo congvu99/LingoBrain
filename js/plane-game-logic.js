@@ -1,7 +1,8 @@
 /* Game Bắn máy bay (kiểu ZType) — logic thuần, không chạm DOM. Chạy trong Node và trình duyệt.
    Thế giới tính bằng px của khung chơi (st.w × st.h). Mục tiêu mang nghĩa Việt rơi về tàu mình ở đáy;
    mỗi chữ cái gõ đúng bắn 1 viên đạn tự dẫn vào mục tiêu đang khoá, chữ cuối làm nó nổ.
-   Trả sự kiện ('fire' | 'hit' | 'explode' | 'shield') để phần hiệu ứng vẽ. Cần comboMult() của word-games.js. */
+   Trả sự kiện ('fire' | 'hit' | 'explode' | 'shield') để phần hiệu ứng vẽ.
+   Cần comboMult() của word-games.js và các hàm chữ của plane-game-text.js (nạp trước file này). */
 
 const PLANE_LIVES = 3;
 const PLANE_FALL_SECONDS = 11;     // từ 5 chữ cái ở cấp 0 đi hết chiều cao khung trong ~11s
@@ -10,45 +11,22 @@ const PLANE_CAP = 6;
 const PLANE_KILLS_PER_LEVEL = 5;
 const PLANE_SPEEDUP = 1.08;        // mỗi cấp nhanh hơn 8%
 const PLANE_SPAWN_GAP = 1.8;       // giây giữa 2 lần xuất hiện ở cấp 0
-const PLANE_LABEL_MAX = 50;        // nhãn tự xuống dòng khi vẽ; nghĩa dài nhất trong words.json là 49 ký tự
 const PLANE_MAX_DT = 0.05;         // kẹp bước thời gian: sau tạm dừng / giật khung không nhảy cóc
 const PLANE_WRONG_TO_MISS = 3;     // gõ sai ngần ấy chữ trên 1 mục tiêu → từ đó vào danh sách ôn trước (không trừ điểm)
 const BULLET_SPEED = 2.4;          // chiều cao khung / giây
 const BULLET_KICK = 0.22;          // mỗi viên trúng đẩy mục tiêu giật lên (chiều cao khung / giây)
+// tàu mình: lò xo kéo về dưới mục tiêu đang khoá, giảm chấn hơi dưới tới hạn → trượt quá một chút rồi dừng
+const SHIP_SPRING = 16, SHIP_DAMP = 6.4, SHIP_IDLE_DAMP = 3, SHIP_MAX_V = 1.4, SHIP_MARGIN = 22, SHIP_MAX_BANK = 0.5;
 // bán kính theo bề ngang khung, kẹp min/max px. ≤4 chữ: thiên thạch nảy mép · 5–8: tàu địch lượn · ≥9: tàu mẹ
 const TARGET_KINDS = { rock: { r: 0.05, min: 15, max: 26 }, ship: { r: 0.06, min: 18, max: 30 }, mother: { r: 0.09, min: 26, max: 44 } };
 
 const fallSeconds = level => PLANE_FALL_SECONDS / Math.pow(PLANE_SPEEDUP, level);
 const maxPlanes = level => Math.min(PLANE_CAP, PLANE_START_MAX + level);
-const isFixedTyped = ch => ch === ' ' || ch === '-' || ch === "'" || ch === '.';
-const letterCount = text => text.split('').filter(c => !isFixedTyped(c)).length;
-/* Thời gian rơi nhân theo số chữ cái: gõ càng nhiều chữ càng được nhiều thời gian (1 chữ ×0.73 … 14 chữ ×1.7) */
-const lengthSlowdown = text => 0.65 + 0.075 * letterCount(text);
-const targetKind = text => { const n = letterCount(text); return n <= 4 ? 'rock' : n >= 9 ? 'mother' : 'ship'; };
-
-/* Hoa thường, khoảng trắng thừa, nháy cong (bàn phím iOS tự đổi) → nháy thẳng */
-function normalizeTyped(s) {
-  return String(s || '').toLowerCase().replace(/[’‘]/g, "'").replace(/\s+/g, ' ').trim();
-}
-
-/* Nhãn: emoji + vế nghĩa đầu tiên (trước ';'), giữ nguyên phần ghi chú trong ngoặc — "một (mạo từ
-   không xác định)" mất ngoặc là mất nghĩa. Quá PLANE_LABEL_MAX thì cắt ở ranh giới từ. */
-function planeLabel(w) {
-  let m = String(w.meaning || '').split(';')[0].trim();
-  if (m.length > PLANE_LABEL_MAX) {
-    const cut = m.slice(0, PLANE_LABEL_MAX - 1), sp = cut.lastIndexOf(' ');
-    m = (sp > PLANE_LABEL_MAX / 2 ? cut.slice(0, sp) : cut).replace(/[\s,:(]+$/, '') + '…';
-  }
-  return (w.emoji ? w.emoji + ' ' : '') + m;
-}
-
-/* Bỏ qua dấu cách / gạch nối / nháy: người chơi chỉ gõ chữ cái */
-function skipFixed(text, i) { while (i < text.length && isFixedTyped(text[i])) i++; return i; }
 
 function createPlaneState(words, w, h) {
   const st = { words: words || [], next: 0, targets: [], bullets: [], uid: 0, spawnIn: 0, lock: null, t: 0,
     lives: PLANE_LIVES, kills: 0, level: 0, score: 0, right: 0, wrong: 0, streak: 0, bestStreak: 0,
-    miss: [], over: false, w: 0, h: 0, shipX: 0, shipY: 0, aim: -Math.PI / 2, aimTo: -Math.PI / 2 };
+    miss: [], over: false, w: 0, h: 0, shipX: 0, shipY: 0, shipVx: 0, goalX: null, bank: 0, aim: -Math.PI / 2, aimTo: -Math.PI / 2 };
   resizePlaneState(st, w || 360, h || 640);
   return st;
 }
@@ -57,8 +35,10 @@ function createPlaneState(words, w, h) {
 function resizePlaneState(st, w, h) {
   const sx = st.w ? w / st.w : 1, sy = st.h ? h / st.h : 1;
   for (const o of st.targets.concat(st.bullets)) { o.x *= sx; o.y *= sy; o.vx *= sx; o.vy *= sy; if (o.cruise) o.cruise *= sy; }
+  st.shipX = st.w ? st.shipX * sx : w / 2; st.shipVx *= sx;
+  if (st.goalX != null) st.goalX *= sx;
   st.w = w; st.h = h;
-  st.shipX = w / 2; st.shipY = h - Math.max(26, h * 0.07);
+  st.shipY = h - Math.max(26, h * 0.07);
 }
 
 function nextPlaneWord(st) {
@@ -146,6 +126,21 @@ function moveTarget(st, t, dt) {
   if (t.x > st.w - t.r) { t.x = st.w - t.r; t.vx = -Math.abs(t.vx) * 0.9; }
 }
 
+/* Tàu mình bay ngang về dưới mục tiêu đang khoá (lò xo + giảm chấn), nghiêng thân theo vận tốc.
+   Không có mục tiêu: chỉ còn giảm chấn nhẹ → trôi chậm dần rồi đứng tại chỗ. */
+function moveShip(st, dt) {
+  const t = st.lock !== null && st.targets.find(x => x.uid === st.lock);
+  st.goalX = t ? Math.min(st.w - SHIP_MARGIN, Math.max(SHIP_MARGIN, t.x)) : null;
+  const ax = st.goalX == null ? -SHIP_IDLE_DAMP * st.shipVx : SHIP_SPRING * (st.goalX - st.shipX) - SHIP_DAMP * st.shipVx;
+  const vmax = SHIP_MAX_V * st.w;
+  st.shipVx = Math.max(-vmax, Math.min(vmax, st.shipVx + ax * dt));
+  st.shipX += st.shipVx * dt;
+  if (st.shipX < SHIP_MARGIN || st.shipX > st.w - SHIP_MARGIN) {
+    st.shipX = Math.max(SHIP_MARGIN, Math.min(st.w - SHIP_MARGIN, st.shipX)); st.shipVx = 0;
+  }
+  st.bank = Math.max(-1, Math.min(1, st.shipVx / (vmax * 0.5))) * SHIP_MAX_BANK;
+}
+
 function destroyTarget(st, t, ev) {
   removeTarget(st, t);
   st.kills++; st.right++; st.streak++;
@@ -185,6 +180,7 @@ function stepPlanes(st, dt, rand) {
   st.t += dt;
   if (st.lock === null && !st.bullets.length) st.aimTo = -Math.PI / 2;   // hết việc: nòng quay về thẳng lên
   st.aim += (st.aimTo - st.aim) * Math.min(1, dt * 14);
+  moveShip(st, dt);
   for (const t of st.targets.slice()) {
     moveTarget(st, t, dt);
     if (t.y + t.r < st.shipY - 8) continue;
@@ -203,7 +199,7 @@ function stepPlanes(st, dt, rand) {
 }
 
 if (typeof module !== 'undefined') module.exports = {
-  PLANE_LIVES, PLANE_FALL_SECONDS, PLANE_START_MAX, PLANE_CAP, PLANE_SPEEDUP, PLANE_LABEL_MAX, PLANE_WRONG_TO_MISS,
-  fallSeconds, maxPlanes, targetKind, normalizeTyped, planeLabel, createPlaneState, resizePlaneState,
+  PLANE_LIVES, PLANE_FALL_SECONDS, PLANE_START_MAX, PLANE_CAP, PLANE_SPEEDUP, PLANE_WRONG_TO_MISS,
+  fallSeconds, maxPlanes, createPlaneState, resizePlaneState,
   stepPlanes, typeChar, releaseLock
 };

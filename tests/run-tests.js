@@ -7,6 +7,7 @@ const PURE_MODULES = [
   'js/review-mode-picker.js',
   'js/stats-dashboard.js',
   'js/word-games.js',
+  'js/plane-game-text.js',
   'js/plane-game-logic.js'
 ];
 const ctx = vm.createContext({ console, Math, Date, JSON, Array, Object, String, Number, RegExp, Error, fs, path, ROOT: root });

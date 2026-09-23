@@ -1,6 +1,6 @@
 /* Service worker: cache-first cho toàn bộ file tĩnh. Đổi CACHE mỗi lần deploy để người dùng nhận bản mới.
    MP3 trong audio/ nằm ở cache riêng AUDIO_CACHE, cache dần khi phát, không xoá khi lên version. */
-const CACHE = 'lingobrain-v2.8.0';
+const CACHE = 'lingobrain-v2.8.1';
 const AUDIO_CACHE = 'lingobrain-audio';
 const ASSETS = [
   './',
@@ -24,6 +24,7 @@ const ASSETS = [
   './js/review-steps-learn.js',
   './js/review-tests.js',
   './js/word-games.js',
+  './js/plane-game-text.js',
   './js/plane-game-logic.js',
   './js/plane-game-effects.js',
   './js/plane-game-render.js',

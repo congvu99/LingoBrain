@@ -1,5 +1,5 @@
 /* Game Bắn máy bay — vẽ cảnh lên canvas: tàu mình (xoay nòng theo mục tiêu, lửa động cơ), thiên thạch
-   (đa giác lồi lõm tự xoay), tàu địch (hướng mũi theo vận tốc), tàu mẹ (đèn nhấp nháy), đạn vệt sáng,
+   (đa giác lồi lõm tự xoay), tàu địch (mũi nghiêng theo hướng lượn), tàu mẹ (đèn nhấp nháy), đạn vệt sáng,
    nhãn nghĩa Việt + tiến độ gõ (chữ đã gõ hiện dần, còn lại là gạch dưới). Hiệu ứng lấy từ plane-game-effects.js. */
 
 const RENDER_FONT = '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
@@ -86,10 +86,14 @@ function drawTarget(ctx, t, time, locked) {
   ctx.restore();
 }
 
+/* Tàu mình: mũi xoay về mục tiêu, nghiêng thêm theo hướng đang bay (bank), cánh co lại như đang lượn,
+   lửa động cơ dài ra khi tăng tốc */
 function drawPlayerShip(ctx, st, time) {
-  ctx.save(); ctx.translate(st.shipX, st.shipY); ctx.rotate(st.aim + Math.PI / 2);
+  ctx.save(); ctx.translate(st.shipX, st.shipY);
+  ctx.rotate(st.aim + Math.PI / 2 + st.bank * 0.6);
+  ctx.scale(1 - Math.abs(st.bank) * 0.5, 1);
   ctx.globalCompositeOperation = 'lighter';
-  const f = 10 + Math.sin(time * 40) * 3;
+  const f = 10 + Math.abs(st.bank) * 16 + Math.sin(time * 40) * 3;
   ctx.fillStyle = '#38bdf8'; ctx.globalAlpha = 0.8;
   ctx.beginPath(); ctx.moveTo(-5, 12); ctx.lineTo(0, 12 + f); ctx.lineTo(5, 12); ctx.fill();
   ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;

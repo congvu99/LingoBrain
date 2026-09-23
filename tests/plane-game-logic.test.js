@@ -171,6 +171,37 @@ describe('stepPlanes · khiên & mạng', () => {
   });
 });
 
+describe('tàu mình · bay theo mục tiêu', () => {
+  function lockOn(side) {
+    const st = createPlaneState(mkPlaneWords(['cat']), 400, 800);
+    spawnUntil(st, 1);
+    const t = st.targets[0];
+    t.x = side === 'right' ? 340 : 60; t.vx = 0;
+    typeChar(st, 'c', half);
+    return { st, t };
+  }
+  it('khoá mục tiêu bên phải → tàu tăng tốc sang phải và nghiêng theo hướng bay', () => {
+    const { st, t } = lockOn('right');
+    const x0 = st.shipX;
+    for (let i = 0; i < 10; i++) stepPlanes(st, 0.02, half);
+    assert.ok(st.shipVx > 0, 'vx=' + st.shipVx); assert.ok(st.shipX > x0); assert.ok(st.bank > 0, 'bank=' + st.bank);
+    for (let i = 0; i < 150; i++) { t.y = 100; stepPlanes(st, 0.02, half); }   // giữ mục tiêu trên cao để khỏi chạm khiên
+    assert.near(st.shipX, Math.min(400 - 22, t.x), 12, 'tới gần dưới mục tiêu (đạn có thể đẩy mục tiêu trôi)'); assert.ok(Math.abs(st.bank) < 0.1, 'đã ổn định thì hết nghiêng');
+  });
+  it('khoá mục tiêu bên trái → nghiêng ngược lại, không vượt mép màn', () => {
+    const { st, t } = lockOn('left');
+    t.x = -500;                                  // mục tiêu ảo ngoài mép: tàu vẫn phải ở trong màn
+    for (let i = 0; i < 200; i++) { t.y = 100; stepPlanes(st, 0.02, half); if (i === 5) assert.ok(st.bank < 0); }
+    assert.ok(st.shipX >= 20, 'shipX=' + st.shipX);
+  });
+  it('không có mục tiêu → tàu trôi chậm dần rồi đứng yên tại chỗ', () => {
+    const st = createPlaneState([], 400, 800);
+    st.shipVx = 300;
+    for (let i = 0; i < 200; i++) stepPlanes(st, 0.02, half);
+    assert.ok(Math.abs(st.shipVx) < 1); assert.ok(st.shipX > 200, 'không nhảy về giữa');
+  });
+});
+
 describe('resizePlaneState', () => {
   it('co giãn vị trí theo khung mới, tàu mình ở đáy', () => {
     const st = createPlaneState(mkPlaneWords(['cat']), 400, 800);
