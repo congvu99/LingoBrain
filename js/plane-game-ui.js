@@ -16,6 +16,7 @@ function startPlaneGame() {
       '<div class="plane-overlay" id="planeOverlay"><p id="planeMsg">Mục tiêu mang <b>nghĩa tiếng Việt</b>. Gõ từ tiếng Anh: ' +
       'muốn hạ mục tiêu nào thì gõ từ của nó, mỗi chữ đúng là 1 phát đạn.<br>Enter xoá chữ đang gõ. Để mục tiêu chạm tàu là mất 1 ❤️.<br>' +
       '<small>Tắt bộ gõ tiếng Việt (Unikey/Telex) trước khi chơi.</small></p>' +
+      '<div class="plane-diff" id="planeDiff" role="radiogroup" aria-label="cấp độ"></div>' +
       '<button class="btn-primary" id="planeGo">Bắt đầu</button></div></div>' +
     '<div class="plane-input-row">' +
       '<input id="planeInput" type="text" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" ' +
@@ -31,7 +32,7 @@ function startPlaneGame() {
   listen(document, 'visibilitychange', () => { if (document.hidden) pausePlanes(); });
   bindPlaneControls(ui);
   fitPlaneGame();
-  game.plane = createPlaneState(game.words, ui.w, ui.h);
+  choosePlaneDifficulty(cfg.planeLevel);
   syncPlaneGame();
   drawPlaneScene(ui.ctx, game.plane, ui.fx, 0);
 }
@@ -47,6 +48,7 @@ function bindPlaneControls(ui) {
     input.focus();                                     // phải đồng bộ trong lần chạm, iOS mới bật bàn phím
     if (ui.started) return resumePlanes();
     ui.started = true;
+    $('#planeDiff').hidden = true;             // đang chơi không đổi cấp
     $('#planeOverlay').hidden = true;
     ui.raf = requestAnimationFrame(planeFrame);
   };
@@ -61,6 +63,20 @@ function bindPlaneControls(ui) {
     // chỉ Enter nhả khoá: Unikey/EVKey (Telex) gửi Backspace để thay dấu, bắt Backspace sẽ nhả khoá giữa chừng
     if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); pressEnter(game.plane, Math.random, []).forEach(e => spaceFxEvent(planeUi.fx, e)); }
   };
+}
+
+/* Chọn cấp trước ván: dựng lại state (chưa có mục tiêu nào), ghi nhớ cho lần sau, đổi khoá kỷ lục */
+function choosePlaneDifficulty(id) {
+  const d = planeDifficulty(id), ui = planeUi;
+  cfg.planeLevel = d.id; save(K_CFG, cfg);
+  game.plane = createPlaneState(game.words, ui.w, ui.h, d.id);
+  game.scoreKey = planeScoreKey(d.id); game.levelLabel = d.label;
+  $('#planeDiff').innerHTML = PLANE_DIFFICULTY_IDS.map(k => {
+    const x = PLANE_DIFFICULTIES[k], best = (gameScore[planeScoreKey(k)] || {}).best;
+    return '<button role="radio" data-diff="' + k + '" aria-checked="' + (k === d.id) + '">' + x.label +
+      (best ? '<b class="mono">★ ' + best + '</b>' : '') + '</button>';
+  }).join('');
+  $('#planeDiff').querySelectorAll('button').forEach(b => { b.onclick = () => { choosePlaneDifficulty(b.dataset.diff); drawPlaneScene(ui.ctx, game.plane, ui.fx, 0); }; });
 }
 
 /* Mỗi ký tự trong ô gõ = 1 phát bắn; sự kiện bắn đưa sang hiệu ứng ngay để tia lửa nòng súng khớp lúc gõ */

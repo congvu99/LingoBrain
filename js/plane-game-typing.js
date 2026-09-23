@@ -1,7 +1,8 @@
 /* Game Bắn máy bay — nhắm bắn theo chữ gõ, thuần. Người chơi tự quyết định bắn từ nào:
    st.typed là chuỗi chữ cái đang gõ; mục tiêu nào có từ bắt đầu bằng chuỗi đó là "ứng viên", tiến độ hiện trên nhãn.
-   Mỗi chữ khớp bắn 1 viên vào ứng viên gần tàu nhất; khi chữ kế tiếp loại bớt ứng viên, đạn đang bay đổi hướng
-   sang ứng viên còn lại. Chữ không khớp chuỗi đang gõ nhưng khớp đầu từ khác (gõ "ca" rồi "d…") → chuyển mục tiêu.
+   Còn nhiều ứng viên ("re" → reckon / reach out): game KHÔNG chọn thay — mỗi chữ vẫn bắn 1 viên nhưng đạn
+   lơ lửng chờ trên tàu (held). Chữ tiếp theo loại hết còn 1 ứng viên → toàn bộ đạn chờ lao vào nó.
+   Chữ không khớp chuỗi đang gõ nhưng khớp đầu từ khác (gõ "ca" rồi "d…") → chuyển sang từ đó.
    Nạp sau plane-game-logic.js. */
 
 /* Mục tiêu còn sống có từ bắt đầu bằng chuỗi chữ cái `typed` */
@@ -11,13 +12,15 @@ function typingCandidates(st, typed) {
 
 const lowestTarget = list => list.reduce((a, t) => (!a || t.y > a.y ? t : a), null);   // gần tàu mình nhất
 
+/* Bắn 1 viên. target = null + hit: đạn chờ (chưa rõ từ); target + !hit: đạn trượt; target + hit: đạn dẫn */
 function fire(st, target, hit, ev, rand) {
+  const held = hit && !target;
   const tx = target ? target.x : st.shipX + (rand() - 0.5) * st.w * 0.2, ty = target ? target.y : -20;
-  let a = Math.atan2(ty - st.shipY, tx - st.shipX);
+  let a = held ? -Math.PI / 2 : Math.atan2(ty - st.shipY, tx - st.shipX);
   if (!hit && target) a += (rand() < 0.5 ? -1 : 1) * (0.18 + rand() * 0.12);   // đạn trượt: lệch hẳn khỏi mục tiêu
-  const s = BULLET_SPEED * st.h;
-  st.bullets.push({ x: st.shipX, y: st.shipY, vx: Math.cos(a) * s, vy: Math.sin(a) * s, target: hit ? target.uid : null });
-  if (hit) target.pending++;
+  const s = BULLET_SPEED * st.h * (held ? 0.5 : 1);
+  st.bullets.push({ x: st.shipX, y: st.shipY, vx: Math.cos(a) * s, vy: Math.sin(a) * s, target: target && hit ? target.uid : null, held });
+  if (target && hit) target.pending++;
   st.aimTo = a;
   ev.push({ type: 'fire', x: st.shipX, y: st.shipY, a, hit });
 }
@@ -29,13 +32,35 @@ function paintProgress(st, cands) {
   }
 }
 
-/* Đạn đang bay vào mục tiêu không còn là ứng viên → đổi hướng sang mục tiêu chính mới */
-function retargetBullets(st, cands, main) {
+/* Đạn đang dẫn vào mục tiêu không còn là ứng viên (người chơi đổi ý) → sang mục tiêu mới, hoặc về chờ nếu chưa rõ */
+function redirectBullets(st, cands, main) {
   for (const b of st.bullets) {
     const t = b.target && st.targets.find(x => x.uid === b.target);
     if (!t || t === main || t.doomed || cands.indexOf(t) >= 0) continue;
-    t.pending--; main.pending++; b.target = main.uid;
+    t.pending--;
+    if (main) { main.pending++; b.target = main.uid; } else { b.target = null; b.held = true; }
   }
+}
+
+/* Đã rõ mục tiêu: mọi viên đang chờ lao vào nó */
+function releaseHeld(st, t) {
+  for (const b of st.bullets) if (b.held) { b.held = false; b.target = t.uid; t.pending++; }
+}
+
+/* Bỏ ngang: đạn chờ tan thành tia lửa */
+function fizzleHeld(st, ev) {
+  st.bullets = st.bullets.filter(b => {
+    if (b.held) ev.push({ type: 'hit', x: b.x, y: b.y, a: Math.PI / 2 });
+    return !b.held;
+  });
+}
+
+/* Gọi mỗi bước: ứng viên thay đổi do mục tiêu biến mất (chạm khiên) → còn 1 thì bắn vào nó, hết thì tan */
+function settleHeld(st, ev) {
+  if (!st.bullets.some(b => b.held)) return;
+  const c = st.typed ? typingCandidates(st, st.typed) : [];
+  if (!c.length) fizzleHeld(st, ev);
+  else if (c.length === 1) { st.lock = c[0].uid; releaseHeld(st, c[0]); }
 }
 
 /* Gõ trọn từ của mục tiêu: nổ khi viên cuối tới; xoá chuỗi đang gõ */
@@ -45,7 +70,7 @@ function doomTarget(st, t) {
   paintProgress(st, []);
 }
 
-/* Gõ 1 ký tự. Trả { hit, target } */
+/* Gõ 1 ký tự. Trả { hit, target } (target = null khi đạn đang chờ vì chưa rõ từ) */
 function typeChar(st, ch, rand, ev) {
   ev = ev || []; rand = rand || Math.random;
   const c = normalizeTyped(ch);
@@ -56,39 +81,41 @@ function typeChar(st, ch, rand, ev) {
     const tail = buf.slice(i), found = typingCandidates(st, tail);
     if (found.length) { typed = tail; cands = found; }
   }
-  const cur = st.targets.find(t => t.uid === st.lock);
   if (!typed) {                                          // không khớp gì: đạn trượt, giữ nguyên chuỗi đang gõ
+    const cur = st.targets.find(t => t.uid === st.lock);
     if (cur && ++cur.wrong === PLANE_WRONG_TO_MISS && st.miss.indexOf(cur.word.id) < 0) st.miss.push(cur.word.id);
     fire(st, cur || null, false, ev, rand);
     return { hit: false, target: cur || null, ev };
   }
   st.typed = typed;
-  const exact = cands.filter(t => t.letters === typed);
-  // mục tiêu chính: từ vừa gõ trọn > mục tiêu đang bắn (nếu vẫn khớp) > ứng viên gần tàu nhất
-  const main = lowestTarget(exact) || (cur && cands.indexOf(cur) >= 0 ? cur : lowestTarget(cands));
-  st.lock = main.uid;
+  const exact = cands.filter(t => t.letters === typed), longer = cands.some(t => t.letters.length > typed.length);
+  const complete = exact.length > 0 && !longer;          // gõ trọn từ, không còn từ dài hơn cùng đầu đang chờ
+  const main = complete ? lowestTarget(exact) : cands.length === 1 ? cands[0] : null;   // null = chưa rõ, không chọn thay
   paintProgress(st, cands);
-  retargetBullets(st, cands, main);
+  redirectBullets(st, cands, main);
+  st.lock = main ? main.uid : null;
+  if (main) releaseHeld(st, main);
   fire(st, main, true, ev, rand);
-  // gõ trọn từ và không còn từ dài hơn đang chờ ("give" khi có "give up") → nổ
-  if (exact.length && !cands.some(t => t.letters.length > typed.length)) doomTarget(st, main);
+  if (complete) doomTarget(st, main);
   return { hit: true, target: main, ev };
 }
 
-/* Enter: chuỗi đang gõ trùng trọn một từ → hạ từ đó ("give" khi có "give up"); không thì xoá chuỗi, bỏ khoá */
+/* Enter: chuỗi đang gõ trùng trọn một từ → hạ từ đó ("give" khi có "give up"); không thì xoá chuỗi, đạn chờ tan */
 function pressEnter(st, rand, ev) {
   ev = ev || []; rand = rand || Math.random;
   const exact = st.typed ? typingCandidates(st, st.typed).filter(t => t.letters === st.typed) : [];
   if (exact.length) {
     const t = lowestTarget(exact);
-    retargetBullets(st, [t], t);
+    redirectBullets(st, [t], t);
+    releaseHeld(st, t);
     if (!t.pending) fire(st, t, true, ev, rand);        // đạn trước đã trúng hết: bắn thêm 1 viên để kích nổ
     doomTarget(st, t);
     return ev;
   }
   st.typed = ''; st.lock = null;
   paintProgress(st, []);
+  fizzleHeld(st, ev);
   return ev;
 }
 
-if (typeof module !== 'undefined') module.exports = { typingCandidates, typeChar, pressEnter };
+if (typeof module !== 'undefined') module.exports = { typingCandidates, typeChar, pressEnter, settleHeld };

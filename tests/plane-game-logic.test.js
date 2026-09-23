@@ -33,7 +33,7 @@ describe('spawn', () => {
       stepPlanes(st, 0.05, Math.random);
       const ids = st.targets.map(t => t.word.id);
       assert.equal(new Set(ids).size, ids.length, 'trùng ở bước ' + i);
-      assert.ok(st.targets.length <= PLANE_CAP);
+      assert.ok(st.targets.length <= PLANE_DIFFICULTIES.normal.cap);
     }
   });
   it('từ dài rơi chậm hơn từ ngắn (kể cả khi dao động ngẫu nhiên)', () => {
@@ -50,13 +50,13 @@ describe('spawn', () => {
 });
 
 describe('typeChar · khoá & bắn', () => {
-  it('chữ đầu khoá mục tiêu gần tàu nhất có chữ khớp, mỗi chữ đúng 1 viên đạn', () => {
-    const st = createPlaneState(mkPlaneWords(['cat', 'cow', 'dog']), 360, 640);
-    spawnUntil(st, 3);
-    const low = st.targets.filter(t => t.text[0] === 'c').sort((a, b) => b.y - a.y)[0];
+  it('chữ chỉ khớp 1 từ → khoá ngay từ đó, mỗi chữ đúng 1 viên đạn', () => {
+    const st = createPlaneState(mkPlaneWords(['cat', 'dog']), 360, 640);
+    spawnUntil(st, 2);
+    const cat = st.targets.find(t => t.text === 'cat');
     const r = typeChar(st, 'C', half);
-    assert.ok(r.hit); assert.equal(st.lock, low.uid);
-    assert.equal(st.bullets.length, 1); assert.equal(low.progress, 1);
+    assert.ok(r.hit); assert.equal(st.lock, cat.uid);
+    assert.equal(st.bullets.length, 1); assert.equal(st.bullets[0].target, cat.uid); assert.equal(cat.progress, 1);
   });
   it('chữ không khớp mục tiêu nào → đạn lạc, không khoá, không đổi điểm', () => {
     const st = createPlaneState(mkPlaneWords(['cat']), 360, 640);
@@ -159,8 +159,9 @@ describe('stepPlanes · khiên & mạng', () => {
     const st = createPlaneState(mkPlaneWords(['aa', 'bb', 'cc', 'dd', 'ee', 'ff', 'gg']), 360, 640);
     for (let k = 0; k < 5; k++) { spawnUntil(st, 1); typeWord(st, st.targets[0].text); flyBullets(st); }
     assert.equal(st.kills, 5); assert.equal(st.level, 1);
-    assert.near(fallSeconds(1), PLANE_FALL_SECONDS / PLANE_SPEEDUP);
-    assert.equal(maxPlanes(1), PLANE_START_MAX + 1); assert.equal(maxPlanes(50), PLANE_CAP);
+    const N = PLANE_DIFFICULTIES.normal;
+    assert.near(fallSeconds(1, N), N.fall / N.speedup);
+    assert.equal(maxPlanes(1, N), N.start + 1); assert.equal(maxPlanes(50, N), N.cap);
   });
 });
 
@@ -218,6 +219,57 @@ describe('người chơi tự chọn từ để bắn', () => {
   });
 });
 
+describe('chưa rõ từ nào: đạn chờ, chữ tiếp theo quyết định', () => {
+  function field(words) {
+    const st = createPlaneState(mkPlaneWords(words), 400, 800);
+    spawnUntil(st, words.length);
+    st.targets.forEach((t, i) => { t.y = 300 - i * 60; t.vx = 0; t.cruise = t.vy = 1; });
+    return st;
+  }
+  const byText = (st, w) => st.targets.find(t => t.text === w);
+  it('gõ "re" khi có reckon và reach out → không khoá bên nào, đạn giữ lại, cả hai hiện tiến độ', () => {
+    const st = field(['reckon', 'reach out']);
+    typeWord(st, 're');
+    assert.equal(st.lock, null);
+    assert.equal(st.bullets.length, 2);
+    assert.ok(st.bullets.every(b => b.held && b.target === null), 'đạn chờ, chưa nhắm ai');
+    assert.equal(byText(st, 'reckon').progress, 2); assert.equal(byText(st, 'reach out').progress, 2);
+    assert.equal(byText(st, 'reckon').pending + byText(st, 'reach out').pending, 0);
+    for (let i = 0; i < 100; i++) stepPlanes(st, 0.02, half);
+    assert.equal(st.bullets.length, 2, 'đạn chờ lơ lửng, không bay mất');
+    assert.ok(st.bullets.every(b => b.y < st.shipY && b.y > st.shipY - st.h * 0.3), 'lơ lửng ngay trên tàu');
+  });
+  it('gõ tiếp "c" → reckon: toàn bộ đạn chờ lao vào reckon; gõ hết → reckon nổ, reach out còn nguyên', () => {
+    const st = field(['reckon', 'reach out']);
+    typeWord(st, 'rec');
+    const r = byText(st, 'reckon');
+    assert.equal(st.lock, r.uid); assert.equal(r.pending, 3);
+    assert.ok(st.bullets.every(b => !b.held && b.target === r.uid));
+    assert.equal(byText(st, 'reach out').progress, 0);
+    typeWord(st, 'kon'); flyBullets(st);
+    assert.ok(!byText(st, 'reckon')); assert.ok(byText(st, 'reach out')); assert.equal(st.kills, 1);
+  });
+  it('gõ tiếp "a" → reach out', () => {
+    const st = field(['reckon', 'reach out']);
+    typeWord(st, 'rea');
+    assert.equal(st.lock, byText(st, 'reach out').uid); assert.equal(byText(st, 'reach out').pending, 3);
+  });
+  it('bỏ ngang bằng Enter → đạn chờ tan, xoá chữ đang gõ', () => {
+    const st = field(['reckon', 'reach out']);
+    typeWord(st, 're'); pressEnter(st, half);
+    assert.equal(st.bullets.length, 0); assert.equal(st.typed, '');
+  });
+  it('một ứng viên chạm khiên → đạn chờ tự lao vào ứng viên còn lại', () => {
+    const st = field(['reckon', 'reach out']);
+    typeWord(st, 're');
+    byText(st, 'reach out').y = 5000;
+    stepPlanes(st, 0.01, half);
+    const r = byText(st, 'reckon');
+    assert.equal(st.lock, r.uid); assert.equal(r.pending, 2);
+    assert.ok(st.bullets.every(b => b.target === r.uid));
+  });
+});
+
 describe('tàu mình · bay theo mục tiêu', () => {
   function lockOn(side) {
     const st = createPlaneState(mkPlaneWords(['cat']), 400, 800);
@@ -246,6 +298,37 @@ describe('tàu mình · bay theo mục tiêu', () => {
     st.shipVx = 300;
     for (let i = 0; i < 200; i++) stepPlanes(st, 0.02, half);
     assert.ok(Math.abs(st.shipVx) < 1); assert.ok(st.shipX > 200, 'không nhảy về giữa');
+  });
+});
+
+describe('cấp độ Dễ / Vừa / Khó', () => {
+  it('mặc định là Vừa; id lạ cũng về Vừa', () => {
+    assert.equal(createPlaneState([], 360, 640).diff, PLANE_DIFFICULTIES.normal);
+    assert.equal(createPlaneState([], 360, 640, 'xyz').diff, PLANE_DIFFICULTIES.normal);
+  });
+  it('Dễ rơi chậm hơn Vừa, Vừa chậm hơn Khó (cùng một từ, cùng ngẫu nhiên)', () => {
+    const v = id => { const st = createPlaneState(mkPlaneWords(['stubborn']), 360, 640, id); spawnUntil(st, 1); return st.targets[0].cruise; };
+    const e = v('easy'), n = v('normal'), h = v('hard');
+    assert.ok(e < n * 0.9 && n < h * 0.9, [e, n, h].join(' / '));
+  });
+  it('trần số mục tiêu theo cấp', () => {
+    const cap = id => {
+      const st = createPlaneState(mkPlaneWords(['aa', 'bb', 'cc', 'dd', 'ee', 'ff', 'gg', 'hh', 'ii', 'jj']), 360, 640, id);
+      st.lives = 1e9; let most = 0;
+      for (let i = 0; i < 400; i++) { stepPlanes(st, 0.05, Math.random); most = Math.max(most, st.targets.length); }
+      return most;
+    };
+    assert.ok(cap('easy') <= PLANE_DIFFICULTIES.easy.start, 'Dễ ở cấp 0 không vượt ' + PLANE_DIFFICULTIES.easy.start);
+    assert.ok(cap('hard') > PLANE_DIFFICULTIES.easy.start, 'Khó đông hơn Dễ');
+  });
+  it('khoá kỷ lục: Vừa giữ khoá cũ "planes", Dễ/Khó có khoá riêng', () => {
+    assert.equal(planeScoreKey('normal'), 'planes');
+    assert.equal(planeScoreKey('easy'), 'planes-easy');
+    assert.equal(planeScoreKey('hard'), 'planes-hard');
+    assert.equal(planeScoreKey(undefined), 'planes');
+  });
+  it('chỉ Dễ có gợi ý chữ đầu', () => {
+    assert.ok(PLANE_DIFFICULTIES.easy.hint); assert.ok(!PLANE_DIFFICULTIES.normal.hint); assert.ok(!PLANE_DIFFICULTIES.hard.hint);
   });
 });
 

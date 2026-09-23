@@ -17,7 +17,7 @@ function gameLockReason(id, a) {
 
 function gameChipsHtml(a) {
   return GAME_IDS.map(id => {
-    const best = (gameScore[id] || {}).best;
+    const best = (gameScore[id === 'planes' ? planeScoreKey(cfg.planeLevel) : id] || {}).best;   // Bắn máy bay: kỷ lục cấp đang chọn
     const open = gameOpen(id, a);
     // aria-disabled thay cho disabled: nút disabled không phát click nên trên điện thoại
     // người dùng chạm vào sẽ không nhận được lời giải thích vì sao bị khoá
@@ -109,14 +109,15 @@ function endGame() {
   const missed = game.miss.slice();      // flushMiss dọn game.miss, phải chụp trước
   flushMiss();
   const score = Math.floor(game.score);
-  const prev = gameScore[game.id] || { best: 0, plays: 0 };
+  const key = game.scoreKey || game.id;   // game có cấp độ (Bắn máy bay) lưu kỷ lục riêng từng cấp
+  const prev = gameScore[key] || { best: 0, plays: 0 };
   const beat = score > prev.best;
-  gameScore[game.id] = { best: Math.max(prev.best, score), plays: prev.plays + 1 };
+  gameScore[key] = { best: Math.max(prev.best, score), plays: prev.plays + 1 };
   save(K_GAMESCORE, gameScore);
 
   const missWords = missed.map(id => (deck.words.find(w => w.id === id) || {}).word).filter(Boolean);
   $('#app').innerHTML = '<div class="card page game-end">' +
-    '<div class="step-label">' + esc(GAME_LABEL[game.id]) + ' · xong</div>' +
+    '<div class="step-label">' + esc(GAME_LABEL[game.id] + (game.levelLabel ? ' · ' + game.levelLabel : '')) + ' · xong</div>' +
     '<div class="game-end-score"><b>' + score + '</b><span>điểm</span></div>' +
     '<p class="small muted">' + game.right + ' đúng / ' + (game.right + game.wrong) + ' · chuỗi dài nhất ' + game.bestStreak +
     ' · ' + (beat ? '<b class="ok">★ kỷ lục mới</b>' : 'kỷ lục ' + prev.best) + '</p>' +

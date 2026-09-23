@@ -75,10 +75,11 @@ function drawMothership(ctx, t, time) {
   }
 }
 
+/* locked: 1 = đang bắn (vòng sáng), 0.5 = một trong nhiều ứng viên khi chưa rõ từ (vòng mờ), 0 = không */
 function drawTarget(ctx, t, time, locked) {
   ctx.save(); ctx.translate(t.x, t.y);
   if (locked) {                      // vòng ngắm đứt nét xoay quanh mục tiêu đang khoá
-    ctx.save(); ctx.rotate(time * 2); ctx.setLineDash([6, 6]); ctx.strokeStyle = '#5ee7ff'; ctx.lineWidth = 2;
+    ctx.save(); ctx.rotate(time * 2); ctx.setLineDash([6, 6]); ctx.strokeStyle = '#5ee7ff'; ctx.lineWidth = 2; ctx.globalAlpha = locked;
     ctx.beginPath(); ctx.arc(0, 0, t.r * 1.35, 0, 6.283); ctx.stroke(); ctx.restore();
   }
   ctx.rotate(t.rot);
@@ -107,6 +108,11 @@ function drawPlayerShip(ctx, st, time) {
 function drawBullets(ctx, st) {
   ctx.globalCompositeOperation = 'lighter'; ctx.lineCap = 'round';
   for (const b of st.bullets) {
+    if (b.held) {                      // đạn chờ: quả cầu sáng lơ lửng trên tàu
+      ctx.fillStyle = 'rgba(94,231,255,.3)'; ctx.beginPath(); ctx.arc(b.x, b.y, 7, 0, 6.283); ctx.fill();
+      ctx.fillStyle = '#eaffff'; ctx.beginPath(); ctx.arc(b.x, b.y, 3, 0, 6.283); ctx.fill();
+      continue;
+    }
     const tx = b.x - b.vx * 0.018, ty = b.y - b.vy * 0.018;
     ctx.strokeStyle = 'rgba(94,231,255,.35)'; ctx.lineWidth = 6; ctx.beginPath(); ctx.moveTo(tx, ty); ctx.lineTo(b.x, b.y); ctx.stroke();
     ctx.strokeStyle = '#eaffff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(tx, ty); ctx.lineTo(b.x, b.y); ctx.stroke();
@@ -120,7 +126,8 @@ function drawLabel(ctx, st, t, locked) {
   const L = labelLayout(ctx, t, Math.min(190, st.w * 0.62)), lw = L.w;
   if (L.progress !== t.progress) {            // dòng tiến độ chỉ dựng lại khi gõ thêm chữ
     L.progress = t.progress;
-    L.prog = t.text.split('').map((c, i) => c === ' ' ? ' ' : i < t.progress ? c : '_').join(' ');
+    const hintAt = st.diff.hint && !t.progress ? skipFixed(t.text, 0) : -1;   // cấp Dễ: hiện sẵn chữ đầu để đọc
+    L.prog = t.text.split('').map((c, i) => c === ' ' ? ' ' : i < t.progress || i === hintAt ? c : '_').join(' ');
     ctx.font = '700 11px ' + RENDER_MONO; L.pw = ctx.measureText(L.prog).width; ctx.font = '600 13px ' + RENDER_FONT;
   }
   const prog = L.prog, bw = Math.max(lw, L.pw) + 16, bh = 22 + L.lines.length * 16;
@@ -140,11 +147,12 @@ function drawPlaneScene(ctx, st, fx, time) {
   const s = spaceShake(fx);
   ctx.save(); ctx.translate(s.x, s.y);
   drawSpaceBg(fx, ctx);
-  for (const t of st.targets) drawTarget(ctx, t, time, t.uid === st.lock);
+  const cands = st.lock === null && st.typed ? typingCandidates(st, st.typed) : [];
+  for (const t of st.targets) drawTarget(ctx, t, time, t.uid === st.lock ? 1 : cands.indexOf(t) >= 0 ? 0.5 : 0);
   drawBullets(ctx, st);
   drawPlayerShip(ctx, st, time);
   drawSpaceFx(fx, ctx);
-  for (const t of st.targets) if (!t.doomed) drawLabel(ctx, st, t, t.uid === st.lock);
+  for (const t of st.targets) if (!t.doomed) drawLabel(ctx, st, t, t.uid === st.lock || cands.indexOf(t) >= 0);
   ctx.restore();
   drawSpaceFlash(fx, ctx);
 }

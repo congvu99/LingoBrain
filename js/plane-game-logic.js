@@ -2,16 +2,19 @@
    Thế giới tính bằng px của khung chơi (st.w × st.h). Mục tiêu mang nghĩa Việt rơi về tàu mình ở đáy;
    mỗi chữ cái gõ đúng bắn 1 viên đạn tự dẫn vào mục tiêu đang khoá, chữ cuối làm nó nổ.
    Trả sự kiện ('fire' | 'hit' | 'explode' | 'shield') để phần hiệu ứng vẽ.
-   Cần comboMult() của word-games.js, hàm chữ của plane-game-text.js (nạp trước) và typingCandidates()
-   của plane-game-typing.js (nạp sau, chỉ gọi lúc chạy). */
+   Cần comboMult() của word-games.js, hàm chữ của plane-game-text.js (nạp trước) và typingCandidates() /
+   settleHeld() của plane-game-typing.js (nạp sau, chỉ gọi lúc chạy). */
 
 const PLANE_LIVES = 3;
-const PLANE_FALL_SECONDS = 11;     // từ 5 chữ cái ở cấp 0 đi hết chiều cao khung trong ~11s
-const PLANE_START_MAX = 3;         // số mục tiêu tối đa cùng lúc ở cấp 0
-const PLANE_CAP = 6;
+// Cấp độ người chơi chọn trước ván. fall: giây từ 5 chữ cái đi hết chiều cao ở đợt 0 · start/cap: số mục tiêu
+// cùng lúc ở đợt 0 / trần · speedup: nhân tốc độ mỗi đợt (5 lần hạ) · gap: giây giữa 2 lần xuất hiện · hint: hiện chữ đầu
+const PLANE_DIFFICULTIES = {
+  easy:   { id: 'easy',   label: 'Dễ',  fall: 15, start: 2, cap: 4, speedup: 1.05, gap: 2.4, hint: true },
+  normal: { id: 'normal', label: 'Vừa', fall: 11, start: 3, cap: 6, speedup: 1.08, gap: 1.8, hint: false },
+  hard:   { id: 'hard',   label: 'Khó', fall: 8,  start: 4, cap: 7, speedup: 1.10, gap: 1.3, hint: false }
+};
+const PLANE_DIFFICULTY_IDS = ['easy', 'normal', 'hard'];
 const PLANE_KILLS_PER_LEVEL = 5;
-const PLANE_SPEEDUP = 1.08;        // mỗi cấp nhanh hơn 8%
-const PLANE_SPAWN_GAP = 1.8;       // giây giữa 2 lần xuất hiện ở cấp 0
 const PLANE_MAX_DT = 0.05;         // kẹp bước thời gian: sau tạm dừng / giật khung không nhảy cóc
 const PLANE_WRONG_TO_MISS = 3;     // gõ sai ngần ấy chữ trên 1 mục tiêu → từ đó vào danh sách ôn trước (không trừ điểm)
 const BULLET_SPEED = 2.4;          // chiều cao khung / giây
@@ -21,12 +24,15 @@ const SHIP_SPRING = 16, SHIP_DAMP = 6.4, SHIP_IDLE_DAMP = 3, SHIP_MAX_V = 1.4, S
 // bán kính theo bề ngang khung, kẹp min/max px. ≤4 chữ: thiên thạch nảy mép · 5–8: tàu địch lượn · ≥9: tàu mẹ
 const TARGET_KINDS = { rock: { r: 0.05, min: 15, max: 26 }, ship: { r: 0.06, min: 18, max: 30 }, mother: { r: 0.09, min: 26, max: 44 } };
 
-const fallSeconds = level => PLANE_FALL_SECONDS / Math.pow(PLANE_SPEEDUP, level);
-const maxPlanes = level => Math.min(PLANE_CAP, PLANE_START_MAX + level);
+const planeDifficulty = id => PLANE_DIFFICULTIES[id] || PLANE_DIFFICULTIES.normal;
+/* Kỷ lục riêng mỗi cấp; Vừa giữ khoá cũ "planes" để không mất kỷ lục có từ trước khi có cấp độ */
+const planeScoreKey = id => { const d = planeDifficulty(id); return d.id === 'normal' ? 'planes' : 'planes-' + d.id; };
+const fallSeconds = (level, d) => d.fall / Math.pow(d.speedup, level);
+const maxPlanes = (level, d) => Math.min(d.cap, d.start + level);
 
-function createPlaneState(words, w, h) {
+function createPlaneState(words, w, h, difficultyId) {
   const st = { words: words || [], next: 0, targets: [], bullets: [], uid: 0, spawnIn: 0, lock: null, t: 0,
-    typed: '', lives: PLANE_LIVES, kills: 0, level: 0, score: 0, right: 0, wrong: 0, streak: 0, bestStreak: 0,
+    diff: planeDifficulty(difficultyId), typed: '', lives: PLANE_LIVES, kills: 0, level: 0, score: 0, right: 0, wrong: 0, streak: 0, bestStreak: 0,
     miss: [], over: false, w: 0, h: 0, shipX: 0, shipY: 0, shipVx: 0, goalX: null, bank: 0, aim: -Math.PI / 2, aimTo: -Math.PI / 2 };
   resizePlaneState(st, w || 360, h || 640);
   return st;
@@ -61,7 +67,7 @@ function spawnTarget(st, rand) {
     x = r + rand() * (st.w - 2 * r);
     if (!st.targets.some(t => t.y < st.h * 0.5 && Math.abs(t.x - x) < st.w * 0.28)) break;
   }
-  const cruise = st.h / (fallSeconds(st.level) * lengthSlowdown(text) * (0.9 + rand() * 0.2));   // ±10%: không đều tăm tắp
+  const cruise = st.h / (fallSeconds(st.level, st.diff) * lengthSlowdown(text) * (0.9 + rand() * 0.2));   // ±10%: không đều tăm tắp
   const t = { uid: ++st.uid, word: w, text, letters: typedLetters(text), label: planeLabel(w), kind, r, x, y: -r, cruise,
     vx: kind === 'rock' ? (rand() - 0.5) * cruise * 1.2 : 0, vy: cruise,
     rot: kind === 'rock' ? rand() * 6.283 : 0, vr: kind === 'rock' ? (rand() - 0.5) * 2.4 : 0, phase: rand() * 6.283,
@@ -116,15 +122,30 @@ function destroyTarget(st, t, ev) {
   ev.push({ type: 'explode', x: t.x, y: t.y, kind: t.kind, r: t.r, word: t.word.word });
 }
 
+/* Đạn chờ (chưa rõ người chơi bắn từ nào): trôi về một hàng ngang ngay trên tàu và lơ lửng nhấp nhô */
+function hoverHeld(st, dt) {
+  const held = st.bullets.filter(b => b.held), k = Math.min(1, dt * 7);
+  held.forEach((b, i) => {
+    const hx = st.shipX + (i - (held.length - 1) / 2) * 14;
+    const hy = st.shipY - Math.min(80, st.h * 0.16) + Math.sin(st.t * 6 + i) * 3;
+    const nx = b.x + (hx - b.x) * k, ny = b.y + (hy - b.y) * k;
+    b.vx = dt ? (nx - b.x) / dt : 0; b.vy = dt ? (ny - b.y) / dt : 0;   // vận tốc thật để phần vẽ biết hướng
+    b.x = nx; b.y = ny;
+  });
+}
+
 function moveBullets(st, dt, ev, rand) {
   const s = BULLET_SPEED * st.h;
+  hoverHeld(st, dt);
   for (const b of st.bullets.slice()) {
+    if (b.held) continue;
     const t = b.target && st.targets.find(x => x.uid === b.target);
     if (t) {
       const dx = t.x - b.x, dy = t.y - b.y, d = Math.hypot(dx, dy);
       if (d <= Math.max(t.r * 0.7, s * dt)) {
         st.bullets.splice(st.bullets.indexOf(b), 1);
-        t.vy = Math.max(t.vy - BULLET_KICK * st.h, -t.cruise); t.vx += b.vx * 0.03;   // giật lên, có trần t.vr += (rand() - 0.5) * 1.5;
+        t.vy = Math.max(t.vy - BULLET_KICK * st.h, -t.cruise);   // giật lên, có trần
+        t.vx += b.vx * 0.03; t.vr += (rand() - 0.5) * 1.5;
         ev.push({ type: 'hit', x: b.x, y: b.y, a: Math.atan2(b.vy, b.vx) });
         if (--t.pending <= 0 && t.doomed) destroyTarget(st, t, ev);
         continue;
@@ -157,15 +178,16 @@ function stepPlanes(st, dt, rand) {
     ev.push({ type: 'shield', x: t.x, y: t.y, kind: t.kind, r: t.r, word: t.word.word });
     if (st.lives <= 0) { st.lives = 0; st.over = true; return ev; }
   }
+  settleHeld(st, ev);                  // ứng viên đổi do mục tiêu biến mất → đạn chờ lao vào / tan
   moveBullets(st, dt, ev, rand);
   st.spawnIn -= dt;
-  if (st.spawnIn <= 0 && st.targets.filter(t => !t.doomed).length < maxPlanes(st.level) && spawnTarget(st, rand))
-    st.spawnIn = PLANE_SPAWN_GAP / Math.pow(PLANE_SPEEDUP, st.level);
+  if (st.spawnIn <= 0 && st.targets.filter(t => !t.doomed).length < maxPlanes(st.level, st.diff) && spawnTarget(st, rand))
+    st.spawnIn = st.diff.gap / Math.pow(st.diff.speedup, st.level);
   return ev;
 }
 
 if (typeof module !== 'undefined') module.exports = {
-  PLANE_LIVES, PLANE_FALL_SECONDS, PLANE_START_MAX, PLANE_CAP, PLANE_SPEEDUP, PLANE_WRONG_TO_MISS,
-  fallSeconds, maxPlanes, createPlaneState, resizePlaneState,
+  PLANE_LIVES, PLANE_DIFFICULTIES, PLANE_DIFFICULTY_IDS, PLANE_WRONG_TO_MISS,
+  planeDifficulty, planeScoreKey, fallSeconds, maxPlanes, createPlaneState, resizePlaneState,
   stepPlanes, removeTarget
 };

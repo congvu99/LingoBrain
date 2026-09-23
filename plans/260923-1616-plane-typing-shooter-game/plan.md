@@ -72,3 +72,11 @@ Người dùng thấy bản DOM "thô sơ, đơ". Đã chốt: mỗi chữ cái 
 
 - Viết lại `js/plane-game-logic.js` + test (120 xanh); thêm `js/plane-game-effects.js`, `js/plane-game-render.js`; `js/plane-game-ui.js` chuyển sang canvas.
 - Đã quyết định lại so với bản đầu: bỏ "không khoá mục tiêu kiểu ZType" và "so khớp cả từ" khỏi ngoài phạm vi — người dùng chọn cơ chế từng chữ, chấp nhận việc lộ chữ đúng/sai theo từng phím.
+
+## Cấp độ Dễ / Vừa / Khó (2026-09-23)
+
+Theo `plans/reports/brainstorm-260923-1736-plane-game-difficulty-levels-report.md`: bảng `PLANE_DIFFICULTIES` thay các hằng số tốc độ/mật độ; chọn trên màn Bắt đầu, nhớ `cfg.planeLevel`; kỷ lục riêng từng cấp (Vừa giữ khoá `planes`); Dễ hiện sẵn chữ đầu. v2.9.0, 135 test xanh.
+
+## Đạn chờ khi chưa rõ từ (2026-09-23)
+
+Người dùng: gõ "re" có thể là reckon hoặc reach out — game không được chọn 1 trong 2, chữ tiếp theo quyết định. Còn ≥ 2 ứng viên thì không khoá, đạn lơ lửng chờ trên tàu; chốt được mục tiêu thì mọi đạn chờ lao vào. Sửa kèm: cú xoay khi trúng đạn (`t.vr`) bị comment nuốt mất từ lần sửa trước. 140 test xanh.
