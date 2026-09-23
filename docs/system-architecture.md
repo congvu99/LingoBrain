@@ -7,14 +7,14 @@ Cập nhật 2026-09-16. Web tĩnh, không build tool, không framework, không 
 ```
 index.html               khung HTML + 3 tab, nạp script theo thứ tự
 css/paper-theme.css      giao diện giấy / e-reader (token trong docs/design-guidelines.md)
-js/srs-scheduler.js      SM-2, learning steps, hàng đợi, migrate v1→v2, so khớp mờ   [thuần]
+js/srs-scheduler.js      SM-2, learning steps, hàng đợi, pruneSrs, migrate v1→v2, so khớp mờ   [thuần]
 js/app-storage.js        khoá localStorage, helper, trạng thái toàn cục
 js/speech-synthesis.js   TTS (MP3 Neural pregenerated + Web Speech API fallback)
 js/recording-store.js    IndexedDB ghi âm (10 bản/việc)
 js/daily-plan.js         tab Giáo án + ghi âm shadowing
 js/review-mode-picker.js chọn dạng kiểm tra theo độ chín, sinh đáp án MCQ          [thuần]
 js/stats-dashboard.js    thống kê (computeStats thuần + renderStats)
-js/word-import.js        parseImport (text/JSON) [thuần] + nạp/xuất/danh sách
+js/word-import.js        tải backup, danh sách từ chỉ xem, khôi phục tiến độ (bỏ qua deck)
 js/review-steps-learn.js vòng đời thẻ: bước 1,2,4,5, render, phiên
 js/review-tests.js       bước 3: type · dictation · mcq · owncloze · speak
 js/word-games.js         game: pool có trọng số, xáo chữ, đáp án từ, combo, gom từ sai  [thuần]
@@ -34,7 +34,7 @@ Script là classic `<script src>` dùng global, không ES module → mở `file:
 
 | Key | Nội dung |
 |---|---|
-| `eng.deck.v1` | `{deck, words[]}` — từ vựng |
+| `eng.deck.v1` | **đã bỏ** (từ v2.6.0): bộ từ tải từ `words.json` mỗi lần mở, init xoá khoá cũ này |
 | `eng.srs.v2` | `{[id]: {ef, ivl, due, state, reps, lapses, last, lastMode, sentences[], hist[]}}` |
 | `eng.srs.v1` | bản Leitner cũ, giữ nguyên làm dự phòng sau migrate |
 | `eng.cfg.v1` | `{newPerDay, maxSession}` |

@@ -65,8 +65,8 @@ function renderPlan() {
     const isDone = !!day.done[t.id], isNow = (t.id === cid);
     let acts = '';
     if (!isDone) {
-      if (t.act === 'add') acts = '<button class="btn-sm" data-act="add" data-id="' + esc(t.id) + '">+ Nạp từ vừa gạch</button>';
-      if (t.act === 'play') acts = '<button class="btn-sm btn-primary" data-act="play" data-id="' + esc(t.id) + '">Vào ôn từ ngay →</button>';
+      // 'add' (nạp từ) đã bỏ vì bộ từ chỉ lấy từ words.json; giáo án đã lưu còn act này → dẫn sang ôn từ
+      if (t.act === 'play' || t.act === 'add') acts = '<button class="btn-sm btn-primary" data-act="play" data-id="' + esc(t.id) + '">Vào ôn từ ngay →</button>';
       if (t.act === 'rec') acts = '<button class="btn-sm" data-act="rec" data-id="' + esc(t.id) + '">⏺ Ghi âm</button>';
     }
     return '<div class="task' + (isDone ? ' done' : '') + (isNow ? ' now' : '') + '">' +
@@ -82,7 +82,6 @@ function renderPlan() {
 
   $('#taskList').querySelectorAll('[data-chk]').forEach(b => b.onclick = () => toggleTask(b.dataset.chk));
   $('#taskList').querySelectorAll('[data-act]').forEach(b => b.onclick = () => {
-    if (b.dataset.act === 'add') { showTab('manage'); $('#dImport').open = true; $('#importBox').focus(); }
     if (b.dataset.act === 'play') showTab('game');
     if (b.dataset.act === 'rec') startRec(b, b.dataset.id);
   });

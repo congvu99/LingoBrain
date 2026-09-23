@@ -8,7 +8,7 @@ eng/
 ├── css/paper-theme.css
 ├── js/               13 module nhỏ (xem docs/system-architecture.md)
 ├── sw.js, manifest.json   PWA
-├── words.json        bộ từ khởi điểm
+├── words.json        bộ từ (nguồn duy nhất, người dùng không sửa được)
 ├── audio/            MP3 giọng máy tạo sẵn + index.json
 ├── tools/            tạo MP3 (generate_edge_tts_audio.py)
 └── tests/            node tests/run-tests.js · tests/run-tests.html
@@ -23,7 +23,7 @@ npx serve .          # hoặc: python -m http.server 8080
 node tests/run-tests.js
 ```
 
-> Mở thẳng `index.html` (file://) vẫn chạy, nhưng trình duyệt chặn `fetch` nên bộ từ ban đầu trống. Nạp từ trong tab Quản lý là xong. PWA/offline chỉ hoạt động qua HTTPS hoặc localhost.
+> Phải chạy qua HTTP(S) hoặc localhost: mở thẳng `index.html` (file://) thì trình duyệt chặn `fetch`, không đọc được `words.json` → báo "Chưa tải được bộ từ". PWA/offline cũng chỉ hoạt động qua HTTPS hoặc localhost.
 
 ## Đẩy lên hosting (miễn phí)
 
@@ -45,11 +45,11 @@ Trên điện thoại: mở link → **Thêm vào màn hình chính** (iOS: nút
 | Giờ | Việc | Nút phụ |
 |---|---|---|
 | 07:00 | Xem clip mới (không phụ đề) | |
-| 07:10 | Xem lại có phụ đề, gạch 5–7 từ | + Nạp từ |
+| 07:10 | Xem lại có phụ đề, gạch 5–7 từ | Vào ôn từ → |
 | 12:00 | Shadowing 5 câu | ⏺ Ghi âm |
-| 20:00 | Nghe bài hát chủ đề tuần | + Nạp từ |
+| 20:00 | Nghe bài hát chủ đề tuần | Vào ôn từ → |
 | 20:20 | Ghi âm kể lại clip sáng | ⏺ Ghi âm |
-| trong ca | Bắt chuyện 1 câu với khách | + Nạp từ |
+| trong ca | Bắt chuyện 1 câu với khách | Vào ôn từ → |
 | 21:00 | Ôn từ | Vào ôn từ |
 
 **Ghi âm**: gõ câu đang shadow → 🔊 nghe mẫu (MP3 Neural hoặc Web Speech) → ⏺ ghi → nghe lại A/B. Bản ghi lưu trên máy (IndexedDB), giữ 10 bản gần nhất mỗi việc, **không nằm trong backup**. iOS có thể xoá nếu 7 ngày không mở app.
@@ -90,24 +90,18 @@ Hàng **Chơi nhanh** ở đầu tab Ôn từ. Ba game ngắn, luyện ba thứ 
 
 **Chơi game không làm giãn lịch ôn.** Trả lời đúng không ghi gì vào SM-2; trả lời sai thì từ đó được đẩy lên đầu phiên ôn kế tiếp. Nói cách khác game chỉ rút ngắn lịch, không bao giờ kéo dài — đoán mò trong 4 đáp án sẽ không làm hỏng tiến độ.
 
-Chip bị xám nghĩa là chưa đủ điều kiện, chạm vào sẽ nói rõ còn thiếu gì. **Điền câu tốc độ** cần cột thứ 3 (câu ví dụ) lúc nạp từ — nạp kiểu 2 cột `từ | nghĩa` thì game này không mở.
+Chip bị xám nghĩa là chưa đủ điều kiện, chạm vào sẽ nói rõ còn thiếu gì. **Điền câu tốc độ** cần từ đã học có trường `context` (câu ví dụ) trong `words.json`.
 
 Bỏ ván giữa chừng (đổi tab hoặc bấm ←) thì không tính điểm, nhưng **từ vừa sai vẫn vào hàng đợi ôn**. Kỷ lục mỗi game lưu trên máy và nằm trong file backup.
 
-## Nạp từ
+## Bộ từ
 
-Góc của bạn → **Nạp từ mới**: dán mỗi dòng một từ, chỉ 2 cột đầu bắt buộc:
+Bộ từ **chỉ** lấy từ `words.json`; người dùng không nạp, thêm, sửa hay xoá từ được. Tab Quản lý chỉ hiện danh sách từ để xem.
 
-```
-reckon | nghĩ rằng, cho là | I reckon we'll be there by midnight. | Peaky Blinders S1E2
-stubborn | bướng bỉnh
-```
-
-Dấu tách: `|` (ưu tiên), tab, hoặc ` - `. Dòng bắt đầu `#` bị bỏ. Dán JSON như bản cũ vẫn được (trường `word`, `meaning`, `ipa`, `pos`, `context`, `contextVi`, `source`, `emoji`, `image`, `mnemonic`, `outputPrompt`). Form **Thêm 1 từ có chi tiết** cho IPA, mẹo nhớ.
-
-`id` sinh từ `word`: **nạp lại cùng từ = cập nhật nội dung, tiến độ giữ nguyên**. Muốn lưu vào repo: **Tải words.json** rồi thay file.
-
-App chỉ tự đọc `words.json` lần đầu (khi trình duyệt chưa có bộ từ). Đã thay `words.json` trên hosting mà app vẫn hiện bộ cũ → Góc của bạn → **Nạp lại words.json** (mở bằng `file://` thì dùng **Chọn file**).
+- Mỗi lần mở app đều tải `words.json` (service worker network-first: có mạng lấy bản mới nhất, mất mạng dùng bản đã cache). Sửa `words.json` rồi deploy là người dùng thấy ở lần mở kế tiếp.
+- Trường: `word`, `meaning` (bắt buộc), `ipa`, `pos`, `context`, `contextVi`, `source`, `emoji`, `image`, `mnemonic`, `outputPrompt`. `id` sinh từ `word` nếu thiếu.
+- Tiến độ gắn theo `id`: sửa nội dung từ thì tiến độ giữ nguyên; **gỡ từ khỏi `words.json` thì tiến độ của từ đó bị xoá** ở lần mở kế tiếp (tải `words.json` lỗi thì không xoá gì).
+- Backup (Góc của bạn → Tải backup) chỉ gồm tiến độ, giáo án, cài đặt, kỷ lục game. Khôi phục backup bản cũ có kèm bộ từ thì phần bộ từ bị bỏ qua.
 
 ## Tạo MP3 giọng máy
 
@@ -122,7 +116,7 @@ python tools/generate_edge_tts_audio.py --voice en-US-AndrewNeural  # đổi gi�
 
 Tạo ra `audio/<sha1-12>.mp3` (một file per từ+ngữ cảnh) + `audio/index.json` ánh xạ. Giọng mặc định `en-US-ChristopherNeural`; khi phát, ưu tiên MP3 nếu có, nếu lỗi → Web Speech. Test `tests/audio-manifest.test.js` kiểm tra toàn vẹn (bộ từ có MP3, không file thừa).
 
-> edge-tts dùng endpoint không chính thức của Microsoft: hợp dự án cá nhân, có thể ngừng chạy bất cứ lúc nào. MP3 đã tạo vẫn dùng mãi; từ tự nạp trong app luôn đọc bằng Web Speech.
+> edge-tts dùng endpoint không chính thức của Microsoft: hợp dự án cá nhân, có thể ngừng chạy bất cứ lúc nào. MP3 đã tạo vẫn dùng mãi; câu không có MP3 (vd. câu người dùng tự gõ) đọc bằng Web Speech.
 
 ## Sao lưu
 

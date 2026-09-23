@@ -11,7 +11,7 @@ function gameOpen(id, a) { return a[id].ok; }
 
 function gameLockReason(id, a) {
   if (id === 'cloze' && a.cloze.have < MIN_LEARNED && a.sprint.have >= MIN_LEARNED)
-    return 'Cần thêm câu ví dụ — nạp từ kèm cột thứ 3';
+    return 'Cần học thêm từ có câu ví dụ';
   return 'Cần học thêm ' + a[id].need + ' từ nữa';
 }
 

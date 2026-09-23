@@ -4,7 +4,7 @@ const TITLES = { plan: 'Hôm nay, mình học nhé!', game: 'Thêm từ mới, t
 const PAGE_INTRO = {
   plan: ['HÀNH TRÌNH MỖI NGÀY', 'Một chút tiếng Anh. Thêm một chút tự tin.'],
   game: ['ÔN TỪ & GHI NHỚ', 'Gặp lại từ quen, khám phá điều mới.'],
-  manage: ['THEO CÁCH CỦA BẠN', 'Góp nhặt từ mới và tạo một lịch học vừa sức.']
+  manage: ['THEO CÁCH CỦA BẠN', 'Theo dõi bộ từ và tạo một lịch học vừa sức.']
 };
 function showTab(t) {
   closeGame();                           // bỏ ván đang chơi: không lưu điểm, vẫn lưu từ sai
@@ -18,7 +18,7 @@ function showTab(t) {
   $('#pageSubtitle').textContent = PAGE_INTRO[t][1];
   $('#hSub').hidden = t !== 'game';
   $('#hSub').textContent = t === 'game' ? deck.words.length + ' từ' : '';
-  window.scrollTo(0, 0);
+  $('#appScroll').scrollTo(0, 0);        // document bị khoá cuộn, nội dung cuộn trong #appScroll
   if (t === 'plan') renderPlan();
   if (t === 'game') render();
   if (t === 'manage') { renderList(); renderPlanEdit(); }
@@ -42,37 +42,16 @@ function bindUI() {
   $('#btnPlanAdd').onclick = () => { collectPlanEdit(); plan.push({ id: 't' + Date.now(), time: '22:00', dur: '10 phút', title: 'Việc mới', desc: '' }); renderPlanEdit(); };
   $('#btnPlanDefault').onclick = () => { if (!confirm('Khôi phục giáo án mặc định?')) return; plan = DEFAULT_PLAN.map(t => Object.assign({}, t)); save(K_PLAN, plan); renderPlanEdit(); renderPlan(); toast('Đã khôi phục'); };
 
-  // nạp từ: 1 ô dán (text hoặc JSON), file, form nhanh
-  $('#btnImport').onclick = () => { importWords($('#importBox').value); $('#importBox').value = ''; };
-  $('#btnFile').onclick = () => $('#fileIn').click();
-  $('#fileIn').onchange = e => { const f = e.target.files[0]; if (!f) return; const rd = new FileReader(); rd.onload = () => importWords(rd.result); rd.readAsText(f); e.target.value = ''; };
-  $('#btnSample').onclick = () => { $('#importBox').value = 'reckon | nghĩ rằng, cho là | I reckon we\'ll be there before midnight. | Peaky Blinders S1E2\nstubborn | bướng bỉnh | You\'re the most stubborn person I\'ve ever met. | The Notebook'; };
-  $('#btnAdd').onclick = () => {
-    const w = normWord({ word: $('#aWord').value, ipa: $('#aIpa').value, meaning: $('#aMeaning').value, context: $('#aCtx').value, source: $('#aSrc').value, emoji: $('#aEmoji').value, mnemonic: $('#aMne').value });
-    if (!w || !w.meaning) return toast('❌ Cần ít nhất từ + nghĩa');
-    importWords(JSON.stringify([w]));
-    ['#aWord', '#aIpa', '#aMeaning', '#aCtx', '#aSrc', '#aEmoji', '#aMne'].forEach(s => $(s).value = '');
-    $('#aWord').focus();
-  };
-
   $('#setNew').value = cfg.newPerDay; $('#setMax').value = cfg.maxSession;
   $('#setNew').onchange = e => { cfg.newPerDay = Math.max(1, +e.target.value || 5); save(K_CFG, cfg); restartSession(); };
   $('#setMax').onchange = e => { cfg.maxSession = Math.max(5, +e.target.value || 40); save(K_CFG, cfg); restartSession(); };
-  $('#btnExportAll').onclick = () => download('lingobrain-backup-' + dkey() + '.json', { version: APP_VERSION, deck, srs, cfg, plan, day, gameScore, gameMiss });
-  $('#btnExportDeck').onclick = () => download('words.json', deck);
-  // nạp lại bộ từ gốc trên máy chủ (không cần xoá localStorage); trùng id = cập nhật nội dung, tiến độ giữ nguyên
-  $('#btnReloadDeck').onclick = async () => {
-    try {
-      const r = await fetch('words.json?_=' + Date.now(), { cache: 'no-store' });
-      if (!r.ok) throw 0;
-      importWords(await r.text());
-    } catch (e) { toast('❌ Không tải được words.json (mở bằng file:// thì dùng "Chọn file")'); }
-  };
+  // backup chỉ chứa tiến độ + giáo án + cài đặt; bộ từ luôn lấy từ words.json
+  $('#btnExportAll').onclick = () => download('lingobrain-backup-' + dkey() + '.json', { version: APP_VERSION, srs, cfg, plan, day, gameScore, gameMiss });
   $('#btnRestore').onclick = () => $('#fileRestore').click();
   $('#fileRestore').onchange = e => {
     const f = e.target.files[0]; if (!f) return;
     const rd = new FileReader();
-    rd.onload = () => { try { const j = JSON.parse(rd.result); if (j.deck && j.srs) restoreBackup(j); else importWords(rd.result); } catch (err) { toast('❌ File không hợp lệ'); } };
+    rd.onload = () => { try { restoreBackup(JSON.parse(rd.result)); } catch (err) { toast('❌ File không hợp lệ'); } };
     rd.readAsText(f); e.target.value = '';
   };
   $('#btnResetProg').onclick = () => {
@@ -94,15 +73,15 @@ function bindUI() {
 }
 
 (async function init() {
-  if (!deck) {
-    try {
-      const r = await fetch('words.json?_=' + Date.now());
-      if (!r.ok) throw 0;
-      const j = await r.json();
-      deck = { deck: j.deck || 'Bộ từ của tôi', words: (j.words || j).map(normWord).filter(Boolean) };
-    } catch (e) { deck = { deck: 'Bộ từ của tôi', words: [] }; }   // file:// chặn fetch → bộ trống
-    save(K_DECK, deck);
-  }
+  // words.json là nguồn duy nhất: tải mỗi lần mở (SW network-first → bản mới nhất, mất mạng thì bản đã cache)
+  try {
+    const r = await fetch('words.json?_=' + Date.now());
+    if (!r.ok) throw 0;
+    const j = await r.json();
+    deck = { deck: j.deck || 'Bộ từ của tôi', words: (j.words || j).map(normWord).filter(Boolean) };
+  } catch (e) { /* file:// hoặc offline lần đầu → giữ bộ rỗng, render() báo lỗi */ }
+  try { localStorage.removeItem(K_DECK); } catch (e) {}
+  if (pruneSrs(deck, srs)) save(K_SRS, srs);   // bỏ tiến độ của từ tự nạp cũ / từ đã gỡ khỏi words.json
   bindUI();
   rollDay();
   queue = buildQueue(deck, srs, cfg, Date.now(), gameMiss);

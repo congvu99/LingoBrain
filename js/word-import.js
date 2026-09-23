@@ -1,47 +1,6 @@
-/* Nạp / xuất bộ từ. parseImport() thuần (JSON hoặc text nhiều dòng); phần còn lại đụng DOM/localStorage. */
+/* Bộ từ chỉ lấy từ words.json (không cho người dùng nạp/sửa/xoá từ).
+   File này: tải backup, danh sách từ chỉ xem, khôi phục tiến độ từ backup. Chỉ chạy trong trình duyệt. */
 
-/* Text: mỗi dòng `word | nghĩa | câu | nguồn`. Dấu tách ưu tiên: `|` → tab → ` - `. Bỏ dòng trống và dòng bắt đầu `#`. */
-function splitLine(line) {
-  if (line.indexOf('|') >= 0) return line.split('|');
-  if (line.indexOf('\t') >= 0) return line.split('\t');
-  return line.split(/\s+-\s+/);
-}
-function parseImport(raw) {
-  const out = { words: [], errors: [], deck: null };
-  const s = String(raw || '').trim();
-  if (!s) return out;
-  if (s[0] === '[' || s[0] === '{') {
-    let data;
-    try { data = JSON.parse(s); } catch (e) { out.errors.push({ line: 0, reason: 'JSON sai cú pháp' }); return out; }
-    const arr = Array.isArray(data) ? data : (data.words || []);
-    if (data && data.deck) out.deck = data.deck;
-    arr.forEach((item, i) => { const w = normWord(item || {}); if (w) out.words.push(w); else out.errors.push({ line: i + 1, reason: 'thiếu word' }); });
-    return out;
-  }
-  s.split(/\r?\n/).forEach((line, i) => {
-    const t = line.trim();
-    if (!t || t[0] === '#') return;
-    const cols = splitLine(t).map(x => x.trim());
-    if (cols.length < 2 || !cols[0] || !cols[1]) { out.errors.push({ line: i + 1, reason: 'cần ít nhất `từ | nghĩa`' }); return; }
-    out.words.push(normWord({ word: cols[0], meaning: cols[1], context: cols[2] || '', source: cols[3] || '' }));
-  });
-  return out;
-}
-
-/* ---- phần dưới chỉ chạy trong trình duyệt ---- */
-function importWords(raw) {
-  const p = parseImport(raw);
-  if (!p.words.length) return toast('❌ ' + (p.errors[0] ? p.errors[0].reason : 'Không tìm thấy từ nào'));
-  if (p.deck) deck.deck = p.deck;
-  let add = 0, upd = 0;
-  for (const w of p.words) {
-    const i = deck.words.findIndex(x => x.id === w.id);
-    if (i < 0) { deck.words.push(w); add++; } else { deck.words[i] = w; upd++; }
-  }
-  save(K_DECK, deck);
-  restartSession(); renderList();
-  toast('✅ Thêm ' + add + ' từ mới, cập nhật ' + upd + (p.errors.length ? ', bỏ ' + p.errors.length + ' dòng lỗi' : ''));
-}
 function download(name, obj) {
   const b = new Blob([JSON.stringify(obj, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
@@ -60,31 +19,22 @@ function renderList() {
       : 'ôn ' + new Date(r.due).toLocaleDateString('vi-VN');
     return '<div class="it"><b>' + esc(w.word) + '</b>' +
       '<span class="muted ellipsis">' + esc(w.meaning) + '</span>' +
-      '<span class="small">' + st + '</span>' +
-      '<button class="btn-ghost btn-sm" data-del="' + esc(w.id) + '" aria-label="xoá ' + esc(w.word) + '">✕</button></div>';
-  }).join('') || '<p class="muted small">Chưa có từ nào.</p>';
-  $('#wordList').querySelectorAll('[data-del]').forEach(b => b.onclick = () => {
-    const id = b.dataset.del;
-    if (!confirm('Xoá từ này khỏi bộ từ?')) return;
-    deck.words = deck.words.filter(w => w.id !== id); delete srs[id];
-    save(K_DECK, deck); save(K_SRS, srs);
-    restartSession(); renderList();
-  });
+      '<span class="small">' + st + '</span></div>';
+  }).join('') || '<p class="muted small">Chưa tải được bộ từ.</p>';
 }
-// khôi phục backup: chấp nhận cả srs v1 (box) lẫn v2 (ef)
+/* Khôi phục backup: chỉ tiến độ, cài đặt, giáo án, game. Trường `deck` của backup cũ bị bỏ qua.
+   Chấp nhận cả srs v1 (box) lẫn v2 (ef). */
 function restoreBackup(j) {
-  // kiểm trước khi gán: ném lỗi giữa chừng thì deck trong RAM đã hỏng còn localStorage vẫn bản cũ,
-  // lần lưu kế tiếp (thêm/xoá 1 từ) sẽ ghi đè bộ từ thật bằng bộ hỏng
-  if (!j || !j.deck || !Array.isArray(j.deck.words)) return toast('❌ Backup không có bộ từ hợp lệ');
-  deck = j.deck; srs = migrateV1(j.srs || {}); Object.assign(cfg, j.cfg || {});
+  // kiểm trước khi gán: file lạ mà gán dở dang thì RAM lệch localStorage, lần lưu kế tiếp ghi đè tiến độ thật
+  if (!j || !j.srs || typeof j.srs !== 'object') return toast('❌ Không phải file backup');
+  srs = migrateV1(j.srs); pruneSrs(deck, srs); Object.assign(cfg, j.cfg || {});
   if (j.plan) plan = j.plan;
   if (j.day) day = j.day;
-  // backup bản cũ không có 2 trường này → về rỗng. Lọc theo bộ từ vừa khôi phục vì có thể khác bộ cũ.
+  // backup bản cũ không có 2 trường này → về rỗng
   gameScore = j.gameScore || {};
   gameMiss = (j.gameMiss || []).filter(id => deck.words.some(w => w.id === id));
-  save(K_DECK, deck); save(K_SRS, srs); save(K_CFG, cfg); save(K_PLAN, plan); save(K_DAY, day);
+  save(K_SRS, srs); save(K_CFG, cfg); save(K_PLAN, plan); save(K_DAY, day);
   save(K_GAMESCORE, gameScore); save(K_GAMEMISS, gameMiss);
+  $('#setNew').value = cfg.newPerDay; $('#setMax').value = cfg.maxSession;
   restartSession(); renderList(); renderPlanEdit(); toast('✅ Đã khôi phục');
 }
-
-if (typeof module !== 'undefined') module.exports = { parseImport };

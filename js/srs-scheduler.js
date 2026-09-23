@@ -130,6 +130,16 @@ function buildQueue(deck, srs, cfg, now, miss) {
   return front.concat(out);
 }
 
+/* Xoá tiến độ của id không còn trong bộ từ (bộ từ chỉ lấy từ words.json). Trả về số bản ghi đã xoá.
+   Bộ từ rỗng = tải words.json thất bại, KHÔNG dọn, nếu không sẽ mất sạch tiến độ. */
+function pruneSrs(deck, srs) {
+  if (!deck || !deck.words || !deck.words.length) return 0;
+  const ids = new Set(deck.words.map(w => w.id));
+  let n = 0;
+  for (const id of Object.keys(srs)) if (!ids.has(id)) { delete srs[id]; n++; }
+  return n;
+}
+
 // tóm tắt bộ từ cho 4 ô số
 function deckSummary(deck, srs, now) {
   let due = 0, fresh = 0, learn = 0, mature = 0;
@@ -169,4 +179,4 @@ function fuzzyMatch(answer, target) {
   return { ok: true, near };
 }
 
-if (typeof module !== 'undefined') module.exports = { DAY, LADDER, REQUEUE_GAP, slug, normWord, blankRec, migrateV1, sm2Ease, nextInterval, applyGrade, dueLabel, buildQueue, deckSummary, fuzzyMatch, levenshtein, normAnswer };
+if (typeof module !== 'undefined') module.exports = { DAY, LADDER, REQUEUE_GAP, slug, normWord, blankRec, migrateV1, sm2Ease, nextInterval, applyGrade, dueLabel, buildQueue, pruneSrs, deckSummary, fuzzyMatch, levenshtein, normAnswer };

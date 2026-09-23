@@ -97,6 +97,20 @@ describe('buildQueue', () => {
   });
 });
 
+describe('pruneSrs', () => {
+  it('xoá tiến độ của id không còn trong bộ, giữ id còn lại', () => {
+    const s = { a: blankRec(), x: blankRec(), y: blankRec() };
+    assert.equal(pruneSrs({ words: [{ id: 'a' }, { id: 'b' }] }, s), 2);
+    assert.deepEqual(Object.keys(s), ['a']);
+  });
+  it('bộ từ rỗng (tải words.json lỗi) → không đụng tiến độ', () => {
+    const s = { a: blankRec() };
+    assert.equal(pruneSrs({ words: [] }, s), 0);
+    assert.equal(pruneSrs(null, s), 0);
+    assert.deepEqual(Object.keys(s), ['a']);
+  });
+});
+
 describe('fuzzyMatch', () => {
   it('exact', () => assert.equal(fuzzyMatch('reckon', 'reckon').ok, true));
   it('near (1 edit, len≥5)', () => { const r = fuzzyMatch('recon', 'reckon'); assert.equal(r.ok, true); assert.equal(r.near, true); });

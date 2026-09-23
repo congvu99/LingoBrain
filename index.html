@@ -18,6 +18,7 @@
 </head>
 <body>
 <a class="skip-link" href="#main">Đến nội dung chính</a>
+<div class="app-scroll" id="appScroll">
 <div class="wrap">
 
 <header class="site-header">
@@ -79,47 +80,14 @@
 
 <!-- ============ TAB 3: QUẢN LÝ ============ -->
 <section id="tab-manage" aria-labelledby="hTitle" hidden>
-  <details open id="dImport">
-    <summary>Thêm từ mới vào hành trình</summary>
-    <p class="small muted">Mỗi dòng một từ: <span class="mono">từ | nghĩa | câu ngữ cảnh | nguồn</span> (chỉ 2 cột đầu bắt buộc; dùng <span class="mono">|</span>, tab hoặc <span class="mono"> - </span>). Dán JSON cũ vẫn được. Nạp trùng từ = cập nhật nội dung, tiến độ giữ nguyên.</p>
-    <textarea id="importBox" aria-label="danh sách từ" placeholder="reckon | nghĩ rằng, cho là | I reckon we'll be there by midnight. | Peaky Blinders
-stubborn | bướng bỉnh"></textarea>
-    <div class="row">
-      <button class="btn-primary" id="btnImport">Nạp vào bộ từ</button>
-      <input type="file" id="fileIn" accept=".json,.txt,application/json,text/plain" hidden>
-      <button id="btnFile">Chọn file</button>
-      <button class="btn-ghost" id="btnSample">Mẫu</button>
-    </div>
-  </details>
-
-  <details id="dAdd">
-    <summary>Thêm 1 từ có chi tiết</summary>
-    <div class="grid2">
-      <div><label class="f" for="aWord">Từ *</label><input type="text" id="aWord" placeholder="reckon"></div>
-      <div><label class="f" for="aIpa">IPA</label><input type="text" id="aIpa" placeholder="/ˈrek.ən/"></div>
-    </div>
-    <label class="f" for="aMeaning">Nghĩa tiếng Việt *</label><input type="text" id="aMeaning" placeholder="nghĩ rằng, cho là">
-    <label class="f" for="aCtx">Câu ngữ cảnh thật (phim / nhạc / khách nói)</label>
-    <input type="text" id="aCtx" placeholder="I reckon we'll be there by midnight.">
-    <div class="grid2">
-      <div><label class="f" for="aSrc">Nguồn</label><input type="text" id="aSrc" placeholder="Peaky Blinders S1E2"></div>
-      <div><label class="f" for="aEmoji">Emoji</label><input type="text" id="aEmoji" placeholder="🤔"></div>
-    </div>
-    <label class="f" for="aMne">Mẹo nhớ (càng hài càng nhớ lâu)</label>
-    <input type="text" id="aMne" placeholder="réc-cần → rẹc cái là biết cần gì">
-    <div class="row"><button class="btn-primary" id="btnAdd">Thêm từ</button></div>
-  </details>
-
   <details>
     <summary>Cài đặt &amp; sao lưu</summary>
     <div class="row" style="margin-top:4px">
       <button id="btnExportAll">Tải backup</button>
-      <button id="btnExportDeck">Tải words.json</button>
-      <button id="btnReloadDeck" title="Nạp lại bộ từ gốc từ máy chủ, tiến độ học giữ nguyên">Nạp lại words.json</button>
       <input type="file" id="fileRestore" accept=".json" hidden>
       <button id="btnRestore">Khôi phục</button>
     </div>
-    <p class="small muted">Backup gồm bộ từ, tiến độ, giáo án, checkbox hôm nay. Bản ghi âm không nằm trong backup.</p>
+    <p class="small muted">Backup gồm tiến độ, giáo án, checkbox hôm nay, cài đặt. Bộ từ do ứng dụng cung cấp nên không nằm trong backup; bản ghi âm cũng không.</p>
     <div class="grid2">
       <div><label class="f" for="setNew">Từ mới mỗi ngày</label><input type="number" id="setNew" min="1" max="50" inputmode="numeric"></div>
       <div><label class="f" for="setMax">Tối đa ôn mỗi phiên</label><input type="number" id="setMax" min="5" max="200" inputmode="numeric"></div>
@@ -144,6 +112,7 @@ stubborn | bướng bỉnh"></textarea>
   </details>
 </section>
 </main>
+</div>
 </div>
 
 <nav class="tabbar" aria-label="điều hướng chính">
