@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#F6EFE0" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#1F1C17" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F5F7F5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#101F20" media="(prefers-color-scheme: dark)">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -12,41 +12,60 @@
 <meta name="description" content="Giáo án tiếng Anh mỗi ngày + ôn từ vựng lặp ngắt quãng SM-2. Web tĩnh, chạy offline.">
 <title>LingoBrain — Giáo án & Ôn từ</title>
 <link rel="manifest" href="manifest.json">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23F6EFE0'/%3E%3Ctext x='32' y='44' font-size='36' text-anchor='middle' font-family='Georgia,serif' fill='%233A332B'%3EL%3C/text%3E%3C/svg%3E">
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' fill='%23F6EFE0'/%3E%3Ctext x='90' y='120' font-size='96' text-anchor='middle' font-family='Georgia,serif' fill='%233A332B'%3EL%3C/text%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="stylesheet" href="css/paper-theme.css">
 </head>
 <body>
+<a class="skip-link" href="#main">Đến nội dung chính</a>
 <div class="wrap">
 
-<header>
-  <h1 id="hTitle">Giáo án hôm nay</h1>
-  <span class="spacer"></span>
-  <span class="mono muted" id="hSub"></span>
+<header class="site-header">
+  <a class="brand" href="./" aria-label="LingoBrain — Trang chủ">
+    <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M7 9c4-2 7-1 9 1v15c-2-2-5-3-9-1zm18 0c-4-2-7-1-9 1v15c2-2 5-3 9-1z"/><path d="M16 4v2m8-1-2 2M8 5l2 2"/></svg></span>
+    <span>Lingo<span class="brand-light">Brain</span><small>Mỗi ngày một chút, tiến xa hơn.</small></span>
+  </a>
+  <span class="header-note"><span></span>Góc học của bạn</span>
 </header>
 
-<main tabindex="-1">
+<main id="main" tabindex="-1">
+<div class="page-heading">
+  <div><p class="eyebrow" id="pageEyebrow">HÀNH TRÌNH MỖI NGÀY</p><h1 id="hTitle">Hôm nay, mình học nhé!</h1><p class="page-subtitle" id="pageSubtitle">Một chút tiếng Anh. Thêm một chút tự tin.</p></div>
+  <span class="count-pill" id="hSub" hidden></span>
+</div>
 
 <!-- ============ TAB 1: GIÁO ÁN ============ -->
 <section id="tab-plan" aria-labelledby="hTitle">
-  <div class="progwrap">
-    <div class="progtop">
-      <b id="pDone">0/7</b><span class="muted small">việc xong hôm nay</span>
-      <span class="spacer"></span>
-      <span class="small mono">chuỗi <b id="pStreak">0</b> ngày</span>
+  <div class="today-grid">
+    <div class="welcome-card">
+      <div class="welcome-copy">
+        <span class="welcome-label"><span aria-hidden="true">✦</span> CHẬM MÀ CHẮC, MỖI NGÀY</span>
+        <h2>Việc nhỏ hôm nay.<br><span>Tiến bộ ngày mai.</span></h2>
+        <p>Không cần hoàn hảo. Chỉ cần bạn<br class="wide-break"> dành một chút thời gian cho mình.</p>
+        <button class="welcome-button" id="btnTodayStart">Bắt đầu học <span aria-hidden="true">↗</span></button>
+      </div>
+      <div class="learning-art" aria-hidden="true">
+        <span class="art-orbit orbit-one"></span><span class="art-orbit orbit-two"></span>
+        <span class="art-spark spark-one">✦</span><span class="art-spark spark-two">✧</span>
+        <span class="art-bubble">Hello!</span>
+        <div class="art-book"><span class="book-line"></span><b>Aa<span>ENGLISH, EVERY DAY</span></b><i></i></div>
+        <span class="art-leaf leaf-one"></span><span class="art-leaf leaf-two"></span><span class="art-check">✓</span>
+      </div>
     </div>
-    <div class="bar" role="progressbar" aria-label="tiến độ giáo án"><i id="pBar"></i></div>
+    <div class="progwrap">
+      <div class="progtop"><span class="progress-icon" aria-hidden="true">✓</span><span>Những bước nhỏ của bạn</span><span class="streak-pill"><span aria-hidden="true">✦</span> <b id="pStreak">0</b> ngày liên tiếp</span></div>
+      <div class="progress-summary"><div><b id="pDone">0/7</b><span>hoạt động hoàn thành</span></div><strong id="pPercent">0%</strong></div>
+      <div class="bar" id="planProgress" role="progressbar" aria-label="Tiến độ học hôm nay" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="pBar"></i></div>
+      <p class="progress-note" id="pEncourage">Mỗi bước nhỏ đều đáng tự hào.</p>
+    </div>
   </div>
+  <div class="section-heading"><div><p class="eyebrow">DÀNH THỜI GIAN CHO BẢN THÂN</p><h2>Lịch học của bạn</h2></div><span id="planDate" class="date-label"></span></div>
   <div id="taskList"></div>
-  <div class="row">
-    <button class="btn-ghost btn-sm" id="btnResetDay">Đặt lại cho ngày mới</button>
-    <span class="spacer"></span>
-    <span class="small mono muted" id="planDate"></span>
-  </div>
+  <div class="plan-footer"><span class="small muted">Cứ học theo nhịp của bạn.</span><button class="btn-ghost btn-sm" id="btnResetDay">Đặt lại hôm nay</button></div>
 </section>
 
 <!-- ============ TAB 2: ÔN TỪ ============ -->
-<section id="tab-game" hidden>
+<section id="tab-game" aria-labelledby="hTitle" hidden>
   <div class="stats" id="deckStats" aria-label="tóm tắt bộ từ">
     <div class="stat"><b id="sDue">0</b><span>Đến hạn</span></div>
     <div class="stat"><b id="sNew">0</b><span>Từ mới</span></div>
@@ -59,11 +78,11 @@
 </section>
 
 <!-- ============ TAB 3: QUẢN LÝ ============ -->
-<section id="tab-manage" hidden>
+<section id="tab-manage" aria-labelledby="hTitle" hidden>
   <details open id="dImport">
-    <summary>Nạp từ mới</summary>
+    <summary>Thêm từ mới vào hành trình</summary>
     <p class="small muted">Mỗi dòng một từ: <span class="mono">từ | nghĩa | câu ngữ cảnh | nguồn</span> (chỉ 2 cột đầu bắt buộc; dùng <span class="mono">|</span>, tab hoặc <span class="mono"> - </span>). Dán JSON cũ vẫn được. Nạp trùng từ = cập nhật nội dung, tiến độ giữ nguyên.</p>
-    <textarea id="importBox" class="serif" aria-label="danh sách từ" placeholder="reckon | nghĩ rằng, cho là | I reckon we'll be there by midnight. | Peaky Blinders
+    <textarea id="importBox" aria-label="danh sách từ" placeholder="reckon | nghĩ rằng, cho là | I reckon we'll be there by midnight. | Peaky Blinders
 stubborn | bướng bỉnh"></textarea>
     <div class="row">
       <button class="btn-primary" id="btnImport">Nạp vào bộ từ</button>
@@ -92,7 +111,7 @@ stubborn | bướng bỉnh"></textarea>
   </details>
 
   <details>
-    <summary>Sao lưu &amp; cài đặt</summary>
+    <summary>Cài đặt &amp; sao lưu</summary>
     <div class="row" style="margin-top:4px">
       <button id="btnExportAll">Tải backup</button>
       <button id="btnExportDeck">Tải words.json</button>
@@ -129,11 +148,11 @@ stubborn | bướng bỉnh"></textarea>
 
 <nav class="tabbar" aria-label="điều hướng chính">
   <button id="nav-plan" class="on" aria-current="page">
-    <span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="1"/><path d="M3 9h18M8 2v4M16 2v4"/></svg><span class="dot" id="dotPlan" hidden></span></span>Giáo án</button>
+    <span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="1"/><path d="M3 9h18M8 2v4M16 2v4"/></svg><span class="dot" id="dotPlan" hidden></span></span>Hôm nay</button>
   <button id="nav-game" aria-current="false">
     <span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h12l4 4v12H4z"/><path d="M8 12h8M8 16h5M16 4v4h4"/></svg><span class="dot" id="dotGame" hidden></span></span>Ôn từ</button>
   <button id="nav-manage" aria-current="false">
-    <span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="7" cy="18" r="1.5"/></svg></span>Quản lý</button>
+    <span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="7" cy="18" r="1.5"/></svg></span>Góc của bạn</button>
 </nav>
 
 <script src="js/srs-scheduler.js"></script>

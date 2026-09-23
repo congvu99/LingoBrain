@@ -1,6 +1,11 @@
 /* Điều hướng tab, gắn sự kiện tab Quản lý, phím tắt, khởi động. Nạp cuối cùng. */
 
-const TITLES = { plan: 'Giáo án hôm nay', game: 'Ôn từ', manage: 'Quản lý' };
+const TITLES = { plan: 'Hôm nay, mình học nhé!', game: 'Thêm từ mới, thêm tự tin.', manage: 'Góc học của riêng bạn.' };
+const PAGE_INTRO = {
+  plan: ['HÀNH TRÌNH MỖI NGÀY', 'Một chút tiếng Anh. Thêm một chút tự tin.'],
+  game: ['ÔN TỪ & GHI NHỚ', 'Gặp lại từ quen, khám phá điều mới.'],
+  manage: ['THEO CÁCH CỦA BẠN', 'Góp nhặt từ mới và tạo một lịch học vừa sức.']
+};
 function showTab(t) {
   closeGame();                           // bỏ ván đang chơi: không lưu điểm, vẫn lưu từ sai
   tab = t;
@@ -9,6 +14,9 @@ function showTab(t) {
     const b = $('#nav-' + k); b.classList.toggle('on', t === k); b.setAttribute('aria-current', t === k ? 'page' : 'false');
   });
   $('#hTitle').textContent = TITLES[t];
+  $('#pageEyebrow').textContent = PAGE_INTRO[t][0];
+  $('#pageSubtitle').textContent = PAGE_INTRO[t][1];
+  $('#hSub').hidden = t !== 'game';
   $('#hSub').textContent = t === 'game' ? deck.words.length + ' từ' : '';
   window.scrollTo(0, 0);
   if (t === 'plan') renderPlan();
@@ -25,6 +33,7 @@ function updateDots() {
 
 function bindUI() {
   $('#nav-plan').onclick = () => showTab('plan');
+  $('#btnTodayStart').onclick = () => showTab('game');
   $('#nav-game').onclick = () => showTab('game');
   $('#nav-manage').onclick = () => showTab('manage');
 

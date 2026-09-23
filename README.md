@@ -1,6 +1,6 @@
 # LingoBrain — Giáo án + Ôn từ (SM-2, 5 dạng kiểm tra)
 
-Web tĩnh, **ưu tiên mobile**, giao diện giấy / máy đọc sách, không server, không AI. Tiến độ lưu trong `localStorage`. Cài được như app (PWA), chạy offline.
+Web tĩnh, **ưu tiên mobile**, giao diện xanh ngọc thân thiện, ưu tiên iPhone, không server, không AI. Tiến độ lưu trong `localStorage`. Cài được như app (PWA), chạy offline.
 
 ```
 eng/
@@ -9,6 +9,8 @@ eng/
 ├── js/               13 module nhỏ (xem docs/system-architecture.md)
 ├── sw.js, manifest.json   PWA
 ├── words.json        bộ từ khởi điểm
+├── audio/            MP3 giọng máy tạo sẵn + index.json
+├── tools/            tạo MP3 (generate_edge_tts_audio.py)
 └── tests/            node tests/run-tests.js · tests/run-tests.html
 ```
 
@@ -50,7 +52,7 @@ Trên điện thoại: mở link → **Thêm vào màn hình chính** (iOS: nút
 | trong ca | Bắt chuyện 1 câu với khách | + Nạp từ |
 | 21:00 | Ôn từ | Vào ôn từ |
 
-**Ghi âm**: gõ câu đang shadow → 🔊 nghe mẫu bằng giọng máy → ⏺ ghi → nghe lại A/B. Bản ghi lưu trên máy (IndexedDB), giữ 10 bản gần nhất mỗi việc, **không nằm trong backup**. iOS có thể xoá nếu 7 ngày không mở app.
+**Ghi âm**: gõ câu đang shadow → 🔊 nghe mẫu (MP3 Neural hoặc Web Speech) → ⏺ ghi → nghe lại A/B. Bản ghi lưu trên máy (IndexedDB), giữ 10 bản gần nhất mỗi việc, **không nằm trong backup**. iOS có thể xoá nếu 7 ngày không mở app.
 
 ## Tab Ôn từ
 
@@ -72,7 +74,7 @@ Chọn nghĩa cần ≥8 từ trong bộ; điền câu cần bạn đã lưu câ
 **Chấm & lịch ôn (SM-2, thuật toán Anki):** 😵 Quên · 😓 Khó · 🙂 Nhớ · 😎 Dễ. Mỗi từ có hệ số dễ riêng: từ hay quên giãn chậm, từ dễ giãn nhanh (1 → 3 → ×2.5 → …).
 
 - **Từ mới / vừa quên** quay lại sau 4 thẻ trong cùng phiên; **đúng 2 lần liên tiếp** (hoặc 😎) mới ra lịch ngày. Đây là bước then chốt để nhớ lâu.
-- Thẻ quá hạn lâu nhất luôn được ôn trước. Mặc định 5 từ mới/ngày, tối đa 40 thẻ ôn/phiên (chỉnh trong Quản lý).
+- Thẻ quá hạn lâu nhất luôn được ôn trước. Mặc định 5 từ mới/ngày, tối đa 40 thẻ ôn/phiên (chỉnh trong Góc của bạn).
 
 **Thống kê** dưới thẻ: tỉ lệ nhớ 7/30 ngày, lịch tải 7 ngày tới, heatmap 30 ngày, từ hay quên (bấm để ôn ngay).
 
@@ -94,7 +96,7 @@ Bỏ ván giữa chừng (đổi tab hoặc bấm ←) thì không tính điểm
 
 ## Nạp từ
 
-Quản lý → **Nạp từ mới**: dán mỗi dòng một từ, chỉ 2 cột đầu bắt buộc:
+Góc của bạn → **Nạp từ mới**: dán mỗi dòng một từ, chỉ 2 cột đầu bắt buộc:
 
 ```
 reckon | nghĩ rằng, cho là | I reckon we'll be there by midnight. | Peaky Blinders S1E2
@@ -105,11 +107,26 @@ Dấu tách: `|` (ưu tiên), tab, hoặc ` - `. Dòng bắt đầu `#` bị b�
 
 `id` sinh từ `word`: **nạp lại cùng từ = cập nhật nội dung, tiến độ giữ nguyên**. Muốn lưu vào repo: **Tải words.json** rồi thay file.
 
-App chỉ tự đọc `words.json` lần đầu (khi trình duyệt chưa có bộ từ). Đã thay `words.json` trên hosting mà app vẫn hiện bộ cũ → Quản lý → **Nạp lại words.json** (mở bằng `file://` thì dùng **Chọn file**).
+App chỉ tự đọc `words.json` lần đầu (khi trình duyệt chưa có bộ từ). Đã thay `words.json` trên hosting mà app vẫn hiện bộ cũ → Góc của bạn → **Nạp lại words.json** (mở bằng `file://` thì dùng **Chọn file**).
+
+## Tạo MP3 giọng máy
+
+Sau khi sửa `words.json` (thêm/xoá từ), chạy:
+
+```bash
+pip install -r tools/requirements.txt
+python tools/generate_edge_tts_audio.py            # toàn bộ (idempotent)
+python tools/generate_edge_tts_audio.py --limit 5  # thử 5 từ đầu
+python tools/generate_edge_tts_audio.py --voice en-US-AndrewNeural  # đổi giọng
+```
+
+Tạo ra `audio/<sha1-12>.mp3` (một file per từ+ngữ cảnh) + `audio/index.json` ánh xạ. Giọng mặc định `en-US-ChristopherNeural`; khi phát, ưu tiên MP3 nếu có, nếu lỗi → Web Speech. Test `tests/audio-manifest.test.js` kiểm tra toàn vẹn (bộ từ có MP3, không file thừa).
+
+> edge-tts dùng endpoint không chính thức của Microsoft: hợp dự án cá nhân, có thể ngừng chạy bất cứ lúc nào. MP3 đã tạo vẫn dùng mãi; từ tự nạp trong app luôn đọc bằng Web Speech.
 
 ## Sao lưu
 
-Dữ liệu nằm trong trình duyệt + domain đang dùng. Quản lý → **Tải backup** (bộ từ + tiến độ + giáo án + hôm nay + kỷ lục game) → **Khôi phục** ở máy khác. Backup của bản cũ (Leitner) tự chuyển sang SM-2 khi khôi phục; tiến độ cũ trong trình duyệt cũng tự chuyển lần đầu mở bản mới (bản cũ giữ nguyên ở key `eng.srs.v1`).
+Dữ liệu nằm trong trình duyệt + domain đang dùng. Góc của bạn → **Tải backup** (bộ từ + tiến độ + giáo án + hôm nay + kỷ lục game) → **Khôi phục** ở máy khác. Backup của bản cũ (Leitner) tự chuyển sang SM-2 khi khôi phục; tiến độ cũ trong trình duyệt cũng tự chuyển lần đầu mở bản mới (bản cũ giữ nguyên ở key `eng.srs.v1`).
 
 ## Phím tắt (desktop)
 
@@ -118,5 +135,5 @@ Dữ liệu nằm trong trình duyệt + domain đang dùng. Quản lý → **T�
 ## Tài liệu
 
 - `docs/system-architecture.md` — cấu trúc module, dữ liệu, thuật toán, ranh giới game ↔ SM-2
-- `docs/design-guidelines.md` — token màu/chữ giao diện giấy
+- `docs/design-guidelines.md` — màu, chữ và bố cục giao diện
 - `plans/` — kế hoạch và báo cáo brainstorm

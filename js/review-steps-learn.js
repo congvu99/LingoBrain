@@ -13,7 +13,7 @@ function firstStep() {
   const r = rec(cur.id);
   if (r.state === 'new') { mode = 'type'; return 1; }
   const sentences = (r.sentences || []).filter(s => rx(cur.word).test(s));
-  mode = pickMode(r, { deckSize: deck.words.length, hasSentences: sentences.length > 0, hasVoice: hasVoice(), rand: Math.random });
+  mode = pickMode(r, { deckSize: deck.words.length, hasSentences: sentences.length > 0, hasVoice: hasVoice(cur.word), rand: Math.random });
   return 3;
 }
 function nextCard(silent) {

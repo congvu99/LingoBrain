@@ -9,7 +9,7 @@ index.html               khung HTML + 3 tab, nạp script theo thứ tự
 css/paper-theme.css      giao diện giấy / e-reader (token trong docs/design-guidelines.md)
 js/srs-scheduler.js      SM-2, learning steps, hàng đợi, migrate v1→v2, so khớp mờ   [thuần]
 js/app-storage.js        khoá localStorage, helper, trạng thái toàn cục
-js/speech-synthesis.js   TTS (Web Speech API)
+js/speech-synthesis.js   TTS (MP3 Neural pregenerated + Web Speech API fallback)
 js/recording-store.js    IndexedDB ghi âm (10 bản/việc)
 js/daily-plan.js         tab Giáo án + ghi âm shadowing
 js/review-mode-picker.js chọn dạng kiểm tra theo độ chín, sinh đáp án MCQ          [thuần]
@@ -22,7 +22,9 @@ js/word-game-rounds.js   game: khung đồng hồ 60s + vẽ 3 dạng câu hỏi
 js/word-game-ui.js       game: chip chọn, vòng đời ván, màn kết thúc
 js/app-shell.js          tab, bindUI, phím tắt, init
 js/pwa-register.js       đăng ký service worker, toast bản mới
-sw.js, manifest.json     PWA cache-first; đổi CACHE (= APP_VERSION) khi deploy
+sw.js, manifest.json     PWA cache-first; đổi CACHE (= APP_VERSION) khi deploy; audio/ cache-first riêng
+tools/generate_edge_tts_audio.py   tạo MP3 từ words.json (dùng edge-tts), output: audio/<sha1>.mp3 + audio/index.json
+audio/                   MP3 giọng Neural (en-US-ChristopherNeural), index.json ánh xạ text→file
 tests/                   harness tự viết; `node tests/run-tests.js` (thuần) · tests/run-tests.html (thêm IndexedDB)
 ```
 

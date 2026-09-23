@@ -50,26 +50,33 @@ function renderPlan() {
   rollDay();
   const done = planDone(), total = plan.length, cid = currentTaskId();
   $('#pDone').textContent = done + '/' + total;
-  $('#pBar').style.width = (total ? done / total * 100 : 0) + '%';
+  const percent = total ? Math.round(done / total * 100) : 0;
+  $('#pBar').style.width = percent + '%';
+  $('#pPercent').textContent = percent + '%';
+  $('#planProgress').setAttribute('aria-valuenow', percent);
+  $('#planProgress').setAttribute('aria-valuetext', done + ' trên ' + total + ' hoạt động hoàn thành');
+  $('#pEncourage').textContent = total && done === total ? 'Bạn đã làm rất tốt. Hẹn gặp lại ngày mai!' : done ? 'Thêm một bước nhỏ, thêm một niềm vui.' : 'Mỗi bước nhỏ đều đáng tự hào.';
+  const summary = deckSummary(deck, srs, Date.now());
+  $('#btnTodayStart').innerHTML = (summary.learn || summary.mature ? 'Tiếp tục ôn từ' : 'Bắt đầu học từ') + ' <span aria-hidden="true">↗</span>';
   $('#pStreak').textContent = day.streak || 0;
   $('#planDate').textContent = new Date().toLocaleDateString('vi-VN', { weekday: 'long', day: 'numeric', month: 'numeric' });
 
-  $('#taskList').innerHTML = plan.map(t => {
+  $('#taskList').innerHTML = plan.map((t, index) => {
     const isDone = !!day.done[t.id], isNow = (t.id === cid);
     let acts = '';
     if (!isDone) {
-      if (t.act === 'add') acts = '<button class="btn-sm" data-act="add" data-id="' + t.id + '">+ Nạp từ vừa gạch</button>';
-      if (t.act === 'play') acts = '<button class="btn-sm btn-primary" data-act="play" data-id="' + t.id + '">Vào ôn từ ngay →</button>';
-      if (t.act === 'rec') acts = '<button class="btn-sm" data-act="rec" data-id="' + t.id + '">⏺ Ghi âm</button>';
+      if (t.act === 'add') acts = '<button class="btn-sm" data-act="add" data-id="' + esc(t.id) + '">+ Nạp từ vừa gạch</button>';
+      if (t.act === 'play') acts = '<button class="btn-sm btn-primary" data-act="play" data-id="' + esc(t.id) + '">Vào ôn từ ngay →</button>';
+      if (t.act === 'rec') acts = '<button class="btn-sm" data-act="rec" data-id="' + esc(t.id) + '">⏺ Ghi âm</button>';
     }
     return '<div class="task' + (isDone ? ' done' : '') + (isNow ? ' now' : '') + '">' +
-      '<button class="chk" data-chk="' + t.id + '" aria-label="' + (isDone ? 'bỏ đánh dấu' : 'đánh dấu xong') + '" aria-pressed="' + isDone + '">' + (isDone ? '✓' : '') + '</button>' +
+      '<button class="chk" data-chk="' + esc(t.id) + '" aria-label="' + (isDone ? 'Bỏ đánh dấu: ' : 'Hoàn thành: ') + esc(t.title) + '" aria-pressed="' + isDone + '">' + (isDone ? '✓' : '') + '</button>' +
       '<div class="t-main">' +
-        '<div class="t-meta"><span class="t-time">' + esc(t.time) + '</span><span class="t-dur">' + esc(t.dur) + '</span>' + (isNow ? '<span class="badge-now">bây giờ</span>' : '') + '</div>' +
+        '<div class="t-meta"><span class="task-number" aria-hidden="true">' + String(index + 1).padStart(2, '0') + '</span><span class="t-time">' + esc(t.time) + '</span><span class="t-dur">' + esc(t.dur) + '</span>' + (isNow ? '<span class="badge-now">Gợi ý lúc này</span>' : '') + '</div>' +
         '<div class="t-title">' + esc(t.title) + '</div>' +
         '<div class="t-desc">' + esc(t.desc) + '</div>' +
         (acts ? '<div class="t-act">' + acts + '</div>' : '') +
-        (t.act === 'rec' && !isDone ? '<div class="rec-box" data-rec="' + t.id + '"></div>' : '') +
+        (t.act === 'rec' && !isDone ? '<div class="rec-box" data-rec="' + esc(t.id) + '"></div>' : '') +
       '</div></div>';
   }).join('');
 
