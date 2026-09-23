@@ -49,9 +49,14 @@ function render() {
       $('#btnGoAdd').onclick = () => { showTab('manage'); $('#dImport').open = true; $('#importBox').focus(); };
     } else {
       const nxt = deck.words.map(w => (srs[w.id] || {}).due || 0).filter(d => d > Date.now()).sort((a, b) => a - b)[0];
+      // hàng đợi chỉ dựng lúc mở app → hết phiên phải có lối lấy tiếp lô từ mới, không thì chỉ ôn lại từ cũ
+      const fresh = deckSummary(deck, srs, Date.now()).fresh, nNew = Math.min(fresh, cfg.newPerDay);
       app.innerHTML = '<div class="card empty"><h2>Xong phiên ôn hôm nay</h2>' +
-        '<p class="muted">' + (nxt ? 'Lượt ôn kế tiếp: <b>' + new Date(nxt).toLocaleDateString('vi-VN') + '</b>' : 'Nạp thêm từ mới để học tiếp.') + '</p>' +
-        '<div class="row center"><button id="btnAgain">Ôn thêm 10 thẻ</button><button class="btn-primary" id="btnBackPlan">Về giáo án</button></div></div>';
+        '<p class="muted">' + (nxt ? 'Lượt ôn kế tiếp: <b>' + new Date(nxt).toLocaleDateString('vi-VN') + '</b>' : 'Nạp thêm từ mới để học tiếp.') +
+        (fresh ? '<br>Còn <b>' + fresh + '</b> từ chưa học.' : '') + '</p>' +
+        '<div class="row center">' + (nNew ? '<button class="btn-primary" id="btnMoreNew">Học thêm ' + nNew + ' từ mới</button>' : '') +
+        '<button id="btnAgain">Ôn thêm 10 thẻ</button><button class="' + (nNew ? 'btn-ghost' : 'btn-primary') + '" id="btnBackPlan">Về giáo án</button></div></div>';
+      if (nNew) $('#btnMoreNew').onclick = restartSession;   // từ vừa học đã rời trạng thái 'new' → buildQueue lấy lô kế tiếp
       $('#btnAgain').onclick = () => {
         const ids = deck.words.filter(w => srs[w.id] && srs[w.id].state !== 'new').map(w => w.id);
         for (let i = ids.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; [ids[i], ids[j]] = [ids[j], ids[i]]; }

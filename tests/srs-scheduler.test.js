@@ -86,6 +86,15 @@ describe('buildQueue', () => {
     const q = buildQueue({ words: [{ id: 'f' }] }, { f: Object.assign(blankRec(), { state: 'review', due: NOW + D }) }, { maxSession: 5, newPerDay: 5 }, NOW);
     assert.deepEqual(q, []);
   });
+  it('dựng lại sau khi lô đầu tốt nghiệp → lấy lô từ mới kế tiếp, không lặp lô cũ', () => {
+    const dk = { words: [] }, s = {}, cfg = { maxSession: 40, newPerDay: 5 };
+    for (let i = 0; i < 12; i++) dk.words.push({ id: 'w' + i });
+    const first = buildQueue(dk, s, cfg, NOW);
+    assert.deepEqual(first, ['w0', 'w1', 'w2', 'w3', 'w4']);
+    const ses = { streak: {} };
+    first.forEach(id => { applyGrade(s, id, 2, 'type', NOW, ses); applyGrade(s, id, 2, 'type', NOW, ses); });
+    assert.deepEqual(buildQueue(dk, s, cfg, NOW), ['w5', 'w6', 'w7', 'w8', 'w9']);
+  });
 });
 
 describe('fuzzyMatch', () => {
