@@ -268,37 +268,23 @@ html.game-lock .tabbar{display:none}
 .plane-game{position:fixed;left:0;right:0;top:0;height:100%;z-index:55;display:flex;flex-direction:column;
   /* PWA standalone (viewport-fit=cover): tránh vùng home indicator và tai thỏ khi xoay ngang */
   padding:10px max(12px,env(safe-area-inset-right,0px),calc((100% - 480px) / 2)) max(8px,env(safe-area-inset-bottom,0px))
-    max(12px,env(safe-area-inset-left,0px),calc((100% - 480px) / 2));background:var(--paper);
+    max(12px,env(safe-area-inset-left,0px),calc((100% - 480px) / 2));background:#070a1c;color:#eef2ff;
   touch-action:none;overscroll-behavior:contain}
 .plane-game .game-head{margin-bottom:6px;padding-bottom:6px;flex:none}
-.plane-game .game-head .mono{font-size:13px}
-.plane-field{position:relative;flex:1;min-height:0;overflow:hidden;border-radius:var(--r-sm);
-  background:var(--paper-2);border-bottom:3px solid var(--rule)}
-.plane{position:absolute;left:0;top:0;display:flex;flex-direction:column;align-items:center;will-change:transform;pointer-events:none}
-.plane-icon{font-size:26px;line-height:1;transform:rotate(135deg)}
-.plane-label{margin-top:2px;padding:3px 8px;border-radius:999px;background:var(--card);color:var(--ink);
-  font:600 14px/1.3 var(--font-ui);white-space:nowrap;box-shadow:var(--sh-1);border:1px solid var(--rule-soft)}
-.plane.boom .plane-icon{transform:none}
-.plane.boom .plane-label{background:var(--mint);color:var(--ok)}
-.plane.boom{animation:plane-boom 450ms var(--ease) forwards}
-.plane.landed .plane-label{background:var(--peach);color:var(--bad);font-family:var(--font-read)}
-.plane.landed{animation:plane-landed 1200ms linear forwards}
-@keyframes plane-boom{0%{opacity:1}60%{opacity:1;scale:1.25}100%{opacity:0;scale:1.4}}
-@keyframes plane-landed{0%,75%{opacity:1}100%{opacity:0}}
-.laser{position:absolute;left:50%;bottom:0;width:3px;margin-left:-1.5px;background:var(--accent);
-  transform-origin:50% 100%;border-radius:2px;pointer-events:none;animation:laser 160ms linear forwards}
-@keyframes laser{from{opacity:1}to{opacity:0}}
+.plane-game .game-head{border-bottom-color:rgba(255,255,255,.08)}
+.plane-game .game-head .mono{font-size:13px;color:#c7cff5}
+.plane-game .btn-ghost{color:#c7cff5}
+.plane-game .plane-input-row input,.plane-game .plane-input-row button{background:#10152e;color:#eef2ff;border-color:#2a335c;box-shadow:none}
+.plane-game .plane-input-row input:focus{border-color:#5ee7ff;box-shadow:0 0 0 3px rgba(94,231,255,.18)}
+.plane-field{position:relative;flex:1;min-height:0;overflow:hidden;border-radius:var(--r-sm);background:#03040d}
+.plane-field canvas{position:absolute;inset:0;display:block;touch-action:none}
 .plane-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:14px;padding:20px;text-align:center;background:var(--paper);background:color-mix(in srgb,var(--paper) 88%,transparent);z-index:2}
+  gap:14px;padding:20px;text-align:center;background:rgba(3,4,13,.72);color:#eef2ff;z-index:2}
 .plane-overlay[hidden]{display:none}
 .plane-overlay p{margin:0;max-width:300px;font-size:15px}
 .plane-input-row{display:flex;gap:6px;flex:none;padding-top:8px}
 .plane-input-row input{flex:1;min-width:0;min-height:48px;font-size:18px}   /* ≥16px: iOS không tự phóng to */
 .plane-input-row .btn-sm{flex:none;min-width:48px;padding:0}
-.plane-field.compact .plane-icon{font-size:20px}
-.plane-field.compact .plane-label{font-size:13px;padding:2px 7px}
-.plane-miss{animation:plane-shake 240ms}
-@keyframes plane-shake{25%{translate:-5px}75%{translate:5px}}
 .bar-track > .bar.low{background:var(--bad)}
 .combo{color:var(--accent);font-size:12px;margin-left:8px}
 .mcq.two{grid-template-columns:1fr 1fr}

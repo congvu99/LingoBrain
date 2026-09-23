@@ -18,8 +18,10 @@ js/word-import.js        tải backup, danh sách từ chỉ xem, khôi phục t
 js/review-steps-learn.js vòng đời thẻ: bước 1,2,4,5, render, phiên
 js/review-tests.js       bước 3: type · dictation · mcq · owncloze · speak
 js/word-games.js         game: pool có trọng số, xáo chữ, đáp án từ, combo, gom từ sai  [thuần]
-js/plane-game-logic.js   Bắn máy bay: spawn, rơi theo dt, bắn khi gõ khớp, cấp độ, mạng  [thuần, cần comboMult]
-js/plane-game-ui.js      Bắn máy bay: khung phủ theo visualViewport, vòng rAF, ô gõ, tạm dừng, hiệu ứng
+js/plane-game-logic.js   Bắn máy bay: mục tiêu, vật lý, khoá mục tiêu, đạn tự dẫn, va chạm, điểm, mạng  [thuần, cần comboMult]
+js/plane-game-effects.js Bắn máy bay: nền vũ trụ (tinh vân + 3 lớp sao), hạt nổ, sóng xung kích, chớp, rung, chữ bay
+js/plane-game-render.js  Bắn máy bay: vẽ canvas tàu mình / thiên thạch / tàu địch / tàu mẹ / đạn / nhãn tự xuống dòng
+js/plane-game-ui.js      Bắn máy bay: khung phủ theo visualViewport, canvas DPR, vòng rAF, ô gõ từng chữ, tạm dừng
 js/word-game-rounds.js   game: khung đồng hồ 60s + vẽ 3 dạng câu hỏi
 js/word-game-ui.js       game: chip chọn, vòng đời ván, màn kết thúc
 js/app-shell.js          tab, bindUI, phím tắt, init
@@ -61,7 +63,7 @@ Script là classic `<script src>` dùng global, không ES module → mở `file:
 | `scramble` Xếp chữ | chính tả, không cần bàn phím | 10 từ/ván, không đồng hồ | ≥8 từ đã học có nghĩa, dài 3–14 ký tự |
 | `sprint` Chạy 60 giây | phản xạ nhanh | 60s, từ → chọn nghĩa, combo | ≥8 từ đã học có nghĩa |
 | `cloze` Điền câu tốc độ | từ nào hợp câu nào | 60s, câu khoét lỗ → chọn từ, combo | ≥8 từ đã học có `context` chứa chính từ đó |
-| `planes` Bắn máy bay | nhớ chủ động + chính tả | máy bay mang nghĩa Việt rơi, gõ đúng từ → tự bắn, 3 mạng, tăng tốc mỗi 5 lần hạ | ≥8 từ đã học có nghĩa |
+| `planes` Bắn máy bay | nhớ chủ động + chính tả | kiểu ZType trên canvas: mỗi chữ cái đúng = 1 viên đạn, chữ cuối nổ; 3 mạng, tăng tốc mỗi 5 lần hạ | ≥8 từ đã học có nghĩa |
 
 **Ranh giới cứng: game không ghi gì vào SM-2.** Không gọi `applyGrade`, không đụng `ef/ivl/due/state/reps/lapses/hist`. Lý do: một ván 60s ≈ 25 lượt, đoán mò 4 đáp án đúng 25% → lịch ôn phình sai chỉ sau vài ván. Điểm cũng không vào `hist` nên tỉ lệ nhớ 7/30 ngày vẫn phản ánh ôn thật.
 
@@ -73,13 +75,17 @@ Kênh duy nhất từ game sang engine ôn là **danh sách từ sai**: `flushMi
 - Bỏ ván giữa chừng: không lưu điểm, không tăng `plays`, **vẫn lưu từ sai**. `startGame()` luôn `closeGame()` trước để không bao giờ bỏ rơi một ván đang chạy.
 - Mỗi ván có `game.seq`; `setTimeout` chờ sang câu kế so lại `seq` trước khi chạy, nếu không callback của ván cũ sẽ lái ván mới.
 
-### Bắn máy bay
+### Bắn máy bay (kiểu ZType, Canvas 2D)
 
-- Logic thuần (`plane-game-logic.js`) dùng toạ độ chuẩn hoá `y ∈ [0,1]`, `x ∈ [0.1,0.9]`; phần vẽ nhân với kích thước khung → màn thấp (bàn phím bật) rơi cùng số giây. `dt` kẹp ≤ 50ms nên sau tạm dừng không nhảy cóc. Không spawn 2 máy bay cùng từ; pool nhỏ thì hoãn spawn.
-- So khớp chính xác sau `normalizeTyped` (hoa thường, khoảng trắng, nháy cong iOS → nháy thẳng). Không so gần đúng vì dễ bắn nhầm máy bay khác. Khớp nhiều chiếc thì hạ chiếc thấp nhất.
-- Dùng chung object `game`: `syncPlaneGame()` chép `score/right/wrong/streak/bestStreak/miss` sang `game` sau mỗi lần bắn/lọt → `endGame()`/`flushMiss()` dùng chung đọc đúng. `game.stop = stopPlaneLoop` được `stopGameTimer()` gọi → thoát, đổi tab, hết ván đều huỷ rAF, gỡ listener, gỡ `html.game-lock`.
-- iOS: khung `position:fixed` đặt `top/height` theo `visualViewport` (nghe `resize` + `scroll`); `focus()` gọi đồng bộ trong handler chạm "Bắt đầu"/"Chơi tiếp" (iOS chỉ bật bàn phím trong user gesture); `blur`/`visibilitychange` → tạm dừng. `#app` nằm trong `.wrap` (z-index 1) nên khung không nổi được trên tabbar → `html.game-lock .tabbar{display:none}`. Vùng chơi < 360px → class `compact` thu nhỏ máy bay.
-- Esc: phím toàn cục bỏ qua ô input, nên ô gõ tự bắt Esc để tạm dừng; lúc đang dừng thì `app-shell` gọi `togglePlanePause()` thay vì `quitGame()` như 3 game kia.
+- **Logic thuần** (`plane-game-logic.js`), thế giới tính bằng px của khung (`st.w × st.h`), mọi ngẫu nhiên đi qua tham số `rand` → test tất định. `resizePlaneState` co giãn vị trí/vận tốc khi bàn phím bật/tắt.
+- Loại mục tiêu theo số chữ cái (bỏ dấu cách): ≤4 thiên thạch (xoay, nảy mép), 5–8 tàu địch (lượn sóng + kéo dần về phía tàu mình), ≥9 tàu mẹ. Thời gian rơi × `0.65 + 0.075 × số chữ` × ngẫu nhiên ±10% → từ dài có nhiều thời gian hơn.
+- `typeChar`: chưa khoá → khoá mục tiêu thấp nhất có chữ kế tiếp khớp; chữ đúng → `progress++`, `pending++`, đạn tự dẫn; chữ cuối → `doomed`, nhả khoá, nổ khi viên cuối tới (`pending` về 0). Chữ sai: đạn lệch, **không trừ điểm/combo** (quyết định của người dùng); sai `PLANE_WRONG_TO_MISS` = 3 chữ trên 1 mục tiêu → vào `miss`. Mục tiêu đã `doomed` chạm khiên vẫn tính là hạ.
+- Mỗi viên trúng: `vy -= BULLET_KICK·h` (giật lên), sau đó `vy` hồi về tốc độ hành trình → chuyển động có quán tính, không đều đều.
+- Logic trả mảng sự kiện `fire | hit | explode | shield`; `plane-game-effects.js` biến thành hạt (tối đa 500, giảm 60% khi `prefers-reduced-motion`), sóng xung kích, chớp, rung, chữ tiếng Anh bay lên. Nền tinh vân vẽ sẵn vào canvas phụ mỗi lần đổi cỡ.
+- Nhãn: vế nghĩa trước `;`, giữ ghi chú trong ngoặc ("một (mạo từ không xác định)"), tối đa 50 ký tự, tự xuống dòng khi vẽ (cache theo mục tiêu trong `WeakMap`).
+- Ô gõ ẩn: mỗi ký tự trong sự kiện `input` = 1 phát bắn, rồi xoá ô; bỏ qua khi IME đang soạn (`isComposing`, xử lý ở `compositionend`). Canvas theo `devicePixelRatio` (tối đa 2).
+- Dùng chung object `game`: `syncPlaneGame()` chép `score/right/wrong/streak/bestStreak/miss` sang `game` → `endGame()`/`flushMiss()` dùng chung. `game.stop = stopPlaneLoop` được `stopGameTimer()` gọi → huỷ rAF, gỡ listener, gỡ `html.game-lock`.
+- iOS: khung `position:fixed` đặt `top/height` theo `visualViewport`; `focus()` gọi đồng bộ trong handler chạm "Bắt đầu"/"Chơi tiếp"; `blur`/`visibilitychange` → tạm dừng (dừng hẳn rAF). `#app` nằm trong `.wrap` (z-index 1) nên giấu tabbar khi chơi. Esc: ô gõ tự bắt để tạm dừng/tiếp; `app-shell` gọi `togglePlanePause()` thay vì `quitGame()` (trừ màn kết thúc).
 
 `wordRx(word, flags)` trong `js/word-games.js` là hàm khớp-từ-trong-câu dùng chung: chặn biên hai đầu (`art` không khớp trong `smart`), cho đuôi chia thường gặp (`reckon` khớp `reckoned`), chạy được trên chuỗi đã escape HTML (từ chứa `&`). `blanked()` của màn ôn và bộ lọc pool `cloze` cùng dùng nó nên luôn đồng ý với nhau. `blanked()` thay **mọi** lần xuất hiện — câu lặp từ mà chỉ che lần đầu là lộ đáp án.
 

@@ -87,13 +87,13 @@ Hàng **Chơi nhanh** ở đầu tab Ôn từ. Bốn game ngắn, luyện nhữn
 | **Xếp chữ** | chính tả, không cần bàn phím | 10 từ/ván, không đồng hồ — chạm chữ cái ghép thành từ | ≥8 từ đã học |
 | **Chạy 60 giây** | phản xạ nhanh | 60 giây, thấy từ chọn nghĩa, chuỗi đúng 5 → ×1.5, 10 → ×2 | ≥8 từ đã học |
 | **Điền câu tốc độ** | từ nào hợp câu nào | 60 giây, câu ví dụ khoét lỗ, chọn 1 trong 4 từ | ≥8 từ đã học **có câu ví dụ** |
-| **Bắn máy bay** | nhớ chủ động + chính tả, dưới áp lực | máy bay mang `emoji + nghĩa Việt` rơi xuống; gõ đúng từ tiếng Anh là tự bắn (không cần Enter); 3 ❤️, mỗi 5 chiếc bị hạ thì rơi nhanh hơn 8% | ≥8 từ đã học |
+| **Bắn máy bay** | nhớ chủ động + chính tả, dưới áp lực | nền vũ trụ; thiên thạch / tàu địch / tàu mẹ mang `emoji + nghĩa Việt` lao về tàu bạn. Mỗi chữ cái gõ đúng bắn 1 viên đạn, chữ cuối làm nổ tung. Từ càng dài bay càng chậm; 3 ❤️, mỗi 5 lần hạ thì nhanh hơn 8% | ≥8 từ đã học |
 
 **Chơi game không làm giãn lịch ôn.** Trả lời đúng không ghi gì vào SM-2; trả lời sai thì từ đó được đẩy lên đầu phiên ôn kế tiếp. Nói cách khác game chỉ rút ngắn lịch, không bao giờ kéo dài — đoán mò trong 4 đáp án sẽ không làm hỏng tiến độ.
 
 Chip bị xám nghĩa là chưa đủ điều kiện, chạm vào sẽ nói rõ còn thiếu gì. **Điền câu tốc độ** cần từ đã học có trường `context` (câu ví dụ) trong `words.json`.
 
-**Bắn máy bay trên iPhone:** bấm **Bắt đầu** để bật bàn phím; khung chơi tự co vừa phần trên bàn phím. Đóng bàn phím, chuyển app hoặc bấm ⏸ thì tự tạm dừng. Laptop: Esc để tạm dừng/chơi tiếp. Gõ không phân biệt hoa thường. Nếu chữ đang gõ còn là đầu của một từ khác đang bay (`give` khi có cả `give up`), game chưa tự bắn: gõ tiếp, hoặc bấm Enter để bắn `give`. Enter khi gõ sai thì xoá ô gõ. Nên tắt Telex/Unikey khi chơi. Máy bay chạm đất sẽ hiện từ đúng trong khoảng 1 giây rồi vào danh sách ôn trước.
+**Bắn máy bay:** bấm **Bắt đầu** (iPhone: để bật bàn phím; khung chơi tự co vừa phần trên bàn phím). Gõ chữ cái đầu là khoá vào mục tiêu gần tàu nhất có từ bắt đầu bằng chữ đó; chữ đã gõ đúng hiện dần dưới nhãn (`s t u _ _ _ _ _`). Dấu cách, gạch nối tự bỏ qua. **Enter** nhả khoá để đổi mục tiêu. Gõ sai chỉ làm đạn bay trượt, không trừ điểm; sai 3 chữ trên cùng một mục tiêu thì từ đó được ôn trước. Mục tiêu chạm tàu: mất 1 ❤️, từ hiện màu đỏ và vào danh sách ôn trước. Đóng bàn phím, chuyển app, bấm ⏸ hoặc Esc thì tạm dừng. Nên tắt Telex/Unikey khi chơi.
 
 Bỏ ván giữa chừng (đổi tab hoặc bấm ←) thì không tính điểm, nhưng **từ vừa sai vẫn vào hàng đợi ôn**. Kỷ lục mỗi game lưu trên máy và nằm trong file backup.
 

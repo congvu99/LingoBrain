@@ -65,3 +65,10 @@ Dùng chung object `game` + `endGame()` + `flushMiss()` của khung game hiện 
 - Đã kiểm trên Chrome headless (khung iPhone 14/16, 375×400 giả lập bàn phím bật, 1366×768, dark mode): bắn, Enter, Esc dừng/tiếp, blur → dừng, thoát sạch, srs không đổi.
 - Sau review bổ sung: không bắn khi đang dừng; Esc trong ô gõ = toggle; không tự bắn khi chữ gõ còn là tiền tố của từ khác đang bay (Enter mới bắn); chặn IME đang soạn (Telex); safe-area đáy/cạnh cho PWA; dừng rAF khi tạm dừng; chế độ `compact` khi vùng chơi < 360px; giấu tabbar khi chơi.
 - **Còn lại:** test iPhone thật (Safari + PWA): bàn phím bật ngay, không bị che, không cuộn, QuickType, xoay máy; offline PWA; tinh chỉnh `PLANE_FALL_SECONDS`.
+
+## Nâng cấp kiểu ZType + Canvas (2026-09-23, theo phản hồi người dùng)
+
+Người dùng thấy bản DOM "thô sơ, đơ". Đã chốt: mỗi chữ cái = 1 viên đạn từ tàu mình; vật lý (quán tính, giật khi trúng đạn, lượn sóng, nảy mép); nền vũ trụ; thiên thạch / tàu địch / tàu mẹ theo độ dài từ; hiệu ứng nổ. Gõ sai **không phạt** (chỉ đạn trượt); không âm thanh. Bổ sung sau: từ dài rơi chậm hơn (liên tục theo số chữ cái, ±10%); nhãn giữ ghi chú trong ngoặc, tự xuống dòng thay vì cắt "…".
+
+- Viết lại `js/plane-game-logic.js` + test (120 xanh); thêm `js/plane-game-effects.js`, `js/plane-game-render.js`; `js/plane-game-ui.js` chuyển sang canvas.
+- Đã quyết định lại so với bản đầu: bỏ "không khoá mục tiêu kiểu ZType" và "so khớp cả từ" khỏi ngoài phạm vi — người dùng chọn cơ chế từng chữ, chấp nhận việc lộ chữ đúng/sai theo từng phím.
