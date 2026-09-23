@@ -16,6 +16,7 @@ function startTimedGame() {
 
 function stopGameTimer() {
   if (game && game.timer) { clearInterval(game.timer); game.timer = null; }
+  if (game && game.stop) { game.stop(); game.stop = null; }   // game có vòng lặp riêng (Bắn máy bay) tự dọn
 }
 
 function tickTimer() {

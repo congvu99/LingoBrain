@@ -6,7 +6,8 @@ const PURE_MODULES = [
   'js/srs-scheduler.js',
   'js/review-mode-picker.js',
   'js/stats-dashboard.js',
-  'js/word-games.js'
+  'js/word-games.js',
+  'js/plane-game-logic.js'
 ];
 const ctx = vm.createContext({ console, Math, Date, JSON, Array, Object, String, Number, RegExp, Error, fs, path, ROOT: root });
 ctx.globalThis = ctx;

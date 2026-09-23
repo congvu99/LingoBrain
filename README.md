@@ -80,17 +80,20 @@ Chọn nghĩa cần ≥8 từ trong bộ; điền câu cần bạn đã lưu câ
 
 ## Game từ vựng
 
-Hàng **Chơi nhanh** ở đầu tab Ôn từ. Ba game ngắn, luyện ba thứ mà 5 dạng kiểm tra ở trên không chạm tới:
+Hàng **Chơi nhanh** ở đầu tab Ôn từ. Bốn game ngắn, luyện những thứ mà 5 dạng kiểm tra ở trên không chạm tới:
 
 | Game | Luyện gì | Thể thức | Mở khi |
 |---|---|---|---|
 | **Xếp chữ** | chính tả, không cần bàn phím | 10 từ/ván, không đồng hồ — chạm chữ cái ghép thành từ | ≥8 từ đã học |
 | **Chạy 60 giây** | phản xạ nhanh | 60 giây, thấy từ chọn nghĩa, chuỗi đúng 5 → ×1.5, 10 → ×2 | ≥8 từ đã học |
 | **Điền câu tốc độ** | từ nào hợp câu nào | 60 giây, câu ví dụ khoét lỗ, chọn 1 trong 4 từ | ≥8 từ đã học **có câu ví dụ** |
+| **Bắn máy bay** | nhớ chủ động + chính tả, dưới áp lực | máy bay mang `emoji + nghĩa Việt` rơi xuống; gõ đúng từ tiếng Anh là tự bắn (không cần Enter); 3 ❤️, mỗi 5 chiếc bị hạ thì rơi nhanh hơn 8% | ≥8 từ đã học |
 
 **Chơi game không làm giãn lịch ôn.** Trả lời đúng không ghi gì vào SM-2; trả lời sai thì từ đó được đẩy lên đầu phiên ôn kế tiếp. Nói cách khác game chỉ rút ngắn lịch, không bao giờ kéo dài — đoán mò trong 4 đáp án sẽ không làm hỏng tiến độ.
 
 Chip bị xám nghĩa là chưa đủ điều kiện, chạm vào sẽ nói rõ còn thiếu gì. **Điền câu tốc độ** cần từ đã học có trường `context` (câu ví dụ) trong `words.json`.
+
+**Bắn máy bay trên iPhone:** bấm **Bắt đầu** để bật bàn phím; khung chơi tự co vừa phần trên bàn phím. Đóng bàn phím, chuyển app hoặc bấm ⏸ thì tự tạm dừng. Laptop: Esc để tạm dừng/chơi tiếp. Gõ không phân biệt hoa thường. Nếu chữ đang gõ còn là đầu của một từ khác đang bay (`give` khi có cả `give up`), game chưa tự bắn: gõ tiếp, hoặc bấm Enter để bắn `give`. Enter khi gõ sai thì xoá ô gõ. Nên tắt Telex/Unikey khi chơi. Máy bay chạm đất sẽ hiện từ đúng trong khoảng 1 giây rồi vào danh sách ôn trước.
 
 Bỏ ván giữa chừng (đổi tab hoặc bấm ←) thì không tính điểm, nhưng **từ vừa sai vẫn vào hàng đợi ôn**. Kỷ lục mỗi game lưu trên máy và nằm trong file backup.
 

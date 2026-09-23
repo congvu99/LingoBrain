@@ -62,7 +62,7 @@ function startGame(id) {
   game = { id, seq: ++gameSeq, words: pickGameWords(pool, srs, n, Math.random), i: 0, right: 0, wrong: 0, score: 0, streak: 0, bestStreak: 0, miss: [], locked: false, over: false, timer: null, endsAt: 0 };
   if (!game.words.length) { game = null; return toast('❌ Chưa đủ từ đã học'); }
   syncGameChrome();
-  if (id === 'scramble') renderScramble(); else startTimedGame();
+  if (id === 'scramble') renderScramble(); else if (id === 'planes') startPlaneGame(); else startTimedGame();
 }
 
 /* Chốt từ sai của ván: nhét lên đầu hàng đợi của phiên đang chạy, đồng thời lưu ra
