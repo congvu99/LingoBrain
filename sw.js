@@ -1,6 +1,6 @@
 /* Service worker: cache-first cho toàn bộ file tĩnh. Đổi CACHE mỗi lần deploy để người dùng nhận bản mới.
    MP3 trong audio/ nằm ở cache riêng AUDIO_CACHE, cache dần khi phát, không xoá khi lên version. */
-const CACHE = 'lingobrain-v2.8.2';
+const CACHE = 'lingobrain-v2.10.0';
 const AUDIO_CACHE = 'lingobrain-audio';
 const ASSETS = [
   './',
@@ -14,6 +14,7 @@ const ASSETS = [
   './audio/index.json',
   './css/paper-theme.css',
   './js/srs-scheduler.js',
+  './js/sync-merge.js',
   './js/app-storage.js',
   './js/speech-synthesis.js',
   './js/recording-store.js',
@@ -21,6 +22,8 @@ const ASSETS = [
   './js/review-mode-picker.js',
   './js/stats-dashboard.js',
   './js/word-import.js',
+  './js/cloud-sync-engine.js',
+  './js/cloud-sync-account-ui.js',
   './js/review-steps-learn.js',
   './js/review-tests.js',
   './js/word-games.js',
@@ -47,6 +50,7 @@ self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
   const url = new URL(e.request.url);
   if (url.origin !== location.origin) return;
+  if (url.pathname.startsWith('/api/')) return;   // API đồng bộ: luôn đi mạng, không cache
   // words.json, audio/index.json: network-first, bỏ qua query chống cache khi lưu/đọc, để bản mới trên máy chủ luôn thắng cache cũ
   const fresh = /\/(words\.json|audio\/index\.json)$/.exec(url.pathname);
   if (fresh) {

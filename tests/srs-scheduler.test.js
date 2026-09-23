@@ -31,6 +31,13 @@ describe('nextInterval', () => {
   it('fail → 1', () => assert.equal(nextInterval({ reps: 5, ivl: 10, ef: 2.5 }, 0), 1));
 });
 
+describe('applyGrade — dấu sửa mt cho đồng bộ', () => {
+  it('chấm đặt mt = now (record sửa sau mốc xoá/khôi phục không bị lọc khi sync)', () => {
+    const srs = {};
+    applyGrade(srs, 'w', 2, 'type', 1234, { streak: {} });
+    assert.equal(srs.w.mt, 1234); assert.equal(srs.w.last, 1234);
+  });
+});
 describe('applyGrade — learning steps', () => {
   it('new: 🙂 lần 1 requeue, lần 2 graduate 1 ngày', () => {
     const srs = {}, session = { streak: {} };

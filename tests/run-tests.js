@@ -4,6 +4,8 @@ const fs = require('fs'), path = require('path'), vm = require('vm');
 const root = path.join(__dirname, '..');
 const PURE_MODULES = [
   'js/srs-scheduler.js',
+  'js/sync-merge.js',
+  'js/cloud-sync-engine.js',   // không phải thuần hẳn nhưng không đụng DOM ở top-level → test bằng stub
   'js/review-mode-picker.js',
   'js/stats-dashboard.js',
   'js/word-games.js',
@@ -11,11 +13,22 @@ const PURE_MODULES = [
   'js/plane-game-logic.js',
   'js/plane-game-typing.js'
 ];
-const ctx = vm.createContext({ console, Math, Date, JSON, Array, Object, String, Number, RegExp, Error, fs, path, ROOT: root });
+// require/Buffer/process chỉ cho test Node-only (server/*); test dùng chung trình duyệt không được phụ thuộc chúng
+const ctx = vm.createContext({ console, Math, Date, JSON, Array, Object, String, Number, RegExp, Error, Promise, fs, path, ROOT: root, require, Buffer, process, setTimeout, clearTimeout, AbortController });
 ctx.globalThis = ctx;
 function run(file) { vm.runInContext(fs.readFileSync(path.join(root, file), 'utf8'), ctx, { filename: file }); }
 run('tests/test-harness.js');
 PURE_MODULES.forEach(run);
 fs.readdirSync(__dirname).filter(f => /\.test\.js$/.test(f)).sort().forEach(f => run('tests/' + f));
-const ok = ctx.__reportTests(s => console.log(s));
-process.exit(ok ? 0 : 1);
+// test async (Node): mỗi mục {name, fn} hoặc hàm; timeout 10s để promise treo không làm treo runner
+(async () => {
+  const withTimeout = p => Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error('timeout 10s')), 10000).unref())]);
+  for (const t of (ctx.__asyncTests || [])) {
+    const name = t.name || 'async', fn = t.fn || t;
+    let err = null;
+    try { await withTimeout(Promise.resolve().then(fn)); } catch (e) { err = e; }
+    ctx.describe('async', () => ctx.it(name, () => { if (err) throw err; }));
+  }
+  const ok = ctx.__reportTests(s => console.log(s));
+  process.exit(ok ? 0 : 1);
+})();

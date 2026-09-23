@@ -68,6 +68,7 @@ function applyGrade(srs, id, g, mode, now, session) {
   const q = GRADE_Q[g] || 0;
   r.hist = (r.hist || []).concat({ t: now, g, mode }).slice(-HIST_MAX);
   r.last = now; r.lastMode = mode;
+  r.mt = now;   // dấu sửa gần nhất cho đồng bộ (js/sync-merge.js lọc theo max(last, mt) so với mốc xoá)
   session.streak = session.streak || {};
 
   if (r.state === 'review') {

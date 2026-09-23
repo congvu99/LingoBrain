@@ -27,7 +27,12 @@ function renderList() {
 function restoreBackup(j) {
   // kiểm trước khi gán: file lạ mà gán dở dang thì RAM lệch localStorage, lần lưu kế tiếp ghi đè tiến độ thật
   if (!j || !j.srs || typeof j.srs !== 'object') return toast('❌ Không phải file backup');
-  srs = migrateV1(j.srs); pruneSrs(deck, srs); Object.assign(cfg, j.cfg || {});
+  const signedIn = typeof authInfo === 'function' && authInfo();
+  if (signedIn && !confirm('Dữ liệu tiến độ trên tài khoản và các máy khác sẽ bị thay bằng backup này. Tiếp tục?')) return;
+  srs = migrateV1(j.srs); pruneSrs(deck, srs);
+  // đang đăng nhập: mốc epoch + mt = bây giờ → backup thắng dữ liệu cũ hơn trên tài khoản (kỷ lục game vẫn lấy max).
+  // Chưa đăng nhập: chỉ khôi phục trên máy này, lần đăng nhập sau gộp với tài khoản như bình thường.
+  if (signedIn) stampRestoredSrs(srs, Date.now()); Object.assign(cfg, j.cfg || {});
   if (j.plan) plan = j.plan;
   if (j.day) day = j.day;
   // backup bản cũ không có 2 trường này → về rỗng

@@ -1,13 +1,17 @@
 /* Khoá localStorage, helper chung, trạng thái toàn cục của app.
    Nạp sau js/srs-scheduler.js (cần migrateV1). */
 
-const APP_VERSION = '2.8.2';
+const APP_VERSION = '2.10.0';
 const K_DECK = 'eng.deck.v1', K_SRS = 'eng.srs.v2', K_SRS_V1 = 'eng.srs.v1',
       K_CFG = 'eng.cfg.v1', K_PLAN = 'eng.plan.v1', K_DAY = 'eng.day.v1',
       K_GAMEMISS = 'eng.gamemiss.v1', K_GAMESCORE = 'eng.gamescore.v1';
 
 function load(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
-function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { toast('⚠️ Không lưu được (bộ nhớ đầy?)'); } }
+// opts.stamp === false: lưu kỹ thuật, không đóng dấu sửa cho đồng bộ (xem js/cloud-sync-engine.js onLocalSave)
+function save(k, v, opts) {
+  try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { toast('⚠️ Không lưu được (bộ nhớ đầy?)'); return; }
+  if (typeof onLocalSave === 'function') onLocalSave(k, opts);
+}
 function today() { const d = new Date(); d.setHours(0, 0, 0, 0); return d.getTime(); }
 function dkey(t) { const d = new Date(t == null ? Date.now() : t); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));

@@ -55,7 +55,11 @@ function bindUI() {
     rd.readAsText(f); e.target.value = '';
   };
   $('#btnResetProg').onclick = () => {
-    if (!confirm('Xoá hết tiến độ học từ (bộ từ vẫn giữ)?')) return;
+    const all = authInfo() ? ' — cả trên tài khoản và các máy khác' : '';
+    if (!confirm('Xoá hết tiến độ học từ (bộ từ vẫn giữ)' + all + '?')) return;
+    // đang đăng nhập: đặt mốc xoá → lan sang tài khoản + máy khác. Chưa đăng nhập: chỉ xoá trên máy này
+    // (lần đăng nhập sau dữ liệu tài khoản gộp về như bình thường)
+    if (all) markSrsReset(Date.now());
     srs = {}; save(K_SRS, srs);
     gameMiss = []; save(K_GAMEMISS, gameMiss);   // từ sai gắn với tiến độ cũ, giữ lại vô nghĩa. Kỷ lục game thì giữ.
     restartSession(); renderList(); toast('Đã xoá tiến độ');
@@ -85,8 +89,11 @@ function bindUI() {
   if (pruneSrs(deck, srs)) save(K_SRS, srs);   // bỏ tiến độ của từ tự nạp cũ / từ đã gỡ khỏi words.json
   bindUI();
   rollDay();
+  const initialMiss = gameMiss.slice();   // giữ lại để dựng lại hàng đợi sau lần đồng bộ đầu
   queue = buildQueue(deck, srs, cfg, Date.now(), gameMiss);
   consumeGameMiss();
+  renderAccount(); bindSyncLifecycle();
   showTab('plan');
+  syncNow({ initial: true, miss: initialMiss });   // chưa đăng nhập → không làm gì
   setInterval(() => { if (day.date !== dkey() && tab === 'plan') renderPlan(); }, 60000);
 })();

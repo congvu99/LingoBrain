@@ -1,0 +1,17 @@
+{
+  "name": "lingobrain",
+  "version": "2.10.0",
+  "private": true,
+  "description": "LingoBrain — web ôn từ tiếng Anh (PWA) + server đồng bộ tiến độ",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node tests/run-tests.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "pg": "^8.23.0"
+  }
+}

@@ -168,6 +168,7 @@ function s5(w) {
     if (t.toLowerCase().indexOf(w.word.toLowerCase().split(' ')[0]) < 0) { $('#ownMsg').innerHTML = '<span class="bad">Câu chưa chứa từ này. Sửa lại nhé.</span>'; return; }
     const rw = srs[w.id] || (srs[w.id] = blankRec());
     rw.sentences = (rw.sentences || []).concat(t).slice(-5);
+    rw.mt = Date.now();   // dấu sửa cho đồng bộ: thiếu thì câu của từ chưa chấm bị lọc sau lần xoá/khôi phục
     save(K_SRS, srs); speak(t); nextCard();
   };
   ta.onkeydown = e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) $('#b-done').click(); };

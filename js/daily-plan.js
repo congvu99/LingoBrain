@@ -16,13 +16,15 @@ day = load(K_DAY, null) || { date: dkey(), done: {}, streak: 0, history: {}, cap
 function rollDay() {
   const t = dkey();
   if (day.date === t) return;
+  // ngày lưu ở tương lai (đồng hồ máy từng chạy nhanh): chỉ đưa về hôm nay, không tính streak/lịch sử cho ngày không có thật
+  if (day.date > t) { day.date = t; day.done = {}; save(K_DAY, day, { stamp: false }); return; }
   const wasFull = plan.length && plan.every(x => day.done[x.id]);
   day.history = day.history || {};
   day.history[day.date] = Object.keys(day.done).length;
   const yesterday = dkey(Date.now() - DAY);
   day.streak = wasFull ? (day.date === yesterday ? (day.streak || 0) + 1 : 1) : 0;
   day.date = t; day.done = {};
-  save(K_DAY, day);
+  save(K_DAY, day, { stamp: false });   // sang ngày mới không phải người dùng sửa → không được đè việc máy khác đã tích hôm nay
 }
 function planDone() { return plan.filter(t => day.done[t.id]).length; }
 function toggleTask(id) {
@@ -91,13 +93,13 @@ function renderPlan() {
 
 /* ---- ghi âm: caption để nghe TTS so A/B, danh sách bản ghi đã lưu ---- */
 function renderRecordings(taskId) {
-  const box = document.querySelector('[data-rec="' + taskId + '"]');
+  const box = document.querySelector('[data-rec="' + CSS.escape(taskId) + '"]');   // id giáo án có thể đến từ máy khác qua đồng bộ
   if (!box) return;
   const cap = (day.caption || {})[taskId] || '';
   box.innerHTML =
     '<div class="rec-cap"><input type="text" class="rec-caption" placeholder="Câu đang shadow (để nghe mẫu)" value="' + esc(cap) + '" aria-label="câu đang shadow">' +
-    '<button class="btn-sm" data-say="' + taskId + '" aria-label="nghe mẫu">🔊</button></div>' +
-    '<div class="rec-list" data-list="' + taskId + '"></div>';
+    '<button class="btn-sm" data-say="' + esc(taskId) + '" aria-label="nghe mẫu">🔊</button></div>' +
+    '<div class="rec-list" data-list="' + esc(taskId) + '"></div>';
   const inp = box.querySelector('.rec-caption');
   inp.onchange = () => { day.caption = day.caption || {}; day.caption[taskId] = inp.value.trim(); save(K_DAY, day); };
   box.querySelector('[data-say]').onclick = () => speak(inp.value.trim() || 'Say the sentence, then record yourself.');
@@ -105,7 +107,7 @@ function renderRecordings(taskId) {
     const el = box.querySelector('.rec-list');
     if (!list.length) { el.innerHTML = ''; return; }
     el.innerHTML = list.map(r => '<div class="rec-it"><span class="mono">' + esc(r.date.slice(5)) + ' ' + new Date(r.id).toTimeString().slice(0, 5) + '</span>' +
-      '<button class="btn-sm" data-play="' + r.id + '">▶ Nghe</button><button class="btn-ghost btn-sm" data-del="' + r.id + '" aria-label="xoá bản ghi">✕</button></div>').join('') +
+      '<button class="btn-sm" data-play="' + esc(r.id) + '">▶ Nghe</button><button class="btn-ghost btn-sm" data-del="' + esc(r.id) + '" aria-label="xoá bản ghi">✕</button></div>').join('') +
       '<div class="small muted">Giữ 10 bản gần nhất trên máy này, không nằm trong backup.</div>';
     el.querySelectorAll('[data-play]').forEach(b => b.onclick = () => {
       const r = list.find(x => x.id === +b.dataset.play); if (!r) return;
@@ -131,7 +133,7 @@ async function startRec(btn, id) {
       addRecording({ taskId: id, caption, blob })
         .then(() => { toast('✅ Đã lưu bản ghi'); renderRecordings(id); })
         .catch(() => {                                       // không lưu được → nghe tạm
-          const box = document.querySelector('[data-rec="' + id + '"]');
+          const box = document.querySelector('[data-rec="' + CSS.escape(id) + '"]');
           if (box) box.insertAdjacentHTML('beforeend', '<audio controls src="' + URL.createObjectURL(blob) + '"></audio>');
           toast('⚠️ Không lưu được, chỉ nghe tạm');
         });
@@ -154,6 +156,13 @@ function renderPlanEdit() {
       '<div class="row"><button class="btn-sm btn-ghost" data-pdel="' + i + '">✕ Xoá việc này</button></div>' +
     '</div>').join('');
   $('#planEdit').querySelectorAll('[data-pdel]').forEach(b => b.onclick = () => { plan.splice(+b.dataset.pdel, 1); renderPlanEdit(); });
+}
+// khung sửa giáo án đang có thay đổi chưa lưu (ô nhập khác dữ liệu, hoặc đã xoá/thêm việc mà chưa bấm Lưu) → đồng bộ không được đè
+function planEditPending() {
+  const box = document.getElementById('planEdit');
+  if (!box || tab !== 'manage' || !box.children.length) return false;
+  if (JSON.stringify(plan) !== JSON.stringify(load(K_PLAN, plan))) return true;
+  return Array.from(box.querySelectorAll('[data-p]')).some(i => { const t = plan[+i.dataset.i]; return t && String(t[i.dataset.p] == null ? '' : t[i.dataset.p]) !== i.value; });
 }
 function collectPlanEdit() {
   $('#planEdit').querySelectorAll('[data-p]').forEach(inp => { const t = plan[+inp.dataset.i]; if (t) t[inp.dataset.p] = inp.value; });
