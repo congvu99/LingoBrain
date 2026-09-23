@@ -8,7 +8,8 @@ const PURE_MODULES = [
   'js/stats-dashboard.js',
   'js/word-games.js',
   'js/plane-game-text.js',
-  'js/plane-game-logic.js'
+  'js/plane-game-logic.js',
+  'js/plane-game-typing.js'
 ];
 const ctx = vm.createContext({ console, Math, Date, JSON, Array, Object, String, Number, RegExp, Error, fs, path, ROOT: root });
 ctx.globalThis = ctx;

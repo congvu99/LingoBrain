@@ -105,13 +105,6 @@ describe('typeChar · khoá & bắn', () => {
     typeWord(st, first.text + 'c');
     assert.ok(st.lock !== first.uid && st.lock !== null);
   });
-  it('releaseLock: nhả khoá, chữ kế tiếp chọn lại mục tiêu', () => {
-    const st = createPlaneState(mkPlaneWords(['gift', 'give']), 360, 640);
-    spawnUntil(st, 2);
-    typeChar(st, 'g', half);
-    releaseLock(st);
-    assert.equal(st.lock, null);
-  });
   it('gõ dồn dập ngay khi vừa xuất hiện: không bị đẩy văng khỏi đỉnh, vẫn nổ đúng lúc (khung thấp)', () => {
     const st = createPlaneState(mkPlaneWords(['extraordinary']), 360, 360);
     spawnUntil(st, 1);
@@ -168,6 +161,60 @@ describe('stepPlanes · khiên & mạng', () => {
     assert.equal(st.kills, 5); assert.equal(st.level, 1);
     assert.near(fallSeconds(1), PLANE_FALL_SECONDS / PLANE_SPEEDUP);
     assert.equal(maxPlanes(1), PLANE_START_MAX + 1); assert.equal(maxPlanes(50), PLANE_CAP);
+  });
+});
+
+describe('người chơi tự chọn từ để bắn', () => {
+  /* Đặt sẵn mục tiêu theo ý muốn, không phụ thuộc thứ tự xuất hiện */
+  function field(words) {
+    const st = createPlaneState(mkPlaneWords(words), 400, 800);
+    spawnUntil(st, words.length);
+    st.targets.forEach((t, i) => { t.y = 300 - i * 60; t.vx = 0; t.cruise = t.vy = 1; });   // mục tiêu đầu danh sách ở thấp nhất
+    return st;
+  }
+  const byText = (st, w) => st.targets.find(t => t.text === w);
+  it('chữ chung đầu → mọi từ khớp đều hiện tiến độ; chữ kế tiếp quyết định mục tiêu', () => {
+    const st = field(['cat', 'cow']);
+    typeChar(st, 'c', half);
+    assert.equal(byText(st, 'cat').progress, 1); assert.equal(byText(st, 'cow').progress, 1);
+    typeChar(st, 'o', half);
+    assert.equal(st.lock, byText(st, 'cow').uid);
+    assert.equal(byText(st, 'cat').progress, 0, 'cat trở về chưa gõ');
+    assert.ok(st.bullets.every(b => b.target === byText(st, 'cow').uid), 'đạn đang bay đổi hướng sang cow');
+    typeChar(st, 'w', half); flyBullets(st);
+    assert.equal(st.kills, 1); assert.ok(byText(st, 'cat'), 'cat vẫn còn'); assert.ok(!byText(st, 'cow'));
+  });
+  it('đổi ý giữa chừng không cần Enter: gõ "ca" rồi "dog" → hạ dog', () => {
+    const st = field(['cat', 'dog']);
+    typeWord(st, 'cadog'); flyBullets(st);
+    assert.ok(!byText(st, 'dog'), 'dog phải nổ'); assert.ok(byText(st, 'cat'));
+    assert.equal(byText(st, 'cat').progress, 0);
+  });
+  it('"give" và "give up": gõ give chưa nổ; gõ tiếp up → hạ give up', () => {
+    const st = field(['give', 'give up']);
+    typeWord(st, 'give');
+    assert.ok(!byText(st, 'give').doomed, 'còn chờ vì có thể đang gõ give up');
+    typeWord(st, 'up'); flyBullets(st);
+    assert.ok(!byText(st, 'give up')); assert.ok(byText(st, 'give'));
+  });
+  it('"give" và "give up": gõ give rồi Enter → hạ give', () => {
+    const st = field(['give', 'give up']);
+    typeWord(st, 'give'); pressEnter(st, half); flyBullets(st);
+    assert.ok(!byText(st, 'give')); assert.ok(byText(st, 'give up'));
+    assert.equal(byText(st, 'give up').progress, 0);
+  });
+  it('Enter khi chưa gõ trọn từ nào → xoá chữ đang gõ, bỏ khoá', () => {
+    const st = field(['gift', 'give']);
+    typeWord(st, 'gi'); pressEnter(st, half);
+    assert.equal(st.lock, null); assert.equal(st.typed, '');
+    assert.ok(st.targets.every(t => t.progress === 0));
+  });
+  it('mục tiêu đang gõ dở bị chạm khiên → chữ đang gõ được xoá', () => {
+    const st = field(['cat']);
+    typeWord(st, 'ca');
+    const t = byText(st, 'cat'); t.y = 2000;
+    stepPlanes(st, 0.01, half);
+    assert.equal(st.typed, ''); assert.equal(st.lock, null);
   });
 });
 

@@ -2,7 +2,8 @@
    Thế giới tính bằng px của khung chơi (st.w × st.h). Mục tiêu mang nghĩa Việt rơi về tàu mình ở đáy;
    mỗi chữ cái gõ đúng bắn 1 viên đạn tự dẫn vào mục tiêu đang khoá, chữ cuối làm nó nổ.
    Trả sự kiện ('fire' | 'hit' | 'explode' | 'shield') để phần hiệu ứng vẽ.
-   Cần comboMult() của word-games.js và các hàm chữ của plane-game-text.js (nạp trước file này). */
+   Cần comboMult() của word-games.js, hàm chữ của plane-game-text.js (nạp trước) và typingCandidates()
+   của plane-game-typing.js (nạp sau, chỉ gọi lúc chạy). */
 
 const PLANE_LIVES = 3;
 const PLANE_FALL_SECONDS = 11;     // từ 5 chữ cái ở cấp 0 đi hết chiều cao khung trong ~11s
@@ -25,7 +26,7 @@ const maxPlanes = level => Math.min(PLANE_CAP, PLANE_START_MAX + level);
 
 function createPlaneState(words, w, h) {
   const st = { words: words || [], next: 0, targets: [], bullets: [], uid: 0, spawnIn: 0, lock: null, t: 0,
-    lives: PLANE_LIVES, kills: 0, level: 0, score: 0, right: 0, wrong: 0, streak: 0, bestStreak: 0,
+    typed: '', lives: PLANE_LIVES, kills: 0, level: 0, score: 0, right: 0, wrong: 0, streak: 0, bestStreak: 0,
     miss: [], over: false, w: 0, h: 0, shipX: 0, shipY: 0, shipVx: 0, goalX: null, bank: 0, aim: -Math.PI / 2, aimTo: -Math.PI / 2 };
   resizePlaneState(st, w || 360, h || 640);
   return st;
@@ -61,7 +62,7 @@ function spawnTarget(st, rand) {
     if (!st.targets.some(t => t.y < st.h * 0.5 && Math.abs(t.x - x) < st.w * 0.28)) break;
   }
   const cruise = st.h / (fallSeconds(st.level) * lengthSlowdown(text) * (0.9 + rand() * 0.2));   // ±10%: không đều tăm tắp
-  const t = { uid: ++st.uid, word: w, text, label: planeLabel(w), kind, r, x, y: -r, cruise,
+  const t = { uid: ++st.uid, word: w, text, letters: typedLetters(text), label: planeLabel(w), kind, r, x, y: -r, cruise,
     vx: kind === 'rock' ? (rand() - 0.5) * cruise * 1.2 : 0, vy: cruise,
     rot: kind === 'rock' ? rand() * 6.283 : 0, vr: kind === 'rock' ? (rand() - 0.5) * 2.4 : 0, phase: rand() * 6.283,
     progress: skipFixed(text, 0), wrong: 0, pending: 0, doomed: false };
@@ -69,46 +70,11 @@ function spawnTarget(st, rand) {
   return t;
 }
 
-function fire(st, target, hit, ev, rand) {
-  const tx = target ? target.x : st.shipX + (rand() - 0.5) * st.w * 0.2, ty = target ? target.y : -20;
-  let a = Math.atan2(ty - st.shipY, tx - st.shipX);
-  if (!hit && target) a += (rand() < 0.5 ? -1 : 1) * (0.18 + rand() * 0.12);   // đạn trượt: lệch hẳn khỏi mục tiêu
-  const s = BULLET_SPEED * st.h;
-  st.bullets.push({ x: st.shipX, y: st.shipY, vx: Math.cos(a) * s, vy: Math.sin(a) * s, target: hit ? target.uid : null });
-  st.aimTo = a;
-  ev.push({ type: 'fire', x: st.shipX, y: st.shipY, a, hit });
-}
-
-/* Gõ 1 ký tự. Chưa khoá → khoá mục tiêu gần tàu nhất có chữ kế tiếp khớp. Trả { hit, target } */
-function typeChar(st, ch, rand, ev) {
-  ev = ev || []; rand = rand || Math.random;
-  const c = normalizeTyped(ch);
-  if (!c || isFixedTyped(c) || st.over) return { hit: false, target: null, ev };
-  let t = st.targets.find(x => x.uid === st.lock);
-  if (!t) {
-    for (const x of st.targets) if (!x.doomed && x.text[x.progress] === c && (!t || x.y > t.y)) t = x;
-    if (!t) { fire(st, null, false, ev, rand); return { hit: false, target: null, ev }; }
-    st.lock = t.uid;
-  }
-  if (t.text[t.progress] !== c) {
-    if (++t.wrong === PLANE_WRONG_TO_MISS && st.miss.indexOf(t.word.id) < 0) st.miss.push(t.word.id);
-    fire(st, t, false, ev, rand);
-    return { hit: false, target: t, ev };
-  }
-  t.progress = skipFixed(t.text, t.progress + 1);
-  t.pending++;
-  if (t.progress >= t.text.length) { t.doomed = true; st.lock = null; }
-  fire(st, t, true, ev, rand);
-  return { hit: true, target: t, ev };
-}
-
-/* Enter: nhả mục tiêu đang khoá để chọn lại (khoá nhầm "gift" khi muốn "give") */
-function releaseLock(st) { st.lock = null; }
-
 function removeTarget(st, t) {
   st.targets.splice(st.targets.indexOf(t), 1);
   if (st.lock === t.uid) st.lock = null;
   for (const b of st.bullets) if (b.target === t.uid) b.target = null;   // đạn đang bay thành đạn lạc
+  if (st.typed && !typingCandidates(st, st.typed).length) { st.typed = ''; st.lock = null; }   // từ đang gõ dở đã mất
 }
 
 function moveTarget(st, t, dt) {
@@ -201,5 +167,5 @@ function stepPlanes(st, dt, rand) {
 if (typeof module !== 'undefined') module.exports = {
   PLANE_LIVES, PLANE_FALL_SECONDS, PLANE_START_MAX, PLANE_CAP, PLANE_SPEEDUP, PLANE_WRONG_TO_MISS,
   fallSeconds, maxPlanes, createPlaneState, resizePlaneState,
-  stepPlanes, typeChar, releaseLock
+  stepPlanes, removeTarget
 };

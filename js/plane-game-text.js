@@ -25,9 +25,20 @@ function planeLabel(w) {
   return (w.emoji ? w.emoji + ' ' : '') + m;
 }
 
+/* Chỉ phần chữ cái của từ (bỏ dấu cách / gạch nối / nháy): đây là thứ người chơi gõ */
+const typedLetters = text => text.split('').filter(c => !isFixedTyped(c)).join('');
+
+/* Vị trí trong text sau khi đã gõ n chữ cái (nhảy qua dấu cách/gạch nối) — để tô tiến độ trên nhãn */
+function progressFor(text, n) {
+  let i = skipFixed(text, 0);
+  for (let k = 0; k < n && i < text.length; k++) i = skipFixed(text, i + 1);
+  return i;
+}
+
 /* Bỏ qua dấu cách / gạch nối / nháy: người chơi chỉ gõ chữ cái */
 function skipFixed(text, i) { while (i < text.length && isFixedTyped(text[i])) i++; return i; }
 
 if (typeof module !== 'undefined') module.exports = {
-  PLANE_LABEL_MAX, isFixedTyped, letterCount, lengthSlowdown, targetKind, normalizeTyped, planeLabel, skipFixed
+  PLANE_LABEL_MAX, isFixedTyped, letterCount, lengthSlowdown, targetKind, normalizeTyped, planeLabel, skipFixed,
+  typedLetters, progressFor
 };

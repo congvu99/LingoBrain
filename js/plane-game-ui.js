@@ -14,7 +14,7 @@ function startPlaneGame() {
   $('#app').innerHTML = '<div class="plane-game" id="planeGame">' + gameHeadHtml('') +
     '<div class="plane-field" id="planeField"><canvas id="planeCanvas" aria-label="màn chơi bắn máy bay"></canvas>' +
       '<div class="plane-overlay" id="planeOverlay"><p id="planeMsg">Mục tiêu mang <b>nghĩa tiếng Việt</b>. Gõ từ tiếng Anh: ' +
-      'mỗi chữ cái đúng là 1 phát đạn, chữ cuối làm nổ tung.<br>Enter để đổi mục tiêu. Để mục tiêu chạm tàu là mất 1 ❤️.<br>' +
+      'muốn hạ mục tiêu nào thì gõ từ của nó, mỗi chữ đúng là 1 phát đạn.<br>Enter xoá chữ đang gõ. Để mục tiêu chạm tàu là mất 1 ❤️.<br>' +
       '<small>Tắt bộ gõ tiếng Việt (Unikey/Telex) trước khi chơi.</small></p>' +
       '<button class="btn-primary" id="planeGo">Bắt đầu</button></div></div>' +
     '<div class="plane-input-row">' +
@@ -59,7 +59,7 @@ function bindPlaneControls(ui) {
   input.onkeydown = e => {
     if (e.key === 'Escape') { e.preventDefault(); return togglePlanePause(); }   // phím toàn cục bỏ qua ô input
     // chỉ Enter nhả khoá: Unikey/EVKey (Telex) gửi Backspace để thay dấu, bắt Backspace sẽ nhả khoá giữa chừng
-    if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); releaseLock(game.plane); }
+    if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); pressEnter(game.plane, Math.random, []).forEach(e => spaceFxEvent(planeUi.fx, e)); }
   };
 }
 
