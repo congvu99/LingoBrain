@@ -2,12 +2,13 @@
    Sprite ít khung nên chuyển động bù bằng code: nhún, lao, giật lùi, nháy trắng, tan thành ô pixel.
    Trạng thái nằm ở fx.actor (createBossActors), cập nhật theo event trận qua bossActorEvent (gọi cuối bossFxEvent)
    — chỉ đọc event, không đổi state trận. VFX sprite một lượt (nổ/lửa/khói) nằm ở fx.sprites.
-   Chỉ dùng khi fx.layout.pixel (vùng có sân tile + quái có sprite, xem layoutBoss). Cần boss-game-sprite-atlas.js. */
+   Mọi vùng/quái đều dùng sprite (từ phase 3). Cần boss-game-sprite-atlas.js + boss-game-dragon-composite.js. */
 
 const BOSS_LUNGE_S = 0.42, BOSS_RECOIL_S = 0.22, BOSS_FLASH_S = 0.18, BOSS_CAST_S = 0.32;
 
 function createBossActors() {
-  return { mon: { lunge: 0, recoil: 0, flash: 0, dead: false, pieces: [] }, mage: { recoil: 0, flash: 0, cast: 0 } };
+  // hitAnimT lớn (đã "xong") ngay từ đầu để bossMonSpriteVariant không lầm tưởng đang trúng đòn
+  return { mon: { lunge: 0, recoil: 0, flash: 0, dead: false, pieces: [], hitAnimT: 999 }, mage: { recoil: 0, flash: 0, cast: 0 } };
 }
 
 const bossMageSprite = gender => (gender === 'm' ? 'mageM' : 'mageF');
@@ -22,12 +23,12 @@ function bossSpawnSprite(fx, name, x, y, scale, delay) {
 
 function bossActorEvent(fx, e, st) {
   const A = fx.actor, L = fx.layout, q = L.mon;
-  if (!L.pixel) return;
   const el = e.element || st.mods.element, mul = e.tier === 3 ? 2 : e.tier === 2 ? 1.5 : 1;
   if (e.type === 'cast') {
     A.mage.cast = BOSS_CAST_S;
     if (el === 'fire') fx.shots.forEach(s => { if (s.id === fx.castN) s.sprite = 'fireball'; });
   } else if (e.type === 'impact') {
+    A.mon.hitAnimT = 0;   // mốc bắt đầu hoạt ảnh Hit riêng (nếu quái có spriteHit) — xem drawBossMonsterSprite
     A.mon.flash = BOSS_FLASH_S; A.mon.recoil = BOSS_RECOIL_S;
     if (el === 'fire') {
       const cy = q.y - q.s * 0.45;
@@ -42,22 +43,41 @@ function bossActorEvent(fx, e, st) {
   if ((e.type === 'impact' && e.hp <= 0) || e.type === 'won') bossMonsterDissolve(fx);
 }
 
-/* Quái tan thành ô pixel (màu lấy từ khung sprite) bay lên như tro + khói; chỉ một lần */
+/* Mảnh pixel của MỘT sprite (name) tại tâm (cx, cy, đã có k) — step = số px gộp (mảnh to đỡ rời rạc, xem #5).
+   vx/vy toả ra hai bên theo vị trí ngang trong khung, bay lên như tro. */
+function bossDissolvePiecesOf(name, cx, cy, k) {
+  const def = BOSS_SPRITES[name];
+  if (!def) return [];
+  const step = Math.max(1, Math.round(def.fw / 16)), left = cx - def.fw * k / 2, top = cy - def.fh * k / 2;
+  return bossSpritePixels(name, 'idle', 0, step).map(p => ({
+    x: left + p.x * k, y: top + p.y * k, step, vx: (p.x - def.fw / 2) * 9 + (Math.random() - 0.5) * 40,
+    vy: -30 - Math.random() * 70, life: 0.7 + Math.random() * 0.7, max: 1.4, color: p.color
+  }));
+}
+
+/* Quái tan thành ô pixel (màu lấy từ khung sprite) bay lên như tro + khói; chỉ một lần.
+   Oblivion (ghép mảnh) tan cả 5 mảnh đúng vị trí thật trên khung hình — dùng lại layout của
+   drawBossDragonComposite (bossOblivionLayout, boss-game-dragon-composite.js) chứ không chỉ mỗi đầu. */
 function bossMonsterDissolve(fx) {
   const A = fx.actor.mon, q = fx.layout.mon;
   if (A.dead) return;
   A.dead = true;
-  const k = q.k, top = q.y - 16 * k;
-  A.pieces = (q.sprite ? bossSpritePixels(q.sprite, 'idle', 0, 1) : []).map(p => ({
-    x: q.x - 8 * k + p.x * k, y: top + p.y * k, vx: (p.x - 8) * 9 + (Math.random() - 0.5) * 40,
-    vy: -30 - Math.random() * 70, life: 0.7 + Math.random() * 0.7, max: 1.4, color: p.color
-  }));
+  if (q.sprite === 'oblivion' && typeof bossOblivionLayout === 'function') {
+    const L = bossOblivionLayout(q.x, q.y, q.k, 0);
+    A.pieces = ['oblivionBodyEnd', 'oblivionBody2', 'oblivionBody1', 'oblivionHead'].map((name, i) =>
+      bossDissolvePiecesOf(name, [L.tail, L.body2, L.body1, L.head][i].x, [L.tail, L.body2, L.body1, L.head][i].y, q.k))
+      .concat([bossDissolvePiecesOf('oblivionWing', L.wingL.x, L.wingL.y, q.k), bossDissolvePiecesOf('oblivionWing', L.wingR.x, L.wingR.y, q.k)])
+      .flat();
+  } else {
+    A.pieces = q.sprite ? bossDissolvePiecesOf(q.sprite, q.x, q.y - ((BOSS_SPRITES[q.sprite] && BOSS_SPRITES[q.sprite].fh) || 16) * q.k / 2, q.k) : [];
+  }
   bossSpawnSprite(fx, 'smoke', q.x, q.y - q.s * 0.35, pixelScale(q.s * 0.9, 32));
 }
 
 function stepBossActors(fx, dtReal) {
   const A = fx.actor;
   ['lunge', 'recoil', 'flash'].forEach(k => { A.mon[k] = Math.max(0, A.mon[k] - dtReal); });
+  A.mon.hitAnimT += dtReal;   // đếm lên từ mốc trúng đòn (impact) — dùng làm t riêng cho spriteHit
   ['recoil', 'flash', 'cast'].forEach(k => { A.mage[k] = Math.max(0, A.mage[k] - dtReal); });
   A.mon.pieces = A.mon.pieces.filter(p => {
     p.life -= dtReal; p.x += p.vx * dtReal; p.y += p.vy * dtReal; p.vy -= 40 * dtReal;   // bay lên như tro
@@ -76,12 +96,27 @@ function bossPixelShadow(ctx, cx, cy, rw, unit) {
   }
 }
 
+/* Trùm có sheet Hit thật (Idle luôn có) → còn đang chạy hoạt ảnh Hit (loop:false, tính từ A.hitAnimT, mốc 0 đặt
+   lúc impact) thì đổi sang sheet đó; Attack tương tự nhưng theo trạng thái "sắp ra đòn"/lao. Không có (quái 16px
+   thường) → q.sprite mặc định. */
+function bossMonSpriteVariant(q, A, angry) {
+  if (q.spriteHit && bossSpriteReady(q.spriteHit) && !spriteAnimDone(BOSS_SPRITES[q.spriteHit], 'idle', A.hitAnimT)) return q.spriteHit;
+  if ((angry || A.lunge > 0) && q.spriteAttack && bossSpriteReady(q.spriteAttack)) return q.spriteAttack;
+  return q.sprite;
+}
+
 /* Quái: nhún theo anim sprite, giật lùi khi trúng, lao về phía pháp sư khi ra đòn, phủ băng khi đóng băng.
-   Trả false nếu không vẽ được (chưa có sprite/chưa nạp) → render vẽ quái vẽ tay thay thế. */
+   Oblivion (rồng ghép mảnh) đi qua drawBossDragonComposite thay vì drawSprite thường.
+   Ảnh chưa nạp xong (mạng lỗi/offline lần đầu — hiếm vì mọi ảnh đã precache trong sw.js) → trả false, bỏ qua vẽ
+   lượt đó; trận vẫn chơi được qua HP/đồng hồ, không có phương án vẽ tay thay thế (đã xoá ở phase 3, cố ý). */
 function drawBossMonsterSprite(ctx, fx, st, t) {
   const q = fx.layout.mon, m = fx.layout.mage, A = fx.actor.mon;
   if (A.dead) {
-    for (const p of A.pieces) { ctx.globalAlpha = Math.min(1, p.life / p.max * 2); ctx.fillStyle = p.color; ctx.fillRect(Math.round(p.x), Math.round(p.y), q.k, q.k); }
+    for (const p of A.pieces) {
+      ctx.globalAlpha = Math.min(1, p.life / p.max * 2); ctx.fillStyle = p.color;
+      const s = q.k * (p.step || 1);
+      ctx.fillRect(Math.round(p.x), Math.round(p.y), s, s);
+    }
     ctx.globalAlpha = 1;
     return true;
   }
@@ -93,8 +128,13 @@ function drawBossMonsterSprite(ctx, fx, st, t) {
   const angry = !st.frozen && st.clock / st.clockMax < 0.12;   // đòn sắp tới: rung nhẹ + nhún nhanh
   if (angry && !calm) x += (Math.floor(t * 20) % 2 ? 1 : -1) * q.k;
   bossPixelShadow(ctx, x, q.y, q.s * 0.36, q.k);
-  const frameT = st.frozen ? 0 : angry ? t * 2 : t;
-  drawSprite(ctx, q.sprite, 'idle', frameT, x, y, q.k, A.flash > 0 ? { flash: 0.9 } : st.frozen ? { flash: 0.45, tint: '#bdf3ff' } : null);
+  const variant = bossMonSpriteVariant(q, A, angry), usingHit = variant === q.spriteHit;
+  // sheet Hit có t riêng (từ mốc trúng đòn, không lệ thuộc đồng hồ trận) để chạy đủ khung dù ngắn/dài hơn 1 lượt vẽ
+  const frameT = usingHit ? A.hitAnimT : st.frozen ? 0 : angry ? t * 2 : t;
+  const opt = usingHit ? { flash: 0.4 } : A.flash > 0 ? { flash: 0.9 } : st.frozen ? { flash: 0.45, tint: '#bdf3ff' } : {};
+  if (q.sprite === 'oblivion' && typeof drawBossDragonComposite === 'function') {
+    drawBossDragonComposite(ctx, x, y, q.k, st.frozen ? 0 : t, Object.assign({ reduced: fx.reduced }, opt));
+  } else drawSprite(ctx, variant, 'idle', frameT, x, y, q.k, opt);
   return true;
 }
 

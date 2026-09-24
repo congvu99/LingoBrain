@@ -49,7 +49,7 @@ function startBossBattle(opts) {
     off: [], monsterName: mon.name, monster: mon, region, gender: bossProg.gender.v, fps: 60, frames: 0, fpsAt: now, quality: 1, showFps: BOSS_SHOW_FPS,
     st: createBattle({ monster: mon, groups, tiers, mods, hearts: 3 + mods.maxHeartsAdd + (buff ? 1 : 0), difficulty: opts.difficulty, carryDmg: opts.carryDmg, now }) };
   pauseBattle(ui.st, now);                           // đồng hồ trùm chỉ chạy sau đếm ngược
-  loadBossSprites();                                 // đếm ngược 3-2-1 che thời gian nạp; lỗi nạp → vẽ tay thay thế
+  loadBossSprites();                                 // đếm ngược 3-2-1 che thời gian nạp; lỗi nạp → bỏ qua vẽ quái/pháp sư lượt đó (ảnh đã precache SW, hiếm khi xảy ra)
   document.documentElement.classList.add('game-lock');
   if (window.visualViewport) { bossListen(visualViewport, 'resize', fitBossGame); bossListen(visualViewport, 'scroll', fitBossGame); }
   bossListen(window, 'resize', fitBossGame);

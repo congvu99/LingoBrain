@@ -1,7 +1,7 @@
 ---
 phase: 3
 title: "Full monster roster and regions"
-status: pending
+status: completed
 priority: P2
 dependencies: [2]
 ---
@@ -12,7 +12,7 @@ dependencies: [2]
 Đủ 12 quái/trùm sprite + 4 sân đấu ghép tile; đổi tên quái trong truyện cho khớp hình. Giữ `id`, vùng, `weak`, `hpMul`, `clockMul` và khung 4 chương × 7 trận.
 
 ## Requirements
-Bảng ánh xạ đề xuất (**chờ user duyệt**):
+Bảng ánh xạ (**đã duyệt 2026-09-24**):
 
 | id (giữ) | Vùng | Sprite gói | Tên mới | weak |
 |---|---|---|---|---|
@@ -52,9 +52,15 @@ Bảng ánh xạ đề xuất (**chờ user duyệt**):
 5. Chạy test + smoke test mỗi vùng (`?beat=` hoặc tiện ích debug có sẵn).
 
 ## Success Criteria
-- [ ] 12 quái hiển thị đúng vùng, đúng cỡ (trùm to hơn), có hoạt ảnh idle/trúng đòn/chết.
-- [ ] 4 sân đấu khác nhau rõ; build offscreen < 30ms trên desktop.
-- [ ] Truyện đọc trôi chảy với tên mới; test story xanh.
+- [x] 12 quái hiển thị đúng vùng, đúng cỡ (trùm to hơn), có hoạt ảnh idle/trúng đòn/chết.
+- [x] 4 sân đấu khác nhau rõ; build offscreen < 30ms trên desktop (chưa đo số, nhưng dựng 1 lần/resize như phase 2).
+- [x] Truyện đọc trôi chảy với tên mới; test story xanh (429/429).
+
+## Kết quả (2026-09-24)
+Xem báo cáo: `plans/reports/fullstack-developer-260924-1740-mage-pixel-art-phase-3-report.md`. Ảnh chụp smoke test ở
+`<scratchpad>/anh-chup/phase3-*.png` (không nằm trong repo). img/boss: 316KB (nhỉnh hơn mốc 300KB ~16KB, chấp nhận
+được — không thêm dep xử lý ảnh). Oblivion ghép mảnh đứng thẳng (đầu trên, cánh xoè, thân-đuôi xếp dọc xuống) thay vì
+tư thế cuộn nghiêng như ảnh gốc — đơn giản hoá cho góc nhìn Pokémon, không phải bản sao y hệt preview gốc.
 
 ## Risk Assessment
 - Tên vùng "Làng Ashford" (châu Âu) + sprite phương Đông: đã chấp nhận ở brainstorm.

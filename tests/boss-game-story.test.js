@@ -6,7 +6,7 @@ describe('boss-game-story.js', () => {
     assert.equal(new Set(BOSS_REGIONS.map(r => r.id)).size, 4);
   });
 
-  it('BOSS_MONSTERS có 12 quái, id duy nhất, dáng ∈ 5 loại, weak ∈ BOSS_ELEMENTS, region hợp lệ', () => {
+  it('BOSS_MONSTERS có 12 quái, id duy nhất, dáng ∈ 5 loại (chỉ để suy emoji dự phòng), weak ∈ BOSS_ELEMENTS, region hợp lệ, sprite tồn tại trong BOSS_SPRITES', () => {
     assert.equal(BOSS_MONSTERS.length, 12);
     assert.equal(new Set(BOSS_MONSTERS.map(m => m.id)).size, 12);
     const shapes = ['humanoid', 'beast', 'wraith', 'flyer', 'dragon'], regionIds = BOSS_REGIONS.map(r => r.id);
@@ -14,7 +14,28 @@ describe('boss-game-story.js', () => {
       assert.includes(shapes, m.shape, m.id + ' shape');
       assert.includes(BOSS_ELEMENTS, m.weak, m.id + ' weak');
       assert.includes(regionIds, m.region, m.id + ' region');
-      assert.ok(m.palette && m.palette.body && m.palette.eye, m.id + ' palette');
+      assert.ok(BOSS_SPRITES[m.sprite], m.id + ' sprite ' + m.sprite + ' phải có trong BOSS_SPRITES');
+      if (m.spriteHit) assert.ok(BOSS_SPRITES[m.spriteHit], m.id + ' spriteHit ' + m.spriteHit);
+      if (m.spriteAttack) assert.ok(BOSS_SPRITES[m.spriteAttack], m.id + ' spriteAttack ' + m.spriteAttack);
+    });
+  });
+
+  it('BOSS_ARENAS có sân cho đủ 4 vùng, tile hợp lệ và (ở Node) nằm trong ảnh PNG thật', () => {
+    const regionIds = BOSS_REGIONS.map(r => r.id);
+    regionIds.forEach(id => assert.ok(BOSS_ARENAS[id], 'vùng ' + id + ' thiếu BOSS_ARENAS'));
+    if (typeof fs === 'undefined') return;
+    const dims = {};   // cache IHDR để không đọc lại file nhiều lần
+    function pngDim(src) {
+      if (!dims[src]) { const b = fs.readFileSync(path.join(ROOT, src)); dims[src] = [b.readUInt32BE(16), b.readUInt32BE(20)]; }
+      return dims[src];
+    }
+    regionIds.forEach(id => {
+      const A = BOSS_ARENAS[id], tiles = [A.grass, ...A.details, ...A.far];
+      assert.ok(A.patchColor && /^#[0-9a-f]{6}$/i.test(A.patchColor), id + ' patchColor phải là mã hex hợp lệ');
+      tiles.forEach(t => {
+        const [name, sx, sy, sw, sh] = t, [W, H] = pngDim(BOSS_SPRITES[name].src);
+        assert.ok(sx + sw <= W && sy + sh <= H, id + ' tile ' + name + ' ' + JSON.stringify(t) + ' ra ngoài ảnh ' + W + '×' + H);
+      });
     });
   });
 

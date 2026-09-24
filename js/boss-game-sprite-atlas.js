@@ -14,10 +14,35 @@ const BOSS_CHAR_ANIMS = {
   special: { row: 6, col: 1, frames: 1 }, face: { row: 0, frames: 1, dir: 'down' }
 };
 
+/* Quái 16px 4 hướng (sheet 64×64 = 4 cột hướng × 4 khung đi, cùng khuôn với Slime) */
+const BOSS_MON_ANIM = { idle: { row: 0, frames: 4, fps: 6, dir: 'down' } };
+
 const BOSS_SPRITES = {
   mageF: { src: 'img/boss/actor/mage-f.png', fw: 16, fh: 16, anims: BOSS_CHAR_ANIMS },
   mageM: { src: 'img/boss/actor/mage-m.png', fw: 16, fh: 16, anims: BOSS_CHAR_ANIMS },
   slime: { src: 'img/boss/actor/slime.png', fw: 16, fh: 16, anims: { idle: { row: 0, frames: 4, fps: 6, dir: 'down' } } },
+  racoon: { src: 'img/boss/actor/racoon.png', fw: 16, fh: 16, anims: BOSS_MON_ANIM },       // wolf
+  skull: { src: 'img/boss/actor/skull.png', fw: 16, fh: 16, anims: BOSS_MON_ANIM },         // skeleton
+  spirit: { src: 'img/boss/actor/spirit.png', fw: 16, fh: 16, anims: BOSS_MON_ANIM },       // ghost
+  mole: { src: 'img/boss/actor/mole.png', fw: 16, fh: 16, anims: BOSS_MON_ANIM },           // troll
+  owl: { src: 'img/boss/actor/owl.png', fw: 16, fh: 16, anims: BOSS_MON_ANIM },             // harpy
+  flamMonster: { src: 'img/boss/actor/flam-monster.png', fw: 16, fh: 16, anims: BOSS_MON_ANIM },   // darkKnight
+  youngDragon: { src: 'img/boss/actor/young-dragon.png', fw: 16, fh: 16, anims: BOSS_MON_ANIM },
+  // trùm chương: dải ngang (Idle luôn có; Hit/Attack chỉ những trùm có sheet thật — xem BOSS_MONSTERS.spriteHit/spriteAttack)
+  giantRacoon: { src: 'img/boss/actor/giant-racoon-idle.png', fw: 60, fh: 60, anims: { idle: { frames: 6, fps: 10 } } },          // goblinKing
+  giantRacoonAttack: { src: 'img/boss/actor/giant-racoon-attack.png', fw: 60, fh: 60, anims: { idle: { frames: 4, fps: 12 } } },
+  giantSpirit: { src: 'img/boss/actor/giant-spirit-idle.png', fw: 50, fh: 50, anims: { idle: { frames: 5, fps: 9 } } },           // lich
+  giantSpiritHit: { src: 'img/boss/actor/giant-spirit-hit.png', fw: 50, fh: 50, anims: { idle: { frames: 3, fps: 14, loop: false } } },
+  tenguBlue: { src: 'img/boss/actor/tengu-blue-idle.png', fw: 68, fh: 68, anims: { idle: { frames: 6, fps: 9 } } },               // wyvern
+  tenguBlueHit: { src: 'img/boss/actor/tengu-blue-hit.png', fw: 68, fh: 68, anims: { idle: { frames: 8, fps: 16, loop: false } } },
+  tenguBlueAttack: { src: 'img/boss/actor/tengu-blue-attack.png', fw: 82, fh: 82, anims: { idle: { frames: 15, fps: 16 } } },
+  // Oblivion: rồng ghép mảnh tĩnh (không có khung anim riêng — vỗ cánh/nhấp nhô làm bằng code ở boss-game-dragon-composite.js)
+  oblivion: { src: 'img/boss/actor/dragon-blue-head.png', fw: 44, fh: 46, anims: { idle: { frames: 1 } } },   // dùng để tính scale + tan pixel
+  oblivionHead: { src: 'img/boss/actor/dragon-blue-head.png', fw: 44, fh: 46, anims: { idle: { frames: 1 } } },
+  oblivionWing: { src: 'img/boss/actor/dragon-blue-wing.png', fw: 57, fh: 57, anims: { idle: { frames: 1 } } },
+  oblivionBody1: { src: 'img/boss/actor/dragon-blue-body1.png', fw: 31, fh: 27, anims: { idle: { frames: 1 } } },
+  oblivionBody2: { src: 'img/boss/actor/dragon-blue-body2.png', fw: 31, fh: 27, anims: { idle: { frames: 1 } } },
+  oblivionBodyEnd: { src: 'img/boss/actor/dragon-blue-body-end.png', fw: 29, fh: 40, anims: { idle: { frames: 1 } } },
   fireball: { src: 'img/boss/fx/fireball.png', fw: 16, fh: 16, anims: { idle: { frames: 4, fps: 14 } } },   // đuôi lửa chĩa xuống: bay "lên"
   flam: { src: 'img/boss/fx/flam.png', fw: 25, fh: 30, anims: { idle: { frames: 8, fps: 16, loop: false } } },
   explosion: { src: 'img/boss/fx/explosion.png', fw: 40, fh: 40, anims: { idle: { frames: 9, fps: 18, loop: false } } },
@@ -25,7 +50,8 @@ const BOSS_SPRITES = {
   // tileset: chỉ cắt ô bằng toạ độ (boss-game-arena.js), không có anim
   tileFloor: { src: 'img/boss/tile/floor.png', fw: 16, fh: 16, anims: {} },
   tileNature: { src: 'img/boss/tile/nature.png', fw: 16, fh: 16, anims: {} },
-  tileHouse: { src: 'img/boss/tile/house.png', fw: 16, fh: 16, anims: {} }
+  tileHouse: { src: 'img/boss/tile/house.png', fw: 16, fh: 16, anims: {} },
+  tileVillage: { src: 'img/boss/tile/village.png', fw: 16, fh: 16, anims: {} }
 };
 
 /* Ô cắt của khung tại thời điểm t (giây). loop:false → giữ khung cuối. Thiếu anim → 'idle'. */

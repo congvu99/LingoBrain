@@ -36,7 +36,7 @@ Gói gốc nằm ở `D:\project\eng\assets\ninja-adventure\` (109MB, **không c
 |-------|------|--------|
 | 1 | [Asset pipeline and sprite atlas](./phase-01-asset-pipeline-and-sprite-atlas.md) | Completed |
 | 2 | [Prototype battle scene](./phase-02-prototype-battle-scene.md) | Code done — chờ user duyệt iPhone |
-| 3 | [Full monster roster and regions](./phase-03-full-monster-roster-and-regions.md) | Pending |
+| 3 | [Full monster roster and regions](./phase-03-full-monster-roster-and-regions.md) | Completed |
 | 4 | [Element VFX and ultimates](./phase-04-element-vfx-and-ultimates.md) | Pending |
 | 5 | [Hub portraits cleanup and docs](./phase-05-hub-portraits-cleanup-and-docs.md) | Pending |
 
@@ -55,5 +55,5 @@ Gói gốc nằm ở `D:\project\eng\assets\ninja-adventure\` (109MB, **không c
 
 ## Câu hỏi chưa giải
 1. ~~Pháp sư nam~~ → chốt `NinjaMageOrange` (2026-09-24).
-2. Duyệt bảng đổi tên 12 quái ở phase 3.
+2. ~~Duyệt bảng đổi tên 12 quái ở phase 3~~ → chốt như bảng đề xuất (2026-09-24).
 3. Có đổi chữ HUD sang `NormalFont.ttf` của gói không? (mặc định: không, YAGNI)

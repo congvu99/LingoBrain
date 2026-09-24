@@ -20,7 +20,31 @@ const FILES = {
   'fx/smoke.png': 'FX/Smoke/Smoke/SpriteSheet.png',
   'tile/floor.png': 'Backgrounds/Tilesets/TilesetFloor.png',
   'tile/nature.png': 'Backgrounds/Tilesets/TilesetNature.png',
-  'tile/house.png': 'Backgrounds/Tilesets/TilesetHouse.png'
+  'tile/house.png': 'Backgrounds/Tilesets/TilesetHouse.png',
+  // quái 16px (4 hướng, phase 3)
+  'actor/racoon.png': 'Actor/Monster/Racoon/SpriteSheet.png',
+  'actor/skull.png': 'Actor/Monster/Skull/SpriteSheet.png',
+  'actor/spirit.png': 'Actor/Monster/Spirit/SpriteSheet.png',
+  'actor/mole.png': 'Actor/Monster/Mole/Mole.png',
+  'actor/owl.png': 'Actor/Monster/Owl/Owl.png',
+  'actor/flam-monster.png': 'Actor/Monster/Flam/SpriteSheet.png',
+  'actor/young-dragon.png': 'Actor/Monster/Dragon/SpriteSheet.png',
+  // trùm chương (dải ngang, có Idle/Hit/Attack riêng)
+  'actor/giant-racoon-idle.png': 'Actor/Boss/GiantRacoon/Idle.png',
+  'actor/giant-racoon-attack.png': 'Actor/Boss/GiantRacoon/Attack.png',
+  'actor/giant-spirit-idle.png': 'Actor/Boss/GiantSpirit/Idle.png',
+  'actor/giant-spirit-hit.png': 'Actor/Boss/GiantSpirit/Hit.png',
+  'actor/tengu-blue-idle.png': 'Actor/Boss/TenguBlue/Idle.png',
+  'actor/tengu-blue-hit.png': 'Actor/Boss/TenguBlue/Hit.png',
+  'actor/tengu-blue-attack.png': 'Actor/Boss/TenguBlue/Attack.png',
+  // Oblivion: rồng ghép mảnh (đầu + 2 cánh + thân), ghép ở boss-game-dragon-composite.js
+  'actor/dragon-blue-head.png': 'Actor/Boss/DragonBlue/Head.png',
+  'actor/dragon-blue-wing.png': 'Actor/Boss/DragonBlue/Wing.png',
+  'actor/dragon-blue-body1.png': 'Actor/Boss/DragonBlue/Body1.png',
+  'actor/dragon-blue-body2.png': 'Actor/Boss/DragonBlue/Body2.png',
+  'actor/dragon-blue-body-end.png': 'Actor/Boss/DragonBlue/BodyEnd.png',
+  // tile sân đấu 3 vùng còn lại (đá/đồ vật hàng xa của cliffs + dragonlair dùng chung TilesetNature đã copy ở trên)
+  'tile/village.png': 'Backgrounds/Tilesets/TilesetVillageAbandoned.png'
 };
 
 if (!fs.existsSync(SRC)) { console.error('Không thấy gói: ' + SRC); process.exit(1); }

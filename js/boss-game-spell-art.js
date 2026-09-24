@@ -1,7 +1,7 @@
 /* Game Pháp Sư Lexoria — hiệu ứng phép trên canvas: hạt (js/game-particles.js), quả phép bay, sóng xung kích,
    số sát thương, rung/loé. Chỉ phản ứng theo st.events của boss-game-logic.js (không tự quyết thời điểm).
    Quả phép bay đúng BOSS_TUNING.impactMs → chạm quái đúng lúc event 'impact'.
-   Cần game-particles.js, boss-game-spell-presets.js, boss-game-mage-art.js (mageStaffTip),
+   Cần game-particles.js, boss-game-spell-presets.js,
    boss-game-sprite-actors.js (diễn viên/đạn sprite ở sân tile — hàm chỉ gọi lúc chạy, nạp sau file này cũng được).
    Trận đồ/thiên thạch/tia sét/cột băng/gai đá/lốc + cắt cảnh tuyệt kỹ nằm ở js/boss-game-tier3-ultimate-fx.js
    (nạp sau file này) — gọi qua bossFxSpawnCircle/bossFxSpawnCustom/bossFxUltimateEvent/stepBossTier3Fx nếu có, để file này không vượt 200 dòng. */
@@ -43,7 +43,7 @@ function bossFxEvent(fx, e, st) {
     fx.typo = 0.3;
     bossBurst(fx, m.x, m.y - m.s * 0.5, BOSS_FX_COMMON.typo);
   } else if (e.type === 'cast') {
-    const { p, scale } = bossSpellPreset(e.element, e.tier), tip = L.pixel ? bossMageCastPoint(m) : mageStaffTip(m.x, m.y, m.s, 'cast');
+    const { p, scale } = bossSpellPreset(e.element, e.tier), tip = bossMageCastPoint(m);   // mọi vùng đều sân tile (phase 3)
     p.cast.forEach(o => bossBurst(fx, tip.x, tip.y, o, scale));
     const dur = BOSS_TUNING.impactMs[e.tier] / 1000, id = ++fx.castN;
     for (let h = 0; h < (e.hits || 1); h++) {
