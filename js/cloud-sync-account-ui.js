@@ -44,17 +44,19 @@ async function accountSubmit(kind) {
   const msg = t => { $('#acMsg').textContent = t; };
   if (!ACCOUNT_USER_RX.test(u)) return msg('Tên 3–20 ký tự: chữ thường không dấu, số hoặc dấu _');
   if (p.length < 6 || p.length > 128) return msg('Mật khẩu 6–128 ký tự');
-  const btns = [$('#acLogin'), $('#acRegister')];
-  btns.forEach(b => { b.disabled = true; });
+  const btns = [$('#acLogin'), $('#acRegister')], busy = kind === 'login' ? btns[0] : btns[1];
+  // nút vừa bấm hiện vòng xoay; cả hai khoá để không gửi 2 yêu cầu song song
+  const setBusy = on => { btns.forEach(x => { x.disabled = on; }); busy.classList.toggle('is-loading', on); busy.setAttribute('aria-busy', on); };
+  setBusy(true);
   let r, j = null;
   try {
     r = await fetch('/api/' + kind, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: u, password: p }) });
     try { j = await r.json(); } catch (e) { j = null; }
   } catch (e) {
-    btns.forEach(b => { b.disabled = false; });
+    setBusy(false);
     return msg('Không kết nối được máy chủ. Kiểm tra mạng rồi thử lại.');
   }
-  btns.forEach(b => { b.disabled = false; });
+  setBusy(false);
   if (!r.ok || !j || !j.token) return msg((j && j.error) || 'Máy chủ chưa bật đồng bộ (lỗi ' + r.status + ')');
   // máy đang giữ dữ liệu của tài khoản khác → hỏi, mặc định dùng dữ liệu tài khoản mới (không tự gộp dữ liệu người khác).
   // Chưa từng thuộc TK nào → gộp tiến độ đang có lên tài khoản.

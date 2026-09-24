@@ -7,7 +7,7 @@
 const PLANE_END_DELAY = 1100;   // hết mạng: để vụ nổ cuối chạy xong rồi mới sang màn kết thúc
 const PLANE_MAX_DPR = 2;        // canvas 3x trên iPhone Pro tốn gấp đôi điểm ảnh mà mắt không thấy khác
 
-let planeUi = null;  // null | { seq, raf, last, time, started, paused, ending, canvas, ctx, fx, input, field, off[] }
+let planeUi = null;  // null | { seq, raf, countdown, last, time, started, paused, ending, canvas, ctx, fx, input, field, off[] }
 
 function startPlaneGame() {
   game.stop = stopPlaneLoop;
@@ -24,7 +24,7 @@ function startPlaneGame() {
       '<button class="btn-sm" id="planePause" aria-label="tạm dừng">⏸</button></div></div>';
   bindGameQuit();
   const canvas = $('#planeCanvas');
-  const ui = planeUi = { seq: game.seq, raf: 0, last: 0, time: 0, started: false, paused: false, ending: false,
+  const ui = planeUi = { seq: game.seq, raf: 0, countdown: 0, last: 0, time: 0, started: false, paused: false, ending: false,
     canvas, ctx: canvas.getContext('2d'), fx: createSpaceFx(), input: $('#planeInput'), field: $('#planeField'), off: [] };
   document.documentElement.classList.add('game-lock');
   if (window.visualViewport) { listen(visualViewport, 'resize', fitPlaneGame); listen(visualViewport, 'scroll', fitPlaneGame); }
@@ -47,10 +47,19 @@ function bindPlaneControls(ui) {
   $('#planeGo').onclick = () => {
     input.focus();                                     // phải đồng bộ trong lần chạm, iOS mới bật bàn phím
     if (ui.started) return resumePlanes();
-    ui.started = true;
+    if (ui.countdown) return;
     $('#planeDiff').hidden = true;             // đang chơi không đổi cấp
-    $('#planeOverlay').hidden = true;
-    ui.raf = requestAnimationFrame(planeFrame);
+    $('#planeGo').hidden = true;
+    // chưa started trong lúc đếm: gõ chưa bắn, blur/Esc chưa tạm dừng (Esc = thoát như trước khi bắt đầu)
+    ui.countdown = readyCountdown(n => { $('#planeMsg').innerHTML = readyNumHtml(n); }, () => {
+      if (planeUi !== ui) return;
+      ui.countdown = 0; ui.started = true;
+      $('#planeGo').hidden = false;
+      $('#planeOverlay').hidden = true;
+      ui.raf = requestAnimationFrame(planeFrame);
+      input.focus();
+      if (document.activeElement !== input) pausePlanes();   // lỡ bấm ra ngoài lúc đếm: dừng chờ, đừng để máy bay lao tới
+    });
   };
   ui.field.onmousedown = e => { if (!e.target.closest('button')) e.preventDefault(); };
   ui.field.onclick = e => { if (!e.target.closest('button') && ui.started && !ui.paused) input.focus(); };
@@ -161,6 +170,7 @@ function stopPlaneLoop() {
   if (!ui) return;
   if (game && game.plane) syncPlaneGame();   // từ sai 3 chữ nằm ở st.miss: phải chép sang game trước khi flushMiss
   cancelAnimationFrame(ui.raf);
+  clearInterval(ui.countdown);
   ui.input.onblur = null;          // #app sắp bị vẽ lại: blur lúc đó không được bật lớp tạm dừng
   ui.off.forEach(f => f());
   document.documentElement.classList.remove('game-lock');

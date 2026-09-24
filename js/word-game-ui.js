@@ -87,6 +87,19 @@ function closeGame() {
 }
 function quitGame() { if (game) { closeGame(); render(); } }
 
+/* Đếm ngược 3-2-1 trước ván tính giờ: người chơi kịp đặt tay, đồng hồ chưa chạy.
+   show(n) vẽ số, done() khi hết. Trả id interval để nơi gọi huỷ khi thoát giữa chừng
+   (stopGameTimer clearInterval game.timer; Bắn máy bay giữ ở planeUi.countdown). */
+const READY_FROM = 3, READY_TICK_MS = 650;
+function readyCountdown(show, done) {
+  let n = READY_FROM;
+  show(n);
+  const id = setInterval(() => { n--; if (n > 0) show(n); else { clearInterval(id); done(); } }, READY_TICK_MS);
+  return id;
+}
+// mỗi số là 1 phần tử mới → animation .ready-num chạy lại từ đầu
+function readyNumHtml(n) { return '<span class="ready-num">' + n + '</span>'; }
+
 function markWrong(w) { game.wrong++; game.streak = 0; if (game.miss.indexOf(w.id) < 0) game.miss.push(w.id); }
 function markRight(useCombo) {
   game.right++; game.streak++;

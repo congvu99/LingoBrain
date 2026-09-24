@@ -77,7 +77,22 @@ function bindUI() {
   });
 }
 
+/* Màn chờ khởi động (#boot trong index.html): mạng chậm thì đổi lời nhắn, xong thì mờ dần rồi gỡ khỏi DOM */
+const BOOT_SLOW_MS = 5000, BOOT_FADE_MS = 260;
+function hideBoot() {
+  const el = $('#boot');
+  if (!el) return;
+  clearTimeout(bootSlowT);
+  el.classList.add('boot-done');
+  setTimeout(() => el.remove(), BOOT_FADE_MS);
+}
+const bootSlowT = setTimeout(() => { const m = $('#bootMsg'); if (m) m.textContent = 'Mạng hơi chậm, vẫn đang tải…'; }, BOOT_SLOW_MS);
+
 (async function init() {
+  try { await boot(); } finally { hideBoot(); }   // lỗi giữa chừng cũng không được kẹt màn chờ
+})();
+
+async function boot() {
   // bộ từ tải mỗi lần mở: /api/words (DB; SW network-first, mất mạng thì bản đã cache) → lỗi thì words.json
   const src = await fetchFirstOk(deckSources(Date.now()), u => fetch(u), isDeckJson);
   if (src) {
@@ -96,4 +111,4 @@ function bindUI() {
   showTab('plan');
   syncNow({ initial: true, miss: initialMiss });   // chưa đăng nhập → không làm gì
   setInterval(() => { if (day.date !== dkey() && tab === 'plan') renderPlan(); }, 60000);
-})();
+}

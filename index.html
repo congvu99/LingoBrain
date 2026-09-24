@@ -18,6 +18,15 @@
 </head>
 <body>
 <a class="skip-link" href="#main">Đến nội dung chính</a>
+<!-- màn chờ lúc mở app: che khung còn trống (số 0, bộ từ rỗng) cho tới khi init() tải xong bộ từ -->
+<div class="boot" id="boot" role="status" aria-live="polite">
+  <div class="boot-card">
+    <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M7 9c4-2 7-1 9 1v15c-2-2-5-3-9-1zm18 0c-4-2-7-1-9 1v15c2-2 5-3 9-1z"/><path d="M16 4v2m8-1-2 2M8 5l2 2"/></svg></span>
+    <b class="boot-name">Lingo<span class="brand-light">Brain</span></b>
+    <div class="boot-bar" aria-hidden="true"><i></i></div>
+    <p id="bootMsg">Đang chuẩn bị bộ từ…</p>
+  </div>
+</div>
 <div class="app-scroll" id="appScroll">
 <div class="wrap">
 
@@ -117,12 +126,17 @@
 </div>
 
 <nav class="tabbar" aria-label="điều hướng chính">
+  <a class="nav-brand" href="./" aria-label="LingoBrain — Trang chủ">
+    <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M7 9c4-2 7-1 9 1v15c-2-2-5-3-9-1zm18 0c-4-2-7-1-9 1v15c2-2 5-3 9-1z"/><path d="M16 4v2m8-1-2 2M8 5l2 2"/></svg></span>
+    <span>Lingo<span class="brand-light">Brain</span><small>Mỗi ngày một chút.</small></span>
+  </a>
   <button id="nav-plan" class="on" aria-current="page">
     <span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="1"/><path d="M3 9h18M8 2v4M16 2v4"/></svg><span class="dot" id="dotPlan" hidden></span></span>Hôm nay</button>
   <button id="nav-game" aria-current="false">
     <span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h12l4 4v12H4z"/><path d="M8 12h8M8 16h5M16 4v4h4"/></svg><span class="dot" id="dotGame" hidden></span></span>Ôn từ</button>
   <button id="nav-manage" aria-current="false">
     <span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="7" cy="18" r="1.5"/></svg></span>Góc của bạn</button>
+  <p class="nav-foot"><span></span>Tiến độ lưu trên máy này</p>
 </nav>
 
 <script src="js/srs-scheduler.js"></script>

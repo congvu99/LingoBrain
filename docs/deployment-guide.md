@@ -9,7 +9,7 @@
 LingoBrain chuyển từ web tĩnh sang hybrid: **web tĩnh + API Node.js** chạy cùng domain. Người dùng offline vẫn xem được giáo án; đăng nhập thì tự động đồng bộ tiến độ giữa các máy. Database PostgreSQL được Nhân Hòa cung cấp sẵn.
 
 **Điều kiện bắt buộc:**
-- Nhân Hòa đã tạo sẵn DB PostgreSQL: `lingoBrain`, user `sa`, host nội bộ `lingobrain-gbrd77:5432`.
+- Nhân Hòa đã tạo sẵn DB PostgreSQL: `lingoBrain`, user `sa`, host nội bộ `lingobrain-rbd9fa:5432`.
 - **Tiền điều kiện:** Xoay mật khẩu `sa` trên Nhân Hòa (cái cũ đã chia sẻ qua chat) và cập nhật `DATABASE_URL` trong Environment.
 - Bảng tự tạo từ `server/schema.sql` lần đầu server khởi động (không cần migration thủ công).
 - Bộ từ + audio index tự nạp vào DB từ `words.json` + `audio/index.json` khi hash nội dung khác → không cần chạy CLI trừ khi tạo tài khoản chủ.
@@ -33,7 +33,7 @@ LingoBrain chuyển từ web tĩnh sang hybrid: **web tĩnh + API Node.js** ch�
 Vào tab **Environment** của resource, thêm KEY=VALUE như sau:
 
 ```
-DATABASE_URL=postgresql://sa:<MẬT_KHẨU_ĐÃ_URL_ENCODE>@lingobrain-gbrd77:5432/lingoBrain
+DATABASE_URL=postgresql://sa:<MẬT_KHẨU_ĐÃ_URL_ENCODE>@lingobrain-rbd9fa:5432/lingoBrain
 TRUST_PROXY_HOPS=1
 PGSSL=false
 PORT=3000
@@ -43,7 +43,7 @@ PORT=3000
 
 | Biến | Giá trị | Ghi chú |
 |---|---|---|
-| `DATABASE_URL` | `postgresql://sa:<mật khẩu>@lingobrain-gbrd77:5432/lingoBrain` | **Chú ý:** mật khẩu chứa ký tự đặc biệt (ví dụ `@`), phải URL-encode. Ví dụ: `@` → `%40`. Dùng công cụ encode hoặc Python: `urllib.parse.quote_plus('password')` |
+| `DATABASE_URL` | `postgresql://sa:<mật khẩu>@lingobrain-rbd9fa:5432/lingoBrain` | **Chú ý:** mật khẩu chứa ký tự đặc biệt (ví dụ `@`), phải URL-encode. Ví dụ: `@` → `%40`. Dùng công cụ encode hoặc Python: `urllib.parse.quote_plus('password')` |
 | `TRUST_PROXY_HOPS` | `1` | **Bắt buộc.** Mặc định 0 thì mọi người dùng chia chung 1 IP proxy → rate limit theo IP chặn nhầm cả nhóm. Đặt 1 để tin `X-Forwarded-For` của proxy Nhân Hòa. |
 | `PGSSL` | `false` | Mạng nội bộ không cần TLS. Nếu lỗi kết nối SSL → thử `true` + thêm `PGSSLROOTCERT=/path/to/ca.pem` |
 | `PORT` | `3000` | Cổng mặc định. Chỉnh nếu nền tảng yêu cầu khác |
@@ -51,7 +51,7 @@ PORT=3000
 **Cảnh báo:** Mật khẩu chứa `@` phải URL-encode, không encode khác cũng được nhưng cẩn thận. Ví dụ:
 - Mật khẩu gốc: `MyPass@123`
 - URL-encoded: `MyPass%40123`
-- DATABASE_URL: `postgresql://sa:MyPass%40123@lingobrain-gbrd77:5432/lingoBrain`
+- DATABASE_URL: `postgresql://sa:MyPass%40123@lingobrain-rbd9fa:5432/lingoBrain`
 
 **Khuyến cáo:** Mật khẩu đã được chia sẻ qua chat. Nên đổi sang mật khẩu mạnh mới qua Nhân Hòa.
 
@@ -113,7 +113,7 @@ unset ADMIN_PASSWORD
 | `--reset-owner-password` | Đổi mật khẩu tài khoản đã tồn tại, thu hồi phiên cũ | Nếu không → từ chối |
 
 **Biến môi trường:**
-- `DATABASE_URL` (bắt buộc): `postgresql://sa:PASSWORD@lingobrain-gbrd77:5432/lingoBrain`
+- `DATABASE_URL` (bắt buộc): `postgresql://sa:PASSWORD@lingobrain-rbd9fa:5432/lingoBrain`
 - `PGSSL=false` (mặc định, trong mạng nội bộ)
 - `PGSSLROOTCERT` (nếu cần TLS)
 - `ADMIN_USERNAME`, `ADMIN_PASSWORD` (cả hai hoặc không có): tạo/reset tài khoản chủ
@@ -288,7 +288,7 @@ Client sẽ thấy toast "Có bản mới → Tải lại". Bộ từ cập nh�
 
 Nhân Hòa tự backup theo lịch (đã bật ở Bước 1). Để backup thủ công:
 1. Vào **Database** → PostgreSQL → **Backup**
-2. Hoặc dùng `pg_dump`: `pg_dump -U sa -h lingobrain-gbrd77 -d lingoBrain > backup.sql`
+2. Hoặc dùng `pg_dump`: `pg_dump -U sa -h lingobrain-rbd9fa -d lingoBrain > backup.sql`
 
 ---
 
@@ -317,7 +317,7 @@ Nếu Node version gặp lỗi nghiêm trọng:
 
 | Triệu chứng | Nguyên nhân | Giải pháp |
 |---|---|---|
-| **Deploy log: không thấy `schema ready` sau 30s** | DATABASE_URL sai, mật khẩu không encode, SSL lỗi, DB timeout | Kiểm tra URL encoding (đặc biệt `@`), test kết nối từ host Nhân Hòa: `psql postgresql://sa:...@lingobrain-gbrd77:5432/lingoBrain`. Thử `PGSSL=true` nếu lỗi. |
+| **Deploy log: không thấy `schema ready` sau 30s** | DATABASE_URL sai, mật khẩu không encode, SSL lỗi, DB timeout | Kiểm tra URL encoding (đặc biệt `@`), test kết nối từ host Nhân Hòa: `psql postgresql://sa:...@lingobrain-rbd9fa:5432/lingoBrain`. Thử `PGSSL=true` nếu lỗi. |
 | **Deploy log: thấy `schema ready` nhưng không thấy `deck seeded`** | `AUTO_SEED=false` hoặc hash nội dung khớp rồi (deploy lại) | Kiểm tra log: `deck up to date` là bình thường. Nếu cần seed lại: `node tools/seed-database.js --skip-deck` trên console Nhân Hòa. |
 | **GET /api/words: 503 "Bộ từ chưa được nạp"** | DB sẵn nhưng bảng `words` rỗng (mất dữ liệu hoặc chưa nạp) | Nếu tình cờ xoá bộ từ: `node tools/seed-database.js --skip-deck` không có `--reset`. Nếu schema chưa tạo: xem dòng trên. |
 | **CLI: "Tên ... đã tồn tại"** | Tài khoản chủ đã có | Thêm `--reset-owner-password` để đổi mật khẩu + thu hồi phiên cũ, hoặc xoá tài khoản bằng SQL. |

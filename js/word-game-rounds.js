@@ -8,10 +8,19 @@ const LOW_TIME = 10000;      // 10 giây cuối thì thanh đồng hồ đổi m
 /* ---- khung 60 giây, dùng chung cho Chạy 60 giây và Điền câu tốc độ ---- */
 
 function startTimedGame() {
-  game.endsAt = Date.now() + SPRINT_SECONDS * 1000;
-  // mốc thời gian tuyệt đối, không cộng dồn mỗi tick → khoá màn hình giữa ván vẫn hết đúng giờ
-  game.timer = setInterval(tickTimer, 200);
-  nextTimedWord();
+  const seq = game.seq;
+  $('#app').innerHTML = '<div class="card page game-ready">' + gameHeadHtml(SPRINT_SECONDS + ' giây') +
+    '<div class="ready-box" id="gReady" aria-live="assertive"></div>' +
+    '<p class="small muted">Sẵn sàng… trả lời liền mạch để lên combo.</p></div>';
+  bindGameQuit();
+  // đang đếm: game.timer giữ interval đếm ngược → thoát giữa chừng vẫn được stopGameTimer dọn
+  game.timer = readyCountdown(n => { const el = $('#gReady'); if (el) el.innerHTML = readyNumHtml(n); }, () => {
+    if (!game || game.over || game.seq !== seq) return;
+    game.endsAt = Date.now() + SPRINT_SECONDS * 1000;
+    // mốc thời gian tuyệt đối, không cộng dồn mỗi tick → khoá màn hình giữa ván vẫn hết đúng giờ
+    game.timer = setInterval(tickTimer, 200);
+    nextTimedWord();
+  });
 }
 
 function stopGameTimer() {
