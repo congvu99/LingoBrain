@@ -2,8 +2,8 @@
    Ranh giới cứng: module này KHÔNG ghi gì vào SM-2. Kênh liên lạc duy nhất với engine ôn
    là danh sách id từ trả lời sai (addMiss) → buildQueue() đẩy lên đầu phiên ôn kế tiếp. */
 
-const GAME_IDS = ['scramble', 'sprint', 'cloze', 'planes', 'fruit'];
-const GAME_LABEL = { scramble: 'Xếp chữ', sprint: 'Chạy 60 giây', cloze: 'Điền câu tốc độ', planes: 'Bắn máy bay', fruit: 'Chém chữ' };
+const GAME_IDS = ['scramble', 'sprint', 'cloze', 'planes', 'fruit', 'boss'];   // rollback Pháp sư = gỡ 'boss' khỏi đây (server giữ hợp đồng)
+const GAME_LABEL = { scramble: 'Xếp chữ', sprint: 'Chạy 60 giây', cloze: 'Điền câu tốc độ', planes: 'Bắn máy bay', fruit: 'Chém chữ', boss: 'Pháp sư' };
 const MIN_LEARNED = 8;          // đủ từ để sinh 3 đáp án nhiễu
 const SCRAMBLE_ROUND = 10;      // số từ mỗi ván Xếp chữ
 const TIMED_ROUND = 60;         // từ bốc sẵn mỗi vòng của ván tính giờ (60s được ~25-30 câu)

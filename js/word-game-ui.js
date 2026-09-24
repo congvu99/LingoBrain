@@ -22,13 +22,14 @@ function gameBestKey(id) {
 
 function gameChipsHtml(a) {
   return GAME_IDS.map(id => {
-    const best = (gameScore[gameBestKey(id)] || {}).best;
+    // Pháp sư không có kỷ lục điểm: chip hiện cấp pháp sư
+    const best = id === 'boss' ? 'Lv ' + levelFromXp(bossProg.xp) : (gameScore[gameBestKey(id)] || {}).best;
     const open = gameOpen(id, a);
     // aria-disabled thay cho disabled: nút disabled không phát click nên trên điện thoại
     // người dùng chạm vào sẽ không nhận được lời giải thích vì sao bị khoá
     return '<button class="game-chip" data-game="' + id + '"' + (open ? '' : ' aria-disabled="true" title="' + esc(gameLockReason(id, a)) + '"') + '>' +
       '<span>' + GAME_LABEL[id] + '</span>' +
-      (open ? (best ? '<b class="mono">★ ' + best + '</b>' : '') : '<b class="mono">🔒</b>') +
+      (open ? (best ? '<b class="mono">' + (id === 'boss' ? '' : '★ ') + esc(best) + '</b>' : '') : '<b class="mono">🔒</b>') +
       '</button>';
   }).join('');
 }
@@ -62,6 +63,8 @@ function renderGameChips() {
 
 function startGame(id) {
   closeGame();                    // ván cũ (nếu có) phải được chốt: dừng đồng hồ, lưu từ sai
+  // Pháp sư: hub riêng, mỗi trận tự tạo `game` mới (js/boss-game-ui.js); không bốc từ, không qua endGame/gameScore
+  if (id === 'boss') { game = { id, seq: ++gameSeq, miss: [], over: false, stop: stopBossHub }; syncGameChrome(); return startBossHub(); }
   const pool = gamePool(deck, srs, id);
   const n = id === 'scramble' ? SCRAMBLE_ROUND : TIMED_ROUND;
   game = { id, seq: ++gameSeq, words: pickGameWords(pool, srs, n, Math.random), i: 0, right: 0, wrong: 0, score: 0, streak: 0, bestStreak: 0, miss: [], locked: false, over: false, timer: null, endsAt: 0 };

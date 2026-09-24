@@ -1,7 +1,7 @@
 ---
 phase: 2
 title: "Trận tối thiểu + lưu tiến trình + hub tối giản + chip; hạt dùng chung, chậm thời gian, pháp sư, phép bậc 1"
-status: pending
+status: completed
 priority: P1
 dependencies: [1]
 ---
@@ -65,3 +65,13 @@ Một trận chơi được từ chip → hub tối giản → trận → kết 
 - Refactor hạt/viewport của Bắn máy bay có thể gây hồi quy → test cap tự động + chơi thử trước khi làm phần boss.
 - iOS bàn phím đẩy layout → cùng hàm fit đã chạy ở Bắn máy bay.
 - `speak()` trễ lần đầu trên iOS → phát sau `cast`, không chặn gameplay.
+
+## Ghi chú triển khai (2026-09-24)
+- 406 test Node xanh. Chạy thử desktop Chrome: chip → sảnh → trận → thắng, lưu wins/day/XP, lên cấp. Bắn máy bay chạy bình thường, không lỗi console.
+- **Chưa làm**: thử trên iPhone PWA; đo FPS trên máy thật (`?fps`). Để P6.
+- Dựng sớm 2 file có trong danh sách chốt, để mỗi file < 200 dòng:
+  - `boss-game-spell-art.js` (P3 mở rộng): fx trận gồm hạt, quả phép bay đúng `impactMs`, vòng xung kích, số sát thương, `bossSpellPreset` + fallback bậc.
+  - `boss-game-result-ui.js` (P5 mở rộng): `bossUiEvents` (thẻ đề), `persistBattle`, `showBossResult`.
+- Quái/nền tạm nằm ở `boss-game-render.js` (`drawTempMonster`, `drawBossBackdrop`) và `boss-game-hub-ui.js` (`bossTempMonster`); P4 thay.
+- Cân bằng: thắng trận đầu chỉ sau ~5 phép (khắc hệ Lửa ×1,5 + tốc độ ×2). Chỉnh ở P6.
+- Nút trong trận chặn `mousedown` và `touchstart` (touchend gọi hành động), nên chạm không đóng bàn phím.

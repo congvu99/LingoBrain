@@ -1,10 +1,10 @@
 /* Khoá localStorage, helper chung, trạng thái toàn cục của app.
-   Nạp sau js/srs-scheduler.js (cần migrateV1). */
+   Nạp sau js/srs-scheduler.js (cần migrateV1) và js/boss-progress-sync-merge.js (cần cleanBoss). */
 
 const APP_VERSION = '2.13.2';
 const K_DECK = 'eng.deck.v1', K_SRS = 'eng.srs.v2', K_SRS_V1 = 'eng.srs.v1',
       K_CFG = 'eng.cfg.v1', K_PLAN = 'eng.plan.v1', K_DAY = 'eng.day.v1',
-      K_GAMEMISS = 'eng.gamemiss.v1', K_GAMESCORE = 'eng.gamescore.v1';
+      K_GAMEMISS = 'eng.gamemiss.v1', K_GAMESCORE = 'eng.gamescore.v1', K_BOSS = 'eng.boss.v1';
 
 function load(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
 // opts.stamp === false: lưu kỹ thuật, không đóng dấu sửa cho đồng bộ (xem js/cloud-sync-engine.js onLocalSave)
@@ -36,6 +36,9 @@ let deck = { deck: 'Bộ từ của tôi', words: [] };
 let plan = null, day = null;                 // daily-plan.js khởi tạo
 let gameMiss = load(K_GAMEMISS, []);      // id từ trả lời sai trong game → lên đầu phiên ôn kế
 let gameScore = load(K_GAMESCORE, {});    // kỷ lục mỗi game
+// tiến trình Pháp sư. Đồng bộ có thể THAY object → mọi chỗ ghi phải đọc global bossProg ngay lúc ghi, không giữ tham chiếu
+let bossProg = cleanBoss(load(K_BOSS, null), Date.now());
+function saveBoss() { save(K_BOSS, bossProg); }
 // từ sai đã vào hàng đợi phiên này rồi thì không cần giữ trong localStorage nữa
 function consumeGameMiss() { if (gameMiss.length) { gameMiss = []; save(K_GAMEMISS, gameMiss); } }
 let queue = [], cur = null, step = 1, mode = 'type', revealed = false, tab = 'plan';

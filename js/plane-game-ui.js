@@ -102,17 +102,10 @@ function flushTyped(ui) {
 function fitPlaneGame() {
   const el = $('#planeGame'), ui = planeUi;
   if (!el || !ui) return;
-  const vv = window.visualViewport;
-  el.style.top = (vv ? vv.offsetTop : 0) + 'px';
-  el.style.height = (vv ? vv.height : window.innerHeight) + 'px';
-  const w = ui.field.clientWidth, h = ui.field.clientHeight, dpr = Math.min(PLANE_MAX_DPR, window.devicePixelRatio || 1);
-  if (!w || !h || (w === ui.w && h === ui.h && dpr === ui.dpr)) return;   // dpr đổi (kéo cửa sổ sang màn khác) cũng vẽ lại
-  ui.w = w; ui.h = h; ui.dpr = dpr;
-  ui.canvas.width = Math.round(w * dpr); ui.canvas.height = Math.round(h * dpr);
-  ui.canvas.style.width = w + 'px'; ui.canvas.style.height = h + 'px';
-  ui.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  resizeSpaceFx(ui.fx, w, h, dpr);
-  if (game && game.plane) { resizePlaneState(game.plane, w, h); drawPlaneScene(ui.ctx, game.plane, ui.fx, ui.time); }
+  fitGameToViewport(el, ui, PLANE_MAX_DPR, (w, h, dpr) => {
+    resizeSpaceFx(ui.fx, w, h, dpr);
+    if (game && game.plane) { resizePlaneState(game.plane, w, h); drawPlaneScene(ui.ctx, game.plane, ui.fx, ui.time); }
+  });
 }
 
 function planeFrame(t) {

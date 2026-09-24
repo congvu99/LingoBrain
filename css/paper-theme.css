@@ -310,6 +310,38 @@ html.game-lock .tabbar{display:none}
 .fruit-game .plane-diff button{background:#2c1a0d;color:#fff4e6;border-color:#5a3a1f}
 .fruit-game .plane-diff button b{color:#ffe2bf}
 .fruit-game .plane-diff button[aria-checked="true"]{border-color:#ffd23f;background:#4a2c12;box-shadow:0 0 0 2px rgba(255,210,63,.25)}
+
+/* ---- Pháp sư: khung trận phủ toàn màn như Bắn máy bay (lớp phủ, ô gõ, nút cấp dùng lại .plane-*), tông tím đêm ---- */
+.boss-game{position:fixed;left:0;right:0;top:0;height:100%;z-index:55;display:flex;flex-direction:column;
+  padding:10px max(16px,env(safe-area-inset-right,0px),calc((100% - 560px) / 2)) max(8px,env(safe-area-inset-bottom,0px))
+    max(16px,env(safe-area-inset-left,0px),calc((100% - 560px) / 2));background:#0c0820;color:#f3e9ff;
+  touch-action:none;overscroll-behavior:contain}
+.boss-game .game-head{margin-bottom:6px;padding-bottom:6px;flex:none;border-bottom-color:rgba(255,255,255,.08)}
+.boss-game .game-head .mono,.boss-game .btn-ghost{color:#d9ccf5}
+.boss-game .plane-input-row input,.boss-game .plane-input-row button{background:#1a1238;color:#f3e9ff;border-color:#3a2d6b;box-shadow:none}
+.boss-game .plane-input-row input:focus{border-color:#c9a2ff;box-shadow:0 0 0 3px rgba(201,162,255,.2)}
+.boss-field{background:#120b2e}
+.boss-overlay{background:rgba(12,8,32,.72)}
+.boss-overlay .ready-num{color:#e8c46a;font-size:96px}
+.boss-prompt{flex:none;display:grid;grid-template-columns:auto 1fr;align-items:center;gap:2px 10px;margin-bottom:8px;padding:8px 12px;
+  border-radius:var(--r-sm);background:#1a1238;border:1px solid #3a2d6b;overflow-wrap:anywhere}
+.boss-prompt[data-tier="2"]{border-color:#9b7be8;box-shadow:0 0 0 1px rgba(155,123,232,.35)}
+.boss-prompt[data-tier="3"]{border-color:#e8c46a;box-shadow:0 0 12px rgba(232,196,106,.45),inset 0 0 10px rgba(232,196,106,.15)}
+.boss-tier{grid-row:span 2;font-size:15px;letter-spacing:1px;color:#b9a6ea}
+.boss-prompt[data-tier="3"] .boss-tier{color:#ffd76a;text-shadow:0 0 8px rgba(255,215,106,.8)}
+.boss-prompt-text{font-size:19px;line-height:1.3}
+.boss-letters{font-size:17px;letter-spacing:3px;color:#8f82b8;white-space:pre-wrap}
+.boss-letters b{color:#ffe9a8;font-weight:700}
+.boss-hint{font-style:normal;color:#bff7df;opacity:.7}
+.boss-reveal{color:#ff9a9a;letter-spacing:2px}
+.boss-prompt.typo{animation:boss-shake 280ms}
+@keyframes boss-shake{25%{transform:translateX(-5px)}50%{transform:translateX(4px)}75%{transform:translateX(-2px)}}
+.boss-hub{display:flex;flex-direction:column;gap:14px}
+.boss-hub-level,.boss-hub-today{display:flex;flex-direction:column;gap:6px}
+.boss-hub-level .bar-track{height:8px}
+.boss-diff button{background:var(--card);color:var(--ink);border-color:var(--rule)}
+.boss-diff button b{color:inherit;opacity:.7}
+.boss-diff button[aria-checked="true"]{border-color:var(--accent);background:var(--accent-wash);box-shadow:none}
 /* màn kết thúc: cặp từ hay nhầm */
 .game-confusions ul{list-style:none;margin:4px 0 12px;padding:0}
 .game-confusions li{margin:2px 0}
@@ -539,7 +571,7 @@ button.is-loading::after{content:"";position:absolute;inset:0;margin:auto;width:
 @keyframes ready-pop{from{opacity:0;transform:scale(1.5)}30%{opacity:1;transform:scale(1)}to{opacity:.85;transform:scale(.92)}}
 
 /* ---- chuyển màn: tab mới / thẻ ôn mới hiện dần, không nhảy phựt ---- */
-main>section:not([hidden]),#app>:not(.plane-game):not(.fruit-game){animation:screen-in 220ms var(--ease)}
+main>section:not([hidden]),#app>:not(.plane-game):not(.fruit-game):not(.boss-game){animation:screen-in 220ms var(--ease)}
 @keyframes screen-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
 /* logo + chú thích trong thanh điều hướng chỉ dùng ở sidebar desktop */
@@ -578,6 +610,7 @@ main>section:not([hidden]),#app>:not(.plane-game):not(.fruit-game){animation:scr
   #tab-manage{max-width:860px;margin-inline:0}
 
   /* Bắn máy bay: bàn phím thật → sân rộng hơn điện thoại */
+  .boss-game{padding-top:20px;padding-bottom:20px}
   .plane-game{padding-left:max(24px,calc((100% - 820px) / 2));padding-right:max(24px,calc((100% - 820px) / 2));padding-top:20px;padding-bottom:20px}
 }
 /* đủ chỗ cho 2 cột (thẻ ôn ≥ ~480px): thẻ ôn trái, thống kê + game phải; đang chơi (cột phải bị giấu) → 1 cột giữa */

@@ -108,6 +108,10 @@ describe('pickGameWords', () => {
 });
 
 describe('gamePool — boss', () => {
+  it('gameAvailability có boss, mở khi ≥ MIN_LEARNED từ có nghĩa', () => {
+    const deck = mkDeck(MIN_LEARNED), a = gameAvailability(deck, mkSrs(deck));
+    assert.includes(GAME_IDS, 'boss'); assert.ok(a.boss.ok); assert.equal(GAME_LABEL.boss, 'Pháp sư');
+  });
   it('từ đã học có nghĩa', () => {
     const d = { words: [{ id: 'a', word: 'cat', meaning: 'mèo' }, { id: 'b', word: 'dog', meaning: '' }, { id: 'c', word: 'sun', meaning: 'mặt trời' }] };
     const srs = mkSrs(d); srs.c.state = 'new';

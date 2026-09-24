@@ -73,6 +73,8 @@ function bindUI() {
       if (e.key !== 'Escape') return;
       if (game.id === 'planes' && !game.over && planeUi && planeUi.started) togglePlanePause();
       else if (game.id === 'fruit' && !game.over && fruitUi && fruitUi.started) toggleFruitPause();
+      // Pháp sư: trong trận Esc xử lý ở ô gõ; tới đây là lúc ô gõ mất focus (đang tạm dừng) → chơi tiếp
+      else if (game.id === 'boss' && !game.over && bossUi && bossUi.started) toggleBossPause();
       else quitGame();
       return;
     }

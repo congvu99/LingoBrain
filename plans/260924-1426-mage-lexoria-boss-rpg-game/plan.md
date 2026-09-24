@@ -27,7 +27,7 @@ Chip thứ 6 trong "Chơi nhanh". Pháp sư (nam/nữ) đánh quái theo cốt t
 | # | Phase | File | Depends | Status |
 |---|---|---|---|---|
 | 1 | Logic thuần: toán phép, trận đấu, nguyên tố, tiến trình, sanitize/merge + test | [phase-01-pure-battle-progress-and-sync-logic.md](phase-01-pure-battle-progress-and-sync-logic.md) | — | completed |
-| 2 | Trận tối thiểu + lưu tiến trình + hub tối giản + chip; hạt dùng chung, chậm thời gian, pháp sư, phép bậc 1 | [phase-02-battle-shell-particles-and-slow-motion.md](phase-02-battle-shell-particles-and-slow-motion.md) | 1 | pending |
+| 2 | Trận tối thiểu + lưu tiến trình + hub tối giản + chip; hạt dùng chung, chậm thời gian, pháp sư, phép bậc 1 | [phase-02-battle-shell-particles-and-slow-motion.md](phase-02-battle-shell-particles-and-slow-motion.md) | 1 | completed |
 | 3 | Phép bậc 2–3, 5 tuyệt kỹ, hiệu ứng nội tại | [phase-03-tier-spells-ultimates-and-passive-fx.md](phase-03-tier-spells-ultimates-and-passive-fx.md) | 2 | pending |
 | 4 | Quái (5 dáng → 12 con), nền vùng, dữ liệu 28 đoạn truyện, thẻ truyện, Nhật ký | [phase-04-monsters-regions-and-story.md](phase-04-monsters-regions-and-story.md) | 1, 2 | pending |
 | 5 | Hub đầy đủ: chọn pháp sư, cây nguyên tố, trường phái, buff Ôn từ, kết trận, luồng truyện | [phase-05-hub-skill-tree-and-battle-flow.md](phase-05-hub-skill-tree-and-battle-flow.md) | 2, 4 | pending |
