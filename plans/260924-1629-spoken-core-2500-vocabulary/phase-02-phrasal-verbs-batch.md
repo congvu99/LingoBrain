@@ -1,9 +1,10 @@
 ---
 phase: 2
-title: "Phrasal verbs batch"
-status: pending
+title: Phrasal verbs batch
+status: in-progress
 priority: P2
-dependencies: [1]
+dependencies:
+  - 1
 ---
 
 # Phase 2: Phrasal verbs batch
