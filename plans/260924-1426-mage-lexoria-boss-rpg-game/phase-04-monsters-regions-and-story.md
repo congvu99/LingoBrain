@@ -1,7 +1,7 @@
 ---
 phase: 4
 title: "Quái (5 dáng → 12 con), nền vùng, dữ liệu 28 đoạn truyện, thẻ truyện, Nhật ký"
-status: pending
+status: completed
 priority: P2
 dependencies: [1, 2]
 ---

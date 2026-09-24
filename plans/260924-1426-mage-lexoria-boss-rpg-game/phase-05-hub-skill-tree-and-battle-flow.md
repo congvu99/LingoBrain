@@ -1,7 +1,7 @@
 ---
 phase: 5
 title: "Hub đầy đủ: chọn pháp sư, cây nguyên tố, trường phái, buff Ôn từ, kết trận, luồng truyện"
-status: pending
+status: completed
 priority: P1
 dependencies: [2, 4]
 ---

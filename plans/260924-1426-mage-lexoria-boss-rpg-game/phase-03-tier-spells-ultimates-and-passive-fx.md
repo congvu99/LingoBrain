@@ -1,7 +1,7 @@
 ---
 phase: 3
 title: "Phép bậc 2–3, 5 tuyệt kỹ, hiệu ứng nội tại"
-status: pending
+status: completed
 priority: P2
 dependencies: [2]
 ---

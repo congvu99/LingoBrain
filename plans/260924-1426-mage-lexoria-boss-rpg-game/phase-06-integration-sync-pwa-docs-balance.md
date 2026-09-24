@@ -1,7 +1,7 @@
 ---
 phase: 6
 title: "Tích hợp: sync/backup, bảng người dùng hợp đồng, PWA, docs, cân bằng, FPS iPhone"
-status: pending
+status: in-progress
 priority: P1
 dependencies: [3, 5]
 ---
@@ -76,3 +76,7 @@ Tương thích phiên bản: server và web tĩnh chạy cùng một tiến trì
 - Rollback sai cách (gỡ `boss` khỏi `sync-merge.js`) xoá dữ liệu mọi tài khoản → ghi rõ trong docs + chú thích đầu `boss-progress-sync-merge.js`.
 - Khôi phục backup cũ → luôn gộp, không thay.
 - Rollback đúng: hạ `APP_VERSION`, gỡ `'boss'` khỏi `GAME_IDS`; `boss` vẫn đi qua sync vô hại.
+
+## Ghi chú triển khai (2026-09-24)
+- Xong: sync/backup/refreshAfterSync + test; README + system-architecture; 2.14.0; cân bằng tạm hp 1000/2000, xpPerDmg 0.1; review tích hợp (dup-win, quái theo ngày, hp.boss) đã sửa.
+- Còn (cần user/máy thật): FPS iPhone với `?fps`; smoke 2 máy cùng tài khoản; chỉnh cân bằng sau chơi thử; bố cục khung thấp cắt chân pháp sư/quái; reduced-motion cho loé tuyệt kỹ + lốc; quái lao tới khi ra đòn / tan hạt khi chết (P4 bước duyệt).
