@@ -24,6 +24,11 @@ js/plane-game-typing.js  Bắn máy bay: nhắm bắn theo chữ gõ — ứng v
 js/plane-game-effects.js Bắn máy bay: nền vũ trụ (tinh vân + 3 lớp sao), hạt nổ, sóng xung kích, chớp, rung, chữ bay
 js/plane-game-render.js  Bắn máy bay: vẽ canvas tàu mình / thiên thạch / tàu địch / tàu mẹ / đạn / nhãn tự xuống dòng
 js/plane-game-ui.js      Bắn máy bay: khung phủ theo visualViewport, canvas DPR, vòng rAF, ô gõ từng chữ, tạm dừng
+js/fruit-game-logic.js   Chém chữ: cấp độ, bom na ná (Levenshtein), đợt quả, vật lý ném, cắt đoạn vuốt, chấm nhát  [thuần, cần comboMult]
+js/fruit-game-fruit-art.js Chém chữ: vẽ 7 loại quả bằng canvas (vỏ nguyên + mặt cắt ruột), không emoji/ảnh
+js/fruit-game-render.js  Chém chữ: trạng thái hiệu ứng — nền gỗ, nửa quả, giọt nước, vết loang, sao, sóng, vệt dao, chữ bay
+js/fruit-game-scene-draw.js Chém chữ: vẽ 1 khung — bóng đổ, quầng vàng/xanh, tia chém, vệt dao phát sáng, viền đỏ khi sai
+js/fruit-game-ui.js      Chém chữ: khung phủ, pointer events vuốt, canvas DPR, vòng rAF, tạm dừng, chọn cấp
 js/word-game-rounds.js   game: khung đồng hồ 60s + vẽ 3 dạng câu hỏi
 js/word-game-ui.js       game: chip chọn, vòng đời ván, màn kết thúc
 js/app-shell.js          tab, bindUI, phím tắt, init
@@ -125,7 +130,7 @@ Body: {data: {v, srsEpoch, srs, cfg, ...}}
 | `eng.cfg.v1` | `{newPerDay, maxSession}` |
 | `eng.plan.v1`, `eng.day.v1` | giáo án, checkbox/streak/caption hôm nay |
 | `eng.gamemiss.v1` | `[id]` từ trả lời sai trong game, tối đa 10 — kênh duy nhất từ game sang engine ôn |
-| `eng.gamescore.v1` | `{[gameId]: {best, plays}}` kỷ lục mỗi game; Bắn máy bay tách theo cấp: `planes` (Vừa), `planes-easy`, `planes-hard` |
+| `eng.gamescore.v1` | `{[gameId]: {best, plays}}` kỷ lục mỗi game; Bắn máy bay / Chém chữ tách theo cấp: `planes` (Vừa), `planes-easy`, `planes-hard`, `fruit` (Vừa), `fruit-easy`, `fruit-hard` (tổng 9 khoá, sync-merge cho tối đa 20) |
 | `eng.auth.v1` | `{token, username}` khi đăng nhập (dùng cho `/api/sync`) |
 | `eng.syncmeta.v1` | `{cfgTs, planTs, dayTs, srsEpoch, owner, syncedAt}` — mốc đồng bộ |
 | IndexedDB `lingobrain/recordings` | `{id, taskId, date, caption, blob, type}` |
@@ -137,9 +142,9 @@ Body: {data: {v, srsEpoch, srs, cfg, ...}}
 - **Hàng đợi**: thẻ đến hạn xếp quá hạn lâu nhất trước, cắt `maxSession`; từ mới xen sau mỗi 3 thẻ ôn.
 - **So khớp mờ**: từ ≥5 ký tự chấp nhận lệch 1 ký tự (Levenshtein), cụm từ so từng token.
 
-## Game từ vựng (js/word-games.js · word-game-rounds.js · word-game-ui.js · plane-game-*.js)
+## Game từ vựng (js/word-games.js · word-game-rounds.js · word-game-ui.js · plane-game-*.js · fruit-game-*.js)
 
-4 game ngắn vào từ hàng chip đầu tab Ôn từ. Lấp 3 chỗ 5 dạng kiểm tra không chạm tới:
+5 game ngắn vào từ hàng chip đầu tab Ôn từ. Lấp 3 chỗ 5 dạng kiểm tra không chạm tới:
 
 | Game | Luyện | Thể thức | Mở khi |
 |---|---|---|---|
@@ -147,6 +152,7 @@ Body: {data: {v, srsEpoch, srs, cfg, ...}}
 | `sprint` Chạy 60 giây | phản xạ nhanh | 60s, từ → chọn nghĩa, combo | ≥8 từ đã học có nghĩa |
 | `cloze` Điền câu tốc độ | từ nào hợp câu nào | 60s, câu khoét lỗ → chọn từ, combo | ≥8 từ đã học có `context` chứa chính từ đó |
 | `planes` Bắn máy bay | nhớ chủ động + chính tả | kiểu ZType trên canvas: mỗi chữ cái đúng = 1 viên đạn, chữ cuối nổ; 3 mạng, tăng tốc mỗi 5 lần hạ | ≥8 từ đã học có nghĩa |
+| `fruit` Chém chữ | phân biệt từ na ná | kiểu Fruit Ninja: đề nghĩa Việt, vuốt chém 1 quả đúng giữa bom na ná; 3 mạng, tăng tốc mỗi 5 lần đúng | ≥8 từ đã học có nghĩa, ≤16 ký tự |
 
 **Ranh giới cứng: game không ghi gì vào SM-2.** Không gọi `applyGrade`, không đụng `ef/ivl/due/state/reps/lapses/hist`. Lý do: một ván 60s ≈ 25 lượt, đoán mò 4 đáp án đúng 25% → lịch ôn phình sai chỉ sau vài ván. Điểm cũng không vào `hist` nên tỉ lệ nhớ 7/30 ngày vẫn phản ánh ôn thật.
 
@@ -171,6 +177,14 @@ Kênh duy nhất từ game sang engine ôn là **danh sách từ sai**: `flushMi
 - Ô gõ ẩn: mỗi ký tự trong sự kiện `input` = 1 phát bắn, rồi xoá ô; bỏ qua khi IME đang soạn (`isComposing`, xử lý ở `compositionend`). Canvas theo `devicePixelRatio` (tối đa 2).
 - Dùng chung object `game`: `syncPlaneGame()` chép `score/right/wrong/streak/bestStreak/miss` sang `game` → `endGame()`/`flushMiss()` dùng chung. `game.stop = stopPlaneLoop` được `stopGameTimer()` gọi → huỷ rAF, gỡ listener, gỡ `html.game-lock`.
 - iOS: khung `position:fixed` đặt `top/height` theo `visualViewport`; `focus()` gọi đồng bộ trong handler chạm "Bắt đầu"/"Chơi tiếp"; `blur`/`visibilitychange` → tạm dừng (dừng hẳn rAF). `#app` nằm trong `.wrap` (z-index 1) nên giấu tabbar khi chơi. Esc: ô gõ tự bắt để tạm dừng/tiếp; `app-shell` gọi `togglePlanePause()` thay vì `quitGame()` (trừ màn kết thúc).
+
+### Chém chữ (kiểu Fruit Ninja, Canvas 2D)
+
+- **Logic thuần** (`fruit-game-logic.js`), px của khung, ngẫu nhiên qua `rand`. Đợt = 1 quả đúng + `count − 1` bom (Dễ 3 · Vừa 4 · Khó 5 quả), xáo vào làn ngang chia đều, xuất phát lệch nhau ≤ 0,25s. Mỗi quả bay đúng `air / speedup^level` giây: đỉnh ở 25–40% chiều cao, trọng lực suy từ độ cao cần lên. Đợt xong + mọi quả rời màn → nghỉ 0,4s rồi đợt mới.
+- **Bom chỉ lấy từ đã học** (`gamePool(deck, srs, 'fruit')`), bỏ từ trùng nghĩa/trùng chữ với đích. Vừa/Khó `lookAlikeWords`: Levenshtein ≤ max(2, ⌊len×0,4⌋) hoặc chung ≥ 3 chữ đầu, xếp theo khoảng cách rồi cùng `pos`; thiếu thì lùi về cùng `pos` + độ dài ±2, rồi bất kỳ. Dễ: `randomDecoys`.
+- **Chấm theo nhát**: `sliceSegment` (đoạn ≥ 8px) cắt quả ngay về hình (`split`) và ghi vào `stroke.hits`; `endStroke` (nhả tay, hoặc tự gọi khi nhát > 0,6s) chấm: có bom → `wrong` (−1 ❤️, `miss`, `confusions['đích|bom']++`, quả đúng `reveal`), chỉ quả đúng → `right` (10 × `comboMult` × 2 nếu đợt vàng + 5 nếu < 1s từ lúc xuất hiện). Quả đúng rơi qua đáy khi đợt còn mở → `drop` (−1 ❤️, `miss`). Mọi kết quả đều kết thúc đợt. Đợt vàng: từ đích `lapses ≥ 2` → **cả đợt** viền vàng (chỉ tô quả đúng là lộ đáp án).
+- UI (`fruit-game-ui.js`): pointer events trên canvas, `passive:false` + `preventDefault`, `setPointerCapture`, `getCoalescedEvents` để nhát nhanh không lọt quả; chỉ nhận khi `started && !paused`. `speak()` từ đúng khi chém đúng và khi lộ đáp án. `syncFruitGame()` chép `score/right/wrong/streak/bestStreak/miss/confusions` sang `game`; `game.stop = stopFruitLoop` (huỷ rAF, đếm ngược, listener, `html.game-lock`). `visibilitychange`/⏸/Esc → tạm dừng (dừng hẳn rAF). Cấp lưu `cfg.fruitLevel`, kỷ lục `fruitScoreKey`.
+- `endGame()` dùng chung thêm khối "Bạn hay nhầm" chỉ khi `game.confusions` có dữ liệu (top 5) → 4 game khác không đổi.
 
 `wordRx(word, flags)` trong `js/word-games.js` là hàm khớp-từ-trong-câu dùng chung: chặn biên hai đầu (`art` không khớp trong `smart`), cho đuôi chia thường gặp (`reckon` khớp `reckoned`), chạy được trên chuỗi đã escape HTML (từ chứa `&`). `blanked()` của màn ôn và bộ lọc pool `cloze` cùng dùng nó nên luôn đồng ý với nhau. `blanked()` thay **mọi** lần xuất hiện — câu lặp từ mà chỉ che lần đầu là lộ đáp án.
 

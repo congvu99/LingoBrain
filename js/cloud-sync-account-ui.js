@@ -21,23 +21,45 @@ function renderAccount() {
   if (!box) return;
   const a = authInfo();
   if (a) {
-    box.innerHTML = '<div class="row" style="margin-top:4px"><span>👤 <b>' + esc(a.username) + '</b> · <span id="acStatus" class="small muted"></span></span>' +
-      '<button type="button" class="btn-sm btn-ghost" id="acLogout">Đăng xuất</button></div>';
+    box.innerHTML = '<div class="acct-card acct-signed">' +
+      '<span class="acct-avatar" aria-hidden="true">' + esc(a.username.charAt(0).toUpperCase()) + '</span>' +
+      '<div class="acct-who"><b>' + esc(a.username) + '</b><span id="acStatus" class="small muted"></span></div>' +
+      '<button type="button" class="btn-sm" id="acLogout">Đăng xuất</button></div>';
     $('#acStatus').textContent = syncStatusText(syncRunState().status);
     $('#acLogout').onclick = accountLogout;
     return;
   }
-  box.innerHTML = '<form id="acForm" autocomplete="on" novalidate>' +
-    '<div class="grid2">' +
-      '<div><label class="f" for="acUser">Tên đăng nhập</label><input id="acUser" name="username" autocomplete="username" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20"></div>' +
-      '<div><label class="f" for="acPass">Mật khẩu</label><input id="acPass" name="password" type="password" autocomplete="current-password" maxlength="128"></div>' +
-    '</div>' +
-    '<div class="row"><button type="submit" id="acLogin">Đăng nhập</button><button type="button" class="btn-ghost" id="acRegister">Đăng ký</button></div>' +
-    '<p class="small muted" id="acMsg" role="status" aria-live="polite">Đăng nhập để đồng bộ từ đã học giữa các thiết bị. Quên mật khẩu sẽ không lấy lại được.</p>' +
+  box.innerHTML = '<form class="acct-card" id="acForm" autocomplete="on" novalidate>' +
+    '<div class="acct-head"><span class="acct-icon" aria-hidden="true">' + ACCT_ICON.cloud + '</span>' +
+      '<div><h3>Đồng bộ giữa các thiết bị</h3><p class="small muted">Đăng nhập để học tiếp trên điện thoại, máy tính.</p></div></div>' +
+    '<label class="f" for="acUser">Tên đăng nhập</label>' +
+    '<div class="field">' + ACCT_ICON.user + '<input id="acUser" name="username" type="text" placeholder="vd: lan_anh" autocomplete="username" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="20"></div>' +
+    '<label class="f" for="acPass">Mật khẩu</label>' +
+    '<div class="field">' + ACCT_ICON.lock + '<input id="acPass" name="password" type="password" placeholder="Ít nhất 6 ký tự" autocomplete="current-password" maxlength="128">' +
+      '<button type="button" class="field-btn" id="acShowPass" aria-label="Hiện mật khẩu" aria-pressed="false">' + ACCT_ICON.eye + '</button></div>' +
+    '<p class="acct-msg small" id="acMsg" role="status" aria-live="polite"></p>' +
+    '<button type="submit" class="btn-primary acct-submit" id="acLogin">Đăng nhập</button>' +
+    '<p class="acct-alt small muted">Chưa có tài khoản? <button type="button" class="btn-link" id="acRegister">Tạo tài khoản mới</button></p>' +
+    '<p class="acct-note small muted">Quên mật khẩu sẽ không lấy lại được — hãy ghi nhớ cẩn thận.</p>' +
   '</form>';
   $('#acForm').onsubmit = e => { e.preventDefault(); accountSubmit('login'); };
   $('#acRegister').onclick = () => accountSubmit('register');
+  $('#acShowPass').onclick = () => {
+    const p = $('#acPass'), show = p.type === 'password';
+    p.type = show ? 'text' : 'password';
+    $('#acShowPass').setAttribute('aria-pressed', show);
+    $('#acShowPass').setAttribute('aria-label', show ? 'Ẩn mật khẩu' : 'Hiện mật khẩu');
+  };
 }
+
+// icon nét (cùng kiểu thanh điều hướng): stroke theo currentColor
+const ACCT_SVG = d => '<svg viewBox="0 0 24 24" aria-hidden="true">' + d + '</svg>';
+const ACCT_ICON = {
+  cloud: ACCT_SVG('<path d="M7 18h10a4 4 0 0 0 .6-7.96A6 6 0 0 0 6.1 9.2 4.5 4.5 0 0 0 7 18z"/><path d="m9.5 13.5 2 2 3.5-3.5"/>'),
+  user: ACCT_SVG('<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>'),
+  lock: ACCT_SVG('<rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/>'),
+  eye: ACCT_SVG('<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/>')
+};
 
 async function accountSubmit(kind) {
   const u = $('#acUser').value.trim().toLowerCase(), p = $('#acPass').value;

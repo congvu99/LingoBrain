@@ -10,6 +10,7 @@ const PURE_MODULES = [
   'js/review-mode-picker.js',
   'js/stats-dashboard.js',
   'js/word-games.js',
+  'js/fruit-game-logic.js',
   'js/plane-game-text.js',
   'js/plane-game-logic.js',
   'js/plane-game-typing.js'

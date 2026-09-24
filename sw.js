@@ -1,6 +1,6 @@
 /* Service worker: cache-first cho toàn bộ file tĩnh. Đổi CACHE mỗi lần deploy để người dùng nhận bản mới.
    MP3 trong audio/ nằm ở cache riêng AUDIO_CACHE, cache dần khi phát, không xoá khi lên version. */
-const CACHE = 'lingobrain-v2.12.0';
+const CACHE = 'lingobrain-v2.13.1';
 const AUDIO_CACHE = 'lingobrain-audio';
 const ASSETS = [
   './',
@@ -34,6 +34,11 @@ const ASSETS = [
   './js/plane-game-effects.js',
   './js/plane-game-render.js',
   './js/plane-game-ui.js',
+  './js/fruit-game-logic.js',
+  './js/fruit-game-fruit-art.js',
+  './js/fruit-game-render.js',
+  './js/fruit-game-scene-draw.js',
+  './js/fruit-game-ui.js',
   './js/word-game-rounds.js',
   './js/word-game-ui.js',
   './js/app-shell.js',
@@ -41,7 +46,9 @@ const ASSETS = [
 ];
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
+  // cache:'reload' bỏ qua HTTP cache của trình duyệt: css/js có max-age=3600, không bỏ qua thì bản cài mới
+  // gộp index.html mới với css/js cũ → giao diện vỡ, JS cũ không khớp HTML mới
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS.map(u => new Request(u, { cache: 'reload' })))));
 });
 self.addEventListener('activate', e => {
   e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE && k !== AUDIO_CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim()));

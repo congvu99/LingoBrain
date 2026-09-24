@@ -91,7 +91,7 @@ Chọn nghĩa cần ≥8 từ trong bộ; điền câu cần bạn đã lưu câ
 
 ## Game từ vựng
 
-Hàng **Chơi nhanh** ở đầu tab Ôn từ. Bốn game ngắn, luyện những thứ mà 5 dạng kiểm tra ở trên không chạm tới:
+Hàng **Chơi nhanh** ở đầu tab Ôn từ. Năm game ngắn, luyện những thứ mà 5 dạng kiểm tra ở trên không chạm tới:
 
 | Game | Luyện gì | Thể thức | Mở khi |
 |---|---|---|---|
@@ -99,12 +99,15 @@ Hàng **Chơi nhanh** ở đầu tab Ôn từ. Bốn game ngắn, luyện nhữn
 | **Chạy 60 giây** | phản xạ nhanh | 60 giây, thấy từ chọn nghĩa, chuỗi đúng 5 → ×1.5, 10 → ×2 | ≥8 từ đã học |
 | **Điền câu tốc độ** | từ nào hợp câu nào | 60 giây, câu ví dụ khoét lỗ, chọn 1 trong 4 từ | ≥8 từ đã học **có câu ví dụ** |
 | **Bắn máy bay** | nhớ chủ động + chính tả, dưới áp lực | nền vũ trụ; thiên thạch / tàu địch / tàu mẹ mang `emoji + nghĩa Việt` lao về tàu bạn. Mỗi chữ cái gõ đúng bắn 1 viên đạn, chữ cuối làm nổ tung. Từ càng dài bay càng chậm; 3 ❤️, mỗi 5 lần hạ thì nhanh hơn 8% | ≥8 từ đã học |
+| **Chém chữ** | phân biệt từ na ná, nhìn nghĩa nhận ra từ | kiểu Fruit Ninja trên nền gỗ: đề là `emoji + nghĩa Việt`, mỗi đợt tung 3–5 quả mang từ tiếng Anh, 1 quả đúng, còn lại là bom — từ đã học viết na ná. Vuốt chém quả đúng; 3 ❤️ | ≥8 từ đã học (≤16 ký tự) |
 
 **Chơi game không làm giãn lịch ôn.** Trả lời đúng không ghi gì vào SM-2; trả lời sai thì từ đó được đẩy lên đầu phiên ôn kế tiếp. Nói cách khác game chỉ rút ngắn lịch, không bao giờ kéo dài — đoán mò trong 4 đáp án sẽ không làm hỏng tiến độ.
 
 Chip bị xám nghĩa là chưa đủ điều kiện, chạm vào sẽ nói rõ còn thiếu gì. **Điền câu tốc độ** cần từ đã học có trường `context` (câu ví dụ) trong `words.json`.
 
 **Bắn máy bay:** chọn cấp **Dễ / Vừa / Khó** rồi bấm **Bắt đầu** (iPhone: để bật bàn phím; khung chơi tự co vừa phần trên bàn phím). Dễ rơi chậm (15s), ít mục tiêu, hiện sẵn chữ cái đầu; Vừa 11s; Khó 8s và đông hơn. Mỗi cấp một kỷ lục, cấp lần trước được chọn sẵn. **Muốn hạ mục tiêu nào thì gõ từ của nó** — game không tự chọn thay bạn. Mọi mục tiêu có từ bắt đầu bằng chữ đang gõ đều hiện tiến độ (`s t u _ _ _ _ _`). Khi chữ đang gõ còn khớp nhiều từ (`re` → `reckon` / `reach out`), game không chọn thay: đạn vẫn bắn ra theo từng chữ nhưng lơ lửng chờ trên tàu; chữ tiếp theo chốt mục tiêu và toàn bộ đạn chờ lao vào nó. Đổi ý giữa chừng cứ gõ từ khác, không cần xoá. Tàu của bạn nghiêng mình bay sang phía mục tiêu đang bắn. Hai từ trùng đầu như `give` / `give up`: gõ tiếp `up` để hạ `give up`, hoặc **Enter** để hạ `give`; Enter khi chưa gõ trọn từ nào thì xoá chữ đang gõ. Dấu cách, gạch nối tự bỏ qua. Gõ sai chỉ làm đạn bay trượt, không trừ điểm; sai 3 chữ trên cùng một mục tiêu thì từ đó được ôn trước. Mục tiêu chạm tàu: mất 1 ❤️, từ hiện màu đỏ và vào danh sách ôn trước. Đóng bàn phím, chuyển app, bấm ⏸ hoặc Esc thì tạm dừng. Nên tắt Telex/Unikey khi chơi.
+
+**Chém chữ:** chọn **Dễ / Vừa / Khó** (3 / 4 / 5 quả mỗi đợt; Dễ lấy bom ngẫu nhiên, Vừa và Khó lấy bom **na ná** từ đúng — `stubborn` đi cùng `stubby`, `stumble`). Vuốt ngón tay (hoặc kéo chuột) qua quả mang từ đúng; chạm không vuốt không chém. **Một nhát được chấm lúc nhả tay** (hoặc sau 0,6 giây): trúng bom nào — kể cả khi trúng luôn quả đúng — là sai, nên quét bừa cả màn không ghi được điểm. Chém nhầm hoặc để quả đúng rơi: mất 1 ❤️, quả đúng sáng xanh và được đọc to, từ đó vào danh sách ôn trước. Điểm: 10 × combo, ×2 khi cả đợt viền vàng (từ bạn hay quên), +5 nếu chém trong 1 giây. Mỗi 5 lần đúng quả bay nhanh hơn. Màn kết thúc liệt kê **cặp hay nhầm** (`stubborn ✂️ stumble ×2`). Chuyển app, bấm ⏸ hoặc Esc thì tạm dừng. Mỗi cấp một kỷ lục. Trong Safari (không phải app đã cài), vuốt sát mép trái có thể bị hiểu là "quay lại" — khung chơi đã chừa lề, nên cài app ra màn hình chính khi chơi.
 
 Bỏ ván giữa chừng (đổi tab hoặc bấm ←) thì không tính điểm, nhưng **từ vừa sai vẫn vào hàng đợi ôn**. Kỷ lục mỗi game lưu trên máy và nằm trong file backup.
 

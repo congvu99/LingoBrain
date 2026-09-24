@@ -68,8 +68,14 @@ function bindUI() {
   // phím tắt desktop: Space tiếp tục · 1–4 chấm · S nghe lại
   document.addEventListener('keydown', e => {
     if (/INPUT|TEXTAREA/.test(e.target.tagName)) return;
-    // đang chơi: phím của màn ôn không áp dụng. Bắn máy bay: Esc = tạm dừng/chơi tiếp (thoát bằng nút ←)
-    if (game) { if (e.key === 'Escape') { if (game.id === 'planes' && !game.over && planeUi && planeUi.started) togglePlanePause(); else quitGame(); } return; }
+    // đang chơi: phím của màn ôn không áp dụng. Bắn máy bay / Chém chữ: Esc = tạm dừng/chơi tiếp (thoát bằng nút ←)
+    if (game) {
+      if (e.key !== 'Escape') return;
+      if (game.id === 'planes' && !game.over && planeUi && planeUi.started) togglePlanePause();
+      else if (game.id === 'fruit' && !game.over && fruitUi && fruitUi.started) toggleFruitPause();
+      else quitGame();
+      return;
+    }
     if (tab !== 'game') return;
     if (e.key === ' ') { e.preventDefault(); const b = $('#b-next') || $('#b-reveal') || $('#b-check') || $('#b-done'); if (b && !b.hidden) b.click(); }
     if (e.key.toLowerCase() === 's' && cur) speak(cur.context || cur.word);

@@ -84,7 +84,7 @@ button:disabled{opacity:.42;cursor:default;box-shadow:none}
 .empty h2{margin-top:0}
 
 /* ---- input ---- */
-input[type=text],input[type=number],textarea{width:100%;font:16px/1.6 var(--font-ui);color:var(--ink);background:var(--paper-2);
+input:not([type]),input[type=text],input[type=password],input[type=number],textarea{width:100%;font:16px/1.6 var(--font-ui);color:var(--ink);background:var(--paper-2);
   border:1px solid var(--rule);border-radius:var(--r-sm);padding:12px 14px;min-height:48px;outline:none;
   transition:border-color var(--t) var(--ease),background var(--t) var(--ease),box-shadow var(--t) var(--ease)}
 input.serif,textarea.serif{font-family:var(--font-read);font-size:18px;line-height:1.6}
@@ -289,6 +289,30 @@ html.game-lock .tabbar{display:none}
 .plane-input-row{display:flex;gap:6px;flex:none;padding-top:8px}
 .plane-input-row input{flex:1;min-width:0;min-height:48px;font-size:18px}   /* ≥16px: iOS không tự phóng to */
 .plane-input-row .btn-sm{flex:none;min-width:48px;padding:0}
+
+/* ---- Chém chữ: khung phủ toàn màn như Bắn máy bay, nền gỗ tối; lớp phủ + nút cấp dùng lại .plane-overlay/.plane-diff ---- */
+.fruit-game{position:fixed;inset:0;z-index:55;display:flex;flex-direction:column;
+  /* lề ngang ≥ 16px: vuốt sát mép trái trong Safari (không phải PWA) là cử chỉ "quay lại" */
+  padding:max(10px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px),calc((100% - 560px) / 2)) max(8px,env(safe-area-inset-bottom,0px))
+    max(16px,env(safe-area-inset-left,0px),calc((100% - 560px) / 2));background:#1a0f07;color:#fff4e6;
+  touch-action:none;overscroll-behavior:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.fruit-game .game-head{margin-bottom:6px;padding-bottom:6px;flex:none;border-bottom-color:rgba(255,230,200,.1)}
+.fruit-game .game-head .mono{font-size:13px;color:#ffe2bf}
+.fruit-game .btn-ghost{color:#ffe2bf}
+.fruit-prompt{flex:none;min-height:44px;margin-bottom:8px;padding:8px 12px;border-radius:var(--r-sm);background:#2c1a0d;
+  border:1px solid #5a3a1f;font-size:19px;line-height:1.35;text-align:center;overflow-wrap:anywhere}
+.fruit-field{position:relative;flex:1;min-height:0;overflow:hidden;border-radius:var(--r-sm);background:#24150b}
+.fruit-field canvas{position:absolute;inset:0;display:block;touch-action:none}
+.fruit-pause{position:absolute;top:8px;right:8px;z-index:1;min-width:44px;min-height:44px;padding:0;
+  background:rgba(20,10,4,.6);color:#fff4e6;border-color:rgba(255,230,200,.25);box-shadow:none}
+.fruit-overlay{background:rgba(20,10,4,.74)}
+.fruit-overlay .ready-num{color:#ffd23f;font-size:96px}
+.fruit-game .plane-diff button{background:#2c1a0d;color:#fff4e6;border-color:#5a3a1f}
+.fruit-game .plane-diff button b{color:#ffe2bf}
+.fruit-game .plane-diff button[aria-checked="true"]{border-color:#ffd23f;background:#4a2c12;box-shadow:0 0 0 2px rgba(255,210,63,.25)}
+/* màn kết thúc: cặp từ hay nhầm */
+.game-confusions ul{list-style:none;margin:4px 0 12px;padding:0}
+.game-confusions li{margin:2px 0}
 .bar-track > .bar.low{background:var(--bad)}
 .combo{color:var(--accent);font-size:12px;margin-left:8px}
 .mcq.two{grid-template-columns:1fr 1fr}
@@ -414,7 +438,7 @@ h1{font:700 clamp(25px,4.8vw,34px)/1.25 var(--font-ui);letter-spacing:-1.1px;tex
 #tab-manage summary::before{color:var(--accent);background:var(--accent-wash);border-radius:8px;width:28px;height:28px;display:grid;place-items:center;flex:none}
 #tab-manage details:not([open]){padding-bottom:8px}
 #tab-manage details>p{margin-top:4px;font-size:14px}
-input[type=text],input[type=number],textarea{background:var(--paper);font-size:16px;border-radius:12px}
+input:not([type]),input[type=text],input[type=password],input[type=number],textarea{background:var(--paper);font-size:16px;border-radius:12px}
 label.f{font-family:var(--font-ui);font-size:13px;text-transform:none;letter-spacing:0}
 .list .it{flex-wrap:wrap;gap:8px;overflow-wrap:anywhere}.list .it .spacer{display:none}
 .list .it b{min-width:80px}.list .it .btn-sm{margin-left:auto}
@@ -515,7 +539,7 @@ button.is-loading::after{content:"";position:absolute;inset:0;margin:auto;width:
 @keyframes ready-pop{from{opacity:0;transform:scale(1.5)}30%{opacity:1;transform:scale(1)}to{opacity:.85;transform:scale(.92)}}
 
 /* ---- chuyển màn: tab mới / thẻ ôn mới hiện dần, không nhảy phựt ---- */
-main>section:not([hidden]),#app>:not(.plane-game){animation:screen-in 220ms var(--ease)}
+main>section:not([hidden]),#app>:not(.plane-game):not(.fruit-game){animation:screen-in 220ms var(--ease)}
 @keyframes screen-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
 /* logo + chú thích trong thanh điều hướng chỉ dùng ở sidebar desktop */
@@ -570,3 +594,46 @@ main>section:not([hidden]),#app>:not(.plane-game){animation:screen-in 220ms var(
   .game-chip:not([aria-disabled="true"]):hover{border-color:var(--accent);background:var(--accent-wash)}
 }
 @media (min-width:1440px){ .wrap{max-width:1240px} #tab-game{grid-template-columns:minmax(0,1fr) 360px} }
+
+/* ---- thẻ tài khoản (Cài đặt & sao lưu): form đăng nhập / trạng thái đã đăng nhập ---- */
+.acct-card{max-width:460px;margin:4px 0 12px;padding:22px;border:1px solid var(--rule-soft);border-radius:20px;background:var(--paper)}
+.acct-head{display:flex;gap:14px;align-items:flex-start;margin-bottom:6px}
+.acct-head h3{margin:0;font-size:17px;font-weight:650;letter-spacing:-.2px;line-height:1.35}
+.acct-head p{margin:2px 0 0;line-height:1.5}
+.acct-icon{flex:none;width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:var(--accent-wash);color:var(--accent)}
+.acct-icon svg,.field svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.acct-card label.f{margin:16px 0 6px;color:var(--ink);font-weight:600}
+/* ô nhập có icon bên trái; viền + vòng sáng nằm ở .field để icon/nút mắt cùng sáng theo */
+.field{position:relative;display:flex;align-items:center;background:var(--card);border:1px solid var(--rule);border-radius:14px;
+  transition:border-color var(--t) var(--ease),box-shadow var(--t) var(--ease)}
+.field>svg{position:absolute;left:14px;width:20px;height:20px;color:var(--ink-muted);pointer-events:none}
+.field input,.acct-card .field input{flex:1;min-width:0;min-height:50px;padding:12px 14px 12px 44px;border:0;background:transparent;box-shadow:none;border-radius:14px}
+.field input:focus{box-shadow:none;background:transparent}
+.field input::placeholder{color:var(--ink-muted);opacity:.7}
+.field:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-wash)}
+.field:focus-within>svg{color:var(--accent)}
+.field input:focus-visible{outline:none}
+.field-btn{flex:none;width:44px;min-height:44px;margin-right:3px;padding:0;border:0;background:transparent;box-shadow:none;color:var(--ink-muted);border-radius:11px}
+.field-btn svg{position:static;width:20px;height:20px}
+.field-btn[aria-pressed="true"]{color:var(--accent)}
+.acct-msg{margin:10px 0 0;color:var(--bad);font-weight:500}
+.acct-msg:empty{display:none}
+.acct-submit{width:100%;margin-top:18px;min-height:50px;font-size:16px}
+.btn-link{min-height:44px;padding:0 4px;border:0;background:transparent;box-shadow:none;color:var(--accent);font-weight:600;font-size:inherit}
+.btn-link:active{background:transparent;transform:none;text-decoration:underline}
+.acct-alt{margin:8px 0 0;text-align:center}
+.acct-note{margin:4px 0 0;text-align:center;font-size:12px}
+.acct-signed{display:flex;align-items:center;gap:14px;padding:16px 18px}
+.acct-avatar{flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--paper);font-weight:700;font-size:18px}
+.acct-who{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.4}
+.acct-who b{font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.group-label{margin:28px 0 0;font:650 11px/1.5 var(--font-ui);letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+@media (hover:hover){
+  .btn-link:not(:disabled):hover{box-shadow:none;border-color:transparent;text-decoration:underline}
+  .field-btn:not(:disabled):hover{box-shadow:none;color:var(--ink);background:var(--paper-2)}
+}
+@media (max-width:599px){ .acct-card{padding:18px;max-width:none} }
+/* ô số của Nhịp học cùng kiểu ô nhập tài khoản, không kéo dài hết thẻ trên desktop */
+#tab-manage .grid2{max-width:460px}
+#tab-manage input[type=number]{background:var(--card);border-radius:14px;min-height:50px}
+#tab-manage input[type=number]:focus{border-color:var(--accent)}

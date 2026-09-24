@@ -15,6 +15,10 @@ describe('sw.js ASSETS', () => {
     html.replace(/<link rel="stylesheet" href="([^"]+)"/g, (_, s) => refs.push(s));
     refs.forEach(r => assert.includes(assets, './' + r, r));
   });
+  // addAll(ASSETS) thẳng sẽ lấy css/js từ HTTP cache (max-age) → bản cài mới trộn HTML mới với css/js cũ
+  it('install bypasses the browser HTTP cache', () => {
+    assert.ok(/addAll\(ASSETS\.map\([^;]*cache:\s*'reload'/.test(sw), "install phải tải lại với cache: 'reload'");
+  });
   it('CACHE version matches APP_VERSION', () => {
     const v = /CACHE\s*=\s*'lingobrain-v([^']+)'/.exec(sw)[1];
     const app = /APP_VERSION\s*=\s*'([^']+)'/.exec(fs.readFileSync(path.join(ROOT, 'js/app-storage.js'), 'utf8'))[1];

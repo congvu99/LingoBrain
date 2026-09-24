@@ -2,13 +2,14 @@
    Ranh giới cứng: module này KHÔNG ghi gì vào SM-2. Kênh liên lạc duy nhất với engine ôn
    là danh sách id từ trả lời sai (addMiss) → buildQueue() đẩy lên đầu phiên ôn kế tiếp. */
 
-const GAME_IDS = ['scramble', 'sprint', 'cloze', 'planes'];
-const GAME_LABEL = { scramble: 'Xếp chữ', sprint: 'Chạy 60 giây', cloze: 'Điền câu tốc độ', planes: 'Bắn máy bay' };
+const GAME_IDS = ['scramble', 'sprint', 'cloze', 'planes', 'fruit'];
+const GAME_LABEL = { scramble: 'Xếp chữ', sprint: 'Chạy 60 giây', cloze: 'Điền câu tốc độ', planes: 'Bắn máy bay', fruit: 'Chém chữ' };
 const MIN_LEARNED = 8;          // đủ từ để sinh 3 đáp án nhiễu
 const SCRAMBLE_ROUND = 10;      // số từ mỗi ván Xếp chữ
 const TIMED_ROUND = 60;         // từ bốc sẵn mỗi vòng của ván tính giờ (60s được ~25-30 câu)
 const SCRAMBLE_MAX_LEN = 14;    // từ dài hơn thì ô chữ tràn màn hình nhỏ
 const CLOZE_MAX_SENTENCE = 120; // câu dài hơn thì tràn trên máy nhỏ
+const FRUIT_WORD_MAX = 16;      // Chém chữ: nhãn dài hơn không vừa quả
 const SPRINT_SECONDS = 60;
 const MISS_MAX = 10;
 const SCRAMBLE_TRIES = 10;      // số lần xáo lại tối đa để khác từ gốc
@@ -35,6 +36,7 @@ function gamePool(deck, srs, gameId) {
     if (!r || r.state === 'new') return false;
     if (gameId === 'scramble') return !!w.meaning && w.word.length > 2 && w.word.length <= SCRAMBLE_MAX_LEN;
     if (gameId === 'sprint' || gameId === 'planes') return !!w.meaning;
+    if (gameId === 'fruit') return !!w.meaning && w.word.length <= FRUIT_WORD_MAX;
     if (gameId === 'cloze') return !!w.context && w.context.length <= CLOZE_MAX_SENTENCE && wordRx(w.word).test(w.context);
     return true;
   });

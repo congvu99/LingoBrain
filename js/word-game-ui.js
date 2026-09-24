@@ -15,9 +15,14 @@ function gameLockReason(id, a) {
   return 'Cần học thêm ' + a[id].need + ' từ nữa';
 }
 
+/* Game có cấp độ lưu kỷ lục riêng từng cấp → chip hiện kỷ lục của cấp đang chọn */
+function gameBestKey(id) {
+  return id === 'planes' ? planeScoreKey(cfg.planeLevel) : id === 'fruit' ? fruitScoreKey(cfg.fruitLevel) : id;
+}
+
 function gameChipsHtml(a) {
   return GAME_IDS.map(id => {
-    const best = (gameScore[id === 'planes' ? planeScoreKey(cfg.planeLevel) : id] || {}).best;   // Bắn máy bay: kỷ lục cấp đang chọn
+    const best = (gameScore[gameBestKey(id)] || {}).best;
     const open = gameOpen(id, a);
     // aria-disabled thay cho disabled: nút disabled không phát click nên trên điện thoại
     // người dùng chạm vào sẽ không nhận được lời giải thích vì sao bị khoá
@@ -62,7 +67,7 @@ function startGame(id) {
   game = { id, seq: ++gameSeq, words: pickGameWords(pool, srs, n, Math.random), i: 0, right: 0, wrong: 0, score: 0, streak: 0, bestStreak: 0, miss: [], locked: false, over: false, timer: null, endsAt: 0 };
   if (!game.words.length) { game = null; return toast('❌ Chưa đủ từ đã học'); }
   syncGameChrome();
-  if (id === 'scramble') renderScramble(); else if (id === 'planes') startPlaneGame(); else startTimedGame();
+  if (id === 'scramble') renderScramble(); else if (id === 'planes') startPlaneGame(); else if (id === 'fruit') startFruitGame(); else startTimedGame();
 }
 
 /* Chốt từ sai của ván: nhét lên đầu hàng đợi của phiên đang chạy, đồng thời lưu ra
@@ -129,6 +134,7 @@ function endGame() {
   save(K_GAMESCORE, gameScore);
 
   const missWords = missed.map(id => (deck.words.find(w => w.id === id) || {}).word).filter(Boolean);
+  const mixups = confusionsHtml(game.confusions);
   $('#app').innerHTML = '<div class="card page game-end">' +
     '<div class="step-label">' + esc(GAME_LABEL[game.id] + (game.levelLabel ? ' · ' + game.levelLabel : '')) + ' · xong</div>' +
     '<div class="game-end-score"><b>' + score + '</b><span>điểm</span></div>' +
@@ -137,7 +143,7 @@ function endGame() {
     (missWords.length
       ? '<p class="small">' + missWords.length + ' từ vừa sai sẽ được ôn trước ở phiên tới:</p>' +
         '<p class="serif">' + missWords.map(esc).join(' · ') + '</p>'
-      : '<p class="small ok">Không sai từ nào.</p>') +
+      : '<p class="small ok">Không sai từ nào.</p>') + mixups +
     '<div class="row"><button class="btn-primary" id="gAgain">Chơi lại</button>' +
     '<button id="gToReview">Vào ôn từ</button><button class="btn-ghost" id="gDone">Xong</button></div></div>';
 
@@ -145,4 +151,15 @@ function endGame() {
   $('#gAgain').onclick = () => { game = null; startGame(id); };
   $('#gToReview').onclick = () => { game = null; restartSession(); };
   $('#gDone').onclick = () => { game = null; render(); };
+}
+
+/* Chém chữ: cặp từ đích ✂️ bom đã chém nhầm, nhiều nhất trước, tối đa 5 dòng. Game khác không có → rỗng */
+const CONFUSIONS_SHOWN = 5;
+function confusionsHtml(conf) {
+  const rows = Object.keys(conf || {}).map(k => ({ k, n: conf[k] })).sort((a, b) => b.n - a.n).slice(0, CONFUSIONS_SHOWN);
+  if (!rows.length) return '';
+  return '<div class="game-confusions"><p class="small">Bạn hay nhầm:</p><ul>' + rows.map(r => {
+    const [target, decoy] = r.k.split('|');
+    return '<li class="serif">' + esc(target) + ' <span aria-label="nhầm với">✂️</span> ' + esc(decoy) + (r.n > 1 ? ' <b class="mono">×' + r.n + '</b>' : '') + '</li>';
+  }).join('') + '</ul></div>';
 }

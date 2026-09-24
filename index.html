@@ -92,12 +92,14 @@
   <details>
     <summary>Cài đặt &amp; sao lưu</summary>
     <div id="acct"></div>
+    <p class="group-label">Sao lưu</p>
     <div class="row" style="margin-top:4px">
       <button id="btnExportAll">Tải backup</button>
       <input type="file" id="fileRestore" accept=".json" hidden>
       <button id="btnRestore">Khôi phục</button>
     </div>
     <p class="small muted">Backup gồm tiến độ, giáo án, checkbox hôm nay, cài đặt. Bộ từ do ứng dụng cung cấp nên không nằm trong backup; bản ghi âm cũng không.</p>
+    <p class="group-label">Nhịp học</p>
     <div class="grid2">
       <div><label class="f" for="setNew">Từ mới mỗi ngày</label><input type="number" id="setNew" min="1" max="50" inputmode="numeric"></div>
       <div><label class="f" for="setMax">Tối đa ôn mỗi phiên</label><input type="number" id="setMax" min="5" max="200" inputmode="numeric"></div>
@@ -160,6 +162,11 @@
 <script src="js/plane-game-effects.js"></script>
 <script src="js/plane-game-render.js"></script>
 <script src="js/plane-game-ui.js"></script>
+<script src="js/fruit-game-logic.js"></script>
+<script src="js/fruit-game-fruit-art.js"></script>
+<script src="js/fruit-game-render.js"></script>
+<script src="js/fruit-game-scene-draw.js"></script>
+<script src="js/fruit-game-ui.js"></script>
 <script src="js/word-game-rounds.js"></script>
 <script src="js/word-game-ui.js"></script>
 <script src="js/app-shell.js"></script>

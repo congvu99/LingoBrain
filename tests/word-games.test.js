@@ -61,6 +61,13 @@ describe('gameAvailability', () => {
     const deck = mkDeck(5), a = gameAvailability(deck, mkSrs(deck));
     assert.equal(a.sprint.ok, false); assert.equal(a.sprint.have, 5); assert.equal(a.sprint.need, 3);
   });
+  it('Chém chữ: mở khi đủ 8 từ, bỏ từ > 16 ký tự và từ không có nghĩa', () => {
+    const deck = mkDeck(8);
+    assert.ok(gameAvailability(deck, mkSrs(deck)).fruit.ok);
+    deck.words[0].word = 'counterintuitively'; deck.words[1].meaning = '';
+    const a = gameAvailability(deck, mkSrs(deck));
+    assert.equal(a.fruit.ok, false); assert.equal(a.fruit.have, 6); assert.equal(a.fruit.need, 2);
+  });
   it('không có câu ví dụ → chỉ cloze bị khoá', () => {
     const deck = mkDeck(10, { noContext: true }), a = gameAvailability(deck, mkSrs(deck));
     assert.ok(a.scramble.ok); assert.ok(a.sprint.ok); assert.equal(a.cloze.ok, false);
