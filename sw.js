@@ -1,6 +1,6 @@
 /* Service worker: cache-first cho toàn bộ file tĩnh. Đổi CACHE mỗi lần deploy để người dùng nhận bản mới.
    MP3 trong audio/ nằm ở cache riêng AUDIO_CACHE, cache dần khi phát, không xoá khi lên version. */
-const CACHE = 'lingobrain-v2.17.0';
+const CACHE = 'lingobrain-v2.18.0';
 const AUDIO_CACHE = 'lingobrain-audio';
 const ASSETS = [
   './',
@@ -48,13 +48,13 @@ const ASSETS = [
   './js/boss-game-progress.js',
   './js/boss-game-story.js',
   './js/boss-game-spell-presets.js',
-  './js/boss-game-mage-art.js',
   './js/boss-game-spell-art.js',
   './js/boss-game-tier3-ultimate-fx.js',
   './js/boss-game-sprite-atlas.js',
   './js/boss-game-dragon-composite.js',
   './js/boss-game-arena.js',
   './js/boss-game-sprite-actors.js',
+  './js/boss-game-portrait-ui.js',
   './js/boss-game-render.js',
   './js/boss-game-result-ui.js',
   './js/boss-game-story-journal-ui.js',
@@ -112,7 +112,29 @@ const ASSETS = [
   './img/boss/fx/boost.png',
   './img/boss/fx/aura.png',
   './img/boss/actor/mage-f-face.png',
-  './img/boss/actor/mage-m-face.png'
+  './img/boss/actor/mage-m-face.png',
+  './img/boss/actor/slime-face.png',
+  './img/boss/actor/racoon-face.png',
+  './img/boss/actor/giant-racoon-face.png',
+  './img/boss/actor/skull-face.png',
+  './img/boss/actor/spirit-face.png',
+  './img/boss/actor/giant-spirit-face.png',
+  './img/boss/actor/mole-face.png',
+  './img/boss/actor/owl-face.png',
+  './img/boss/actor/tengu-blue-face.png',
+  './img/boss/actor/flam-monster-face.png',
+  './img/boss/actor/young-dragon-face.png',
+  './img/boss/actor/oblivion-face.png',
+  './img/boss/fx/icon-fire.png',
+  './img/boss/fx/icon-fire-disabled.png',
+  './img/boss/fx/icon-ice.png',
+  './img/boss/fx/icon-ice-disabled.png',
+  './img/boss/fx/icon-storm.png',
+  './img/boss/fx/icon-storm-disabled.png',
+  './img/boss/fx/icon-earth.png',
+  './img/boss/fx/icon-earth-disabled.png',
+  './img/boss/fx/icon-wind.png',
+  './img/boss/fx/icon-wind-disabled.png'
 ];
 
 self.addEventListener('install', e => {

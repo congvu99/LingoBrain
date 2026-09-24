@@ -2,7 +2,6 @@
    thẻ truyện (intro) trước trận truyện, Nhật ký hành trình (đoạn đã mở, đọc lại được), từ đã học tô màu + bấm nghe.
    Mọi text động qua esc(); nạp trước boss-game-hub-ui.js (BOSS_BEATS_PER_CHAPTER ở hub chỉ dùng lúc gọi). */
 
-const BOSS_SHAPE_EMOJI = { humanoid: '👹', beast: '🐺', wraith: '👻', flyer: '🦅', dragon: '🐉' };
 // hpMul 1 = quái thường (hp.minion), 2 = trùm chương (hp.boss) → chỉnh BOSS_TUNING.hp là đủ
 const bossMonsterHp = m => Math.round((m.hpMul || 1) > 1 ? m.hpMul / 2 * BOSS_TUNING.hp.boss : (m.hpMul || 1) * BOSS_TUNING.hp.minion);
 // rand tất định theo chuỗi (ngày): sảnh, cây nguyên tố và trận cùng thấy MỘT quái; vết thương Vô tận chỉ mang cho đúng quái đó
@@ -54,8 +53,8 @@ function bossJournalHtml(wins) {
     '<div class="boss-journal-chapter"><b class="serif">Chương ' + (ci + 1) + ' · ' + esc(BOSS_REGIONS[ci].name) + '</b>' +
       list.map(b => {
         const seg = BOSS_STORY[b], mon = BOSS_MONSTERS.find(m => m.id === seg.monster) || BOSS_MONSTERS[0];
-        return '<div class="boss-journal-entry"><b>' + esc(mon.name) + '</b>' +
-          '<p class="small">' + bossStoryHtml(seg.intro) + '</p><p class="small muted">' + bossStoryHtml(seg.outro) + '</p></div>';
+        return '<div class="boss-journal-entry"><img class="boss-face" src="' + esc(mon.face) + '" alt="" aria-hidden="true"><div>' +
+          '<b>' + esc(mon.name) + '</b><p class="small">' + bossStoryHtml(seg.intro) + '</p><p class="small muted">' + bossStoryHtml(seg.outro) + '</p></div></div>';
       }).join('') + '</div>').join('');
   return '<details class="boss-journal"><summary>Nhật ký hành trình (' + openBeats.length + ')</summary>' + body + '</details>';
 }
@@ -63,7 +62,7 @@ function bossJournalHtml(wins) {
 /* Thẻ truyện trước trận truyện: tên quái + biểu tượng dáng + intro + nút Chiến đấu (thay nút Bắt đầu chung) */
 function bossStoryCardHtml(o, mon) {
   if (o.kind !== 'story' || !BOSS_STORY[o.beat]) return '';
-  return '<div class="boss-story-card"><span class="boss-story-icon" aria-hidden="true">' + (BOSS_SHAPE_EMOJI[mon.shape] || '👹') + '</span>' +
+  return '<div class="boss-story-card"><img class="boss-face" src="' + esc(mon.face) + '" alt="" aria-hidden="true">' +
     '<div><b class="serif">' + esc(mon.name) + '</b><p class="small">' + bossStoryHtml(BOSS_STORY[o.beat].intro) + '</p></div></div>';
 }
 

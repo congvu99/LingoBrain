@@ -363,7 +363,7 @@ html.game-lock .tabbar{display:none}
 .boss-tree-rank[data-state="locked"]{opacity:.4}
 .boss-result .bar-track{margin:8px 0}
 .boss-story-card{display:flex;gap:10px;align-items:flex-start;color:#f3e9ff;background:#1a1238;border:1px solid #3a2d6b;border-radius:var(--r-sm);padding:10px}
-.boss-story-icon{font-size:28px;line-height:1}
+.boss-face{width:38px;height:38px;flex:none;image-rendering:pixelated;border-radius:var(--r-sm);background:#150c30}
 .boss-word{color:#c9bdf0}
 .boss-word.learned{color:#ffe9a8;font-weight:700;cursor:pointer;text-decoration:underline dotted}
 .boss-story-outro{color:#f3e9ff;background:#1a1238;border:1px solid #3a2d6b;border-radius:var(--r-sm);padding:10px}
@@ -371,8 +371,9 @@ html.game-lock .tabbar{display:none}
 .boss-journal summary{cursor:pointer;font-weight:600}
 .boss-journal-chapter{margin-top:8px}
 .boss-journal-chapter b{display:block;margin-bottom:4px}
-.boss-journal-entry{padding:6px 0;border-top:1px solid var(--rule)}
+.boss-journal-entry{display:flex;gap:10px;align-items:flex-start;padding:6px 0;border-top:1px solid var(--rule)}
 .boss-journal-entry:first-of-type{border-top:none}
+.boss-tree-icon{width:24px;height:24px;image-rendering:pixelated;vertical-align:middle;margin-right:6px}
 /* màn kết thúc: cặp từ hay nhầm */
 .game-confusions ul{list-style:none;margin:4px 0 12px;padding:0}
 .game-confusions li{margin:2px 0}

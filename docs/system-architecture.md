@@ -41,18 +41,18 @@ js/boss-game-progress.js        Pháp sư: đường cấp, trận hôm nay/beat
 js/boss-game-spell-presets.js   Pháp sư: dữ liệu hiệu ứng phép theo hệ × bậc + tuyệt kỹ + fallback bậc thiếu
 js/boss-game-story.js           Pháp sư: dữ liệu vùng, quái, 28 đoạn truyện
 js/boss-game-spell-art.js       Pháp sư: fx trận — hạt, quả phép bay đúng mốc va chạm, sóng xung kích, số sát thương, preset + fallback bậc
-js/boss-game-tier3-shapes.js    Pháp sư: hình vẽ lớn bậc 3 — trận đồ, thiên thạch, tia sét, cột băng, gai đá, lốc
-js/boss-game-tier3-ultimate-fx.js  Pháp sư: trận đồ/hình lớn bậc 3, cắt cảnh 5 tuyệt kỹ, hiệu ứng nội tại (phủ băng, khiên…)
-js/boss-game-mage-art.js        Pháp sư: vẽ pháp sư nam/nữ theo pose (idle/chant/cast/hurt)
-js/boss-game-monster-shapes.js  Pháp sư: 5 dáng quái (humanoid, beast, wraith, flyer, dragon)
-js/boss-game-monster-art.js     Pháp sư: vẽ quái theo dáng/pose/bảng màu, hiệu ứng trúng đòn/đóng băng
-js/boss-game-scene.js           Pháp sư: nền 4 vùng vẽ sẵn offscreen theo cỡ/dpr
-js/boss-game-render.js          Pháp sư: ghép khung hình cảnh trận từ state + hiệu ứng
+js/boss-game-sprite-atlas.js    Pháp sư: atlas sprite Ninja Adventure (BOSS_SPRITES, spriteFrame/drawSprite/loadBossSprites) — nhân vật/quái/trùm/VFX/tile, tất cả ảnh trận đều qua đây   [phần thuần: BOSS_SPRITES, spriteFrame, pixelScale]
+js/boss-game-dragon-composite.js  Pháp sư: ghép trùm cuối Oblivion từ 5 mảnh rời (đầu/2 cánh/thân) — gói không có sheet rồng nguyên khối
+js/boss-game-arena.js           Pháp sư: dựng sân đấu 4 vùng từ tileset (offscreen theo cỡ/dpr), thay nền vẽ tay cũ
+js/boss-game-sprite-actors.js   Pháp sư: diễn viên sprite (nhún/lao/giật lùi/nháy trắng/tan pixel), vẽ pháp sư + quái mỗi khung, VFX di chuyển (fx.sprites)
+js/boss-game-portrait-ui.js     Pháp sư: vòng lặp chân dung idle nhỏ (sảnh + màn chọn lần đầu), ngừng vẽ khi ẩn tab, tự dừng khi rời sảnh (canvas bị gỡ)
+js/boss-game-tier3-ultimate-fx.js  Pháp sư: trận đồ (magic circle sprite), 5 cắt cảnh tuyệt kỹ (Faceset), hiệu ứng nội tại (phủ băng, khiên, bỏng, buff Ôn từ)
+js/boss-game-render.js          Pháp sư: ghép khung hình cảnh trận từ state + hiệu ứng (toàn sprite, không còn vẽ tay)
 js/boss-game-ui.js              Pháp sư: khung trận DOM/canvas, input ẩn + phím, vòng rAF, tạm dừng, lưu tiến trình giữa trận
-js/boss-game-story-journal-ui.js  Pháp sư: quái theo beat (Vô tận/Luyện phép chọn theo ngày), thẻ truyện, Nhật ký hành trình, từ đã học bấm nghe
-js/boss-game-hub-ui.js          Pháp sư: sảnh — chân dung, cấp/XP, chuỗi ngày, buff Ôn từ, trận hôm nay, cấp độ, refreshBossHub sau sync
-js/boss-game-first-run-ui.js    Pháp sư: màn lần đầu — chờ sync khi đang đăng nhập, chọn pháp sư nam/nữ
-js/boss-game-skill-tree-ui.js   Pháp sư: cây kỹ năng nguyên tố + chọn trường phái
+js/boss-game-story-journal-ui.js  Pháp sư: quái theo beat (Vô tận/Luyện phép chọn theo ngày), thẻ truyện + Nhật ký (Faceset <img> quái), từ đã học bấm nghe
+js/boss-game-hub-ui.js          Pháp sư: sảnh — chân dung sprite, cấp/XP, chuỗi ngày, buff Ôn từ, trận hôm nay, cấp độ, refreshBossHub sau sync
+js/boss-game-first-run-ui.js    Pháp sư: màn lần đầu — chờ sync khi đang đăng nhập, chọn pháp sư nam/nữ (chân dung sprite xem trước)
+js/boss-game-skill-tree-ui.js   Pháp sư: cây kỹ năng nguyên tố + chọn trường phái, icon Skill Icon/Spell cạnh mỗi hệ
 js/boss-game-result-ui.js       Pháp sư: thẻ đề trong trận, lưu tiến trình (persistBattle), màn kết (XP, lên cấp, outro, từ sai, chốt trùng thắng)
 js/app-shell.js          tab, bindUI, phím tắt, init
 js/pwa-register.js       đăng ký service worker, tự cập nhật (kiểm tra khi mở lại app, tải lại lúc rảnh)
@@ -70,7 +70,9 @@ server/seed-cli-args.js  parseArgs (--reset, --skip-deck, --allow-shrink, --rese
 server/password-hashing-and-session-tokens.js  hashPassword, verifyPassword, generateToken
 tools/generate_edge_tts_audio.py   tạo MP3 từ words.json (dùng edge-tts), output: audio/<sha1>.mp3 + audio/index.json
 tools/seed-database.js   CLI: nạp schema + bộ từ + tạo tài khoản chủ (chủ yếu để tạo owner, server tự seed)
+tools/copy-boss-sprites.js  chạy tay: copy sheet Ninja Adventure (CC0, ngoài git) dùng thật vào img/boss/ cho game Pháp sư
 audio/                   MP3 giọng Neural (en-US-ChristopherNeural), index.json ánh xạ text→file
+img/boss/                sprite pixel Pháp sư (Ninja Adventure — xem README mục Credit), chép bằng tools/copy-boss-sprites.js, precache trong sw.js
 tests/                   harness tự viết; `node tests/run-tests.js` (thuần) · tests/run-tests.html (thêm IndexedDB + DB test)
 ```
 
@@ -178,6 +180,23 @@ Luật gộp từng trường của `mergeBoss(a, b)` (giao hoán, kết hợp, 
 `switchOwner(username, replace)` (`cloud-sync-engine.js`) mang `boss` sang tài khoản mới **giống hệt SRS**: `replace=false` (gộp) giữ nguyên `bossProg` hiện có để gộp với dữ liệu tài khoản ở lần sync kế; `replace=true` (dùng dữ liệu tài khoản) gọi `resetLocalToDefaults()` → `bossProg = emptyBoss()` rồi để dữ liệu server thắng hoàn toàn khi gộp (đây là hành vi chủ ý, không phải thiếu sót).
 
 Backup (Tải backup / Khôi phục, `js/app-shell.js` + `js/word-import.js`) mang thêm trường `boss: bossProg`. Khôi phục **luôn gộp** `bossProg = mergeBoss(bossProg, cleanBoss(j.boss, Date.now()))` — cả khi đã đăng nhập lẫn chưa, khác với SRS/giáo án/cài đặt (các trường đó bị **thay** bằng backup). Vì vậy backup cũ hơn hoặc thiếu `boss` không bao giờ làm tụt cấp/xoá tiến trình Pháp sư. Nút "Xoá tiến độ" (`app-shell.js`) chỉ xoá SM-2 (`srs`, `gameMiss`) — không đụng `bossProg`, giống cách nó không đụng `gameScore`.
+
+## Sprite Pháp Sư Lexoria (Ninja Adventure — pixel-boy & AAA, CC0)
+
+Toàn bộ hình vẽ trận (pháp sư, quái, trùm, VFX, sân đấu) và chân dung DOM (sảnh, màn chọn, thẻ truyện, Nhật ký,
+cây kỹ năng) đều dùng sprite từ gói **Ninja Adventure**, không còn hình vẽ tay canvas. Đường ống:
+1. Gói gốc (~109MB, **không commit**) nằm ở `assets/ninja-adventure/`. `tools/copy-boss-sprites.js` copy tay
+   đúng sheet dùng thật (đổi tên kebab-case, phẳng vào `img/boss/{actor,fx,tile}/`) — chạy lại khi cần thêm sheet.
+2. `js/boss-game-sprite-atlas.js` khai báo `BOSS_SPRITES` (khoá → `{src, fw, fh, anims}`), cắt khung qua
+   `spriteFrame`/`drawSprite` (canvas, `imageSmoothingEnabled=false`, toạ độ làm tròn, scale số nguyên).
+3. `js/boss-game-sprite-actors.js` (trận, canvas) + `js/boss-game-dragon-composite.js` (trùm cuối ghép 5 mảnh)
+   vẽ pháp sư/quái mỗi khung, bù chuyển động thiếu khung bằng code (nhún, lao, nháy trắng, tan pixel).
+4. `js/boss-game-arena.js` dựng sân đấu 4 vùng từ tileset; `js/boss-game-tier3-ultimate-fx.js` lo trận đồ/VFX
+   tuyệt kỹ/cắt cảnh Faceset; `js/boss-game-portrait-ui.js` lo chân dung idle nhỏ ở sảnh/màn chọn.
+5. Story/Journal/cây kỹ năng dùng thẳng `<img>` Faceset/icon (`image-rendering: pixelated`, `css/paper-theme.css`)
+   với `src` lấy từ bảng hằng (`BOSS_MONSTERS[].face`, `img/boss/fx/icon-<hệ>[-disabled].png`), không phải hình vẽ.
+6. Mọi ảnh nằm trong `sw.js` ASSETS (offline PWA); `tests/boss-game-sprite-atlas.test.js` + `boss-game-story.test.js`
+   kiểm khung không tràn ảnh và mọi ảnh có trên đĩa + trong `sw.js`.
 
 ## Thuật toán ôn (js/srs-scheduler.js)
 

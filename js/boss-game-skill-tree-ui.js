@@ -36,8 +36,11 @@ function bossTreeColHtml(el, lv) {
     return '<button class="boss-tree-rank" data-state="' + state + '"' + (state === 'next' ? '' : ' disabled') +
       ' title="' + esc(BOSS_RANK_DESC[el][r - 1]) + '">' + (state === 'done' ? '✓' : r === 3 ? '★' : r) + '</button>';
   }).join('');
+  // icon 24×24 hệ (Ui/Skill Icon/Spell, chép bằng tools/copy-boss-sprites.js); nhánh chưa mở (rank 0) → bản Disabled
+  const icon = 'img/boss/fx/icon-' + el + (rank ? '' : '-disabled') + '.png';
   return '<div class="boss-tree-col" data-el="' + el + '"' + (active ? ' data-active="true"' : '') + '>' +
-    '<b class="serif">' + esc(ELEMENT_LABEL[el]) + '</b><div class="boss-tree-ranks">' + ranks + '</div>' +
+    '<b class="serif"><img class="boss-tree-icon" src="' + icon + '" alt="" aria-hidden="true">' + esc(ELEMENT_LABEL[el]) + '</b>' +
+    '<div class="boss-tree-ranks">' + ranks + '</div>' +
     '<p class="small muted">' + esc(BOSS_RANK_DESC[el][Math.min(2, rank)]) + '</p>' +
     '<button class="btn-sm boss-tree-pick"' + (active ? ' disabled' : '') + '>' + (active ? 'Đang dùng' : 'Chọn trường phái') + '</button></div>';
 }

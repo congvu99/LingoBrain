@@ -1,8 +1,8 @@
 /* Game Pháp Sư Lexoria — ghép một khung hình từ state trận (boss-game-logic.js) + fx (boss-game-spell-art.js).
-   Chỉ vẽ, không đổi state. Mọi vùng/quái giờ đều là sân tile + sprite (phase 3 xoá hết vẽ tay quái/nền cũ).
+   Chỉ vẽ, không đổi state. Mọi vùng/quái/pháp sư giờ đều là sân tile + sprite (phase 3–5 xoá hết vẽ tay).
    Nền build offscreen 1 lần/đổi cỡ (boss-game-arena.js); ảnh tile chưa nạp xong → tạm phẳng 1 màu (không ném lỗi).
-   Quái vẽ bằng boss-game-sprite-actors.js; sprite chưa nạp xong → bỏ qua vẽ quái lượt đó (không throw).
-   Pháp sư vẫn có phương án vẽ tay drawMage (boss-game-mage-art.js) dự phòng khi sprite chưa nạp — xoá ở phase 5.
+   Quái + pháp sư vẽ bằng boss-game-sprite-actors.js; sprite chưa nạp xong → bỏ qua vẽ lượt đó (không throw, không
+   còn phương án vẽ tay dự phòng — mọi ảnh đã precache trong sw.js nên gần như không xảy ra).
    Chậm thời gian: k = mức chậm 0..1 → zoom tới 1.06 về phía pháp sư, lớp xám + viền tối.
    Trận đồ (magic circle, lớp mặt đất — vẽ TRƯỚC pháp sư) + VFX tuyệt kỹ/thụ động/cắt cảnh nằm ở
    js/boss-game-tier3-ultimate-fx.js — gọi qua hook drawBossGroundFx, drawBossPassiveFx (trong khối rung/zoom) và
@@ -112,10 +112,7 @@ function drawBossScene(ctx, st, ui, now) {
   ctx.save(); if (lift) ctx.translate(0, -lift);
   drawBossMonsterSprite(ctx, fx, st, ui.time);   // sprite chưa nạp → tự bỏ qua, không văng lỗi
   ctx.restore();
-  const pose = fx.mageHurt > 0 ? 'hurt' : fx.castPose > 0 ? 'cast' : st.typed.length ? 'chant' : 'idle';
-  if (!drawBossMageSprite(ctx, fx, st, ui.gender, ui.time)) {
-    drawMage(ctx, m.x, m.y, m.s, { gender: ui.gender, pose, t: ui.time, element: st.mods.element });
-  }
+  drawBossMageSprite(ctx, fx, st, ui.gender, ui.time);   // sprite chưa nạp → tự bỏ qua, không văng lỗi
   drawRuneCircle(ctx, st, fx);
   drawBossSpriteFx(ctx, fx);
   drawBossFx(ctx, fx, ui.quality);

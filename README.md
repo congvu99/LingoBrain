@@ -125,6 +125,12 @@ Chip riêng (khác 5 game "Chơi nhanh" ở trên) trong hàng game, mở khi c�
 - Tiến trình (`eng.boss.v1`: cấp, XP, cây kỹ năng, giới tính, trường phái, trận đã thắng, vết thương trận dở) đồng bộ đa máy như tiến độ học, và nằm trong file **Tải backup**. **Khôi phục backup luôn gộp** tiến trình Pháp sư (lấy XP/cấp cao hơn, dồn các trận đã thắng) — không bao giờ làm tụt cấp hay xoá tiến trình đang có, dù đăng nhập hay không.
 - Nút **Xoá tiến độ** (Góc của bạn) chỉ xoá lịch ôn SM-2 — **không đụng tiến trình Pháp sư**, giống cách nó không đụng kỷ lục các game khác.
 
+**Credit hình ảnh**: toàn bộ sprite pixel (pháp sư, quái, trùm, VFX, sân đấu, chân dung) dùng gói
+[**Ninja Adventure** by pixel-boy & AAA](https://pixel-boy.itch.io/ninja-adventure-asset-pack) — **CC0** (miễn phí,
+ghi nhận tự nguyện). Gói gốc (~109MB) không commit vào repo; chỉ sheet dùng thật được copy tay vào `img/boss/`
+bằng `tools/copy-boss-sprites.js` (cần gói gốc ở `assets/ninja-adventure/` lúc chạy, xem
+`docs/system-architecture.md` mục "Sprite Pháp Sư Lexoria").
+
 ## Bộ từ
 
 Bộ từ đọc từ **API `/api/words` (DB)** nếu có, hoặc **fallback `words.json`** nếu lỗi/offline. Người dùng không nạp, thêm, sửa hay xoá từ được. Tab Quản lý chỉ hiện danh sách từ để xem.

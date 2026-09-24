@@ -1,7 +1,7 @@
 ---
 title: "Mage Lexoria pixel art overhaul (Ninja Adventure)"
 description: "Thay toàn bộ hình vẽ canvas của game Pháp sư bằng sprite Ninja Adventure (CC0), góc nhìn trận kiểu Pokémon; làm bản thử trước."
-status: in-progress
+status: completed
 priority: P2
 branch: "integration-mage"
 tags: [frontend, game, graphics]
@@ -35,12 +35,14 @@ Gói gốc nằm ở `D:\project\eng\assets\ninja-adventure\` (109MB, **không c
 | Phase | Name | Status |
 |-------|------|--------|
 | 1 | [Asset pipeline and sprite atlas](./phase-01-asset-pipeline-and-sprite-atlas.md) | Completed |
-| 2 | [Prototype battle scene](./phase-02-prototype-battle-scene.md) | Code done — chờ user duyệt iPhone |
+| 2 | [Prototype battle scene](./phase-02-prototype-battle-scene.md) | Code done — **user kiểm cảm nhận + FPS trên iPhone thật** (chưa đo được trong phiên) |
 | 3 | [Full monster roster and regions](./phase-03-full-monster-roster-and-regions.md) | Completed |
-| 4 | [Element VFX and ultimates](./phase-04-element-vfx-and-ultimates.md) | Completed |
-| 5 | [Hub portraits cleanup and docs](./phase-05-hub-portraits-cleanup-and-docs.md) | Pending |
+| 4 | [Element VFX and ultimates](./phase-04-element-vfx-and-ultimates.md) | Completed — **FPS ≥ 50 lúc tuyệt kỹ: user kiểm `?fps`** (chưa đo bằng benchmark thật) |
+| 5 | [Hub portraits cleanup and docs](./phase-05-hub-portraits-cleanup-and-docs.md) | Completed |
 
-**Cổng duyệt:** hết phase 2, user duyệt cảm nhận trên iPhone thì mới làm phase 3–5.
+**Cổng duyệt:** hết phase 2, user duyệt cảm nhận trên iPhone thì mới làm phase 3–5 (code đã làm tiếp theo yêu cầu
+của user trong phiên; **cổng duyệt iPhone/FPS thật vẫn để user tự kiểm sau** — không có thiết bị thật/benchmark
+trong môi trường agent).
 
 ## Dependencies
 - Chạy trên nhánh `integration-mage` (game Pháp sư P1–P5 đã tích hợp). Không chặn và không bị chặn bởi plan khác.

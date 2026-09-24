@@ -63,7 +63,31 @@ const FILES = {
   'fx/aura.png': 'FX/Magic/Aura/SpriteSheet.png',   // buff Ôn từ quanh pháp sư (review phase 4: mục 8)
   // Faceset 38×38 cho cắt cảnh tuyệt kỹ (thay chân dung vẽ tay drawMage)
   'actor/mage-f-face.png': 'Actor/Character/SorcererBlack/Faceset.png',
-  'actor/mage-m-face.png': 'Actor/Character/NinjaMageOrange/Faceset.png'
+  'actor/mage-m-face.png': 'Actor/Character/NinjaMageOrange/Faceset.png',
+  // Faceset 38×38 của 12 quái (phase 5) — <img class="boss-face"> thay emoji BOSS_SHAPE_EMOJI ở thẻ truyện/Nhật ký
+  'actor/slime-face.png': 'Actor/Monster/Slime/Faceset.png',
+  'actor/racoon-face.png': 'Actor/Monster/Racoon/Faceset.png',
+  'actor/giant-racoon-face.png': 'Actor/Boss/GiantRacoon/Faceset.png',
+  'actor/skull-face.png': 'Actor/Monster/Skull/Faceset.png',
+  'actor/spirit-face.png': 'Actor/Monster/Spirit/Faceset.png',
+  'actor/giant-spirit-face.png': 'Actor/Boss/GiantSpirit/Faceset.png',
+  'actor/mole-face.png': 'Actor/Monster/Mole/Faceset.png',
+  'actor/owl-face.png': 'Actor/Monster/Owl/Faceset.png',
+  'actor/tengu-blue-face.png': 'Actor/Boss/TenguBlue/Faceset.png',
+  'actor/flam-monster-face.png': 'Actor/Monster/Flam/Faceset.png',
+  'actor/young-dragon-face.png': 'Actor/Monster/Dragon/Faceset.png',
+  'actor/oblivion-face.png': 'Actor/Boss/DragonBlue/Faceset.png',
+  // icon 24×24 cây kỹ năng (phase 5) — cạnh 5 hệ; *-disabled = nhánh chưa mở (Ui/Skill Icon/Spell/Book*)
+  'fx/icon-fire.png': 'Ui/Skill Icon/Spell/BookFire.png',
+  'fx/icon-fire-disabled.png': 'Ui/Skill Icon/Spell/BookFireDisabled.png',
+  'fx/icon-ice.png': 'Ui/Skill Icon/Spell/BookIce.png',
+  'fx/icon-ice-disabled.png': 'Ui/Skill Icon/Spell/BookIceDisabled.png',
+  'fx/icon-storm.png': 'Ui/Skill Icon/Spell/BookThunder.png',
+  'fx/icon-storm-disabled.png': 'Ui/Skill Icon/Spell/BookThunderDisabled.png',
+  'fx/icon-earth.png': 'Ui/Skill Icon/Spell/BookRock.png',
+  'fx/icon-earth-disabled.png': 'Ui/Skill Icon/Spell/BookRockDisabled.png',
+  'fx/icon-wind.png': 'Ui/Skill Icon/Spell/BookWind.png',
+  'fx/icon-wind-disabled.png': 'Ui/Skill Icon/Spell/BookWindDisabled.png'
 };
 
 if (!fs.existsSync(SRC)) { console.error('Không thấy gói: ' + SRC); process.exit(1); }

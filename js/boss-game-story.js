@@ -6,8 +6,9 @@
    quái thường có thể khác hệ để đa dạng — ghi ở từng quái). hpMul: quái thường 1 (≈ BOSS_TUNING.hp.minion), trùm 2 (≈ .boss).
    clockMul: hệ số tốc độ nạp đòn của quái đó (tư liệu cho vòng cân bằng sau — chưa được boss-game-logic.js đọc).
    `sprite` = khoá trong BOSS_SPRITES (boss-game-sprite-atlas.js); `spriteHit`/`spriteAttack` chỉ trùm có sheet Hit/Attack
-   thật (xem boss-game-sprite-actors.js). `shape` GIỮ LẠI chỉ để boss-game-story-journal-ui.js suy ra emoji dự phòng
-   (BOSS_SHAPE_EMOJI) — không còn dùng để vẽ (phase 5 mới bỏ khi gỡ BOSS_SHAPE_EMOJI). */
+   thật (xem boss-game-sprite-actors.js). `face` = đường dẫn Faceset 38×38 (img/boss/actor/*-face.png, chép bằng
+   tools/copy-boss-sprites.js) — dùng làm <img src> ở thẻ truyện/Nhật ký (boss-game-story-journal-ui.js), thay hẳn
+   emoji BOSS_SHAPE_EMOJI cũ (phase 5). */
 
 const BOSS_REGIONS = [
   { id: 'ashford', name: 'Làng Ashford' },
@@ -17,21 +18,21 @@ const BOSS_REGIONS = [
 ];
 
 const BOSS_MONSTERS = [
-  { id: 'goblin', name: 'Slime Xanh', sprite: 'slime', shape: 'humanoid', region: 'ashford', size: 0.85, weak: 'fire', hpMul: 1, clockMul: 1 },
-  { id: 'wolf', name: 'Gấu Mèo Cướp', sprite: 'racoon', shape: 'beast', region: 'ashford', size: 0.9, weak: 'storm', hpMul: 1, clockMul: 1 },
-  { id: 'goblinKing', name: 'Vua Gấu Mèo', sprite: 'giantRacoon', spriteAttack: 'giantRacoonAttack', shape: 'humanoid',
-    region: 'ashford', size: 1.35, weak: 'fire', hpMul: 2, clockMul: 0.85 },
-  { id: 'skeleton', name: 'Đầu Lâu', sprite: 'skull', shape: 'humanoid', region: 'catacombs', size: 0.9, weak: 'earth', hpMul: 1, clockMul: 1 },
-  { id: 'ghost', name: 'Hồn Ma', sprite: 'spirit', shape: 'wraith', region: 'catacombs', size: 1, weak: 'storm', hpMul: 1, clockMul: 1 },
-  { id: 'lich', name: 'Hồn Ma Chúa', sprite: 'giantSpirit', spriteHit: 'giantSpiritHit', shape: 'humanoid',
-    region: 'catacombs', size: 1.3, weak: 'earth', hpMul: 2, clockMul: 0.85 },
-  { id: 'troll', name: 'Chuột Chũi Đá', sprite: 'mole', shape: 'humanoid', region: 'cliffs', size: 1.2, weak: 'ice', hpMul: 1, clockMul: 1.1 },
-  { id: 'harpy', name: 'Cú Đêm', sprite: 'owl', shape: 'flyer', region: 'cliffs', size: 0.95, weak: 'fire', hpMul: 1, clockMul: 0.9 },
-  { id: 'wyvern', name: 'Thiên Cẩu', sprite: 'tenguBlue', spriteHit: 'tenguBlueHit', spriteAttack: 'tenguBlueAttack', shape: 'flyer',
-    region: 'cliffs', size: 1.4, weak: 'ice', hpMul: 2, clockMul: 0.85 },
-  { id: 'darkKnight', name: 'Linh Hồn Lửa', sprite: 'flamMonster', shape: 'humanoid', region: 'dragonlair', size: 1.1, weak: 'ice', hpMul: 1, clockMul: 1 },
-  { id: 'youngDragon', name: 'Rồng Con', sprite: 'youngDragon', shape: 'dragon', region: 'dragonlair', size: 1.15, weak: 'storm', hpMul: 1, clockMul: 0.95 },
-  { id: 'oblivion', name: 'Oblivion', sprite: 'oblivion', shape: 'dragon', region: 'dragonlair', size: 1.8, weak: 'storm', hpMul: 2, clockMul: 0.8 }
+  { id: 'goblin', name: 'Slime Xanh', sprite: 'slime', face: 'img/boss/actor/slime-face.png', region: 'ashford', weak: 'fire', hpMul: 1, clockMul: 1 },
+  { id: 'wolf', name: 'Gấu Mèo Cướp', sprite: 'racoon', face: 'img/boss/actor/racoon-face.png', region: 'ashford', weak: 'storm', hpMul: 1, clockMul: 1 },
+  { id: 'goblinKing', name: 'Vua Gấu Mèo', sprite: 'giantRacoon', spriteAttack: 'giantRacoonAttack', face: 'img/boss/actor/giant-racoon-face.png',
+    region: 'ashford', weak: 'fire', hpMul: 2, clockMul: 0.85 },
+  { id: 'skeleton', name: 'Đầu Lâu', sprite: 'skull', face: 'img/boss/actor/skull-face.png', region: 'catacombs', weak: 'earth', hpMul: 1, clockMul: 1 },
+  { id: 'ghost', name: 'Hồn Ma', sprite: 'spirit', face: 'img/boss/actor/spirit-face.png', region: 'catacombs', weak: 'storm', hpMul: 1, clockMul: 1 },
+  { id: 'lich', name: 'Hồn Ma Chúa', sprite: 'giantSpirit', spriteHit: 'giantSpiritHit', face: 'img/boss/actor/giant-spirit-face.png',
+    region: 'catacombs', weak: 'earth', hpMul: 2, clockMul: 0.85 },
+  { id: 'troll', name: 'Chuột Chũi Đá', sprite: 'mole', face: 'img/boss/actor/mole-face.png', region: 'cliffs', weak: 'ice', hpMul: 1, clockMul: 1.1 },
+  { id: 'harpy', name: 'Cú Đêm', sprite: 'owl', face: 'img/boss/actor/owl-face.png', region: 'cliffs', weak: 'fire', hpMul: 1, clockMul: 0.9 },
+  { id: 'wyvern', name: 'Thiên Cẩu', sprite: 'tenguBlue', spriteHit: 'tenguBlueHit', spriteAttack: 'tenguBlueAttack', face: 'img/boss/actor/tengu-blue-face.png',
+    region: 'cliffs', weak: 'ice', hpMul: 2, clockMul: 0.85 },
+  { id: 'darkKnight', name: 'Linh Hồn Lửa', sprite: 'flamMonster', face: 'img/boss/actor/flam-monster-face.png', region: 'dragonlair', weak: 'ice', hpMul: 1, clockMul: 1 },
+  { id: 'youngDragon', name: 'Rồng Con', sprite: 'youngDragon', face: 'img/boss/actor/young-dragon-face.png', region: 'dragonlair', weak: 'storm', hpMul: 1, clockMul: 0.95 },
+  { id: 'oblivion', name: 'Oblivion', sprite: 'oblivion', face: 'img/boss/actor/oblivion-face.png', region: 'dragonlair', weak: 'storm', hpMul: 2, clockMul: 0.8 }
 ];
 
 /* 28 đoạn (beat 0..27) — 7 trận/chương (6 quái thường + 1 trùm); monster = id trong BOSS_MONSTERS. */

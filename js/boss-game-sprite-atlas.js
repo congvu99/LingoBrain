@@ -11,7 +11,8 @@ const BOSS_SPRITE_DIR = { down: 0, up: 1, left: 2, right: 3 };
 const BOSS_CHAR_ANIMS = {
   idle: { row: 0, frames: 1, dir: 'up' }, walk: { row: 0, frames: 4, fps: 6, dir: 'up' },
   attack: { row: 4, frames: 1, dir: 'up' }, jump: { row: 5, frames: 1, dir: 'up' },
-  special: { row: 6, col: 1, frames: 1 }, face: { row: 0, frames: 1, dir: 'down' }
+  special: { row: 6, col: 1, frames: 1 }, face: { row: 0, frames: 1, dir: 'down' },
+  idleDown: { row: 0, frames: 4, fps: 3, dir: 'down' }   // hướng xuống, chậm — chân dung sảnh/màn chọn (dùng khung đi có sẵn)
 };
 
 /* Quái 16px 4 hướng (sheet 64×64 = 4 cột hướng × 4 khung đi, cùng khuôn với Slime) */

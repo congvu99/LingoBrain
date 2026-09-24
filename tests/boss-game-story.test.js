@@ -6,17 +6,35 @@ describe('boss-game-story.js', () => {
     assert.equal(new Set(BOSS_REGIONS.map(r => r.id)).size, 4);
   });
 
-  it('BOSS_MONSTERS có 12 quái, id duy nhất, dáng ∈ 5 loại (chỉ để suy emoji dự phòng), weak ∈ BOSS_ELEMENTS, region hợp lệ, sprite tồn tại trong BOSS_SPRITES', () => {
+  it('BOSS_MONSTERS có 12 quái, id duy nhất, weak ∈ BOSS_ELEMENTS, region hợp lệ, sprite tồn tại trong BOSS_SPRITES', () => {
     assert.equal(BOSS_MONSTERS.length, 12);
     assert.equal(new Set(BOSS_MONSTERS.map(m => m.id)).size, 12);
-    const shapes = ['humanoid', 'beast', 'wraith', 'flyer', 'dragon'], regionIds = BOSS_REGIONS.map(r => r.id);
+    const regionIds = BOSS_REGIONS.map(r => r.id);
     BOSS_MONSTERS.forEach(m => {
-      assert.includes(shapes, m.shape, m.id + ' shape');
       assert.includes(BOSS_ELEMENTS, m.weak, m.id + ' weak');
       assert.includes(regionIds, m.region, m.id + ' region');
       assert.ok(BOSS_SPRITES[m.sprite], m.id + ' sprite ' + m.sprite + ' phải có trong BOSS_SPRITES');
       if (m.spriteHit) assert.ok(BOSS_SPRITES[m.spriteHit], m.id + ' spriteHit ' + m.spriteHit);
       if (m.spriteAttack) assert.ok(BOSS_SPRITES[m.spriteAttack], m.id + ' spriteAttack ' + m.spriteAttack);
+    });
+  });
+
+  it('icon 5 hệ ở cây kỹ năng (thường + Disabled) có trên đĩa và nằm trong sw.js ASSETS', () => {
+    if (typeof fs === 'undefined') return;
+    const sw = fs.readFileSync(path.join(ROOT, 'sw.js'), 'utf8');
+    BOSS_ELEMENTS.forEach(el => ['', '-disabled'].forEach(suf => {
+      const src = 'img/boss/fx/icon-' + el + suf + '.png';
+      assert.ok(fs.existsSync(path.join(ROOT, src)), 'thiếu ' + src);
+      assert.ok(sw.indexOf("'./" + src + "'") >= 0, 'sw.js ASSETS thiếu ' + src);
+    }));
+  });
+  it('BOSS_MONSTERS.face: mọi quái có Faceset trên đĩa và nằm trong sw.js ASSETS (offline) — thay emoji BOSS_SHAPE_EMOJI cũ', () => {
+    if (typeof fs === 'undefined') return;
+    const sw = fs.readFileSync(path.join(ROOT, 'sw.js'), 'utf8');
+    BOSS_MONSTERS.forEach(m => {
+      assert.ok(m.face, m.id + ' thiếu face');
+      assert.ok(fs.existsSync(path.join(ROOT, m.face)), m.id + ' face không có trên đĩa: ' + m.face);
+      assert.ok(sw.indexOf("'./" + m.face + "'") >= 0, m.id + ' sw.js ASSETS thiếu ' + m.face);
     });
   });
 

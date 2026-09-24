@@ -80,12 +80,14 @@ function bossBuffChipHtml(buff) {
 }
 
 function bossDrawPortrait() {
-  const c = $('#bossPortrait');
-  if (!c) return;
-  drawMage(c.getContext('2d'), c.width / 2, c.height - 6, 100, { gender: bossProg.gender.v, pose: 'idle', t: 0, element: bossProg.element.v });
+  bossPortraitLoop($('#bossPortrait'), bossMageSprite(bossProg.gender.v));
 }
 
-function stopBossHub() { clearInterval(bossFirstRunWait); }   // dọn interval "đang đồng bộ" nếu người dùng thoát giữa chừng
+/* Dọn interval "đang đồng bộ" + vòng lặp chân dung nếu người dùng thoát giữa chừng (sảnh hoặc màn lần đầu) */
+function stopBossHub() {
+  clearInterval(bossFirstRunWait);
+  if (bossPortraitStop) { bossPortraitStop(); bossPortraitStop = null; }
+}
 
 /* Gọi từ refreshAfterSync (js/cloud-sync-account-ui.js) sau khi áp dữ liệu đồng bộ; không đụng trận đang chạy */
 function refreshBossHub() {

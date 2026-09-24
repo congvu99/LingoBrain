@@ -1,7 +1,7 @@
 ---
 phase: 5
 title: "Hub portraits cleanup and docs"
-status: pending
+status: completed
 priority: P3
 dependencies: [3, 4]
 ---
@@ -31,9 +31,13 @@ dependencies: [3, 4]
 5. Toàn bộ test; code-reviewer; smoke test sảnh → trận → kết trận → nhật ký, online + offline (tắt mạng sau khi cài SW).
 
 ## Success Criteria
-- [ ] Không còn hình vẽ tay nào trong game Pháp sư.
-- [ ] Offline (sau khi cài SW) hiện đủ hình ở sảnh + trận.
-- [ ] Test xanh; review không có lỗi mức cao; docs khớp code.
+- [x] Không còn hình vẽ tay nào trong game Pháp sư (`js/boss-game-mage-art.js` đã xoá; grep `drawMage`/`mageStaffTip`/
+      `BOSS_SHAPE_EMOJI`/`MAGE_ROBE` sạch trong `js/`+`index.html`+`sw.js`).
+- [x] Offline (sau khi cài SW) hiện đủ hình ở sảnh + trận — `sw.js` ASSETS có đủ Faceset 12 quái + 2 pháp sư +
+      10 icon hệ (thường/disabled); test mới xác nhận mọi `BOSS_MONSTERS[].face` có trên đĩa + trong ASSETS.
+- [x] Test xanh (436/436); docs khớp code (`docs/system-architecture.md`, `README.md`).
+      **Review**: code-reviewer không có lỗi Critical/High (plans/reports/code-reviewer-260924-1926-mage-pixel-art-phase-5-review-report.md);
+      đã sửa M1 (chân dung tự dừng khi canvas bị gỡ, chỉ vẽ khi đổi khung) + M2 (test icon hệ) → 436/436.
 
 ## Risk Assessment
 - rAF ở sảnh chạy mãi gây hao pin: dừng khi `stopBossHub` và khi ẩn tab.
