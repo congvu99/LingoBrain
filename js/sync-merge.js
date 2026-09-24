@@ -1,10 +1,11 @@
 /* Đồng bộ tiến độ đa thiết bị — phần thuần, dùng chung trình duyệt + Node server.
    Không đụng DOM/localStorage. Hợp đồng payload v1:
-     { v:1, srsEpoch, srs:{[id]:rec}, cfg:{data,ts}, plan:{data,ts}, day:{data,ts}, gameScore:{[g]:{best,plays}} }
+     { v:1, srsEpoch, srs:{[id]:rec}, cfg:{data,ts}, plan:{data,ts}, day:{data,ts}, gameScore:{[g]:{best,plays}}, boss }
+     boss = eng.boss.v1, làm sạch/gộp ở boss-progress-sync-merge.js (hợp đồng chỉ tiến, không được gỡ).
    mergeSync giao hoán + idempotent → client luôn áp local = mergeSync(local, response) an toàn. */
 (function (root) {
   const SYNC_DAY = 86400000;
-  const SYNC_KEYS = ['eng.srs.v2', 'eng.cfg.v1', 'eng.plan.v1', 'eng.day.v1', 'eng.gamescore.v1'];
+  const SYNC_KEYS = ['eng.srs.v2', 'eng.cfg.v1', 'eng.plan.v1', 'eng.day.v1', 'eng.gamescore.v1', 'eng.boss.v1'];
   const SCHED = ['ef', 'ivl', 'due', 'state', 'reps', 'lapses', 'last', 'lastMode'];   // trường lịch SM-2
   const STATES = ['new', 'learning', 'review', 'relearn'];
   const WORD_ID = /^[a-z0-9_-]{1,64}$/, TASK_ID = /^[a-z0-9_-]{1,32}$/, DATE = /^\d{4}-\d{2}-\d{2}$/;
@@ -13,6 +14,8 @@
   // trần số key: chặn payload phình (words.json có ~2500 từ; giáo án tối đa 30 việc)
   const SRS_MAX = 5000, TASK_MAX = 30, HISTORY_DAYS = 400;
 
+  // lấy lúc gọi: Node (server, có module) → require; trình duyệt / vm test → hàm global đã nạp trước
+  const bossApi = () => typeof module !== 'undefined' && module.exports ? require('./boss-progress-sync-merge.js') : root;
   const isObj = v => !!v && typeof v === 'object' && !Array.isArray(v);
   const okKey = (k, rx) => rx.test(k) && BANNED.indexOf(k) < 0;
   const str = v => JSON.stringify(v);
@@ -29,11 +32,7 @@
     return out;
   }
   // history: giữ HISTORY_DAYS ngày mới nhất (key YYYY-MM-DD so chuỗi = so ngày)
-  function capHistory(h) {
-    const out = {};
-    Object.keys(h).sort().slice(-HISTORY_DAYS).forEach(k => { out[k] = h[k]; });
-    return out;
-  }
+  function capHistory(h) { const out = {}; Object.keys(h).sort().slice(-HISTORY_DAYS).forEach(k => { out[k] = h[k]; }); return out; }
 
   /* ---------- gộp ---------- */
   // record thắng: last lớn hơn → reps → trường lịch → câu (tất định cả hai phía ⇒ giao hoán)
@@ -99,7 +98,7 @@
       const x = ga[g] || {}, y = gb[g] || {};
       gameScore[g] = { best: Math.max(+x.best || 0, +y.best || 0), plays: Math.max(+x.plays || 0, +y.plays || 0) };
     });
-    return { v: 1, srsEpoch: epoch, srs, cfg: pickTs(a.cfg, b.cfg), plan: pickTs(a.plan, b.plan), day, gameScore };
+    return { v: 1, srsEpoch: epoch, srs, cfg: pickTs(a.cfg, b.cfg), plan: pickTs(a.plan, b.plan), day, gameScore, boss: bossApi().mergeBoss(a.boss, b.boss) };
   }
 
   /* ---------- làm sạch payload lạ (server chạy trước khi gộp) ---------- */
@@ -165,12 +164,13 @@
       cfg: cleanTs(p.cfg, now, d => isObj(d) ? { newPerDay: int(d.newPerDay, 5, 1, 50), maxSession: int(d.maxSession, 40, 5, 200) } : null),
       plan: cleanTs(p.plan, now, cleanPlan),
       day: cleanTs(p.day, now, d => cleanDay(d, now)),
-      gameScore: cleanMap(p.gameScore, TASK_ID, g => isObj(g) && ++games <= 20 ? { best: num(g.best, 0, 0, 1e9), plays: int(g.plays, 0, 0, 1e9) } : undefined)
+      gameScore: cleanMap(p.gameScore, TASK_ID, g => isObj(g) && ++games <= 20 ? { best: num(g.best, 0, 0, 1e9), plays: int(g.plays, 0, 0, 1e9) } : undefined),
+      boss: bossApi().cleanBoss(p.boss, now)
     };
   }
 
   /* ---------- state app ↔ payload ---------- */
-  // state = {srs, cfg, plan, day, gameScore}; meta = eng.syncmeta.v1. hist gửi đi chỉ histMax mục cuối.
+  // state = {srs, cfg, plan, day, gameScore, boss}; meta = eng.syncmeta.v1. hist gửi đi chỉ histMax mục cuối.
   function toPayload(state, meta, histMax) {
     state = state || {}; meta = meta || {};
     const n = histMax || HIST_SEND, srs = {};
@@ -179,14 +179,14 @@
     return {
       v: 1, srsEpoch: meta.srsEpoch || 0, srs: clone(srs),
       cfg: state.cfg ? wrap({ newPerDay: state.cfg.newPerDay, maxSession: state.cfg.maxSession }, meta.cfgTs) : null,
-      plan: wrap(state.plan, meta.planTs), day: wrap(state.day, meta.dayTs), gameScore: clone(state.gameScore || {})
+      plan: wrap(state.plan, meta.planTs), day: wrap(state.day, meta.dayTs), gameScore: clone(state.gameScore || {}), boss: clone(state.boss)
     };
   }
   function fromPayload(p) {
     p = isObj(p) ? p : {};
     const d = x => isObj(x) && x.data != null ? clone(x.data) : null, t = x => isObj(x) ? x.ts || 0 : 0;
     return {
-      srs: clone(isObj(p.srs) ? p.srs : {}), cfg: d(p.cfg), plan: d(p.plan), day: d(p.day), gameScore: clone(isObj(p.gameScore) ? p.gameScore : {}),
+      srs: clone(isObj(p.srs) ? p.srs : {}), cfg: d(p.cfg), plan: d(p.plan), day: d(p.day), gameScore: clone(isObj(p.gameScore) ? p.gameScore : {}), boss: clone(isObj(p.boss) ? p.boss : null),
       meta: { cfgTs: t(p.cfg), planTs: t(p.plan), dayTs: t(p.day), srsEpoch: +p.srsEpoch || 0 }
     };
   }

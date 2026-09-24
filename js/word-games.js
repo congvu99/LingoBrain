@@ -35,7 +35,7 @@ function gamePool(deck, srs, gameId) {
     const r = srs[w.id];
     if (!r || r.state === 'new') return false;
     if (gameId === 'scramble') return !!w.meaning && w.word.length > 2 && w.word.length <= SCRAMBLE_MAX_LEN;
-    if (gameId === 'sprint' || gameId === 'planes') return !!w.meaning;
+    if (gameId === 'sprint' || gameId === 'planes' || gameId === 'boss') return !!w.meaning;
     if (gameId === 'fruit') return !!w.meaning && w.word.length <= FRUIT_WORD_MAX;
     if (gameId === 'cloze') return !!w.context && w.context.length <= CLOZE_MAX_SENTENCE && wordRx(w.word).test(w.context);
     return true;
@@ -52,11 +52,12 @@ function gameAvailability(deck, srs) {
   return out;
 }
 
-/* Bốc n từ không trùng, trọng số 1 + lapses*2 → từ hay quên ra nhiều hơn */
-function pickGameWords(pool, srs, n, rand) {
+/* Bốc n từ không trùng, trọng số mặc định 1 + lapses*2 → từ hay quên ra nhiều hơn.
+   weightFn(rec) tuỳ chọn cho game cần trọng số riêng (Pháp sư: bossWordWeight). */
+function pickGameWords(pool, srs, n, rand, weightFn) {
   rand = rand || Math.random;
   const rest = pool.slice(), out = [];
-  const weight = w => { const r = srs[w.id]; return 1 + (r && r.lapses || 0) * 2; };
+  const weight = weightFn ? w => weightFn(srs[w.id]) : w => { const r = srs[w.id]; return 1 + (r && r.lapses || 0) * 2; };
   while (rest.length && out.length < n) {
     let total = 0;
     for (const w of rest) total += weight(w);

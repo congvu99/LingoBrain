@@ -14,6 +14,7 @@ const ASSETS = [
   './audio/index.json',
   './css/paper-theme.css',
   './js/srs-scheduler.js',
+  './js/boss-progress-sync-merge.js',
   './js/sync-merge.js',
   './js/app-storage.js',
   './js/deck-source.js',

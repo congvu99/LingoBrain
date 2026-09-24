@@ -3,6 +3,7 @@
 const fs = require('fs'), path = require('path'), vm = require('vm');
 const root = path.join(__dirname, '..');
 const PURE_MODULES = [
+  'js/boss-progress-sync-merge.js',   // sync-merge.js (trình duyệt/vm) và app-storage.js dùng global của nó → nạp đầu tiên
   'js/srs-scheduler.js',
   'js/sync-merge.js',
   'js/deck-source.js',
@@ -13,7 +14,11 @@ const PURE_MODULES = [
   'js/fruit-game-logic.js',
   'js/plane-game-text.js',
   'js/plane-game-logic.js',
-  'js/plane-game-typing.js'
+  'js/plane-game-typing.js',
+  'js/boss-game-spell-math.js',       // cần plane-game-text.js + word-games.js
+  'js/boss-game-elements.js',
+  'js/boss-game-logic.js',
+  'js/boss-game-progress.js'
 ];
 // require/Buffer/process chỉ cho test Node-only (server/*); test dùng chung trình duyệt không được phụ thuộc chúng
 const ctx = vm.createContext({ console, Math, Date, JSON, Array, Object, String, Number, RegExp, Error, Promise, fs, path, ROOT: root, require, Buffer, process, setTimeout, clearTimeout, AbortController });

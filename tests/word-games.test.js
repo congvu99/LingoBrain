@@ -94,6 +94,25 @@ describe('pickGameWords', () => {
     assert.ok(hot > 500, 'w3 bốc được ' + hot + '/2000, kỳ vọng ~875');
     assert.ok(hot < 1400, 'w3 bốc được ' + hot + '/2000, quá nhiều');
   });
+  it('không truyền weightFn → kết quả y hệt trọng số mặc định với cùng rand', () => {
+    const srs = mkSrs(deck, { w3: { state: 'review', lapses: 3 } });
+    const r = () => seq([0.1, 0.7, 0.3, 0.9, 0.5]);
+    const def = w => 1 + (w && w.lapses || 0) * 2;
+    assert.deepEqual(pickGameWords(deck.words, srs, 6, r()).map(w => w.id), pickGameWords(deck.words, srs, 6, r(), def).map(w => w.id));
+  });
+  it('weightFn nhận record srs của từ', () => {
+    const srs = mkSrs(deck, { w5: { state: 'learning', lapses: 0 } });
+    const got = pickGameWords(deck.words, srs, 1, () => 0.5, r => r.state === 'learning' ? 1000 : 0.001);
+    assert.equal(got[0].id, 'w5');
+  });
+});
+
+describe('gamePool — boss', () => {
+  it('từ đã học có nghĩa', () => {
+    const d = { words: [{ id: 'a', word: 'cat', meaning: 'mèo' }, { id: 'b', word: 'dog', meaning: '' }, { id: 'c', word: 'sun', meaning: 'mặt trời' }] };
+    const srs = mkSrs(d); srs.c.state = 'new';
+    assert.deepEqual(gamePool(d, srs, 'boss').map(w => w.id), ['a']);
+  });
 });
 
 describe('scrambleTiles', () => {
