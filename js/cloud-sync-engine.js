@@ -66,14 +66,16 @@ function resetLocalToDefaults() {
     // ngày cũ → day của tài khoản trên server luôn thắng (streak đúng); rollDay sau khi áp sẽ đưa về hôm nay
     day = { date: '1970-01-01', done: {}, streak: 0, history: {}, caption: {} };
     gameScore = {}; gameMiss = [];
+    bossProg = emptyBoss();   // "dùng dữ liệu tài khoản" → tiến trình Pháp sư cục bộ nhường hẳn cho server khi gộp
     save('eng.gamemiss.v1', gameMiss);
     save('eng.srs.v2', srs); save('eng.cfg.v1', cfg); save('eng.plan.v1', plan); save('eng.day.v1', day); save('eng.gamescore.v1', gameScore);
+    save('eng.boss.v1', bossProg);
     setSyncMeta({ cfgTs: 0, planTs: 0, dayTs: 0, srsEpoch: 0 });
   } finally { syncRun.applying = false; }
 }
 
 /* ---- áp dữ liệu đã gộp vào state app ---- */
-function localPayload(histMax) { return toPayload({ srs, cfg, plan, day, gameScore }, syncMeta(), histMax); }
+function localPayload(histMax) { return toPayload({ srs, cfg, plan, day, gameScore, boss: bossProg }, syncMeta(), histMax); }
 function applySyncPayload(p) {
   const f = fromPayload(p), m = {};
   const keepPlan = typeof planEditPending === 'function' && planEditPending();   // đang sửa giáo án dở → không đè
@@ -85,6 +87,12 @@ function applySyncPayload(p) {
     // day ngày tương lai (máy khác lệch đồng hồ) → giữ local, nếu không rollDay sẽ xoá tích + gây vòng lặp sync
     if (f.day && !(typeof dkey === 'function' && f.day.date > dkey())) { day = f.day; save('eng.day.v1', day); m.dayTs = f.meta.dayTs; }
     gameScore = f.gameScore; save('eng.gamescore.v1', gameScore);
+    if (f.boss) {
+      // vết thương trận (day) mang ngày tương lai (máy khác lệch đồng hồ) → giữ local, cùng lý do guard day ở trên
+      const keepDay = f.boss.day && typeof dkey === 'function' && f.boss.day.date > dkey();
+      bossProg = keepDay ? Object.assign({}, f.boss, { day: bossProg.day }) : f.boss;
+      save('eng.boss.v1', bossProg);
+    }
     m.srsEpoch = f.meta.srsEpoch;
     setSyncMeta(m);
   } finally { syncRun.applying = false; }

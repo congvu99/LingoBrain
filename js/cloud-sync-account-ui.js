@@ -121,4 +121,6 @@ function refreshAfterSync() {
   if (tab === 'plan' && !busyPlan) renderPlan();
   if (tab === 'manage') { renderList(); if (!planEditPending()) renderPlanEdit(); }
   updateDots();
+  // phase 5 định nghĩa hub Pháp Sư Lexoria; không đụng nếu đang trong trận (hub tự biết khi nào nên vẽ lại)
+  if (typeof refreshBossHub === 'function') refreshBossHub();
 }

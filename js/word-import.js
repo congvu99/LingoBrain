@@ -28,7 +28,7 @@ function restoreBackup(j) {
   // kiểm trước khi gán: file lạ mà gán dở dang thì RAM lệch localStorage, lần lưu kế tiếp ghi đè tiến độ thật
   if (!j || !j.srs || typeof j.srs !== 'object') return toast('❌ Không phải file backup');
   const signedIn = typeof authInfo === 'function' && authInfo();
-  if (signedIn && !confirm('Dữ liệu tiến độ trên tài khoản và các máy khác sẽ bị thay bằng backup này. Tiếp tục?')) return;
+  if (signedIn && !confirm('Dữ liệu tiến độ trên tài khoản và các máy khác sẽ bị thay bằng backup này (riêng tiến trình Pháp sư được gộp, không bị thay). Tiếp tục?')) return;
   srs = migrateV1(j.srs); pruneSrs(deck, srs);
   // đang đăng nhập: mốc epoch + mt = bây giờ → backup thắng dữ liệu cũ hơn trên tài khoản (kỷ lục game vẫn lấy max).
   // Chưa đăng nhập: chỉ khôi phục trên máy này, lần đăng nhập sau gộp với tài khoản như bình thường.
@@ -38,6 +38,9 @@ function restoreBackup(j) {
   // backup bản cũ không có 2 trường này → về rỗng
   gameScore = j.gameScore || {};
   gameMiss = (j.gameMiss || []).filter(id => deck.words.some(w => w.id === id));
+  // Pháp Sư Lexoria: luôn GỘP (không đè), đăng nhập hay không (user chốt) — backup XP/cấp thấp hơn không làm tụt.
+  // Backup cũ không có `boss` → cleanBoss(undefined,…) = emptyBoss() → mergeBoss(bossProg, empty) ≡ bossProg (giữ nguyên).
+  bossProg = mergeBoss(bossProg, cleanBoss(j.boss, Date.now())); saveBoss();
   save(K_SRS, srs); save(K_CFG, cfg); save(K_PLAN, plan); save(K_DAY, day);
   save(K_GAMESCORE, gameScore); save(K_GAMEMISS, gameMiss);
   $('#setNew').value = cfg.newPerDay; $('#setMax').value = cfg.maxSession;

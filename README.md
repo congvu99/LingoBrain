@@ -111,6 +111,20 @@ Chip bị xám nghĩa là chưa đủ điều kiện, chạm vào sẽ nói rõ 
 
 Bỏ ván giữa chừng (đổi tab hoặc bấm ←) thì không tính điểm, nhưng **từ vừa sai vẫn vào hàng đợi ôn**. Kỷ lục mỗi game lưu trên máy và nằm trong file backup.
 
+## Pháp Sư Lexoria
+
+Chip riêng (khác 5 game "Chơi nhanh" ở trên) trong hàng game, mở khi có ≥8 từ đã học. Pháp sư (chọn nam/nữ) đánh quái theo cốt truyện 4 chương × 7 trận + chế độ **Luyện phép** (không giới hạn ngày) và **vô tận** (sau khi hết 28 trận truyện).
+
+- Đề hiện `emoji + nghĩa Việt`; **gõ đúng từ tiếng Anh = niệm chú**. Gõ càng nhanh, sát thương phép càng cao; đang gõ đúng thì thời gian trận chậm hẳn lại (buông tay hoặc gõ sai >1,5 giây thì trở lại bình thường).
+- Bậc chiêu (1–3 sao) không tính theo ngưỡng tuyệt đối, mà xếp hạng **tương đối trong chính bộ từ người chơi đang có**: 30% từ khó nhất luôn ra chiêu bậc 3, 40% giữa ra bậc 2, còn lại bậc 1 — người mới học vẫn thấy đủ 3 bậc chiêu ngay từ đầu.
+- Trùm đánh liên tục theo một đồng hồ chạy — hết giờ trước khi hạ trùm thì mất 1 tim; hạ trùm trước khi hết tim thì thắng.
+- Lên cấp có điểm để đổ vào cây kỹ năng 5 nguyên tố (Lửa · Băng · Sét · Đất · Gió); đủ điểm mở tuyệt kỹ (Shift+Enter khi đủ Nộ) và các hiệu ứng nội tại của nhánh.
+- Chỉ chơi được **1 trận cốt truyện mỗi ngày**; chơi thêm thì vào chế độ Luyện phép (không cộng tiến trình truyện, vẫn cộng XP).
+- Buff "Ôn từ": ôn xong hết thẻ đến hạn trong ngày (không tính từ mới) sẽ được cộng thêm hiệu quả cho trận hôm đó.
+- **Không đụng lịch SM-2**: giống các game khác, trả lời sai chỉ đẩy từ đó vào `gameMiss` để lên đầu phiên ôn kế tiếp — Pháp Sư Lexoria không tự ghi điểm, không đổi `ef`/`ivl`/`due`.
+- Tiến trình (`eng.boss.v1`: cấp, XP, cây kỹ năng, giới tính, trường phái, trận đã thắng, vết thương trận dở) đồng bộ đa máy như tiến độ học, và nằm trong file **Tải backup**. **Khôi phục backup luôn gộp** tiến trình Pháp sư (lấy XP/cấp cao hơn, dồn các trận đã thắng) — không bao giờ làm tụt cấp hay xoá tiến trình đang có, dù đăng nhập hay không.
+- Nút **Xoá tiến độ** (Góc của bạn) chỉ xoá lịch ôn SM-2 — **không đụng tiến trình Pháp sư**, giống cách nó không đụng kỷ lục các game khác.
+
 ## Bộ từ
 
 Bộ từ đọc từ **API `/api/words` (DB)** nếu có, hoặc **fallback `words.json`** nếu lỗi/offline. Người dùng không nạp, thêm, sửa hay xoá từ được. Tab Quản lý chỉ hiện danh sách từ để xem.
@@ -138,7 +152,7 @@ Tạo ra `audio/<sha1-12>.mp3` (một file per từ+ngữ cảnh) + `audio/index
 
 ## Sao lưu
 
-Dữ liệu nằm trong trình duyệt + domain đang dùng. Góc của bạn → **Tải backup** (bộ từ + tiến độ + giáo án + hôm nay + kỷ lục game) → **Khôi phục** ở máy khác. Backup của bản cũ (Leitner) tự chuyển sang SM-2 khi khôi phục; tiến độ cũ trong trình duyệt cũng tự chuyển lần đầu mở bản mới (bản cũ giữ nguyên ở key `eng.srs.v1`).
+Dữ liệu nằm trong trình duyệt + domain đang dùng. Góc của bạn → **Tải backup** (tiến độ + giáo án + hôm nay + kỷ lục game + tiến trình Pháp Sư Lexoria) → **Khôi phục** ở máy khác. Backup của bản cũ (Leitner) tự chuyển sang SM-2 khi khôi phục; tiến độ cũ trong trình duyệt cũng tự chuyển lần đầu mở bản mới (bản cũ giữ nguyên ở key `eng.srs.v1`). Riêng tiến trình Pháp sư luôn **gộp**, không bị backup cũ hơn ghi đè (xem mục Pháp Sư Lexoria).
 
 ## Phím tắt (desktop)
 
