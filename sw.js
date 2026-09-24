@@ -49,6 +49,8 @@ const ASSETS = [
   './js/boss-game-spell-presets.js',
   './js/boss-game-mage-art.js',
   './js/boss-game-spell-art.js',
+  './js/boss-game-tier3-shapes.js',
+  './js/boss-game-tier3-ultimate-fx.js',
   './js/boss-game-render.js',
   './js/boss-game-result-ui.js',
   './js/boss-game-hub-ui.js',

@@ -44,5 +44,20 @@
       stepParticles(ps, 0.1);
       assert.near(p.x, vx * 0.1); assert.near(p.vy, 10);
     });
+    it('Pháp Sư Lexoria — tổ hợp nặng nhất (Đại chú mỗi hệ + Mưa sao băng bằng preset thật) ≤ trần hạt', () => {
+      const ps = createParticles(300, false, seeded());   // 300 = BOSS_FX_MAX_PARTS (boss-game-spell-art.js, file DOM không nạp ở đây)
+      let requested = 0;
+      Object.keys(BOSS_SPELL_PRESETS).forEach(el => {   // Đại chú (bậc 3) mỗi hệ: cast + impact
+        const p = BOSS_SPELL_PRESETS[el][3];
+        p.cast.concat(p.impact).forEach(o => { requested += o.n || 8; burst(ps, 100, 100, o.n || 8, o); });
+      });
+      const meteor = BOSS_ULTIMATE_PRESETS.meteor;   // Mưa sao băng: nhiều thiên thạch nổ cùng lúc
+      for (let i = 0; i < (meteor.hits || 5); i++) {
+        requested += 30; burst(ps, 120 + i * 10, 100, 30, { kind: 'spark', speed: 400, life: 0.6, size: 2.4, colors: [meteor.color], n: 30 });
+      }
+      assert.ok(requested > 300, 'kịch bản test phải nặng hơn trần 300 hạt (đang xin ' + requested + ')');
+      assert.ok(ps.n <= 300, 'số hạt sống không vượt trần 300, đang có ' + ps.n);
+      assert.equal(ps.items.length, ps.n);
+    });
   });
 })();

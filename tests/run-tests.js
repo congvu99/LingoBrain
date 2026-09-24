@@ -16,6 +16,7 @@ const PURE_MODULES = [
   'js/plane-game-logic.js',
   'js/plane-game-typing.js',
   'js/game-particles.js',
+  'js/boss-game-spell-presets.js',    // dữ liệu preset — cần cho test trần hạt bằng preset thật
   'js/boss-game-spell-math.js',       // cần plane-game-text.js + word-games.js
   'js/boss-game-elements.js',
   'js/boss-game-logic.js',
