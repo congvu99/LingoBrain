@@ -46,7 +46,7 @@ function bindUI() {
   $('#setNew').onchange = e => { cfg.newPerDay = Math.max(1, +e.target.value || 5); save(K_CFG, cfg); restartSession(); };
   $('#setMax').onchange = e => { cfg.maxSession = Math.max(5, +e.target.value || 40); save(K_CFG, cfg); restartSession(); };
   // backup chỉ chứa tiến độ + giáo án + cài đặt; bộ từ luôn lấy từ máy chủ (js/deck-source.js)
-  $('#btnExportAll').onclick = () => download('lingobrain-backup-' + dkey() + '.json', { version: APP_VERSION, srs, cfg, plan, day, gameScore, gameMiss });
+  $('#btnExportAll').onclick = () => download('lingobrain-backup-' + dkey() + '.json', { version: APP_VERSION, srs, cfg, plan, day, gameScore, gameMiss, boss: bossProg });
   $('#btnRestore').onclick = () => $('#fileRestore').click();
   $('#fileRestore').onchange = e => {
     const f = e.target.files[0]; if (!f) return;
@@ -62,6 +62,7 @@ function bindUI() {
     if (all) markSrsReset(Date.now());
     srs = {}; save(K_SRS, srs);
     gameMiss = []; save(K_GAMEMISS, gameMiss);   // từ sai gắn với tiến độ cũ, giữ lại vô nghĩa. Kỷ lục game thì giữ.
+    // bossProg (Pháp Sư Lexoria) KHÔNG bị xoá ở đây (user chốt, giống kỷ lục game) — nút này chỉ xoá lịch SM-2
     restartSession(); renderList(); toast('Đã xoá tiến độ');
   };
 

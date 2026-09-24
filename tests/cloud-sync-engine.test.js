@@ -15,6 +15,7 @@ describe('cloud-sync-engine (Node)', () => {
     G.dkey = () => '2026-09-23';
     G.srs = {}; G.cfg = { newPerDay: 5, maxSession: 40 }; G.plan = G.DEFAULT_PLAN.slice(); G.gameScore = {};
     G.day = { date: '2026-09-23', done: {}, streak: 0, history: {}, caption: {} };
+    G.bossProg = emptyBoss();   // tiến trình Pháp Sư Lexoria (app-storage.js không nạp trong test này, stub thủ công)
     G.fetchCalls = [];
     G.fetch = async (url, init) => { G.fetchCalls.push({ url, init, body: init && init.body ? JSON.parse(init.body) : null }); return G.nextResponse(init); };
     G.nextResponse = () => ({ status: 200, headers: { get: () => 'application/json' }, json: async () => ({ data: JSON.parse(G.fetchCalls[G.fetchCalls.length - 1].init.body).data }) });
@@ -64,18 +65,34 @@ describe('cloud-sync-engine (Node)', () => {
     stampRestoredSrs(s, 500);
     assert.equal(s.a.mt, 500); assert.equal(s.b.mt, 500); assert.equal(syncMeta().srsEpoch, 500);
   });
-  it('resetLocalToDefaults: state về mặc định, ts/epoch = 0', () => {
+  it('resetLocalToDefaults: state về mặc định, ts/epoch = 0, bossProg → emptyBoss', () => {
     setup();
     srs = { w: rec({ last: 9 }) }; cfg.newPerDay = 20; setSyncMeta({ cfgTs: 5, planTs: 5, dayTs: 5, srsEpoch: 5 });
+    bossProg = mergeBoss(bossProg, { xp: 500, wins: { '2026-09-01': 3 } });
     resetLocalToDefaults();
     assert.deepEqual(srs, {}); assert.equal(cfg.newPerDay, 5); assert.equal(plan[0].id, 't1');
     const m = syncMeta(); assert.equal(m.cfgTs + m.planTs + m.dayTs + m.srsEpoch, 0);
+    assert.deepEqual(bossProg, emptyBoss()); assert.deepEqual(JSON.parse(store['eng.boss.v1']), emptyBoss());
   });
   it('applySyncPayload: day có ngày tương lai → giữ day local, không đóng dấu', () => {
     setup({ auth: true });
     day.done = { t1: 1 }; setSyncMeta({ dayTs: 5 });
     applySyncPayload({ v: 1, srs: {}, day: { data: { date: '2099-01-01', done: {}, streak: 0, history: {}, caption: {} }, ts: 999 } });
     assert.equal(day.date, '2026-09-23'); assert.deepEqual(day.done, { t1: 1 }); assert.equal(syncMeta().dayTs, 5);
+  });
+  it('applySyncPayload: áp boss bình thường', () => {
+    setup({ auth: true });
+    const boss = mergeBoss(emptyBoss(), { xp: 300, wins: { '2026-09-20': 4 } });
+    applySyncPayload({ v: 1, srs: {}, boss });
+    assert.equal(bossProg.xp, 300); assert.equal(bossProg.wins['2026-09-20'], 4);
+    assert.deepEqual(JSON.parse(store['eng.boss.v1']), boss);
+  });
+  it('applySyncPayload: boss.day ngày tương lai → giữ day local của Pháp sư, xp vẫn áp', () => {
+    setup({ auth: true });
+    bossProg = mergeBoss(emptyBoss(), { day: { date: '2026-09-23', beat: 2, dmg: 50 } });
+    const remoteBoss = mergeBoss(emptyBoss(), { xp: 900, day: { date: '2099-01-01', beat: 1, dmg: 10 } });
+    applySyncPayload({ v: 1, srs: {}, boss: remoteBoss });
+    assert.equal(bossProg.xp, 900, 'xp vẫn nhận từ server'); assert.deepEqual(bossProg.day, { date: '2026-09-23', beat: 2, dmg: 50 }, 'day tương lai bị giữ local');
   });
   it('switchOwner: đổi chủ → xoá mốc epoch + ts của chủ cũ (không xoá oan dữ liệu TK mới); replace → state mặc định', () => {
     setup();
@@ -101,9 +118,44 @@ describe('cloud-sync-engine (Node)', () => {
   });
   it('hasLocalProgress', () => { setup(); assert.equal(hasLocalProgress(), false); srs = { w: rec({}) }; assert.equal(hasLocalProgress(), true); });
 
+  // Khôi phục backup (word-import.js restoreBackup): bossProg = mergeBoss(bossProg, cleanBoss(j.boss, now)).
+  // word-import.js cần DOM ($('#setNew')…) nên test trực tiếp dòng gộp này (giống hệt logic thật) thay vì gọi restoreBackup().
+  describe('khôi phục backup: gộp bossProg (mergeBoss + cleanBoss)', () => {
+    it('backup rác (thiếu/hỏng boss) → bossProg vẫn hợp lệ, giữ nguyên tiến trình hiện có', () => {
+      setup();
+      bossProg = mergeBoss(emptyBoss(), { xp: 400, wins: { '2026-09-10': 3 }, alloc: { fire: 1 } });
+      [undefined, null, 'x', 7, [], {}, { xp: 'constructor' }, { day: { beat: 'x' } }].forEach(junk => {
+        const before = JSON.stringify(bossProg);
+        bossProg = mergeBoss(bossProg, cleanBoss(junk, Date.now()));
+        assert.equal(JSON.stringify(bossProg), before, 'rác không có xp/wins hợp lệ → không đổi gì (mergeBoss với emptyBoss ≡ chính nó)');
+      });
+    });
+    it('backup có XP thấp hơn hiện tại → không làm tụt (max, không ghi đè)', () => {
+      setup();
+      bossProg = mergeBoss(emptyBoss(), { xp: 900, alloc: { fire: 3, ice: 2 } });
+      bossProg = mergeBoss(bossProg, cleanBoss({ xp: 100, alloc: { fire: 1 } }, Date.now()));
+      assert.equal(bossProg.xp, 900, 'XP backup thấp hơn không kéo tụt XP hiện tại');
+      assert.equal(bossProg.alloc.fire, 3, 'alloc gộp max theo nhánh, không tụt');
+    });
+    it('backup có XP/tiến trình cao hơn → được nhận vào (gộp lên, không phải đè)', () => {
+      setup();
+      bossProg = mergeBoss(emptyBoss(), { xp: 100, wins: { '2026-09-10': 2 } });
+      bossProg = mergeBoss(bossProg, cleanBoss({ xp: 500, wins: { '2026-09-15': 5 } }, Date.now()));
+      assert.equal(bossProg.xp, 500);
+      assert.deepEqual(bossProg.wins, { '2026-09-10': 2, '2026-09-15': 5 }, 'cả hai trận thắng đều còn — gộp, không thay');
+    });
+  });
+
   const N = 'cloud-sync-engine (Node) › ';
   G.__asyncTests = (G.__asyncTests || []).concat([
     { name: N + 'chưa đăng nhập: syncNow không gọi mạng', fn: async () => { setup(); await syncNow(); assert.equal(fetchCalls.length, 0); } },
+    { name: N + 'vòng sync giữ boss: gửi lên rồi server hồi lại (echo) → bossProg không đổi', fn: async () => {
+      setup({ auth: true });
+      bossProg = mergeBoss(emptyBoss(), { xp: 250, wins: { '2026-09-10': 5 }, alloc: { fire: 2 } });
+      await syncNow();   // stub echo: server trả đúng payload đã gửi
+      assert.equal(fetchCalls[0].body.data.boss.xp, 250, 'boss có trong payload gửi lên');
+      assert.equal(bossProg.xp, 250); assert.equal(bossProg.wins['2026-09-10'], 5); assert.equal(bossProg.alloc.fire, 2);
+    } },
     { name: N + 'sync gửi PUT JSON có Bearer, trả về → áp + ghi syncedAt/owner', fn: async () => {
       setup({ auth: true });
       srs = { w: rec({ last: 10 }) };

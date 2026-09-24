@@ -31,6 +31,24 @@ js/fruit-game-scene-draw.js Chém chữ: vẽ 1 khung — bóng đổ, quầng v
 js/fruit-game-ui.js      Chém chữ: khung phủ, pointer events vuốt, canvas DPR, vòng rAF, tạm dừng, chọn cấp
 js/word-game-rounds.js   game: khung đồng hồ 60s + vẽ 3 dạng câu hỏi
 js/word-game-ui.js       game: chip chọn, vòng đời ván, màn kết thúc
+js/game-particles.js     DÙNG CHUNG (Bắn máy bay + Pháp sư): pool hạt burst/step, vẽ nhận ctx, rand tiêm được   [thuần]
+js/game-viewport-fit.js  DÙNG CHUNG (Bắn máy bay + Pháp sư): co khung theo visualViewport
+js/boss-progress-sync-merge.js  Pháp Sư Lexoria: BOSS_ELEMENTS, emptyBoss/cleanBoss/mergeBoss cho `eng.boss.v1`, dùng chung server   [thuần, nạp TRƯỚC sync-merge.js + app-storage.js]
+js/boss-game-spell-math.js      Pháp sư: BOSS_TUNING, độ khó từ, bậc chiêu tương đối trong pool, hệ số tốc độ/sát thương, pool nhóm đồng nghĩa   [thuần]
+js/boss-game-elements.js        Pháp sư: bảng cây 5 nguyên tố → modifier, điểm còn lại, điều kiện lên bậc   [thuần]
+js/boss-game-logic.js           Pháp sư: máy trạng thái 1 trận (đồng hồ, chậm thời gian, khoá cắt cảnh, gõ/typo, Nộ, DoT, freeze, events[])   [thuần]
+js/boss-game-progress.js        Pháp sư: đường cấp, trận hôm nay/beat kế, ghi tiến trình idempotent, chuỗi ngày, buff Ôn từ, đoạn truyện   [thuần]
+js/boss-game-spell-presets.js   Pháp sư: dữ liệu hiệu ứng phép theo hệ × bậc + tuyệt kỹ + fallback bậc thiếu
+js/boss-game-story.js           Pháp sư: dữ liệu vùng, quái, 28 đoạn truyện
+js/boss-game-spell-art.js       Pháp sư: vẽ hiệu ứng phép (thiên thạch, tia sét, cột băng, gai đá, lốc), quả bay, số sát thương
+js/boss-game-mage-art.js        Pháp sư: vẽ pháp sư nam/nữ theo pose (idle/chant/cast/hurt)
+js/boss-game-monster-shapes.js  Pháp sư: 5 dáng quái (humanoid, beast, wraith, flyer, dragon)
+js/boss-game-monster-art.js     Pháp sư: vẽ quái theo dáng/pose/bảng màu, hiệu ứng trúng đòn/đóng băng
+js/boss-game-render.js          Pháp sư: ghép khung hình cảnh trận từ state + hiệu ứng
+js/boss-game-ui.js              Pháp sư: khung trận DOM/canvas, input ẩn + phím, vòng rAF, tạm dừng, lưu tiến trình giữa trận
+js/boss-game-hub-ui.js          Pháp sư: sảnh chọn trận, màn lần đầu, thẻ truyện, Nhật ký
+js/boss-game-skill-tree-ui.js   Pháp sư: cây kỹ năng nguyên tố + chọn trường phái
+js/boss-game-result-ui.js       Pháp sư: màn kết trận (XP, lên cấp, outro, từ sai)
 js/app-shell.js          tab, bindUI, phím tắt, init
 js/pwa-register.js       đăng ký service worker, tự cập nhật (kiểm tra khi mở lại app, tải lại lúc rảnh)
 js/deck-source.js        tải bộ từ từ /api/words (DB) → fallback words.json; pruneSrs chỉ khi từ API    [thuần]
@@ -100,7 +118,7 @@ Body: {username, password}
 
 **PUT /api/sync** — gửi tiến độ (auth: Authorization: Bearer token)
 ```
-Body: {data: {v, srsEpoch, srs, cfg, ...}}
+Body: {data: {v, srsEpoch, srs, cfg, plan, day, gameScore, boss}}
 200 {data, updatedAt} → merge + lưu, trả bản merged
 401 → token sai/hết hạn
 503 → DB chưa ready
@@ -133,7 +151,28 @@ Body: {data: {v, srsEpoch, srs, cfg, ...}}
 | `eng.gamescore.v1` | `{[gameId]: {best, plays}}` kỷ lục mỗi game; Bắn máy bay / Chém chữ tách theo cấp: `planes` (Vừa), `planes-easy`, `planes-hard`, `fruit` (Vừa), `fruit-easy`, `fruit-hard` (tổng 9 khoá, sync-merge cho tối đa 20) |
 | `eng.auth.v1` | `{token, username}` khi đăng nhập (dùng cho `/api/sync`) |
 | `eng.syncmeta.v1` | `{cfgTs, planTs, dayTs, srsEpoch, owner, syncedAt}` — mốc đồng bộ |
+| `eng.boss.v1` | Tiến trình Pháp Sư Lexoria: `{v, xp, wins:{date:beat}, day:{date,beat,dmg}\|null, alloc:{el:0..3}, gender:{v,ts}, element:{v,ts}, buffDate}` — không có `deviceId` |
 | IndexedDB `lingobrain/recordings` | `{id, taskId, date, caption, blob, type}` |
+
+`bossProg` (biến toàn cục, `js/app-storage.js`) giữ `eng.boss.v1` đang hoạt động; `saveBoss()` = `save('eng.boss.v1', bossProg)`. Đồng bộ có thể **thay hẳn object** `bossProg` (`applySyncPayload`), nên mọi nơi ghi tiến trình phải đọc `bossProg` **tại thời điểm ghi**, không giữ tham chiếu cũ.
+
+## Đồng bộ Pháp Sư Lexoria (js/boss-progress-sync-merge.js · sync-merge.js · cloud-sync-engine.js)
+
+`eng.boss.v1` đi qua đúng đường ống đồng bộ dùng chung với SRS/giáo án/cài đặt (`sync-merge.js`: `mergeSync`, `sanitizePayload`, `toPayload`, `fromPayload`; `cloud-sync-engine.js`: `localPayload`, `applySyncPayload`). `boss-progress-sync-merge.js` nạp **trước** `sync-merge.js` và `app-storage.js`; hai file kia gọi `emptyBoss`/`cleanBoss`/`mergeBoss` qua `bossApi()` (require ở Node server, global ở trình duyệt).
+
+Luật gộp từng trường của `mergeBoss(a, b)` (giao hoán, kết hợp, idempotent, không bao giờ ném với dữ liệu rác):
+- `xp`: lấy **max** (chấp nhận mất XP nếu 2 máy cùng chơi offline trong ngày; ghi dạng tuyệt đối `xp = max(xp, xpLúcVàoTrận + xpTrậnNày)` nên idempotent).
+- `wins` (`{date: beat}`): hợp theo từng ngày, cùng ngày lấy `beat` lớn hơn; giữ 400 ngày gần nhất.
+- `day` (vết thương trận dở): ngày lớn hơn thắng; cùng ngày → `beat` lớn hơn; cùng ngày + beat → `dmg` max. Client giữ `day` **local** nếu bản đồng bộ mang ngày tương lai (`f.boss.day.date > dkey()`) — cùng lý do với guard `day` (task hằng ngày) đã có sẵn ở `applySyncPayload`.
+- `alloc` (điểm cây kỹ năng): **max theo từng nhánh** — không có cơ chế trừ điểm nên bậc chỉ tăng, gộp max luôn an toàn.
+- `gender`, `element` (`{v, ts}`): mốc `ts` lớn hơn thắng cả khối; hoà thì so `v` để tất định.
+- `buffDate`: lấy chuỗi lớn hơn (ngày gần nhất đã đạt buff Ôn từ).
+
+**Hợp đồng CHỈ TIẾN**: một khi đã phát hành, `boss` không bao giờ bị gỡ khỏi `sanitizePayload`/`mergeSync` phía server — gỡ sẽ xoá `boss` của **mọi** tài khoản trên DB ở lần sync kế tiếp (server chạy `sanitizePayload` trên cả bản đã lưu lẫn bản mới trước khi ghi lại). **Rollback chỉ làm ở client**: gỡ `'boss'` khỏi `GAME_IDS` (`js/word-games.js`) để ẩn chip, hạ `APP_VERSION`/`CACHE`; trường `boss` vẫn đi qua sync vô hại (không ai đọc/ghi nó nữa).
+
+`switchOwner(username, replace)` (`cloud-sync-engine.js`) mang `boss` sang tài khoản mới **giống hệt SRS**: `replace=false` (gộp) giữ nguyên `bossProg` hiện có để gộp với dữ liệu tài khoản ở lần sync kế; `replace=true` (dùng dữ liệu tài khoản) gọi `resetLocalToDefaults()` → `bossProg = emptyBoss()` rồi để dữ liệu server thắng hoàn toàn khi gộp (đây là hành vi chủ ý, không phải thiếu sót).
+
+Backup (Tải backup / Khôi phục, `js/app-shell.js` + `js/word-import.js`) mang thêm trường `boss: bossProg`. Khôi phục **luôn gộp** `bossProg = mergeBoss(bossProg, cleanBoss(j.boss, Date.now()))` — cả khi đã đăng nhập lẫn chưa, khác với SRS/giáo án/cài đặt (các trường đó bị **thay** bằng backup). Vì vậy backup cũ hơn hoặc thiếu `boss` không bao giờ làm tụt cấp/xoá tiến trình Pháp sư. Nút "Xoá tiến độ" (`app-shell.js`) chỉ xoá SM-2 (`srs`, `gameMiss`) — không đụng `bossProg`, giống cách nó không đụng `gameScore`.
 
 ## Thuật toán ôn (js/srs-scheduler.js)
 
