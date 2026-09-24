@@ -17909,6 +17909,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'climb'."
     },
     {
+      "id": "pass-out",
+      "word": "pass out",
+      "ipa": "/ˌpæs ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "ngất, ngủ gục; phát (tài liệu, đồ)",
+      "context": "I'm so tired I could pass out right here.",
+      "contextVi": "Mệt quá, chắc tôi lăn ra ngủ ngay tại đây mất.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "😵",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'pass out' để kể lần bạn mệt tới mức ngủ gục sau một ngày dài."
+    },
+    {
       "id": "tomato",
       "word": "tomato",
       "ipa": "/təˈmɑːtəʊ/",
@@ -17935,6 +17949,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'banana'."
+    },
+    {
+      "id": "pass-up",
+      "word": "pass up",
+      "ipa": "/ˌpæs ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "bỏ lỡ, từ chối (cơ hội)",
+      "context": "Don't pass up a chance like this.",
+      "contextVi": "Đừng bỏ lỡ cơ hội kiểu này nha.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🚪",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'pass up' để khuyên bạn thân đừng bỏ qua một lời mời làm việc tốt."
     },
     {
       "id": "tooth",
@@ -17965,6 +17993,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'pencil'."
     },
     {
+      "id": "pay-back",
+      "word": "pay back",
+      "ipa": "/ˌpeɪ ˈbæk/",
+      "pos": "phrasal verb",
+      "meaning": "trả lại (tiền); trả đũa",
+      "context": "I'll pay back the money next week, promise.",
+      "contextVi": "Tuần sau tôi trả lại tiền nha, hứa đó.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "💸",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'pay back' để hứa trả tiền một người bạn đã ứng giúp bạn."
+    },
+    {
       "id": "bored",
       "word": "bored",
       "ipa": "/bɔːd/",
@@ -17991,6 +18033,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'aunt'."
+    },
+    {
+      "id": "pay-for",
+      "word": "pay for",
+      "ipa": "/ˈpeɪ fɔr/",
+      "pos": "phrasal verb",
+      "meaning": "trả tiền cho; trả giá (vì lỗi)",
+      "context": "Let me pay for dinner tonight.",
+      "contextVi": "Tối nay để tôi trả tiền bữa tối nhé.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "💳",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'pay for' để giành trả tiền khi đi ăn với gia đình."
     },
     {
       "id": "boyfriend",
@@ -18021,6 +18077,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'cannot'."
     },
     {
+      "id": "pay-off",
+      "word": "pay off",
+      "ipa": "/ˌpeɪ ˈɔf/",
+      "pos": "phrasal verb",
+      "meaning": "có kết quả, đáng công; trả hết (nợ)",
+      "context": "Hard work will pay off, trust me.",
+      "contextVi": "Chăm chỉ rồi sẽ có kết quả, tin tôi đi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🏆",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'pay off' để động viên bạn cùng lớp đang ôn thi vất vả."
+    },
+    {
       "id": "carrot",
       "word": "carrot",
       "ipa": "/ˈkærət/",
@@ -18047,6 +18117,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'colour'."
+    },
+    {
+      "id": "pay-up",
+      "word": "pay up",
+      "ipa": "/ˌpeɪ ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "trả tiền đi (khi nợ, thua cược)",
+      "context": "Come on, pay up, you lost the bet!",
+      "contextVi": "Thôi nào, trả tiền đi, ông thua cược rồi!",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🤑",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'pay up' để đòi tiền đứa bạn thua cược xem bóng đá."
     },
     {
       "id": "cousin",
@@ -18077,6 +18161,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'dancer'."
     },
     {
+      "id": "perk-up",
+      "word": "perk up",
+      "ipa": "/ˌpɜrk ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "tỉnh táo, phấn chấn lên",
+      "context": "Coffee always helps me perk up in the morning.",
+      "contextVi": "Sáng nào cà phê cũng giúp tôi tỉnh cả người.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "☕",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'perk up' để kể thứ giúp bạn tỉnh táo trước ca làm buổi sáng."
+    },
+    {
       "id": "downstairs",
       "word": "downstairs",
       "ipa": "/ˌdaʊnˈsteəz/",
@@ -18103,6 +18201,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'eighteen'."
+    },
+    {
+      "id": "phase-out",
+      "word": "phase out",
+      "ipa": "/ˌfeɪz ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "loại bỏ dần, ngừng dần",
+      "context": "They're gonna phase out the old system next year.",
+      "contextVi": "Năm sau họ sẽ bỏ dần hệ thống cũ.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "📉",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'phase out' để nói về một phần mềm cũ công ty bạn sắp bỏ."
     },
     {
       "id": "eighty",
@@ -18133,6 +18245,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'favourite'."
     },
     {
+      "id": "pick-on",
+      "word": "pick on",
+      "ipa": "/ˈpɪk ɑn/",
+      "pos": "phrasal verb",
+      "meaning": "bắt nạt, trêu chọc (ai)",
+      "context": "Don't pick on your little brother.",
+      "contextVi": "Đừng có bắt nạt em trai con nữa.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "😠",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'pick on' để nhắc con bạn đừng trêu em ở nhà."
+    },
+    {
       "id": "fourteen",
       "word": "fourteen",
       "ipa": "/ˌfɔːˈtiːn/",
@@ -18159,6 +18285,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'goodbye'."
+    },
+    {
+      "id": "pick-out",
+      "word": "pick out",
+      "ipa": "/ˌpɪk ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "chọn ra; nhận ra (giữa đám đông)",
+      "context": "Help me pick out a dress for the wedding.",
+      "contextVi": "Chọn giúp tôi cái váy đi đám cưới với.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "👗",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'pick out' để nhờ bạn chọn giúp món quà sinh nhật cho mẹ."
     },
     {
       "id": "grandfather",
@@ -18189,6 +18329,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'grandmother'."
     },
     {
+      "id": "pick-up",
+      "word": "pick up",
+      "ipa": "/ˌpɪk ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "đón (ai); nhặt lên; mua; nghe máy; học lỏm",
+      "context": "Can you pick up the kids at five?",
+      "contextVi": "Anh đón bọn nhỏ lúc năm giờ được không?",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🚗",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'pick up' để nhờ người nhà đón giúp bạn ở sân bay."
+    },
+    {
       "id": "grandparent",
       "word": "grandparent",
       "ipa": "/ˈɡrænpeərənt/",
@@ -18215,6 +18369,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'have to'."
+    },
+    {
+      "id": "pick-up-on",
+      "word": "pick up on",
+      "ipa": "/ˌpɪk ˈʌp ɑn/",
+      "pos": "phrasal verb",
+      "meaning": "nhận ra, để ý thấy (điều ngầm)",
+      "context": "Kids pick up on everything you say.",
+      "contextVi": "Con nít để ý hết mọi thứ mình nói đó.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "👂",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'pick up on' để kể lần bạn nhận ra khách hàng đang không vui."
     },
     {
       "id": "ice-cream",
@@ -18245,6 +18413,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'kilometre'."
     },
     {
+      "id": "pig-out",
+      "word": "pig out",
+      "ipa": "/ˌpɪɡ ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "ăn thả ga, ăn như heo",
+      "context": "Let's pig out on pizza tonight.",
+      "contextVi": "Tối nay ăn pizza thả ga đi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🍕",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'pig out' để rủ bạn bè đi ăn buffet cuối tuần."
+    },
+    {
       "id": "metre",
       "word": "metre",
       "ipa": "/ˈmiːtə/",
@@ -18271,6 +18453,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'mum'."
+    },
+    {
+      "id": "pile-up",
+      "word": "pile up",
+      "ipa": "/ˌpaɪl ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "chất đống, dồn lại",
+      "context": "Dishes always pile up when I'm busy.",
+      "contextVi": "Hễ bận là chén bát chất đống.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🗂️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'pile up' để than việc ở chỗ làm dồn lại sau kỳ nghỉ."
     },
     {
       "id": "neighbour",
@@ -18301,6 +18497,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'next to'."
     },
     {
+      "id": "pitch-in",
+      "word": "pitch in",
+      "ipa": "/ˌpɪtʃ ˈɪn/",
+      "pos": "phrasal verb",
+      "meaning": "góp (tiền, sức), chung tay",
+      "context": "Everyone can pitch in five bucks for the gift.",
+      "contextVi": "Mỗi người góp năm đô mua quà nha.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🤝",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'pitch in' để rủ đồng nghiệp góp tiền mua quà sếp."
+    },
+    {
       "id": "nineteen",
       "word": "nineteen",
       "ipa": "/ˌnaɪnˈtiːn/",
@@ -18327,6 +18537,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'ninety'."
+    },
+    {
+      "id": "play-along",
+      "word": "play along",
+      "ipa": "/ˌpleɪ əˈlɔŋ/",
+      "pos": "phrasal verb",
+      "meaning": "giả vờ hùa theo, diễn theo",
+      "context": "Just play along, it's a surprise party.",
+      "contextVi": "Cứ diễn theo đi, tiệc bất ngờ đó.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🎭",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'play along' để dặn bạn giữ bí mật một bữa tiệc bất ngờ."
     },
     {
       "id": "no-one",
@@ -18357,6 +18581,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'o'clock'."
     },
     {
+      "id": "play-around",
+      "word": "play around",
+      "ipa": "/ˌpleɪ əˈraʊnd/",
+      "pos": "phrasal verb",
+      "meaning": "nghịch, táy máy; đùa giỡn",
+      "context": "Don't play around with the settings.",
+      "contextVi": "Đừng có táy máy mấy cái cài đặt nha.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🎮",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'play around' để dặn em bạn đừng nghịch điện thoại của bạn."
+    },
+    {
       "id": "policeman",
       "word": "policeman",
       "ipa": "/pəˈliːsmən/",
@@ -18383,6 +18621,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'practise'."
+    },
+    {
+      "id": "play-down",
+      "word": "play down",
+      "ipa": "/ˌpleɪ ˈdaʊn/",
+      "pos": "phrasal verb",
+      "meaning": "xem nhẹ, nói giảm đi",
+      "context": "Don't play down how hard you worked.",
+      "contextVi": "Đừng nói giảm công sức bạn bỏ ra chứ.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🔉",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'play down' để nói với bạn đừng khiêm tốn quá về thành tích học tập."
     },
     {
       "id": "seventeen",
@@ -18413,6 +18665,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'seventy'."
     },
     {
+      "id": "play-out",
+      "word": "play out",
+      "ipa": "/ˌpleɪ ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "diễn ra, diễn biến",
+      "context": "Let's see how things play out.",
+      "contextVi": "Để xem mọi chuyện diễn ra thế nào đã.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🎬",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'play out' để nói về một kế hoạch du lịch chưa chắc chắn."
+    },
+    {
       "id": "sixteen",
       "word": "sixteen",
       "ipa": "/ˌsɪksˈtiːn/",
@@ -18439,6 +18705,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'sixty'."
+    },
+    {
+      "id": "play-up",
+      "word": "play up",
+      "ipa": "/ˌpleɪ ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "làm nổi bật, nhấn mạnh; quậy (trẻ)",
+      "context": "Play up your strengths in the interview.",
+      "contextVi": "Đi phỏng vấn thì nhấn mạnh điểm mạnh của mình vào.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🌟",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'play up' để khuyên bạn nhấn mạnh kỹ năng khi xin việc."
     },
     {
       "id": "supermarket",
@@ -18469,6 +18749,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'sweater'."
     },
     {
+      "id": "plow-through",
+      "word": "plow through",
+      "ipa": "/ˌplaʊ ˈθru/",
+      "pos": "phrasal verb",
+      "meaning": "cày, làm hùng hục cho xong (việc nhiều)",
+      "context": "I have to plow through fifty emails today.",
+      "contextVi": "Hôm nay tôi phải cày cho xong năm chục cái email.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🚜",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'plow through' để kể đống bài tập bạn phải cày xong trước kỳ thi."
+    },
+    {
       "id": "t-shirt",
       "word": "t-shirt",
       "ipa": "/ˈtiː ʃɜːt/",
@@ -18495,6 +18789,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'teenager'."
+    },
+    {
+      "id": "plug-in",
+      "word": "plug in",
+      "ipa": "/ˌplʌɡ ˈɪn/",
+      "pos": "phrasal verb",
+      "meaning": "cắm điện, cắm vào",
+      "context": "Can you plug in my phone charger?",
+      "contextVi": "Cắm giùm tôi cái sạc điện thoại với.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🔌",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'plug in' để nhờ nhân viên khách sạn cắm giúp ổ điện."
     },
     {
       "id": "thirsty",
@@ -18525,6 +18833,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'thirteen'."
     },
     {
+      "id": "point-out",
+      "word": "point out",
+      "ipa": "/ˌpɔɪnt ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "chỉ ra, lưu ý",
+      "context": "I just want to point out one small mistake.",
+      "contextVi": "Tôi chỉ muốn chỉ ra một lỗi nhỏ thôi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "👉",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'point out' để góp ý nhẹ nhàng lỗi trong báo cáo của đồng nghiệp."
+    },
+    {
       "id": "trousers",
       "word": "trousers",
       "ipa": "/ˈtraʊzəz/",
@@ -18551,6 +18873,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'umbrella'."
+    },
+    {
+      "id": "poke-around",
+      "word": "poke around",
+      "ipa": "/ˌpoʊk əˈraʊnd/",
+      "pos": "phrasal verb",
+      "meaning": "lục lọi, dạo quanh xem thử",
+      "context": "Let's poke around the old market for a bit.",
+      "contextVi": "Mình đi dạo lòng vòng chợ cũ một chút đi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🔍",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'poke around' để kể lần bạn đi dạo khám phá một khu phố lạ khi du lịch."
     },
     {
       "id": "upstairs",
@@ -18581,6 +18917,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'waiter'."
     },
     {
+      "id": "polish-off",
+      "word": "polish off",
+      "ipa": "/ˌpɑlɪʃ ˈɔf/",
+      "pos": "phrasal verb",
+      "meaning": "ăn sạch, xử gọn; làm xong nhanh",
+      "context": "Let's polish off the rest of the pizza.",
+      "contextVi": "Xử nốt chỗ pizza còn lại đi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🍽️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'polish off' để rủ cả nhà ăn nốt đồ ăn thừa trong tủ lạnh."
+    },
+    {
       "id": "search",
       "word": "search",
       "ipa": "/sɜːtʃ/",
@@ -18607,6 +18957,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'site'."
+    },
+    {
+      "id": "pop-in",
+      "word": "pop in",
+      "ipa": "/ˌpɑp ˈɪn/",
+      "pos": "phrasal verb",
+      "meaning": "ghé qua (một lát)",
+      "context": "I'll pop in after lunch to say hi.",
+      "contextVi": "Ăn trưa xong tôi ghé qua chào một tiếng.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "👋",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'pop in' để hẹn ghé thăm nhà bà ngoại một chút."
     },
     {
       "id": "web",
@@ -18637,6 +19001,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'view'."
     },
     {
+      "id": "pop-out",
+      "word": "pop out",
+      "ipa": "/ˌpɑp ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "chạy ra ngoài (một lát); lòi ra",
+      "context": "I'm gonna pop out for coffee, want one?",
+      "contextVi": "Tôi chạy ra ngoài mua cà phê, uống không?",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🏃",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'pop out' để báo đồng nghiệp bạn ra ngoài một lát giữa ca."
+    },
+    {
       "id": "service",
       "word": "service",
       "ipa": "/ˈsɜːvɪs/",
@@ -18663,6 +19041,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'top'."
+    },
+    {
+      "id": "pop-up",
+      "word": "pop up",
+      "ipa": "/ˌpɑp ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "hiện lên, bật ra; xuất hiện bất ngờ",
+      "context": "These annoying ads pop up every five seconds.",
+      "contextVi": "Mấy cái quảng cáo phiền phức cứ năm giây lại hiện lên.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "💬",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'pop up' để than về thông báo cứ hiện lên trên điện thoại bạn."
     },
     {
       "id": "state",
@@ -18693,6 +19085,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'data'."
     },
     {
+      "id": "pore-over",
+      "word": "pore over",
+      "ipa": "/ˌpɔr ˈoʊvər/",
+      "pos": "phrasal verb",
+      "meaning": "nghiền ngẫm, xem kỹ",
+      "context": "I pore over the menu every single time.",
+      "contextVi": "Lần nào tôi cũng ngồi nghiền ngẫm cái menu.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🧐",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'pore over' để kể lần bạn đọc kỹ hợp đồng thuê nhà."
+    },
+    {
       "id": "system",
       "word": "system",
       "ipa": "/ˈsɪstəm/",
@@ -18719,6 +19125,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'such'."
+    },
+    {
+      "id": "psych-up",
+      "word": "psych up",
+      "ipa": "/ˌsaɪk ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "làm (ai) hăng hái, lên tinh thần",
+      "context": "The coach knows how to psych up the whole team.",
+      "contextVi": "Ông huấn luyện viên biết cách làm cả đội lên tinh thần.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "💪",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'psych up' để kể cách bạn lấy tinh thần trước buổi thuyết trình."
     },
     {
       "id": "available",
@@ -18749,6 +19169,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'support'."
     },
     {
+      "id": "pull-ahead",
+      "word": "pull ahead",
+      "ipa": "/ˌpʊl əˈhɛd/",
+      "pos": "phrasal verb",
+      "meaning": "vượt lên dẫn trước",
+      "context": "Our team will pull ahead in the second half.",
+      "contextVi": "Hiệp hai đội mình sẽ vượt lên thôi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🏁",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'pull ahead' để bình luận một trận bóng đang xem với bạn."
+    },
+    {
       "id": "public",
       "word": "public",
       "ipa": "/ˈpʌblɪk/",
@@ -18775,6 +19209,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'review'."
+    },
+    {
+      "id": "pull-apart",
+      "word": "pull apart",
+      "ipa": "/ˌpʊl əˈpɑrt/",
+      "pos": "phrasal verb",
+      "meaning": "tách ra, kéo rời ra; chia rẽ",
+      "context": "Help me pull apart these two pages, they're stuck.",
+      "contextVi": "Giúp tôi tách hai trang này ra, dính vào nhau rồi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "✂️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'pull apart' để kể lúc bạn phải tách hai đứa nhỏ đang cãi nhau."
     },
     {
       "id": "user",
@@ -18805,6 +19253,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'general'."
     },
     {
+      "id": "pull-away",
+      "word": "pull away",
+      "ipa": "/ˌpʊl əˈweɪ/",
+      "pos": "phrasal verb",
+      "meaning": "(xe) rời đi, lăn bánh; rút ra, tránh ra",
+      "context": "Hurry, the bus is about to pull away!",
+      "contextVi": "Nhanh lên, xe buýt sắp chạy rồi!",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🚌",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'pull away' để kể lần bạn suýt lỡ chuyến xe khi đi du lịch."
+    },
+    {
       "id": "research",
       "word": "research",
       "ipa": "/ˈriːsɜːtʃ/",
@@ -18831,6 +19293,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'mail'."
+    },
+    {
+      "id": "pull-back",
+      "word": "pull back",
+      "ipa": "/ˌpʊl ˈbæk/",
+      "pos": "phrasal verb",
+      "meaning": "cắt giảm, rút lại; lùi lại",
+      "context": "We should pull back on spending this month.",
+      "contextVi": "Tháng này mình nên bớt chi tiêu lại.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🔙",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'pull back' để bàn với người nhà về việc cắt giảm chi tiêu."
     },
     {
       "id": "program",
@@ -18861,6 +19337,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'united'."
     },
     {
+      "id": "pull-down",
+      "word": "pull down",
+      "ipa": "/ˌpʊl ˈdaʊn/",
+      "pos": "phrasal verb",
+      "meaning": "kéo xuống; phá dỡ",
+      "context": "Can you pull down the blinds?",
+      "contextVi": "Kéo rèm xuống giùm tôi được không?",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🪟",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'pull down' để nhờ bạn cùng phòng kéo rèm khi nắng chói."
+    },
+    {
       "id": "item",
       "word": "item",
       "ipa": "/ˈaɪtəm/",
@@ -18887,6 +19377,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'international'."
+    },
+    {
+      "id": "pull-in",
+      "word": "pull in",
+      "ipa": "/ˌpʊl ˈɪn/",
+      "pos": "phrasal verb",
+      "meaning": "tấp vào, đỗ vào; (tàu) vào ga; thu hút",
+      "context": "Pull in here, there's a parking spot.",
+      "contextVi": "Tấp vào đây nè, có chỗ đậu đó.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🅿️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'pull in' để chỉ đường cho bạn đang lái xe tìm chỗ đậu."
     },
     {
       "id": "store",
@@ -18917,6 +19421,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'education'."
     },
     {
+      "id": "pull-off",
+      "word": "pull off",
+      "ipa": "/ˌpʊl ˈɔf/",
+      "pos": "phrasal verb",
+      "meaning": "làm được (việc khó); hợp, cân được (đồ)",
+      "context": "Only you can pull off a hat like that.",
+      "contextVi": "Chỉ có bạn mới cân nổi cái nón kiểu đó.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "😎",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'pull off' để khen đồng nghiệp làm được một việc tưởng không thể."
+    },
+    {
       "id": "national",
       "word": "national",
       "ipa": "/ˈnæʃnəl/",
@@ -18943,6 +19461,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'community'."
+    },
+    {
+      "id": "pull-out",
+      "word": "pull out",
+      "ipa": "/ˌpʊl ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "rút ra, lôi ra; (xe) chạy ra; rút lui",
+      "context": "Can you pull out a chair for Grandma?",
+      "contextVi": "Kéo ghế ra cho bà ngồi giùm cái.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🪑",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'pull out' để kể lúc bạn rút lui khỏi một kế hoạch với bạn bè."
     },
     {
       "id": "based",
@@ -18973,6 +19505,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'code'."
     },
     {
+      "id": "pull-over",
+      "word": "pull over",
+      "ipa": "/ˌpʊl ˈoʊvər/",
+      "pos": "phrasal verb",
+      "meaning": "tấp xe vào lề",
+      "context": "Can you pull over here? I feel sick.",
+      "contextVi": "Tấp vào đây được không? Tôi thấy say xe.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🚓",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'pull over' để nhờ tài xế taxi dừng lại bên đường."
+    },
+    {
       "id": "sign",
       "word": "sign",
       "ipa": "/saɪn/",
@@ -18999,6 +19545,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'link'."
+    },
+    {
+      "id": "pull-through",
+      "word": "pull through",
+      "ipa": "/ˌpʊl ˈθru/",
+      "pos": "phrasal verb",
+      "meaning": "qua khỏi, vượt qua (bệnh, khó khăn)",
+      "context": "Don't worry, he's strong, he'll pull through.",
+      "contextVi": "Đừng lo, ổng khỏe mà, ổng sẽ qua khỏi thôi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "❤️‍🩹",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'pull through' để động viên một người bạn có người nhà đang ốm."
     },
     {
       "id": "technology",
@@ -19029,6 +19589,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'case'."
     },
     {
+      "id": "pull-together",
+      "word": "pull together",
+      "ipa": "/ˌpʊl təˈɡɛðər/",
+      "pos": "phrasal verb",
+      "meaning": "đoàn kết, chung sức; bình tĩnh lại",
+      "context": "We need to pull together and finish this.",
+      "contextVi": "Mình phải chung sức làm cho xong vụ này.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🫂",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'pull together' để kêu gọi cả nhóm cố hoàn thành dự án đúng hạn."
+    },
+    {
       "id": "power",
       "word": "power",
       "ipa": "/ˈpaʊə/",
@@ -19055,6 +19629,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'while'."
+    },
+    {
+      "id": "pull-up",
+      "word": "pull up",
+      "ipa": "/ˌpʊl ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "mở, tra (trên màn hình); tấp xe tới; kéo lên",
+      "context": "Can you pull up the map on your phone?",
+      "contextVi": "Mở bản đồ trên điện thoại lên giùm cái.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🗺️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'pull up' để nhờ khách mở mã đặt chỗ trên điện thoại."
     },
     {
       "id": "care",
@@ -19085,6 +19673,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'network'."
     },
     {
+      "id": "push-back",
+      "word": "push back",
+      "ipa": "/ˌpʊʃ ˈbæk/",
+      "pos": "phrasal verb",
+      "meaning": "dời lại, hoãn; phản đối",
+      "context": "Can we push back the meeting to Friday?",
+      "contextVi": "Mình dời cuộc họp sang thứ Sáu được không?",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "📅",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'push back' để xin dời một cuộc hẹn với khách hàng."
+    },
+    {
       "id": "following",
       "word": "following",
       "ipa": "/ˈfɒləʊɪŋ/",
@@ -19111,6 +19713,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'download'."
+    },
+    {
+      "id": "push-for",
+      "word": "push for",
+      "ipa": "/ˈpʊʃ fɔr/",
+      "pos": "phrasal verb",
+      "meaning": "đòi, thúc đẩy cho được",
+      "context": "We should push for a raise this year.",
+      "contextVi": "Năm nay mình nên đòi tăng lương.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "📣",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'push for' để nói về một thay đổi bạn muốn đề xuất ở trường."
     },
     {
       "id": "per",
@@ -19141,6 +19757,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'media'."
     },
     {
+      "id": "put-aside",
+      "word": "put aside",
+      "ipa": "/ˌpʊt əˈsaɪd/",
+      "pos": "phrasal verb",
+      "meaning": "gác lại; để dành (tiền)",
+      "context": "Let's put aside our differences for tonight.",
+      "contextVi": "Tối nay mình gác lại bất đồng đi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🕊️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'put aside' để rủ người thân gác chuyện cãi vã trong bữa cơm Tết."
+    },
+    {
       "id": "law",
       "word": "law",
       "ipa": "/lɔː/",
@@ -19167,6 +19797,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'control'."
+    },
+    {
+      "id": "put-away",
+      "word": "put away",
+      "ipa": "/ˌpʊt əˈweɪ/",
+      "pos": "phrasal verb",
+      "meaning": "cất đi, dọn đi",
+      "context": "Please put away your toys before dinner.",
+      "contextVi": "Cất đồ chơi đi rồi ăn cơm nha con.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🧸",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'put away' để nhắc bạn cùng phòng cất đồ sau khi dùng."
     },
     {
       "id": "size",
@@ -19197,6 +19841,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'since'."
     },
     {
+      "id": "put-back",
+      "word": "put back",
+      "ipa": "/ˌpʊt ˈbæk/",
+      "pos": "phrasal verb",
+      "meaning": "để lại chỗ cũ; dời lại",
+      "context": "Put back the milk when you're done.",
+      "contextVi": "Dùng xong thì cất sữa lại chỗ cũ nha.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🥛",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'put back' để nhắc đồng nghiệp trả đồ về chỗ cũ trong văn phòng."
+    },
+    {
       "id": "including",
       "word": "including",
       "ipa": "/ɪnˈkluːdɪŋ/",
@@ -19223,6 +19881,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'guide'."
+    },
+    {
+      "id": "put-down",
+      "word": "put down",
+      "ipa": "/ˌpʊt ˈdaʊn/",
+      "pos": "phrasal verb",
+      "meaning": "đặt xuống; chê bai, hạ thấp (ai)",
+      "context": "Put down your phone and eat.",
+      "contextVi": "Bỏ điện thoại xuống ăn cơm đi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "📵",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'put down' để nhắc người nhà bỏ điện thoại khi ăn cơm."
     },
     {
       "id": "board",
@@ -19253,6 +19925,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'rate'."
     },
     {
+      "id": "put-forward",
+      "word": "put forward",
+      "ipa": "/ˌpʊt ˈfɔrwərd/",
+      "pos": "phrasal verb",
+      "meaning": "đưa ra, đề xuất (ý kiến)",
+      "context": "Can I put forward an idea real quick?",
+      "contextVi": "Cho tôi đưa ra một ý nhanh được không?",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "💡",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'put forward' để đề xuất một ý tưởng trong buổi họp nhóm ở chỗ làm."
+    },
+    {
       "id": "government",
       "word": "government",
       "ipa": "/ˈɡʌvənmənt/",
@@ -19279,6 +19965,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'level'."
+    },
+    {
+      "id": "put-in",
+      "word": "put in",
+      "ipa": "/ˌpʊt ˈɪn/",
+      "pos": "phrasal verb",
+      "meaning": "bỏ (công sức, thời gian); lắp đặt; nộp (đơn)",
+      "context": "I put in a lot of hours this week.",
+      "contextVi": "Tuần này tôi bỏ ra nhiều giờ làm lắm.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "⏱️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'put in' để kể số giờ bạn làm thêm trong ca đông khách."
     },
     {
       "id": "digital",
@@ -19309,6 +20009,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'profile'."
     },
     {
+      "id": "put-off",
+      "word": "put off",
+      "ipa": "/ˌpʊt ˈɔf/",
+      "pos": "phrasal verb",
+      "meaning": "hoãn, trì hoãn; làm mất hứng",
+      "context": "Don't put off your homework until Sunday.",
+      "contextVi": "Đừng để dồn bài tập tới Chủ nhật nha.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "⏳",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'put off' để thú nhận một việc bạn cứ trì hoãn mãi."
+    },
+    {
       "id": "image",
       "word": "image",
       "ipa": "/ˈɪmɪdʒ/",
@@ -19335,6 +20049,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'department'."
+    },
+    {
+      "id": "put-on",
+      "word": "put on",
+      "ipa": "/ˌpʊt ˈɑn/",
+      "pos": "phrasal verb",
+      "meaning": "mặc vào, đeo vào; bật (nhạc, phim); tăng (cân)",
+      "context": "Put on your jacket, it's cold out.",
+      "contextVi": "Mặc áo khoác vào, ngoài trời lạnh lắm.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🧥",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'put on' để nhắc con mặc áo ấm trước khi ra ngoài."
     },
     {
       "id": "shall",
@@ -19365,6 +20093,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'quality'."
     },
     {
+      "id": "put-out",
+      "word": "put out",
+      "ipa": "/ˌpʊt ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "dập tắt (lửa, thuốc); bày ra; làm phiền",
+      "context": "Can you put out the candles before bed?",
+      "contextVi": "Tắt nến trước khi ngủ giùm nha.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🕯️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'put out' để nhắc bạn cùng phòng dập nến trước khi đi ngủ."
+    },
+    {
       "id": "save",
       "word": "save",
       "ipa": "/seɪv/",
@@ -19391,6 +20133,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'low'."
+    },
+    {
+      "id": "put-together",
+      "word": "put together",
+      "ipa": "/ˌpʊt təˈɡɛðər/",
+      "pos": "phrasal verb",
+      "meaning": "lắp ráp; gom lại, soạn ra",
+      "context": "Can you help me put together this desk?",
+      "contextVi": "Giúp tôi lắp cái bàn này được không?",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🛠️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'put together' để nhờ bạn lắp đồ nội thất mới mua."
     },
     {
       "id": "reply",
@@ -19421,6 +20177,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'provide'."
     },
     {
+      "id": "put-up",
+      "word": "put up",
+      "ipa": "/ˌpʊt ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "treo, dựng lên; cho ở nhờ; đăng lên",
+      "context": "Can you put up these posters by the door?",
+      "contextVi": "Treo mấy tấm poster này cạnh cửa giùm nha.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🖼️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'put up' để kể lúc bạn treo đồ trang trí Tết trong nhà."
+    },
+    {
       "id": "source",
       "word": "source",
       "ipa": "/sɔːs/",
@@ -19447,6 +20217,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'author'."
+    },
+    {
+      "id": "put-up-with",
+      "word": "put up with",
+      "ipa": "/ˌpʊt ˈʌp wɪð/",
+      "pos": "phrasal verb",
+      "meaning": "chịu đựng, nhịn",
+      "context": "I can't put up with this noise anymore.",
+      "contextVi": "Tôi hết chịu nổi tiếng ồn này rồi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "😤",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'put up with' để than về một thói quen khó chịu của hàng xóm."
     },
     {
       "id": "sale",
@@ -19477,6 +20261,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'print'."
     },
     {
+      "id": "rack-up",
+      "word": "rack up",
+      "ipa": "/ˌræk ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "tích lũy, dồn lên (điểm, nợ, số)",
+      "context": "You'll rack up a lot of points with this card.",
+      "contextVi": "Xài thẻ này là tích được nhiều điểm lắm.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "📈",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'rack up' để kể lúc bạn tích điểm khi đi mua sắm."
+    },
+    {
       "id": "process",
       "word": "process",
       "ipa": "/ˈprəʊses/",
@@ -19503,6 +20301,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'training'."
+    },
+    {
+      "id": "rattle-off",
+      "word": "rattle off",
+      "ipa": "/ˌrætl ˈɔf/",
+      "pos": "phrasal verb",
+      "meaning": "kể vanh vách, đọc một lèo",
+      "context": "She can rattle off every player's name.",
+      "contextVi": "Cổ kể vanh vách tên từng cầu thủ luôn.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🗣️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'rattle off' để kể một người bạn nhớ vanh vách giá món ăn."
     },
     {
       "id": "credit",
@@ -19533,6 +20345,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'gallery'."
     },
     {
+      "id": "reach-out-to",
+      "word": "reach out to",
+      "ipa": "/ˌritʃ ˈaʊt tu/",
+      "pos": "phrasal verb",
+      "meaning": "liên hệ, hỏi thăm (ai)",
+      "context": "Feel free to reach out to me anytime.",
+      "contextVi": "Cứ liên hệ tôi bất cứ lúc nào nha.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "📞",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'reach out to' để nói với khách hàng rằng họ có thể liên lạc với bạn."
+    },
+    {
       "id": "series",
       "word": "series",
       "ipa": "/ˈsɪəriːz/",
@@ -19559,6 +20385,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'industry'."
+    },
+    {
+      "id": "read-out",
+      "word": "read out",
+      "ipa": "/ˌrid ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "đọc to lên",
+      "context": "Can you read out the numbers for me?",
+      "contextVi": "Đọc to mấy con số giùm tôi với.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "📢",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'read out' để nhờ bạn đọc to mã OTP khi bạn đang bận tay."
     },
     {
       "id": "human",
@@ -19589,6 +20429,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'medical'."
     },
     {
+      "id": "read-up-on",
+      "word": "read up on",
+      "ipa": "/ˌrid ˈʌp ɑn/",
+      "pos": "phrasal verb",
+      "meaning": "đọc tìm hiểu kỹ về",
+      "context": "I need to read up on this before the meeting.",
+      "contextVi": "Tôi phải đọc tìm hiểu vụ này trước buổi họp.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "📚",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'read up on' để kể nơi bạn định đi du lịch mà bạn cần tìm hiểu trước."
+    },
+    {
       "id": "comment",
       "word": "comment",
       "ipa": "/ˈkɒment/",
@@ -19615,6 +20469,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'working'."
+    },
+    {
+      "id": "rev-up",
+      "word": "rev up",
+      "ipa": "/ˌrɛv ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "rồ (máy); làm sôi động, hâm nóng",
+      "context": "Don't rev up the engine this late at night.",
+      "contextVi": "Khuya rồi đừng có rồ máy xe nữa.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🏍️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'rev up' để kể lúc bạn hâm nóng không khí trước một bữa tiệc."
     },
     {
       "id": "against",
@@ -19645,6 +20513,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'mobile'."
     },
     {
+      "id": "ring-up",
+      "word": "ring up",
+      "ipa": "/ˌrɪŋ ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "tính tiền (ở quầy); gọi điện (Anh)",
+      "context": "Can you ring up these two for me?",
+      "contextVi": "Tính tiền giùm tôi hai món này nha.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🧾",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'ring up' để kể lúc bạn tính tiền cho khách ở quầy thu ngân."
+    },
+    {
       "id": "less",
       "word": "less",
       "ipa": "/les/",
@@ -19671,6 +20553,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'equipment'."
+    },
+    {
+      "id": "rip-off",
+      "word": "rip off",
+      "ipa": "/ˌrɪp ˈɔf/",
+      "pos": "phrasal verb",
+      "meaning": "chặt chém, lừa tiền; đạo, nhái",
+      "context": "Those tourist shops always rip off foreigners.",
+      "contextVi": "Mấy tiệm cho khách du lịch toàn chặt chém người nước ngoài.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🦈",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'rip off' để kể lần bạn bị bán mắc khi đi du lịch."
     },
     {
       "id": "recent",
@@ -19701,6 +20597,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'side'."
     },
     {
+      "id": "roll-out",
+      "word": "roll out",
+      "ipa": "/ˌroʊl ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "tung ra, triển khai (sản phẩm, bản cập nhật)",
+      "context": "They're gonna roll out the new update next week.",
+      "contextVi": "Tuần sau họ tung bản cập nhật mới.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🚀",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'roll out' để nói về một tính năng mới công ty bạn sắp ra mắt."
+    },
+    {
       "id": "act",
       "word": "act",
       "ipa": "/ækt/",
@@ -19727,6 +20637,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'memory'."
+    },
+    {
+      "id": "round-up",
+      "word": "round up",
+      "ipa": "/ˌraʊnd ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "gom lại, tập hợp; làm tròn lên",
+      "context": "Can you round up the kids for dinner?",
+      "contextVi": "Gom mấy đứa nhỏ vào ăn cơm giùm cái.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🐑",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'round up' để nhờ ai đó tập hợp cả nhóm khi đi tour."
     },
     {
       "id": "social",
@@ -19757,6 +20681,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'experience'."
     },
     {
+      "id": "rub-off-on",
+      "word": "rub off on",
+      "ipa": "/ˌrʌb ˈɔf ɑn/",
+      "pos": "phrasal verb",
+      "meaning": "lây sang, ảnh hưởng sang (ai)",
+      "context": "I hope your good habits rub off on me.",
+      "contextVi": "Mong mấy thói quen tốt của bạn lây sang tôi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "✨",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'rub off on' để kể một thói quen của bạn thân đã ảnh hưởng tới bạn."
+    },
+    {
       "id": "field",
       "word": "field",
       "ipa": "/fiːld/",
@@ -19783,6 +20721,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'single'."
+    },
+    {
+      "id": "rule-out",
+      "word": "rule out",
+      "ipa": "/ˌrul ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "loại trừ, gạt bỏ (khả năng)",
+      "context": "The doctor wants to rule out anything serious.",
+      "contextVi": "Bác sĩ muốn loại trừ khả năng bệnh nặng.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "❌",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'rule out' để nói về một lựa chọn bạn đã gạt bỏ khi tìm nhà thuê."
     },
     {
       "id": "gift",
@@ -19813,6 +20765,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'war'."
     },
     {
+      "id": "run-across",
+      "word": "run across",
+      "ipa": "/ˌrʌn əˈkrɔs/",
+      "pos": "phrasal verb",
+      "meaning": "tình cờ gặp, tình cờ thấy",
+      "context": "If you run across my keys, let me know.",
+      "contextVi": "Nếu có thấy chìa khóa tôi đâu thì báo nha.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🔑",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'run across' để kể một món đồ cũ bạn tình cờ tìm thấy khi dọn nhà."
+    },
+    {
       "id": "offer",
       "word": "offer",
       "ipa": "/ˈɒfə/",
@@ -19839,6 +20805,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'request'."
+    },
+    {
+      "id": "run-after",
+      "word": "run after",
+      "ipa": "/ˌrʌn ˈæftər/",
+      "pos": "phrasal verb",
+      "meaning": "chạy theo, đuổi theo",
+      "context": "Don't run after the bus, it's already gone.",
+      "contextVi": "Đừng chạy theo xe buýt nữa, nó đi mất rồi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🏃‍♂️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'run after' để kể lần bạn phải đuổi theo con chó chạy ra đường."
     },
     {
       "id": "might",
@@ -19869,6 +20849,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'professional'."
     },
     {
+      "id": "run-around",
+      "word": "run around",
+      "ipa": "/ˌrʌn əˈraʊnd/",
+      "pos": "phrasal verb",
+      "meaning": "chạy lăng xăng, chạy vòng vòng; bận rộn",
+      "context": "The kids run around the yard all day.",
+      "contextVi": "Bọn nhỏ chạy nhảy ngoài sân cả ngày.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🌀",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'run around' để kể một ngày bạn chạy vòng vòng lo việc vặt."
+    },
+    {
       "id": "yet",
       "word": "yet",
       "ipa": "/jet/",
@@ -19895,6 +20889,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'major'."
+    },
+    {
+      "id": "run-away",
+      "word": "run away",
+      "ipa": "/ˌrʌn əˈweɪ/",
+      "pos": "phrasal verb",
+      "meaning": "bỏ chạy, trốn đi; né tránh",
+      "context": "Don't run away from your problems.",
+      "contextVi": "Đừng có trốn tránh vấn đề của mình.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🏃‍♀️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'run away' để khuyên bạn đối mặt với một chuyện khó ở chỗ làm."
     },
     {
       "id": "enter",
@@ -19925,6 +20933,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'learning'."
     },
     {
+      "id": "run-by",
+      "word": "run by",
+      "ipa": "/ˌrʌn ˈbaɪ/",
+      "pos": "phrasal verb",
+      "meaning": "ghé qua (nhanh); hỏi ý kiến (ai)",
+      "context": "I'll run by the store after work.",
+      "contextVi": "Tan làm tôi ghé qua tiệm một chút.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🛒",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'run by' để báo người nhà bạn ghé chợ trên đường về."
+    },
+    {
       "id": "energy",
       "word": "energy",
       "ipa": "/ˈenədʒi/",
@@ -19951,6 +20973,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'term'."
+    },
+    {
+      "id": "run-down",
+      "word": "run down",
+      "ipa": "/ˌrʌn ˈdaʊn/",
+      "pos": "phrasal verb",
+      "meaning": "mệt mỏi, kiệt sức; làm hết (pin); điểm qua",
+      "context": "I've been feeling really run down lately.",
+      "contextVi": "Dạo này tôi thấy mệt mỏi rã rời.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🔋",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'run down' để kể lúc bạn thấy kiệt sức sau nhiều ca làm liên tục."
     },
     {
       "id": "president",
@@ -19981,6 +21017,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'notice'."
     },
     {
+      "id": "run-into",
+      "word": "run into",
+      "ipa": "/ˌrʌn ˈɪntu/",
+      "pos": "phrasal verb",
+      "meaning": "tình cờ gặp; gặp (rắc rối); đâm vào",
+      "context": "I always run into old friends at this mall.",
+      "contextVi": "Lần nào ra trung tâm này tôi cũng gặp bạn cũ.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "😲",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'run into' để kể lần bạn tình cờ gặp thầy cô cũ ngoài đường."
+    },
+    {
       "id": "god",
       "word": "god",
       "ipa": "/ɡɒd/",
@@ -20007,6 +21057,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'original'."
+    },
+    {
+      "id": "run-late",
+      "word": "run late",
+      "ipa": "/ˌrʌn ˈleɪt/",
+      "pos": "phrasal verb",
+      "meaning": "bị trễ, đến muộn",
+      "context": "Sorry, I might run late today.",
+      "contextVi": "Xin lỗi, hôm nay chắc tôi tới trễ.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "⏰",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'run late' để nhắn bạn bè rằng bạn sẽ tới trễ vì kẹt xe."
     },
     {
       "id": "track",
@@ -20037,6 +21101,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'discussion'."
     },
     {
+      "id": "run-off",
+      "word": "run off",
+      "ipa": "/ˌrʌn ˈɔf/",
+      "pos": "phrasal verb",
+      "meaning": "chạy mất, bỏ đi; in (bản sao)",
+      "context": "Don't run off without saying bye.",
+      "contextVi": "Đừng có chuồn mất mà không chào nha.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "💨",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'run off' để trách một người bạn về sớm khỏi bữa tiệc mà không nói."
+    },
+    {
       "id": "least",
       "word": "least",
       "ipa": "/liːst/",
@@ -20063,6 +21141,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'society'."
+    },
+    {
+      "id": "run-out",
+      "word": "run out",
+      "ipa": "/ˌrʌn ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "hết, cạn; hết hạn",
+      "context": "My phone battery is about to run out.",
+      "contextVi": "Điện thoại tôi sắp hết pin rồi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🪫",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'run out' để báo bạn rằng điện thoại bạn sắp hết pin khi đang gọi."
     },
     {
       "id": "further",
@@ -20093,6 +21185,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'able'."
     },
     {
+      "id": "run-out-of",
+      "word": "run out of",
+      "ipa": "/ˌrʌn ˈaʊt əv/",
+      "pos": "phrasal verb",
+      "meaning": "hết, cạn (thứ gì)",
+      "context": "We're gonna run out of milk soon.",
+      "contextVi": "Nhà mình sắp hết sữa rồi đó.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🥛",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'run out of' để nhắc người nhà mua thêm đồ sắp hết trong bếp."
+    },
+    {
       "id": "already",
       "word": "already",
       "ipa": "/ɔːlˈredi/",
@@ -20119,6 +21225,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'specific'."
+    },
+    {
+      "id": "run-over",
+      "word": "run over",
+      "ipa": "/ˌrʌn ˈoʊvər/",
+      "pos": "phrasal verb",
+      "meaning": "cán phải; kéo dài quá giờ; xem lướt",
+      "context": "Watch out, don't run over the cat!",
+      "contextVi": "Coi chừng, đừng cán trúng con mèo!",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🐈",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'run over' để kể một cuộc họp kéo dài quá giờ ở chỗ làm."
     },
     {
       "id": "several",
@@ -20149,6 +21269,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'gold'."
     },
     {
+      "id": "run-through",
+      "word": "run through",
+      "ipa": "/ˌrʌn ˈθru/",
+      "pos": "phrasal verb",
+      "meaning": "xem lại nhanh, tập dượt; tiêu hết",
+      "context": "Let's run through the plan one more time.",
+      "contextVi": "Mình dượt lại kế hoạch thêm lần nữa đi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "📝",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'run through' để rủ nhóm tập lại bài thuyết trình trước giờ học."
+    },
+    {
       "id": "director",
       "word": "director",
       "ipa": "/daɪˈrektə/",
@@ -20175,6 +21309,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'daily'."
+    },
+    {
+      "id": "run-up",
+      "word": "run up",
+      "ipa": "/ˌrʌn ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "để nợ, tiêu (hóa đơn) lên cao",
+      "context": "Don't run up a huge bill on my card.",
+      "contextVi": "Đừng có quẹt thẻ tôi lên một hóa đơn khủng nha.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "💳",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'run up' để nhắc con đừng xài quá nhiều tiền điện thoại."
     },
     {
       "id": "average",
@@ -20205,6 +21353,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'region'."
     },
     {
+      "id": "rush-into",
+      "word": "rush into",
+      "ipa": "/ˌrʌʃ ˈɪntu/",
+      "pos": "phrasal verb",
+      "meaning": "vội vàng lao vào (quyết định)",
+      "context": "Don't rush into anything, just take your time.",
+      "contextVi": "Đừng vội quyết gì hết, cứ từ từ.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🐎",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'rush into' để khuyên bạn đừng vội mua xe khi chưa tìm hiểu kỹ."
+    },
+    {
       "id": "record",
       "word": "record",
       "ipa": "/ˈrekɔːd/",
@@ -20231,6 +21393,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'direct'."
+    },
+    {
+      "id": "sail-through",
+      "word": "sail through",
+      "ipa": "/ˌseɪl ˈθru/",
+      "pos": "phrasal verb",
+      "meaning": "vượt qua dễ dàng",
+      "context": "You'll sail through the interview, don't worry.",
+      "contextVi": "Bạn sẽ qua vòng phỏng vấn ngon ơ, đừng lo.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "⛵",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'sail through' để động viên bạn trước kỳ thi lái xe."
     },
     {
       "id": "conference",
@@ -20261,6 +21437,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'environment'."
     },
     {
+      "id": "save-up",
+      "word": "save up",
+      "ipa": "/ˌseɪv ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "dành dụm, tiết kiệm (cho việc gì)",
+      "context": "I'm trying to save up for a new laptop.",
+      "contextVi": "Tôi đang cố dành dụm mua laptop mới.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🐷",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'save up' để kể món đồ bạn đang để dành tiền mua."
+    },
+    {
       "id": "either",
       "word": "either",
       "ipa": "/ˈiːðə/",
@@ -20287,6 +21477,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'document'."
+    },
+    {
+      "id": "scrape-by",
+      "word": "scrape by",
+      "ipa": "/ˌskreɪp ˈbaɪ/",
+      "pos": "phrasal verb",
+      "meaning": "sống chật vật, xoay xở qua ngày",
+      "context": "We can barely scrape by on one paycheck.",
+      "contextVi": "Có một đồng lương thì nhà tôi sống chật vật lắm.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🪙",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'scrape by' để kể thời sinh viên bạn phải xoay xở tiền ăn."
     },
     {
       "id": "material",
@@ -20317,6 +21521,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'mark'."
     },
     {
+      "id": "screw-up",
+      "word": "screw up",
+      "ipa": "/ˌskru ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "làm hỏng, làm hư bét",
+      "context": "Please don't screw up the order this time.",
+      "contextVi": "Lần này làm ơn đừng làm sai đơn nữa nha.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🤦",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'screw up' để kể một lần bạn làm hỏng việc ở ca làm."
+    },
+    {
       "id": "rock",
       "word": "rock",
       "ipa": "/rɒk/",
@@ -20343,6 +21561,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'individual'."
+    },
+    {
+      "id": "seal-off",
+      "word": "seal off",
+      "ipa": "/ˌsil ˈɔf/",
+      "pos": "phrasal verb",
+      "meaning": "phong tỏa, chặn lại",
+      "context": "They're gonna seal off the whole block tonight.",
+      "contextVi": "Tối nay người ta phong tỏa nguyên dãy phố.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🚧",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'seal off' để kể lúc một con đường gần nhà bạn bị chặn lại."
     },
     {
       "id": "cover",
@@ -20373,6 +21605,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'unit'."
     },
     {
+      "id": "see-off",
+      "word": "see off",
+      "ipa": "/ˌsi ˈɔf/",
+      "pos": "phrasal verb",
+      "meaning": "tiễn (ai đi)",
+      "context": "We're going to the airport to see off my cousin.",
+      "contextVi": "Bọn tôi ra sân bay tiễn đứa em họ.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "✈️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'see off' để kể lần bạn ra ga tiễn người thân đi xa."
+    },
+    {
       "id": "amount",
       "word": "amount",
       "ipa": "/əˈmaʊnt/",
@@ -20399,6 +21645,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'included'."
+    },
+    {
+      "id": "see-through",
+      "word": "see through",
+      "ipa": "/ˌsi ˈθru/",
+      "pos": "phrasal verb",
+      "meaning": "nhìn thấu, biết tỏng; làm tới cùng",
+      "context": "I can see through your excuses, you know.",
+      "contextVi": "Tôi biết tỏng mấy cái cớ của ông rồi nha.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🕵️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'see through' để kể lúc bạn nhìn thấu lời nói dối của em mình."
     },
     {
       "id": "weight",
@@ -20429,6 +21689,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'heart'."
     },
     {
+      "id": "see-to",
+      "word": "see to",
+      "ipa": "/ˈsi tu/",
+      "pos": "phrasal verb",
+      "meaning": "lo liệu, đảm bảo (việc gì)",
+      "context": "Don't worry about the tickets, I'll see to it.",
+      "contextVi": "Vé thì đừng lo, để tôi lo.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🫡",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'see to' để nhận lo giúp một việc cho khách hàng."
+    },
+    {
       "id": "advertising",
       "word": "advertising",
       "ipa": "/ˈædvətaɪzɪŋ/",
@@ -20455,6 +21729,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'knowledge'."
+    },
+    {
+      "id": "sell-out",
+      "word": "sell out",
+      "ipa": "/ˌsɛl ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "bán hết sạch; bán rẻ lương tâm, chạy theo tiền",
+      "context": "Tickets always sell out in a few minutes.",
+      "contextVi": "Vé lúc nào cũng hết sạch trong vài phút.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🎟️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'sell out' để kể lần bạn không mua kịp vé xem ca nhạc."
     },
     {
       "id": "error",
@@ -20485,6 +21773,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'clear'."
     },
     {
+      "id": "send-back",
+      "word": "send back",
+      "ipa": "/ˌsɛnd ˈbæk/",
+      "pos": "phrasal verb",
+      "meaning": "gửi trả lại",
+      "context": "I'm gonna send back this soup, it's cold.",
+      "contextVi": "Tôi trả lại tô súp này, nó nguội rồi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "↩️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'send back' để kể lần bạn trả lại món ăn ở nhà hàng."
+    },
+    {
       "id": "golf",
       "word": "golf",
       "ipa": "/ɡɒlf/",
@@ -20511,6 +21813,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'receive'."
+    },
+    {
+      "id": "send-off",
+      "word": "send off",
+      "ipa": "/ˌsɛnd ˈɔf/",
+      "pos": "phrasal verb",
+      "meaning": "gửi đi; tiễn; đuổi khỏi sân",
+      "context": "I need to send off these forms today.",
+      "contextVi": "Hôm nay tôi phải gửi mấy tờ đơn này đi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "📮",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'send off' để kể giấy tờ bạn cần gửi đi trước hạn chót."
     },
     {
       "id": "wide",
@@ -20541,6 +21857,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'manager'."
     },
     {
+      "id": "send-out",
+      "word": "send out",
+      "ipa": "/ˌsɛnd ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "gửi đi (hàng loạt), phát đi",
+      "context": "Can you send out the invites today?",
+      "contextVi": "Hôm nay gửi thiệp mời đi giùm nha.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "📨",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'send out' để nhờ đồng nghiệp gửi email thông báo cho khách."
+    },
+    {
       "id": "position",
       "word": "position",
       "ipa": "/pəˈzɪʃn/",
@@ -20567,6 +21897,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'sort'."
+    },
+    {
+      "id": "set-aside",
+      "word": "set aside",
+      "ipa": "/ˌsɛt əˈsaɪd/",
+      "pos": "phrasal verb",
+      "meaning": "để dành, dành riêng; gác lại",
+      "context": "Try to set aside some money every month.",
+      "contextVi": "Cố để dành ít tiền mỗi tháng nha.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "💰",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'set aside' để kể khoản tiền bạn dành riêng cho chuyến du lịch."
     },
     {
       "id": "step",
@@ -20597,6 +21941,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'simple'."
     },
     {
+      "id": "set-back",
+      "word": "set back",
+      "ipa": "/ˌsɛt ˈbæk/",
+      "pos": "phrasal verb",
+      "meaning": "làm chậm lại, cản trở; tốn (tiền)",
+      "context": "This could set back the project by weeks.",
+      "contextVi": "Vụ này có thể làm dự án chậm lại cả mấy tuần.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🐢",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'set back' để kể một sự cố làm chậm kế hoạch học tập của bạn."
+    },
+    {
       "id": "none",
       "word": "none",
       "ipa": "/nʌn/",
@@ -20623,6 +21981,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'lake'."
+    },
+    {
+      "id": "set-off",
+      "word": "set off",
+      "ipa": "/ˌsɛt ˈɔf/",
+      "pos": "phrasal verb",
+      "meaning": "khởi hành; làm kêu (chuông báo); châm ngòi",
+      "context": "Let's set off early to beat the traffic.",
+      "contextVi": "Đi sớm cho khỏi kẹt xe nha.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🧳",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'set off' để bàn giờ khởi hành cho chuyến về quê."
     },
     {
       "id": "whole",
@@ -20653,6 +22025,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'church'."
     },
     {
+      "id": "set-out",
+      "word": "set out",
+      "ipa": "/ˌsɛt ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "lên đường; bắt tay vào (làm gì); bày ra",
+      "context": "We should set out before sunrise.",
+      "contextVi": "Mình nên lên đường trước khi mặt trời mọc.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🌄",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'set out' để kể một chuyến leo núi bạn đi từ sáng sớm."
+    },
+    {
       "id": "method",
       "word": "method",
       "ipa": "/ˈmeθəd/",
@@ -20679,6 +22065,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'active'."
+    },
+    {
+      "id": "set-up",
+      "word": "set up",
+      "ipa": "/ˌsɛt ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "cài đặt, thiết lập; sắp xếp; gài bẫy",
+      "context": "Can you help me set up my new phone?",
+      "contextVi": "Giúp tôi cài cái điện thoại mới được không?",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "⚙️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'set up' để nhờ con cháu cài đặt ứng dụng cho ông bà."
     },
     {
       "id": "response",
@@ -20709,6 +22109,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'figure'."
     },
     {
+      "id": "settle-down",
+      "word": "settle down",
+      "ipa": "/ˌsɛtl ˈdaʊn/",
+      "pos": "phrasal verb",
+      "meaning": "trật tự, bình tĩnh lại; ổn định (cuộc sống)",
+      "context": "Kids, settle down, it's bedtime!",
+      "contextVi": "Mấy đứa, trật tự đi, tới giờ ngủ rồi!",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🛏️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'settle down' để kể lúc bạn muốn ổn định cuộc sống ở một thành phố."
+    },
+    {
       "id": "chat",
       "word": "chat",
       "ipa": "/tʃæt/",
@@ -20735,6 +22149,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'along'."
+    },
+    {
+      "id": "settle-in",
+      "word": "settle in",
+      "ipa": "/ˌsɛtl ˈɪn/",
+      "pos": "phrasal verb",
+      "meaning": "ổn định, quen dần (chỗ mới)",
+      "context": "Take a few days to settle in first.",
+      "contextVi": "Cứ lấy vài ngày cho quen chỗ mới đã.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🏡",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'settle in' để hỏi thăm một đồng nghiệp mới vào làm."
     },
     {
       "id": "among",
@@ -20765,6 +22193,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'death'."
     },
     {
+      "id": "shake-off",
+      "word": "shake off",
+      "ipa": "/ˌʃeɪk ˈɔf/",
+      "pos": "phrasal verb",
+      "meaning": "dứt được, thoát khỏi (bệnh, cảm giác)",
+      "context": "I just can't shake off this cold.",
+      "contextVi": "Tôi dứt mãi không hết cảm.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🤧",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'shake off' để kể một cảm giác lo lắng bạn không dứt ra được."
+    },
+    {
       "id": "speed",
       "word": "speed",
       "ipa": "/spiːd/",
@@ -20791,6 +22233,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'oil'."
+    },
+    {
+      "id": "shake-up",
+      "word": "shake up",
+      "ipa": "/ˌʃeɪk ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "xáo trộn, cải tổ; làm (ai) hoảng",
+      "context": "The new boss wants to shake up the whole team.",
+      "contextVi": "Sếp mới muốn cải tổ nguyên cả đội.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🔀",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'shake up' để kể một thay đổi lớn ở chỗ làm của bạn."
     },
     {
       "id": "bit",
@@ -20821,6 +22277,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'increase'."
     },
     {
+      "id": "shell-out",
+      "word": "shell out",
+      "ipa": "/ˌʃɛl ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "chi, bỏ ra (tiền, thường là nhiều)",
+      "context": "I don't want to shell out 200 bucks for shoes.",
+      "contextVi": "Tôi không muốn bỏ ra 200 đô cho đôi giày đâu.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🐚",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'shell out' để kể món đồ đắt nhất bạn từng phải chi tiền mua."
+    },
+    {
       "id": "advertise",
       "word": "advertise",
       "ipa": "/ˈædvətaɪz/",
@@ -20847,6 +22317,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'thought'."
+    },
+    {
+      "id": "shoot-down",
+      "word": "shoot down",
+      "ipa": "/ˌʃut ˈdaʊn/",
+      "pos": "phrasal verb",
+      "meaning": "bác bỏ (ý kiến); bắn hạ",
+      "context": "Don't shoot down my idea so fast!",
+      "contextVi": "Đừng gạt ý tôi nhanh vậy chứ!",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🎯",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'shoot down' để kể lúc ý tưởng của bạn bị sếp bác bỏ."
     },
     {
       "id": "nature",
@@ -20877,6 +22361,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'king'."
     },
     {
+      "id": "shop-around",
+      "word": "shop around",
+      "ipa": "/ˌʃɑp əˈraʊnd/",
+      "pos": "phrasal verb",
+      "meaning": "đi xem, so giá nhiều nơi",
+      "context": "You should shop around before you buy a car.",
+      "contextVi": "Mua xe thì nên đi xem nhiều chỗ trước đã.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🛍️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'shop around' để khuyên bạn so giá trước khi đặt vé máy bay."
+    },
+    {
       "id": "copy",
       "word": "copy",
       "ipa": "/ˈkɒpi/",
@@ -20903,6 +22401,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'although'."
+    },
+    {
+      "id": "show-off",
+      "word": "show off",
+      "ipa": "/ˌʃoʊ ˈɔf/",
+      "pos": "phrasal verb",
+      "meaning": "khoe khoang, làm màu; khoe ra",
+      "context": "Don't show off in front of the new guys.",
+      "contextVi": "Đừng có làm màu trước mặt mấy người mới.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🦚",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'show off' để kể một người bạn hay khoe đồ mới."
     },
     {
       "id": "drug",
@@ -20933,6 +22445,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'cash'."
     },
     {
+      "id": "show-up",
+      "word": "show up",
+      "ipa": "/ˌʃoʊ ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "có mặt, xuất hiện, tới",
+      "context": "Did he even show up to the party?",
+      "contextVi": "Ổng có tới bữa tiệc không vậy?",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🙋",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'show up' để than một người khách đặt bàn mà không tới."
+    },
+    {
       "id": "engine",
       "word": "engine",
       "ipa": "/ˈendʒɪn/",
@@ -20959,6 +22485,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'bar'."
+    },
+    {
+      "id": "shrug-off",
+      "word": "shrug off",
+      "ipa": "/ˌʃrʌɡ ˈɔf/",
+      "pos": "phrasal verb",
+      "meaning": "phớt lờ, gạt đi, coi nhẹ",
+      "context": "You can't just shrug off a warning like that.",
+      "contextVi": "Cảnh báo vậy mà bạn không thể cứ gạt đi được.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🤷",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'shrug off' để kể lúc bạn cố phớt lờ một lời chê."
     },
     {
       "id": "double",
@@ -20989,6 +22529,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'screen'."
     },
     {
+      "id": "shut-down",
+      "word": "shut down",
+      "ipa": "/ˌʃʌt ˈdaʊn/",
+      "pos": "phrasal verb",
+      "meaning": "tắt (máy); đóng cửa (tiệm, công ty)",
+      "context": "Don't forget to shut down your computer.",
+      "contextVi": "Nhớ tắt máy tính nha.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🖥️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'shut down' để kể về một quán quen gần nhà đã đóng cửa."
+    },
+    {
       "id": "electronic",
       "word": "electronic",
       "ipa": "/ɪˌlekˈtrɒnɪk/",
@@ -21015,6 +22569,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'continue'."
+    },
+    {
+      "id": "shut-off",
+      "word": "shut off",
+      "ipa": "/ˌʃʌt ˈɔf/",
+      "pos": "phrasal verb",
+      "meaning": "tắt, khóa (nước, điện, máy)",
+      "context": "Can you shut off the water real quick?",
+      "contextVi": "Khóa nước lại giùm cái.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🚰",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'shut off' để nhờ người nhà tắt điện trước khi đi du lịch."
     },
     {
       "id": "season",
@@ -21045,6 +22613,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'apply'."
     },
     {
+      "id": "shut-up",
+      "word": "shut up",
+      "ipa": "/ˌʃʌt ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "im đi, câm miệng; (đùa) thôi đi, thật á",
+      "context": "Shut up, no way! Are you serious?",
+      "contextVi": "Thôi đi, không đời nào! Nói thật á?",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🤐",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'shut up' để phản ứng khi bạn thân báo một tin cực bất ngờ."
+    },
+    {
       "id": "printer",
       "word": "printer",
       "ipa": "/ˈprɪntə/",
@@ -21071,6 +22653,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'condition'."
+    },
+    {
+      "id": "sign-in",
+      "word": "sign in",
+      "ipa": "/ˌsaɪn ˈɪn/",
+      "pos": "phrasal verb",
+      "meaning": "đăng nhập; ký tên khi đến",
+      "context": "You need to sign in with your email first.",
+      "contextVi": "Bạn phải đăng nhập bằng email trước đã.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🔐",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'sign in' để hướng dẫn khách đăng nhập vào ứng dụng của cửa hàng."
     },
     {
       "id": "organization",
@@ -21101,6 +22697,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'effect'."
     },
     {
+      "id": "sign-off",
+      "word": "sign off",
+      "ipa": "/ˌsaɪn ˈɔf/",
+      "pos": "phrasal verb",
+      "meaning": "chào kết thúc, nghỉ (làm, nói); duyệt, ký duyệt",
+      "context": "I'm gonna sign off for today, see you tomorrow.",
+      "contextVi": "Hôm nay tôi nghỉ đây, mai gặp nha.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🖊️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'sign off' để chào đồng nghiệp khi kết thúc ca làm online."
+    },
+    {
       "id": "mind",
       "word": "mind",
       "ipa": "/maɪnd/",
@@ -21127,6 +22737,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'lost'."
+    },
+    {
+      "id": "sign-out",
+      "word": "sign out",
+      "ipa": "/ˌsaɪn ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "đăng xuất; ký tên khi rời đi",
+      "context": "Don't forget to sign out on the shared computer.",
+      "contextVi": "Nhớ đăng xuất trên máy tính dùng chung nha.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🚪",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'sign out' để nhắc bạn đăng xuất tài khoản ở tiệm net."
     },
     {
       "id": "tour",
@@ -21157,6 +22781,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'cross'."
     },
     {
+      "id": "sign-up",
+      "word": "sign up",
+      "ipa": "/ˌsaɪn ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "đăng ký (khóa học, tài khoản)",
+      "context": "Let's sign up for that yoga class together.",
+      "contextVi": "Mình đăng ký lớp yoga đó chung đi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "📝",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'sign up' để rủ bạn đăng ký một khóa học tiếng Anh."
+    },
+    {
       "id": "silver",
       "word": "silver",
       "ipa": "/ˈsɪlvə/",
@@ -21183,6 +22821,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'wish'."
+    },
+    {
+      "id": "sit-around",
+      "word": "sit around",
+      "ipa": "/ˌsɪt əˈraʊnd/",
+      "pos": "phrasal verb",
+      "meaning": "ngồi không, ngồi chơi",
+      "context": "Don't just sit around all day, go outside.",
+      "contextVi": "Đừng có ngồi không cả ngày, ra ngoài đi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🛋️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'sit around' để kể một ngày nghỉ bạn chỉ ngồi không ở nhà."
     },
     {
       "id": "inside",
@@ -21213,6 +22865,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'solution'."
     },
     {
+      "id": "sit-back",
+      "word": "sit back",
+      "ipa": "/ˌsɪt ˈbæk/",
+      "pos": "phrasal verb",
+      "meaning": "ngồi thư giãn; đứng ngoài, khoanh tay",
+      "context": "Just sit back and enjoy the show.",
+      "contextVi": "Cứ ngồi thư giãn mà xem nha.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🍿",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'sit back' để mời khách ngồi nghỉ trong lúc bạn chuẩn bị đồ."
+    },
+    {
       "id": "role",
       "word": "role",
       "ipa": "/rəʊl/",
@@ -21239,6 +22905,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'rather'."
+    },
+    {
+      "id": "sit-down",
+      "word": "sit down",
+      "ipa": "/ˌsɪt ˈdaʊn/",
+      "pos": "phrasal verb",
+      "meaning": "ngồi xuống",
+      "context": "Please sit down, dinner's ready.",
+      "contextVi": "Ngồi xuống đi, cơm xong rồi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🪑",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'sit down' để mời một vị khách ngồi khi tới nhà bạn."
     },
     {
       "id": "certain",
@@ -21269,6 +22949,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'running'."
     },
     {
+      "id": "sit-in",
+      "word": "sit in",
+      "ipa": "/ˌsɪt ˈɪn/",
+      "pos": "phrasal verb",
+      "meaning": "ngồi dự (họp, lớp) để nghe; ngồi thay",
+      "context": "Can I sit in on your meeting today?",
+      "contextVi": "Hôm nay cho tôi ngồi dự buổi họp của bạn được không?",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "👥",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'sit in' để xin ngồi dự một lớp học thử ở trung tâm."
+    },
+    {
       "id": "necessary",
       "word": "necessary",
       "ipa": "/ˈnesəsəri/",
@@ -21295,6 +22989,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'clothing'."
+    },
+    {
+      "id": "sit-through",
+      "word": "sit through",
+      "ipa": "/ˌsɪt ˈθru/",
+      "pos": "phrasal verb",
+      "meaning": "ngồi chịu trận tới hết",
+      "context": "I can't sit through another three-hour meeting.",
+      "contextVi": "Tôi không chịu nổi thêm một cuộc họp ba tiếng nữa đâu.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🥱",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'sit through' để than một bộ phim chán bạn phải xem tới cuối."
     },
     {
       "id": "particular",
@@ -21325,6 +23033,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'gas'."
     },
     {
+      "id": "sit-up",
+      "word": "sit up",
+      "ipa": "/ˌsɪt ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "ngồi thẳng lên; ngồi dậy; thức khuya",
+      "context": "Sit up straight, please.",
+      "contextVi": "Ngồi thẳng lưng lên nào.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🧍",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'sit up' để nhắc con ngồi thẳng khi làm bài tập."
+    },
+    {
       "id": "decision",
       "word": "decision",
       "ipa": "/dɪˈsɪʒn/",
@@ -21351,6 +23073,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'huge'."
+    },
+    {
+      "id": "size-up",
+      "word": "size up",
+      "ipa": "/ˌsaɪz ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "đánh giá, quan sát (người, tình hình)",
+      "context": "Take a minute to size up the situation.",
+      "contextVi": "Dành một phút đánh giá tình hình đã.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "📏",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'size up' để kể lúc bạn quan sát khách hàng mới trước khi tư vấn."
     },
     {
       "id": "middle",
@@ -21381,6 +23117,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'actually'."
     },
     {
+      "id": "slack-off",
+      "word": "slack off",
+      "ipa": "/ˌslæk ˈɔf/",
+      "pos": "phrasal verb",
+      "meaning": "lười biếng, chểnh mảng",
+      "context": "Don't slack off just because the boss is away.",
+      "contextVi": "Đừng có lười chỉ vì sếp đi vắng nha.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "😴",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'slack off' để thú nhận lúc bạn chểnh mảng việc học."
+    },
+    {
       "id": "score",
       "word": "score",
       "ipa": "/skɔː/",
@@ -21407,6 +23157,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'lead'."
+    },
+    {
+      "id": "sleep-in",
+      "word": "sleep in",
+      "ipa": "/ˌslip ˈɪn/",
+      "pos": "phrasal verb",
+      "meaning": "ngủ nướng, ngủ dậy muộn",
+      "context": "I love to sleep in on Sundays.",
+      "contextVi": "Chủ nhật tôi khoái ngủ nướng lắm.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🛌",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'sleep in' để kể kế hoạch ngủ nướng ngày nghỉ của bạn."
     },
     {
       "id": "choice",
@@ -21437,6 +23201,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'foreign'."
     },
     {
+      "id": "sleep-off",
+      "word": "sleep off",
+      "ipa": "/ˌslip ˈɔf/",
+      "pos": "phrasal verb",
+      "meaning": "ngủ cho hết (say, mệt, đau đầu)",
+      "context": "Go home and sleep off that headache.",
+      "contextVi": "Về nhà ngủ một giấc cho hết đau đầu đi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "💤",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'sleep off' để khuyên bạn về ngủ cho hết mệt sau chuyến bay dài."
+    },
+    {
       "id": "furniture",
       "word": "furniture",
       "ipa": "/ˈfɜːnɪtʃə/",
@@ -21463,6 +23241,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'structure'."
+    },
+    {
+      "id": "sleep-on",
+      "word": "sleep on",
+      "ipa": "/ˈslip ɑn/",
+      "pos": "phrasal verb",
+      "meaning": "để suy nghĩ thêm (qua đêm)",
+      "context": "Let me sleep on it and get back to you.",
+      "contextVi": "Để tôi suy nghĩ thêm rồi trả lời bạn nha.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🌙",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'sleep on' để xin thêm thời gian trước khi nhận một lời mời làm việc."
     },
     {
       "id": "allow",
@@ -21493,6 +23285,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'degree'."
     },
     {
+      "id": "sleep-over",
+      "word": "sleep over",
+      "ipa": "/ˌslip ˈoʊvər/",
+      "pos": "phrasal verb",
+      "meaning": "ngủ lại nhà (ai)",
+      "context": "Can my friend sleep over tonight?",
+      "contextVi": "Tối nay bạn con ngủ lại nhà mình được không?",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🏠",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'sleep over' để xin bố mẹ cho bạn tới ngủ lại nhà."
+    },
+    {
       "id": "button",
       "word": "button",
       "ipa": "/ˈbʌtn/",
@@ -21519,6 +23325,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'male'."
+    },
+    {
+      "id": "slip-up",
+      "word": "slip up",
+      "ipa": "/ˌslɪp ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "sơ suất, lỡ sai",
+      "context": "Everyone can slip up sometimes, it's okay.",
+      "contextVi": "Ai cũng có lúc sơ suất mà, không sao đâu.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🍌",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'slip up' để an ủi đồng nghiệp lỡ làm sai đơn hàng."
     },
     {
       "id": "matter",
@@ -21549,6 +23369,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'almost'."
     },
     {
+      "id": "slow-down",
+      "word": "slow down",
+      "ipa": "/ˌsloʊ ˈdaʊn/",
+      "pos": "phrasal verb",
+      "meaning": "chậm lại",
+      "context": "Slow down, you're talking too fast!",
+      "contextVi": "Từ từ thôi, bạn nói nhanh quá!",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🐌",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'slow down' để nhờ người nước ngoài nói chậm lại khi hỏi đường."
+    },
+    {
       "id": "cause",
       "word": "cause",
       "ipa": "/kɔːz/",
@@ -21575,6 +23409,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'focus'."
+    },
+    {
+      "id": "smooth-over",
+      "word": "smooth over",
+      "ipa": "/ˌsmuð ˈoʊvər/",
+      "pos": "phrasal verb",
+      "meaning": "xoa dịu, dàn xếp (mâu thuẫn)",
+      "context": "I'll try to smooth over the tension with her.",
+      "contextVi": "Để tôi thử xoa dịu căng thẳng với cổ.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🧈",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'smooth over' để kể lúc bạn dàn xếp mâu thuẫn giữa hai người bạn."
     },
     {
       "id": "female",
@@ -21605,6 +23453,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'tool'."
     },
     {
+      "id": "snap-out-of",
+      "word": "snap out of",
+      "ipa": "/ˌsnæp ˈaʊt əv/",
+      "pos": "phrasal verb",
+      "meaning": "tỉnh ra, thoát khỏi (tâm trạng xấu)",
+      "context": "Come on, snap out of it!",
+      "contextVi": "Thôi nào, tỉnh lại đi!",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🫨",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'snap out of' để kéo bạn thân ra khỏi tâm trạng buồn sau chia tay."
+    },
+    {
       "id": "voice",
       "word": "voice",
       "ipa": "/vɔɪs/",
@@ -21631,6 +23493,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'schedule'."
+    },
+    {
+      "id": "sneak-in",
+      "word": "sneak in",
+      "ipa": "/ˌsnik ˈɪn/",
+      "pos": "phrasal verb",
+      "meaning": "lẻn vào; lén đem vào",
+      "context": "Let's sneak in some snacks to the movies.",
+      "contextVi": "Lén đem ít đồ ăn vặt vô rạp đi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🤫",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'sneak in' để kể lần bạn lẻn vào nhà muộn mà không ai biết."
     },
     {
       "id": "purpose",
@@ -21661,6 +23537,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'feature'."
     },
     {
+      "id": "sneak-out",
+      "word": "sneak out",
+      "ipa": "/ˌsnik ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "lẻn ra, chuồn ra",
+      "context": "Let's sneak out before the speeches start.",
+      "contextVi": "Chuồn ra trước khi họ bắt đầu phát biểu đi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🥷",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'sneak out' để kể lần bạn chuồn sớm khỏi một bữa tiệc chán."
+    },
+    {
       "id": "independent",
       "word": "independent",
       "ipa": "/ˌɪndɪˈpendənt/",
@@ -21687,6 +23577,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'physical'."
+    },
+    {
+      "id": "soak-up",
+      "word": "soak up",
+      "ipa": "/ˌsoʊk ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "tận hưởng; thấm, hút; tiếp thu",
+      "context": "Let's soak up the sun at the beach.",
+      "contextVi": "Ra biển tắm nắng cho đã đi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🌞",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'soak up' để kể lúc bạn tận hưởng không khí ở một thành phố mới."
     },
     {
       "id": "hill",
@@ -21717,6 +23621,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'medicine'."
     },
     {
+      "id": "sober-up",
+      "word": "sober up",
+      "ipa": "/ˌsoʊbər ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "tỉnh rượu",
+      "context": "Drink some water, you need to sober up.",
+      "contextVi": "Uống chút nước đi, ông phải tỉnh rượu đã.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "💧",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'sober up' để nhắc bạn bè tỉnh rượu trước khi về nhà sau tiệc."
+    },
+    {
       "id": "deal",
       "word": "deal",
       "ipa": "/diːl/",
@@ -21743,6 +23661,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'hold'."
+    },
+    {
+      "id": "sort-out",
+      "word": "sort out",
+      "ipa": "/ˌsɔrt ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "giải quyết, thu xếp; sắp xếp, phân loại",
+      "context": "Let's sort out the bill later.",
+      "contextVi": "Chuyện hóa đơn để tính sau nha.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🧹",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'sort out' để kể một vấn đề với khách mà bạn phải giải quyết trong ca."
     },
     {
       "id": "safe",
@@ -21773,6 +23705,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'survey'."
     },
     {
+      "id": "speak-up",
+      "word": "speak up",
+      "ipa": "/ˌspik ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "nói to lên; lên tiếng",
+      "context": "Can you speak up? I can't hear you.",
+      "contextVi": "Bạn nói to lên được không? Tôi không nghe.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🔊",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'speak up' để nhờ người gọi điện nói to hơn vì sóng yếu."
+    },
+    {
       "id": "feed",
       "word": "feed",
       "ipa": "/fiːd/",
@@ -21799,6 +23745,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'population'."
+    },
+    {
+      "id": "speed-up",
+      "word": "speed up",
+      "ipa": "/ˌspid ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "tăng tốc, làm nhanh lên",
+      "context": "Can we speed up a little? We're late.",
+      "contextVi": "Mình đi nhanh lên chút được không? Trễ rồi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "⚡",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'speed up' để giục cả nhóm làm nhanh hơn khi quán đông khách."
     },
     {
       "id": "regular",
@@ -21829,6 +23789,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'evidence'."
     },
     {
+      "id": "spell-out",
+      "word": "spell out",
+      "ipa": "/ˌspɛl ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "nói rõ ràng, giải thích cặn kẽ; đánh vần",
+      "context": "Do I have to spell out everything for you?",
+      "contextVi": "Cái gì tôi cũng phải nói rõ từng chút cho bạn à?",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🔤",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'spell out' để nhờ ai đó giải thích rõ luật lệ khi bạn mới vào làm."
+    },
+    {
       "id": "round",
       "word": "round",
       "ipa": "/raʊnd/",
@@ -21855,6 +23829,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'option'."
+    },
+    {
+      "id": "spice-up",
+      "word": "spice up",
+      "ipa": "/ˌspaɪs ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "làm cho thú vị, sôi động hơn; thêm gia vị",
+      "context": "Let's add some music to spice up the party.",
+      "contextVi": "Mở thêm tí nhạc cho bữa tiệc sôi động lên đi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🌶️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'spice up' để gợi ý cách làm buổi họp lớp bớt nhàm chán."
     },
     {
       "id": "valley",
@@ -21885,6 +23873,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'recently'."
     },
     {
+      "id": "splash-out",
+      "word": "splash out",
+      "ipa": "/ˌsplæʃ ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "chi mạnh tay, vung tiền (cho món gì đó)",
+      "context": "Let's splash out on a nice dinner for Mom's birthday.",
+      "contextVi": "Sinh nhật mẹ mình chơi lớn, đi ăn một bữa thật sang đi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "💸",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'splash out' để kể một lần bạn mạnh tay mua đồ khi đi du lịch."
+    },
+    {
       "id": "blood",
       "word": "blood",
       "ipa": "/blʌd/",
@@ -21911,6 +23913,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'hall'."
+    },
+    {
+      "id": "split-up",
+      "word": "split up",
+      "ipa": "/ˌsplɪt ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "chia tay (người yêu); tách ra, chia nhóm",
+      "context": "Let's split up and look for him faster.",
+      "contextVi": "Mình chia nhau ra tìm nó cho nhanh đi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "💔",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'split up' để bàn chuyện chia nhóm đi chợ cùng bạn bè cho nhanh."
     },
     {
       "id": "earth",
@@ -21941,6 +23957,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'introduction'."
     },
     {
+      "id": "spread-out",
+      "word": "spread out",
+      "ipa": "/ˌsprɛd ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "tản ra, dàn ra; trải ra",
+      "context": "Okay everyone, spread out and check every room.",
+      "contextVi": "Rồi mọi người tản ra, kiểm tra từng phòng nhé.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "↔️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'spread out' để bảo mọi người đứng giãn ra khi chụp ảnh nhóm."
+    },
+    {
       "id": "wedding",
       "word": "wedding",
       "ipa": "/ˈwedɪŋ/",
@@ -21967,6 +23997,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'ground'."
+    },
+    {
+      "id": "spring-up",
+      "word": "spring up",
+      "ipa": "/ˌsprɪŋ ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "mọc lên (nhanh, nhiều), xuất hiện đột ngột",
+      "context": "Coffee shops seem to spring up on every corner here.",
+      "contextVi": "Quán cà phê ở đây cứ mọc lên như nấm ở mọi góc phố.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🌱",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'spring up' để kể về những cửa hàng mới mọc lên gần nhà bạn."
     },
     {
       "id": "ship",
@@ -21997,6 +24041,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'disease'."
     },
     {
+      "id": "stamp-out",
+      "word": "stamp out",
+      "ipa": "/ˌstæmp ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "dẹp bỏ, trừ tiệt (thói xấu, tệ nạn); dập tắt",
+      "context": "The school really wants to stamp out bullying.",
+      "contextVi": "Trường đang quyết tâm dẹp hẳn nạn bắt nạt.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🦶",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'stamp out' để nói về một thói quen xấu ở chỗ làm mà bạn muốn dẹp bỏ."
+    },
+    {
       "id": "excellent",
       "word": "excellent",
       "ipa": "/ˈeksələnt/",
@@ -22023,6 +24081,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'opportunity'."
+    },
+    {
+      "id": "stand-by",
+      "word": "stand by",
+      "ipa": "/ˌstænd ˈbaɪ/",
+      "pos": "phrasal verb",
+      "meaning": "ủng hộ, đứng về phía ai; chờ sẵn, túc trực",
+      "context": "Don't worry, I'll stand by you no matter what.",
+      "contextVi": "Đừng lo, có chuyện gì tôi cũng đứng về phía bạn.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🤝",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'stand by' để động viên một người bạn đang gặp chuyện buồn."
     },
     {
       "id": "express",
@@ -22053,6 +24125,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'award'."
     },
     {
+      "id": "stand-for",
+      "word": "stand for",
+      "ipa": "/ˈstænd fɔr/",
+      "pos": "phrasal verb",
+      "meaning": "là viết tắt của; đại diện cho; chịu đựng",
+      "context": "Wait, what does ASAP stand for again?",
+      "contextVi": "Khoan, ASAP là viết tắt của gì ấy nhỉ?",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🔤",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'stand for' để hỏi đồng nghiệp một từ viết tắt trong email công việc."
+    },
+    {
       "id": "distance",
       "word": "distance",
       "ipa": "/ˈdɪstəns/",
@@ -22079,6 +24165,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'especially'."
+    },
+    {
+      "id": "stand-in-for",
+      "word": "stand in for",
+      "ipa": "/ˌstænd ˈɪn fɔr/",
+      "pos": "phrasal verb",
+      "meaning": "thay thế, làm thay ai (tạm thời)",
+      "context": "Can you stand in for me at the meeting tomorrow?",
+      "contextVi": "Mai bạn họp thay mình được không?",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🔄",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'stand in for' để nhờ đồng nghiệp làm thay ca tối nay cho bạn."
     },
     {
       "id": "forward",
@@ -22109,6 +24209,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'owner'."
     },
     {
+      "id": "stand-out",
+      "word": "stand out",
+      "ipa": "/ˌstænd ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "nổi bật, gây chú ý",
+      "context": "Wear something red so you stand out in the photos.",
+      "contextVi": "Mặc đồ đỏ đi cho nổi bật trong ảnh.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "⭐",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'stand out' để khuyên bạn mình cách làm CV nổi bật khi xin việc."
+    },
+    {
       "id": "strategy",
       "word": "strategy",
       "ipa": "/ˈstrætədʒi/",
@@ -22135,6 +24249,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'bin'."
+    },
+    {
+      "id": "stand-up",
+      "word": "stand up",
+      "ipa": "/ˌstænd ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "đứng dậy; cho ai leo cây",
+      "context": "Okay everyone, please stand up and give her a hand.",
+      "contextVi": "Rồi, mọi người đứng dậy vỗ tay cho bạn ấy nào.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🧍",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'stand up' để kể lúc bạn phải đứng dậy phát biểu trong lớp."
     },
     {
       "id": "teaching",
@@ -22165,6 +24293,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'instead'."
     },
     {
+      "id": "stand-up-for",
+      "word": "stand up for",
+      "ipa": "/ˌstænd ˈʌp fɔr/",
+      "pos": "phrasal verb",
+      "meaning": "bênh vực, bảo vệ (ai, điều gì)",
+      "context": "You have to stand up for yourself at work.",
+      "contextVi": "Ở chỗ làm bạn phải biết tự bảo vệ mình chứ.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🛡️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'stand up for' để kể lần bạn bênh một đứa em bị trêu chọc."
+    },
+    {
       "id": "normal",
       "word": "normal",
       "ipa": "/ˈnɔːml/",
@@ -22191,6 +24333,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'metal'."
+    },
+    {
+      "id": "start-off",
+      "word": "start off",
+      "ipa": "/ˌstɑrt ˈɔf/",
+      "pos": "phrasal verb",
+      "meaning": "bắt đầu (bằng việc gì)",
+      "context": "Let's start off with some drinks and appetizers.",
+      "contextVi": "Mình gọi đồ uống với món khai vị trước đã nhé.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🏁",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'start off' để kể bạn thường bắt đầu buổi sáng bằng việc gì."
     },
     {
       "id": "likely",
@@ -22221,6 +24377,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'develop'."
     },
     {
+      "id": "start-out",
+      "word": "start out",
+      "ipa": "/ˌstɑrt ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "khởi nghiệp, bắt đầu (sự nghiệp, hành trình)",
+      "context": "Most chefs start out washing dishes in the kitchen.",
+      "contextVi": "Đa số đầu bếp đều khởi đầu từ chân rửa bát.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🚀",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'start out' để kể bạn đã bắt đầu công việc đầu tiên như thế nào."
+    },
+    {
       "id": "alternative",
       "word": "alternative",
       "ipa": "/ɔːlˈtɜːnətɪv/",
@@ -22247,6 +24417,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'guest'."
+    },
+    {
+      "id": "start-over",
+      "word": "start over",
+      "ipa": "/ˌstɑrt ˈoʊvər/",
+      "pos": "phrasal verb",
+      "meaning": "làm lại từ đầu",
+      "context": "I messed up the drawing, so I'll start over.",
+      "contextVi": "Mình vẽ hỏng rồi, làm lại từ đầu thôi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🔁",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'start over' để kể lần bạn phải làm lại bài tập từ đầu."
     },
     {
       "id": "pass",
@@ -22277,6 +24461,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'van'."
     },
     {
+      "id": "stay-away",
+      "word": "stay away",
+      "ipa": "/ˌsteɪ əˈweɪ/",
+      "pos": "phrasal verb",
+      "meaning": "tránh xa, không lại gần",
+      "context": "Stay away from my fries, they're mine!",
+      "contextVi": "Tránh xa khoai tây chiên của tao ra, của tao đấy!",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🚫",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'stay away' để dặn em nhỏ tránh xa bếp đang nóng."
+    },
+    {
       "id": "skin",
       "word": "skin",
       "ipa": "/skɪn/",
@@ -22303,6 +24501,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'ring'."
+    },
+    {
+      "id": "stay-in",
+      "word": "stay in",
+      "ipa": "/ˌsteɪ ˈɪn/",
+      "pos": "phrasal verb",
+      "meaning": "ở nhà, không ra ngoài",
+      "context": "I'm tired, let's just stay in tonight.",
+      "contextVi": "Mệt quá, tối nay ở nhà thôi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🏠",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'stay in' để từ chối khéo lời rủ đi chơi cuối tuần của bạn bè."
     },
     {
       "id": "pop",
@@ -22333,6 +24545,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'vehicle'."
     },
     {
+      "id": "stay-out",
+      "word": "stay out",
+      "ipa": "/ˌsteɪ ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "ở ngoài (khuya), đi chơi về muộn; đứng ngoài",
+      "context": "Don't stay out too late, you have school tomorrow.",
+      "contextVi": "Đừng đi chơi khuya quá, mai còn đi học đấy.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🌙",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'stay out' để kể lần bạn đi chơi về muộn bị bố mẹ mắng."
+    },
+    {
       "id": "consider",
       "word": "consider",
       "ipa": "/kənˈsɪdə/",
@@ -22359,6 +24585,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'deep'."
+    },
+    {
+      "id": "stay-over",
+      "word": "stay over",
+      "ipa": "/ˌsteɪ ˈoʊvər/",
+      "pos": "phrasal verb",
+      "meaning": "ngủ lại qua đêm (nhà ai)",
+      "context": "It's raining hard, you can stay over at my place.",
+      "contextVi": "Mưa to lắm, ngủ lại nhà tớ luôn đi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🛏️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'stay over' để mời bạn ngủ lại nhà bạn sau bữa tiệc."
     },
     {
       "id": "rest",
@@ -22389,6 +24629,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'hit'."
     },
     {
+      "id": "stay-up",
+      "word": "stay up",
+      "ipa": "/ˌsteɪ ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "thức khuya, không đi ngủ",
+      "context": "Don't stay up too late watching videos.",
+      "contextVi": "Đừng thức khuya xem video nữa nhé.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🦉",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'stay up' để kể lần bạn thức khuya ôn thi."
+    },
+    {
       "id": "sense",
       "word": "sense",
       "ipa": "/sens/",
@@ -22415,6 +24669,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'pack'."
+    },
+    {
+      "id": "step-back",
+      "word": "step back",
+      "ipa": "/ˌstɛp ˈbæk/",
+      "pos": "phrasal verb",
+      "meaning": "lùi lại; nhìn nhận lại vấn đề từ xa",
+      "context": "Let's step back and look at the big picture.",
+      "contextVi": "Mình thử lùi lại một bước nhìn tổng thể xem.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🔙",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'step back' để khuyên đồng nghiệp bình tĩnh nhìn lại dự án đang rối."
     },
     {
       "id": "stage",
@@ -22445,6 +24713,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'race'."
     },
     {
+      "id": "step-down",
+      "word": "step down",
+      "ipa": "/ˌstɛp ˈdaʊn/",
+      "pos": "phrasal verb",
+      "meaning": "từ chức, rút lui khỏi vị trí",
+      "context": "I heard the manager wants to step down next month.",
+      "contextVi": "Nghe nói tháng sau quản lý muốn nghỉ việc đấy.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "⬇️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'step down' để kể về một người lãnh đạo bạn biết đã từ chức."
+    },
+    {
       "id": "background",
       "word": "background",
       "ipa": "/ˈbækɡraʊnd/",
@@ -22471,6 +24753,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'target'."
+    },
+    {
+      "id": "step-in",
+      "word": "step in",
+      "ipa": "/ˌstɛp ˈɪn/",
+      "pos": "phrasal verb",
+      "meaning": "can thiệp, ra tay giúp; thay chân",
+      "context": "The manager had to step in and calm the customer down.",
+      "contextVi": "Quản lý phải ra mặt xoa dịu ông khách.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🙋",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'step in' để kể lần bạn ra tay giúp khi hai người bạn cãi nhau."
     },
     {
       "id": "except",
@@ -22501,6 +24797,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'character'."
     },
     {
+      "id": "step-out",
+      "word": "step out",
+      "ipa": "/ˌstɛp ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "ra ngoài một chút",
+      "context": "I need to step out for a minute to take this call.",
+      "contextVi": "Mình ra ngoài chút để nghe điện thoại nhé.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🚪",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'step out' để xin phép ra ngoài giữa buổi học thêm."
+    },
+    {
       "id": "ability",
       "word": "ability",
       "ipa": "/əˈbɪləti/",
@@ -22527,6 +24837,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'wood'."
+    },
+    {
+      "id": "step-up",
+      "word": "step up",
+      "ipa": "/ˌstɛp ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "đứng ra gánh vác, nỗ lực hơn; tăng cường",
+      "context": "You really need to step up if you want that promotion.",
+      "contextVi": "Muốn được thăng chức thì bạn phải cố hơn nữa đấy.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "📈",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'step up' để nói bạn cần cố gắng hơn ở chỗ làm tháng này."
     },
     {
       "id": "itself",
@@ -22557,6 +24881,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'device'."
     },
     {
+      "id": "stick-around",
+      "word": "stick around",
+      "ipa": "/ˌstɪk əˈraʊnd/",
+      "pos": "phrasal verb",
+      "meaning": "nán lại, ở lại thêm",
+      "context": "Stick around, the fun part is just starting.",
+      "contextVi": "Ở lại chút đi, đoạn vui mới bắt đầu thôi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "⏳",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'stick around' để mời khách nán lại thêm sau bữa cơm."
+    },
+    {
       "id": "remove",
       "word": "remove",
       "ipa": "/rɪˈmuːv/",
@@ -22583,6 +24921,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'variety'."
+    },
+    {
+      "id": "stick-out",
+      "word": "stick out",
+      "ipa": "/ˌstɪk ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "thò ra, lòi ra; nổi bật, dễ thấy",
+      "context": "Don't stick out your tongue at your sister!",
+      "contextVi": "Đừng lè lưỡi trêu chị như thế!",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "👅",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'stick out' để nhắc em bé đừng thò tay ra ngoài cửa sổ xe."
     },
     {
       "id": "repair",
@@ -22613,6 +24965,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'fair'."
     },
     {
+      "id": "stick-to",
+      "word": "stick to",
+      "ipa": "/ˈstɪk tu/",
+      "pos": "phrasal verb",
+      "meaning": "bám theo, giữ đúng (kế hoạch, lời hứa)",
+      "context": "Let's just stick to the plan, okay?",
+      "contextVi": "Cứ làm đúng kế hoạch thôi, nhé?",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "📌",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'stick to' để nói về chế độ ăn kiêng bạn đang cố giữ."
+    },
+    {
       "id": "understanding",
       "word": "understanding",
       "ipa": "/ˌʌndəˈstændɪŋ/",
@@ -22639,6 +25005,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'finally'."
+    },
+    {
+      "id": "stick-up-for",
+      "word": "stick up for",
+      "ipa": "/ˌstɪk ˈʌp fɔr/",
+      "pos": "phrasal verb",
+      "meaning": "bênh vực, bảo vệ (ai)",
+      "context": "Thanks for trying to stick up for me back there.",
+      "contextVi": "Cảm ơn vì lúc nãy đã bênh tớ nhé.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "💪",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'stick up for' để kể lần bạn bênh vực một đồng nghiệp mới."
     },
     {
       "id": "electric",
@@ -22669,6 +25049,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'officer'."
     },
     {
+      "id": "stick-with",
+      "word": "stick with",
+      "ipa": "/ˈstɪk wɪð/",
+      "pos": "phrasal verb",
+      "meaning": "gắn bó, trung thành với; chọn tiếp",
+      "context": "I'll just stick with water, thanks.",
+      "contextVi": "Thôi mình uống nước lọc thôi, cảm ơn.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🥤",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'stick with' để nói bạn vẫn giữ nhà mạng điện thoại cũ."
+    },
+    {
       "id": "dead",
       "word": "dead",
       "ipa": "/ded/",
@@ -22695,6 +25089,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'relationship'."
+    },
+    {
+      "id": "stir-up",
+      "word": "stir up",
+      "ipa": "/ˌstɝ ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "khuấy động, gây chuyện; khơi lại (kỷ niệm)",
+      "context": "Please don't stir up drama in the group chat.",
+      "contextVi": "Đừng có gây chuyện trong nhóm chat nữa nhé.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🌀",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'stir up' để kể về một người hay gây chuyện trong nhóm bạn."
     },
     {
       "id": "peace",
@@ -22725,6 +25133,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'traditional'."
     },
     {
+      "id": "stock-up",
+      "word": "stock up",
+      "ipa": "/ˌstɑk ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "tích trữ, mua dự trữ",
+      "context": "Let's stock up on snacks before the trip.",
+      "contextVi": "Mua dự trữ ít đồ ăn vặt trước chuyến đi đã.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🛒",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'stock up' để kể bạn tích trữ gì trước Tết."
+    },
+    {
       "id": "creative",
       "word": "creative",
       "ipa": "/kriˈeɪtɪv/",
@@ -22751,6 +25173,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'coast'."
+    },
+    {
+      "id": "stop-by",
+      "word": "stop by",
+      "ipa": "/ˌstɑp ˈbaɪ/",
+      "pos": "phrasal verb",
+      "meaning": "ghé qua, tạt vào",
+      "context": "Stop by anytime, I'm home all weekend.",
+      "contextVi": "Ghé chơi lúc nào cũng được, cuối tuần mình ở nhà suốt.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "👋",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'stop by' để rủ bạn ghé qua quán cà phê chỗ bạn làm."
     },
     {
       "id": "benefit",
@@ -22781,6 +25217,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'progress'."
     },
     {
+      "id": "stop-over",
+      "word": "stop over",
+      "ipa": "/ˌstɑp ˈoʊvər/",
+      "pos": "phrasal verb",
+      "meaning": "dừng chân, quá cảnh (giữa chuyến đi)",
+      "context": "We'll stop over in Tokyo for a night.",
+      "contextVi": "Mình sẽ dừng chân ở Tokyo một đêm.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "✈️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'stop over' để kể một chuyến bay quá cảnh bạn từng đi."
+    },
+    {
       "id": "fiction",
       "word": "fiction",
       "ipa": "/ˈfɪkʃn/",
@@ -22807,6 +25257,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'themselves'."
+    },
+    {
+      "id": "storm-out",
+      "word": "storm out",
+      "ipa": "/ˌstɔrm ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "bỏ đi đùng đùng (vì giận)",
+      "context": "Don't just storm out every time we argue.",
+      "contextVi": "Đừng có lần nào cãi nhau cũng bỏ đi đùng đùng thế.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "😤",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'storm out' để kể lần một khách hàng giận dữ bỏ đi khỏi cửa hàng."
     },
     {
       "id": "fan",
@@ -22837,6 +25301,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'transport'."
     },
     {
+      "id": "straighten-out",
+      "word": "straighten out",
+      "ipa": "/ˌstreɪtn ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "giải quyết ổn thỏa, làm rõ; chỉnh cho thẳng",
+      "context": "Let's sit down and straighten out this mess.",
+      "contextVi": "Ngồi xuống giải quyết cho xong vụ lộn xộn này đi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "📐",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'straighten out' để kể việc bạn làm rõ một hiểu lầm với bạn thân."
+    },
+    {
       "id": "helpful",
       "word": "helpful",
       "ipa": "/ˈhelpfl/",
@@ -22863,6 +25341,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'musical'."
+    },
+    {
+      "id": "stress-out",
+      "word": "stress out",
+      "ipa": "/ˌstrɛs ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "căng thẳng, lo lắng; làm ai căng thẳng",
+      "context": "Don't stress out about the test, you'll do fine.",
+      "contextVi": "Đừng căng thẳng vụ bài kiểm tra, bạn làm tốt mà.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "😰",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'stress out' để kể điều gì làm bạn căng thẳng mỗi mùa thi."
     },
     {
       "id": "secretary",
@@ -22893,6 +25385,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'employee'."
     },
     {
+      "id": "suck-up-to",
+      "word": "suck up to",
+      "ipa": "/ˌsʌk ˈʌp tu/",
+      "pos": "phrasal verb",
+      "meaning": "nịnh bợ, nịnh nọt (ai)",
+      "context": "He's always trying to suck up to the boss.",
+      "contextVi": "Lão ấy lúc nào cũng tìm cách nịnh sếp.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🍭",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'suck up to' để kể về một người hay nịnh thầy cô trong lớp."
+    },
+    {
       "id": "bottom",
       "word": "bottom",
       "ipa": "/ˈbɒtəm/",
@@ -22919,6 +25425,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'pet'."
+    },
+    {
+      "id": "sum-up",
+      "word": "sum up",
+      "ipa": "/ˌsʌm ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "tóm lại, tóm tắt",
+      "context": "So, to sum up, we need more time and money.",
+      "contextVi": "Vậy tóm lại là mình cần thêm thời gian và tiền.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "📝",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'sum up' để tóm tắt một bộ phim bạn vừa xem cho bạn bè."
     },
     {
       "id": "guy",
@@ -22949,6 +25469,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'connect'."
     },
     {
+      "id": "sweep-up",
+      "word": "sweep up",
+      "ipa": "/ˌswip ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "quét dọn (cho sạch)",
+      "context": "Can you sweep up the broken glass for me?",
+      "contextVi": "Quét giùm mình đống kính vỡ được không?",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🧹",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'sweep up' để nhờ người nhà quét sân sau bữa tiệc."
+    },
+    {
       "id": "square",
       "word": "square",
       "ipa": "/skweə/",
@@ -22975,6 +25509,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'attention'."
+    },
+    {
+      "id": "switch-off",
+      "word": "switch off",
+      "ipa": "/ˌswɪtʃ ˈɔf/",
+      "pos": "phrasal verb",
+      "meaning": "tắt (thiết bị); không để tâm, thả lỏng",
+      "context": "Don't forget to switch off the lights.",
+      "contextVi": "Đừng quên tắt đèn nhé.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "📴",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'switch off' để kể bạn tắt điện thoại khi nào để nghỉ ngơi."
     },
     {
       "id": "army",
@@ -23005,6 +25553,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'sheet'."
     },
     {
+      "id": "switch-on",
+      "word": "switch on",
+      "ipa": "/ˌswɪtʃ ˈɑn/",
+      "pos": "phrasal verb",
+      "meaning": "bật (thiết bị)",
+      "context": "Can you switch on the fan? It's so hot.",
+      "contextVi": "Bật quạt lên giùm cái, nóng quá.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "💡",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'switch on' để nhờ đồng nghiệp bật máy lạnh trong phòng họp."
+    },
+    {
       "id": "jump",
       "word": "jump",
       "ipa": "/dʒʌmp/",
@@ -23031,6 +25593,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'fashion'."
+    },
+    {
+      "id": "tag-along",
+      "word": "tag along",
+      "ipa": "/ˌtæɡ əˈlɔŋ/",
+      "pos": "phrasal verb",
+      "meaning": "đi theo, bám theo (cùng ai)",
+      "context": "You guys going to the mall? Can I tag along?",
+      "contextVi": "Mấy bà đi trung tâm thương mại hả? Cho tui đi ké với?",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🚶",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'tag along' để xin đi theo nhóm bạn đi ăn tối."
     },
     {
       "id": "forest",
@@ -23061,6 +25637,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'whose'."
     },
     {
+      "id": "take-after",
+      "word": "take after",
+      "ipa": "/ˌteɪk ˈæftər/",
+      "pos": "phrasal verb",
+      "meaning": "giống (bố mẹ, người thân)",
+      "context": "You really take after your dad, you know.",
+      "contextVi": "Công nhận bạn giống bố y đúc.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "👨‍👦",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'take after' để kể bạn giống ai nhất trong gia đình."
+    },
+    {
       "id": "couple",
       "word": "couple",
       "ipa": "/ˈkʌpl/",
@@ -23087,6 +25677,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'chance'."
+    },
+    {
+      "id": "take-apart",
+      "word": "take apart",
+      "ipa": "/ˌteɪk əˈpɑrt/",
+      "pos": "phrasal verb",
+      "meaning": "tháo rời ra",
+      "context": "Let's take apart the old printer and see what's wrong.",
+      "contextVi": "Tháo cái máy in cũ ra xem nó hỏng chỗ nào.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🔧",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'take apart' để kể lần bạn tháo tung một món đồ chơi hồi nhỏ."
     },
     {
       "id": "ending",
@@ -23117,6 +25721,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'accept'."
     },
     {
+      "id": "take-away",
+      "word": "take away",
+      "ipa": "/ˌteɪk əˈweɪ/",
+      "pos": "phrasal verb",
+      "meaning": "mang đi, dọn đi; lấy mất, tước đi",
+      "context": "Can you take away these plates, please?",
+      "contextVi": "Dọn giùm mình mấy cái đĩa này với.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🍽️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'take away' để nhờ nhân viên nhà hàng dọn bàn."
+    },
+    {
       "id": "goal",
       "word": "goal",
       "ipa": "/ɡəʊl/",
@@ -23143,6 +25761,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'successful'."
+    },
+    {
+      "id": "take-back",
+      "word": "take back",
+      "ipa": "/ˌteɪk ˈbæk/",
+      "pos": "phrasal verb",
+      "meaning": "rút lại (lời nói); trả lại (hàng)",
+      "context": "Okay, I take back what I said. I'm sorry.",
+      "contextVi": "Thôi, tôi rút lại lời vừa nói. Xin lỗi nha.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "↩️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'take back' để xin lỗi vì một câu nói hơi quá với bạn thân."
     },
     {
       "id": "wind",
@@ -23173,6 +25805,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'appear'."
     },
     {
+      "id": "take-down",
+      "word": "take down",
+      "ipa": "/ˌteɪk ˈdaʊn/",
+      "pos": "phrasal verb",
+      "meaning": "gỡ xuống, tháo xuống; ghi lại",
+      "context": "Can you help me take down the decorations?",
+      "contextVi": "Giúp mình gỡ mấy đồ trang trí xuống với.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "📉",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'take down' để kể việc gỡ đồ trang trí sau Tết."
+    },
+    {
       "id": "temperature",
       "word": "temperature",
       "ipa": "/ˈtemprətʃə/",
@@ -23199,6 +25845,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'patient'."
+    },
+    {
+      "id": "take-in",
+      "word": "take in",
+      "ipa": "/ˌteɪk ˈɪn/",
+      "pos": "phrasal verb",
+      "meaning": "ngắm nhìn, thu vào; tiếp thu; cưu mang",
+      "context": "Let's just sit here and take in the view.",
+      "contextVi": "Ngồi đây ngắm cảnh chút đi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🌄",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'take in' để kể một khung cảnh đẹp bạn từng ngắm khi đi du lịch."
     },
     {
       "id": "stone",
@@ -23229,6 +25889,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'perhaps'."
     },
     {
+      "id": "take-off",
+      "word": "take off",
+      "ipa": "/ˌteɪk ˈɔf/",
+      "pos": "phrasal verb",
+      "meaning": "cởi (đồ); cất cánh; nghỉ (làm)",
+      "context": "Please take off your shoes before coming in.",
+      "contextVi": "Cởi giày ra trước khi vào nhà nhé.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🛫",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'take off' để hỏi khách có cần cởi giày khi vào nhà bạn không."
+    },
+    {
       "id": "fit",
       "word": "fit",
       "ipa": "/fɪt/",
@@ -23255,6 +25929,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'pain'."
+    },
+    {
+      "id": "take-on",
+      "word": "take on",
+      "ipa": "/ˌteɪk ˈɑn/",
+      "pos": "phrasal verb",
+      "meaning": "nhận (việc, trách nhiệm); đối đầu",
+      "context": "Sorry, I can't take on any more work this week.",
+      "contextVi": "Xin lỗi, tuần này mình không nhận thêm việc được nữa.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🏋️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'take on' để từ chối nhận thêm việc khi bạn đã quá bận."
     },
     {
       "id": "easily",
@@ -23285,6 +25973,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'poster'."
     },
     {
+      "id": "take-out",
+      "word": "take out",
+      "ipa": "/ˌteɪk ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "mang (rác) ra ngoài; lấy ra; dẫn đi chơi",
+      "context": "Can you take out the trash on your way out?",
+      "contextVi": "Đi ra thì tiện tay đổ rác giùm nhé.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🗑️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'take out' để nhắc người nhà đổ rác tối nay."
+    },
+    {
       "id": "closed",
       "word": "closed",
       "ipa": "/kləʊzd/",
@@ -23311,6 +26013,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'architecture'."
+    },
+    {
+      "id": "take-over",
+      "word": "take over",
+      "ipa": "/ˌteɪk ˈoʊvər/",
+      "pos": "phrasal verb",
+      "meaning": "tiếp quản, làm thay; chiếm quyền",
+      "context": "Can you take over for a minute? I need a break.",
+      "contextVi": "Làm thay mình một lát được không? Mình cần nghỉ tí.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🎮",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'take over' để nhờ đồng nghiệp trông quầy thay bạn một lúc."
     },
     {
       "id": "thinking",
@@ -23341,6 +26057,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'recommend'."
     },
     {
+      "id": "take-up",
+      "word": "take up",
+      "ipa": "/ˌteɪk ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "bắt đầu (sở thích mới); chiếm (chỗ, thời gian)",
+      "context": "I want to take up yoga this year.",
+      "contextVi": "Năm nay mình muốn tập yoga.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🧘",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'take up' để kể một sở thích mới bạn muốn bắt đầu."
+    },
+    {
       "id": "fishing",
       "word": "fishing",
       "ipa": "/ˈfɪʃɪŋ/",
@@ -23367,6 +26097,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'professor'."
+    },
+    {
+      "id": "talk-back",
+      "word": "talk back",
+      "ipa": "/ˌtɔk ˈbæk/",
+      "pos": "phrasal verb",
+      "meaning": "cãi lại, hỗn (với người lớn)",
+      "context": "Don't talk back to your mother like that!",
+      "contextVi": "Không được cãi mẹ như thế!",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🗯️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'talk back' để kể lần bạn bị mắng vì cãi lại bố mẹ."
     },
     {
       "id": "context",
@@ -23397,6 +26141,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'crime'."
     },
     {
+      "id": "talk-down-to",
+      "word": "talk down to",
+      "ipa": "/ˌtɔk ˈdaʊn tu/",
+      "pos": "phrasal verb",
+      "meaning": "nói kiểu coi thường, trịch thượng với ai",
+      "context": "Please don't talk down to me like I'm a kid.",
+      "contextVi": "Đừng nói chuyện với tôi như tôi là con nít vậy.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🙄",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'talk down to' để kể về một người hay nói giọng coi thường nhân viên."
+    },
+    {
       "id": "count",
       "word": "count",
       "ipa": "/kaʊnt/",
@@ -23423,6 +26181,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'driving'."
+    },
+    {
+      "id": "talk-into",
+      "word": "talk into",
+      "ipa": "/ˈtɔk ˌɪntu/",
+      "pos": "phrasal verb",
+      "meaning": "thuyết phục, dụ ai làm gì",
+      "context": "My brother is way too easy to talk into things.",
+      "contextVi": "Em tôi dễ bị dụ làm đủ thứ lắm.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🗣️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'talk into' để kể về người bạn dễ bị rủ rê nhất nhóm."
     },
     {
       "id": "permission",
@@ -23453,6 +26225,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'heat'."
     },
     {
+      "id": "talk-out-of",
+      "word": "talk out of",
+      "ipa": "/ˌtɔk ˈaʊt əv/",
+      "pos": "phrasal verb",
+      "meaning": "khuyên can, thuyết phục ai đừng làm gì",
+      "context": "Once she decides, she's impossible to talk out of it.",
+      "contextVi": "Nhỏ đó đã quyết thì không ai can nổi đâu.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "✋",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'talk out of' để kể về một người bướng không ai khuyên nổi trong nhà bạn."
+    },
+    {
       "id": "wild",
       "word": "wild",
       "ipa": "/waɪld/",
@@ -23479,6 +26265,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'task'."
+    },
+    {
+      "id": "talk-over",
+      "word": "talk over",
+      "ipa": "/ˌtɔk ˈoʊvər/",
+      "pos": "phrasal verb",
+      "meaning": "bàn bạc, thảo luận kỹ",
+      "context": "Let's talk over the plan tomorrow morning.",
+      "contextVi": "Sáng mai mình bàn kỹ lại kế hoạch nhé.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "💬",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'talk over' để hẹn gia đình bàn chuyện đi du lịch hè."
     },
     {
       "id": "reduce",
@@ -23509,6 +26309,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'himself'."
     },
     {
+      "id": "tear-apart",
+      "word": "tear apart",
+      "ipa": "/ˌtɛr əˈpɑrt/",
+      "pos": "phrasal verb",
+      "meaning": "chia rẽ, làm tan nát; xé toạc",
+      "context": "Don't let money tear apart the family.",
+      "contextVi": "Đừng để chuyện tiền bạc làm gia đình tan nát.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "💥",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'tear apart' để nói về chuyện gì có thể chia rẽ một nhóm bạn."
+    },
+    {
       "id": "leader",
       "word": "leader",
       "ipa": "/ˈliːdə/",
@@ -23535,6 +26349,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'soft'."
+    },
+    {
+      "id": "tear-down",
+      "word": "tear down",
+      "ipa": "/ˌtɛr ˈdaʊn/",
+      "pos": "phrasal verb",
+      "meaning": "phá dỡ (công trình); gỡ xuống",
+      "context": "They're gonna tear down that old market next year.",
+      "contextVi": "Nghe nói năm sau họ phá cái chợ cũ đó.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🏚️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'tear down' để kể một công trình gần nhà bạn sắp bị phá dỡ."
     },
     {
       "id": "alone",
@@ -23565,6 +26393,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'pocket'."
     },
     {
+      "id": "tear-up",
+      "word": "tear up",
+      "ipa": "/ˌtɛr ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "xé vụn; rơm rớm nước mắt",
+      "context": "I always tear up at the end of this movie.",
+      "contextVi": "Lần nào xem đoạn cuối phim này tôi cũng rưng rưng.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🥲",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'tear up' để kể một bộ phim làm bạn rơm rớm nước mắt."
+    },
+    {
       "id": "argument",
       "word": "argument",
       "ipa": "/ˈɑːɡjumənt/",
@@ -23591,6 +26433,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'competition'."
+    },
+    {
+      "id": "tell-apart",
+      "word": "tell apart",
+      "ipa": "/ˌtɛl əˈpɑrt/",
+      "pos": "phrasal verb",
+      "meaning": "phân biệt được (hai thứ giống nhau)",
+      "context": "The twins are so hard to tell apart.",
+      "contextVi": "Cặp sinh đôi đó khó phân biệt thật sự.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "👯",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'tell apart' để kể hai món đồ bạn hay nhầm lẫn khi đi chợ."
     },
     {
       "id": "fresh",
@@ -23621,6 +26477,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'factor'."
     },
     {
+      "id": "tell-off",
+      "word": "tell off",
+      "ipa": "/ˌtɛl ˈɔf/",
+      "pos": "phrasal verb",
+      "meaning": "mắng, la (ai)",
+      "context": "Did your mom tell off your brother again?",
+      "contextVi": "Mẹ lại mắng em mày nữa à?",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "😠",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'tell off' để kể lần sếp mắng cả nhóm vì trễ hạn."
+    },
+    {
       "id": "pick",
       "word": "pick",
       "ipa": "/pɪk/",
@@ -23647,6 +26517,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'serious'."
+    },
+    {
+      "id": "think-about",
+      "word": "think about",
+      "ipa": "/ˈθɪŋk əˌbaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "nghĩ về, cân nhắc (việc gì)",
+      "context": "Sounds good, but let me think about it.",
+      "contextVi": "Nghe cũng được, nhưng để mình nghĩ thêm đã.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🤔",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'think about' để trả lời khi bạn bè rủ bạn đi phượt mà bạn còn phân vân."
     },
     {
       "id": "quantity",
@@ -23677,6 +26561,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'myself'."
     },
     {
+      "id": "think-ahead",
+      "word": "think ahead",
+      "ipa": "/ˌθɪŋk əˈhɛd/",
+      "pos": "phrasal verb",
+      "meaning": "tính trước, lo xa",
+      "context": "You gotta think ahead when you book flights.",
+      "contextVi": "Đặt vé máy bay thì phải tính trước chứ.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🔮",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'think ahead' để khuyên em bạn chuẩn bị trước cho kỳ thi."
+    },
+    {
       "id": "platform",
       "word": "platform",
       "ipa": "/ˈplætfɔːm/",
@@ -23703,6 +26601,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'immediately'."
+    },
+    {
+      "id": "think-back",
+      "word": "think back",
+      "ipa": "/ˌθɪŋk ˈbæk/",
+      "pos": "phrasal verb",
+      "meaning": "nhớ lại, hồi tưởng",
+      "context": "When I think back, college was so much fun.",
+      "contextVi": "Giờ nhớ lại thấy hồi đại học vui thật.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🕰️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'think back' để kể một kỷ niệm tuổi thơ bạn hay nhớ lại."
     },
     {
       "id": "heavy",
@@ -23733,6 +26645,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'expert'."
     },
     {
+      "id": "think-over",
+      "word": "think over",
+      "ipa": "/ˌθɪŋk ˈoʊvər/",
+      "pos": "phrasal verb",
+      "meaning": "suy nghĩ kỹ, cân nhắc",
+      "context": "Let me think over your offer tonight.",
+      "contextVi": "Tối nay để tôi suy nghĩ kỹ lời đề nghị của anh nhé.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "💭",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'think over' để trả lời khéo khi được mời làm công việc mới."
+    },
+    {
       "id": "protect",
       "word": "protect",
       "ipa": "/prəˈtekt/",
@@ -23759,6 +26685,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'drop'."
+    },
+    {
+      "id": "think-through",
+      "word": "think through",
+      "ipa": "/ˌθɪŋk ˈθru/",
+      "pos": "phrasal verb",
+      "meaning": "suy xét thấu đáo, tính kỹ",
+      "context": "We need to think through the plan first.",
+      "contextVi": "Mình phải tính kỹ kế hoạch trước đã.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🧠",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'think through' để khuyên bạn thân trước khi nghỉ việc."
     },
     {
       "id": "prevent",
@@ -23789,6 +26729,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'seem'."
     },
     {
+      "id": "think-up",
+      "word": "think up",
+      "ipa": "/ˌθɪŋk ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "nghĩ ra, bịa ra (ý tưởng, cớ)",
+      "context": "Let's think up a cute name for the puppy.",
+      "contextVi": "Nghĩ ra cái tên nào dễ thương cho con cún đi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "💡",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'think up' để nhờ bạn bè nghĩ ra tên cho quán ăn nhỏ của bạn."
+    },
+    {
       "id": "touch",
       "word": "touch",
       "ipa": "/tʌtʃ/",
@@ -23815,6 +26769,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'towards'."
+    },
+    {
+      "id": "throw-away",
+      "word": "throw away",
+      "ipa": "/ˌθroʊ əˈweɪ/",
+      "pos": "phrasal verb",
+      "meaning": "vứt đi, bỏ đi; phí phạm (cơ hội)",
+      "context": "Don't throw away that box, I still need it.",
+      "contextVi": "Đừng vứt cái hộp đó, mình còn cần.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🗑️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'throw away' để kể những đồ bạn định vứt đi khi dọn nhà."
     },
     {
       "id": "suggest",
@@ -23845,6 +26813,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'serve'."
     },
     {
+      "id": "throw-in",
+      "word": "throw in",
+      "ipa": "/ˌθroʊ ˈɪn/",
+      "pos": "phrasal verb",
+      "meaning": "tặng kèm, cho thêm; chêm (câu nói)",
+      "context": "If you buy two, they'll throw in a free bag.",
+      "contextVi": "Mua hai cái là họ tặng kèm một cái túi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🎁",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'throw in' để trả giá với người bán hàng ngoài chợ."
+    },
+    {
       "id": "avoid",
       "word": "avoid",
       "ipa": "/əˈvɔɪd/",
@@ -23871,6 +26853,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'manage'."
+    },
+    {
+      "id": "throw-out",
+      "word": "throw out",
+      "ipa": "/ˌθroʊ ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "vứt bỏ; đuổi ra ngoài; bác bỏ",
+      "context": "Can you throw out the old milk in the fridge?",
+      "contextVi": "Vứt giùm hộp sữa cũ trong tủ lạnh nhé.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🚮",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'throw out' để nhờ bạn cùng phòng dọn đồ ăn hỏng trong tủ lạnh."
     },
     {
       "id": "corner",
@@ -23901,6 +26897,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'birth'."
     },
     {
+      "id": "throw-up",
+      "word": "throw up",
+      "ipa": "/ˌθroʊ ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "nôn, ói",
+      "context": "I feel sick, I think I'm gonna throw up.",
+      "contextVi": "Mình thấy khó chịu, chắc sắp ói rồi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🤮",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'throw up' để kể lần bạn bị say xe khi đi du lịch."
+    },
+    {
       "id": "virus",
       "word": "virus",
       "ipa": "/ˈvaɪrəs/",
@@ -23927,6 +26937,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'separate'."
+    },
+    {
+      "id": "tick-off",
+      "word": "tick off",
+      "ipa": "/ˌtɪk ˈɔf/",
+      "pos": "phrasal verb",
+      "meaning": "làm ai bực mình; đánh dấu (vào danh sách)",
+      "context": "Don't tick off the chef, he's already in a bad mood.",
+      "contextVi": "Đừng chọc ông bếp trưởng, ổng đang bực sẵn rồi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "😒",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'tick off' để kể một thói quen của người khác làm bạn bực mình."
     },
     {
       "id": "column",
@@ -23957,6 +26981,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'identify'."
     },
     {
+      "id": "tidy-up",
+      "word": "tidy up",
+      "ipa": "/ˌtaɪdi ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "dọn dẹp cho gọn gàng",
+      "context": "Let's tidy up before your parents get home.",
+      "contextVi": "Dọn dẹp cho gọn trước khi bố mẹ bạn về đi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🧺",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'tidy up' để rủ bạn cùng phòng dọn phòng cuối tuần."
+    },
+    {
       "id": "missing",
       "word": "missing",
       "ipa": "/ˈmɪsɪŋ/",
@@ -23983,6 +27021,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'reach'."
+    },
+    {
+      "id": "tie-up",
+      "word": "tie up",
+      "ipa": "/ˌtaɪ ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "buộc, trói lại; làm bận rộn; giải quyết nốt",
+      "context": "I just need to tie up a few loose ends at work.",
+      "contextVi": "Mình chỉ cần xử lý nốt vài việc lặt vặt ở chỗ làm.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🪢",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'tie up' để kể những việc bạn cần xử lý nốt trước kỳ nghỉ."
     },
     {
       "id": "attack",
@@ -24013,6 +27065,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'lab'."
     },
     {
+      "id": "tip-off",
+      "word": "tip off",
+      "ipa": "/ˌtɪp ˈɔf/",
+      "pos": "phrasal verb",
+      "meaning": "mách nước, báo tin (bí mật) cho ai",
+      "context": "Who's gonna tip off the police about this?",
+      "contextVi": "Ai sẽ báo cảnh sát vụ này đây?",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🕵️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'tip off' để kể lần một người bạn mách nước cho bạn về đợt giảm giá."
+    },
+    {
       "id": "plastic",
       "word": "plastic",
       "ipa": "/ˈplæstɪk/",
@@ -24039,6 +27105,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'produce'."
+    },
+    {
+      "id": "tip-over",
+      "word": "tip over",
+      "ipa": "/ˌtɪp ˈoʊvər/",
+      "pos": "phrasal verb",
+      "meaning": "bị đổ, lật nhào; làm đổ",
+      "context": "Careful, that glass is gonna tip over!",
+      "contextVi": "Cẩn thận, cái ly sắp đổ kìa!",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🥛",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'tip over' để nhắc em nhỏ cẩn thận kẻo làm đổ chậu cây."
     },
     {
       "id": "camp",
@@ -24069,6 +27149,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'bridge'."
     },
     {
+      "id": "tire-out",
+      "word": "tire out",
+      "ipa": "/ˌtaɪər ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "làm ai mệt lử",
+      "context": "A long walk should tire out the dog.",
+      "contextVi": "Đi bộ một vòng dài là con chó mệt lử ngay.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "😩",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'tire out' để kể hoạt động nào làm con bạn hoặc thú cưng mệt lử."
+    },
+    {
       "id": "movement",
       "word": "movement",
       "ipa": "/ˈmuːvmənt/",
@@ -24095,6 +27189,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'baseball'."
+    },
+    {
+      "id": "tone-down",
+      "word": "tone down",
+      "ipa": "/ˌtoʊn ˈdaʊn/",
+      "pos": "phrasal verb",
+      "meaning": "giảm bớt, làm dịu (giọng, màu, mức độ)",
+      "context": "Can you tone down the jokes a bit in front of Grandma?",
+      "contextVi": "Trước mặt bà thì bớt đùa lại chút được không?",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🔉",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'tone down' để góp ý một người bạn nói hơi to trong quán cà phê."
     },
     {
       "id": "adventure",
@@ -24125,6 +27233,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'assistant'."
     },
     {
+      "id": "top-up",
+      "word": "top up",
+      "ipa": "/ˌtɑp ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "nạp thêm (tiền điện thoại, thẻ); rót thêm",
+      "context": "I need to top up my phone before the trip.",
+      "contextVi": "Mình phải nạp thêm tiền điện thoại trước chuyến đi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "📲",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'top up' để kể bạn nạp tiền thẻ xe buýt hay điện thoại ra sao."
+    },
+    {
       "id": "advertisement",
       "word": "advertisement",
       "ipa": "/ədˈvɜːtɪsmənt/",
@@ -24151,6 +27273,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'expect'."
+    },
+    {
+      "id": "toss-out",
+      "word": "toss out",
+      "ipa": "/ˌtɔs ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "vứt đi; đưa ra (ý kiến) một cách tùy ý",
+      "context": "Just toss out anything that's expired.",
+      "contextVi": "Cái gì hết hạn thì cứ vứt đi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🤾",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'toss out' để kể việc dọn tủ bếp và vứt đồ hết hạn."
     },
     {
       "id": "parking",
@@ -24181,6 +27317,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'completely'."
     },
     {
+      "id": "touch-on",
+      "word": "touch on",
+      "ipa": "/ˈtʌtʃ ˌɑn/",
+      "pos": "phrasal verb",
+      "meaning": "đề cập sơ qua, nhắc tới",
+      "context": "Can we touch on the budget before we finish?",
+      "contextVi": "Trước khi kết thúc mình nói sơ qua vụ ngân sách được không?",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "👆",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'touch on' để đề nghị nhắc qua một vấn đề trong buổi họp nhóm."
+    },
+    {
       "id": "electrical",
       "word": "electrical",
       "ipa": "/ɪˈlektrɪkl/",
@@ -24207,6 +27357,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'pattern'."
+    },
+    {
+      "id": "track-down",
+      "word": "track down",
+      "ipa": "/ˌtræk ˈdaʊn/",
+      "pos": "phrasal verb",
+      "meaning": "tìm ra, lần ra (sau khi tìm kiếm)",
+      "context": "I need to track down that email from last week.",
+      "contextVi": "Mình phải lục ra cái email tuần trước.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🔍",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'track down' để kể lần bạn lần ra được một người bạn cũ trên mạng."
     },
     {
       "id": "classical",
@@ -24237,6 +27401,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'direction'."
     },
     {
+      "id": "trail-off",
+      "word": "trail off",
+      "ipa": "/ˌtreɪl ˈɔf/",
+      "pos": "phrasal verb",
+      "meaning": "nhỏ dần rồi tắt (giọng nói)",
+      "context": "Don't let your voice trail off at the end.",
+      "contextVi": "Cuối câu đừng để giọng nhỏ dần đi thế.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🔇",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'trail off' để góp ý cho bạn tập thuyết trình."
+    },
+    {
       "id": "basketball",
       "word": "basketball",
       "ipa": "/ˈbɑːskɪtbɔːl/",
@@ -24263,6 +27441,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'criminal'."
+    },
+    {
+      "id": "trip-up",
+      "word": "trip up",
+      "ipa": "/ˌtrɪp ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "làm vấp, làm lúng túng, gài bẫy",
+      "context": "These tricky questions always trip up students.",
+      "contextVi": "Mấy câu hỏi mẹo này lúc nào cũng làm học sinh lúng túng.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🪤",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'trip up' để kể một câu hỏi phỏng vấn từng làm bạn bối rối."
     },
     {
       "id": "brain",
@@ -24293,6 +27485,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'dream'."
     },
     {
+      "id": "try-on",
+      "word": "try on",
+      "ipa": "/ˌtraɪ ˈɑn/",
+      "pos": "phrasal verb",
+      "meaning": "mặc thử, thử (quần áo, giày)",
+      "context": "Can I try on this jacket in a medium?",
+      "contextVi": "Cho em thử cái áo khoác này size M được không?",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "👗",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'try on' để hỏi nhân viên shop xin thử đôi giày."
+    },
+    {
       "id": "advantage",
       "word": "advantage",
       "ipa": "/ədˈvɑːntɪdʒ/",
@@ -24319,6 +27525,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'tourism'."
+    },
+    {
+      "id": "try-out",
+      "word": "try out",
+      "ipa": "/ˌtraɪ ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "thử (cái mới); thi tuyển (vào đội)",
+      "context": "Let's try out that new ramen place tonight.",
+      "contextVi": "Tối nay đi thử quán ramen mới mở đi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🧪",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'try out' để rủ bạn bè thử một quán ăn mới."
     },
     {
       "id": "straight",
@@ -24349,6 +27569,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'queen'."
     },
     {
+      "id": "tuck-in",
+      "word": "tuck in",
+      "ipa": "/ˌtʌk ˈɪn/",
+      "pos": "phrasal verb",
+      "meaning": "đắp chăn cho (trẻ) đi ngủ; ăn ngon lành; nhét vào",
+      "context": "Let me tuck in the kids and I'll be right back.",
+      "contextVi": "Để mình đắp chăn cho tụi nhỏ ngủ rồi quay lại ngay.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🛌",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'tuck in' để kể thói quen buổi tối của bạn với em nhỏ trong nhà."
+    },
+    {
       "id": "clearly",
       "word": "clearly",
       "ipa": "/ˈklɪəli/",
@@ -24375,6 +27609,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'fix'."
+    },
+    {
+      "id": "tune-in",
+      "word": "tune in",
+      "ipa": "/ˌtun ˈɪn/",
+      "pos": "phrasal verb",
+      "meaning": "bật (kênh, đài) để xem, nghe; để ý",
+      "context": "Tune in tonight at eight for the final episode.",
+      "contextVi": "Tối nay tám giờ nhớ bật xem tập cuối nhé.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "📻",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'tune in' để rủ bạn xem livestream của một ca sĩ bạn thích."
     },
     {
       "id": "sweet",
@@ -24405,6 +27653,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'truck'."
     },
     {
+      "id": "turn-around",
+      "word": "turn around",
+      "ipa": "/ˌtɝn əˈraʊnd/",
+      "pos": "phrasal verb",
+      "meaning": "quay lại, quay người; xoay chuyển tình thế",
+      "context": "Turn around, it's right behind you!",
+      "contextVi": "Quay lại đi, nó ở ngay sau lưng kìa!",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🔄",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'turn around' để chỉ đường cho một du khách đi nhầm hướng."
+    },
+    {
       "id": "bear",
       "word": "bear",
       "ipa": "/beə/",
@@ -24431,6 +27693,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'ocean'."
+    },
+    {
+      "id": "turn-away",
+      "word": "turn away",
+      "ipa": "/ˌtɝn əˈweɪ/",
+      "pos": "phrasal verb",
+      "meaning": "từ chối cho vào, đuổi về; quay mặt đi",
+      "context": "They'll turn away anyone without a ticket.",
+      "contextVi": "Ai không có vé là họ không cho vào đâu.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🙅",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'turn away' để kể lần bạn bị nhà hàng từ chối vì hết bàn."
     },
     {
       "id": "laptop",
@@ -24461,6 +27737,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'exactly'."
     },
     {
+      "id": "turn-back",
+      "word": "turn back",
+      "ipa": "/ˌtɝn ˈbæk/",
+      "pos": "phrasal verb",
+      "meaning": "quay lại, quay về (đường cũ)",
+      "context": "It's getting dark, maybe we should turn back.",
+      "contextVi": "Trời tối rồi, chắc mình nên quay về thôi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "↩️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'turn back' để kể lần bạn phải quay về giữa đường khi đi leo núi."
+    },
+    {
       "id": "dry",
       "word": "dry",
       "ipa": "/draɪ/",
@@ -24487,6 +27777,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'nearly'."
+    },
+    {
+      "id": "turn-down",
+      "word": "turn down",
+      "ipa": "/ˌtɝn ˈdaʊn/",
+      "pos": "phrasal verb",
+      "meaning": "vặn nhỏ (âm lượng); từ chối",
+      "context": "Can you turn down the music? I'm on the phone.",
+      "contextVi": "Vặn nhỏ nhạc giùm cái, mình đang nghe điện thoại.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🔈",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'turn down' để kể lần bạn từ chối một lời mời làm việc."
     },
     {
       "id": "billion",
@@ -24517,6 +27821,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'route'."
     },
     {
+      "id": "turn-in",
+      "word": "turn in",
+      "ipa": "/ˌtɝn ˈɪn/",
+      "pos": "phrasal verb",
+      "meaning": "nộp (bài, báo cáo); đi ngủ",
+      "context": "I have to turn in my report by Friday.",
+      "contextVi": "Thứ Sáu mình phải nộp báo cáo rồi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "📤",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'turn in' để nhắc bạn cùng lớp hạn nộp bài tập."
+    },
+    {
       "id": "broken",
       "word": "broken",
       "ipa": "/ˈbrəʊkən/",
@@ -24543,6 +27861,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'blow'."
+    },
+    {
+      "id": "turn-into",
+      "word": "turn into",
+      "ipa": "/ˈtɝn ˌɪntu/",
+      "pos": "phrasal verb",
+      "meaning": "biến thành, trở thành",
+      "context": "Let's not let this turn into a big fight.",
+      "contextVi": "Đừng để chuyện này thành cãi nhau to nhé.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🦋",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'turn into' để kể một buổi đi chơi bình thường bỗng thành kỷ niệm đáng nhớ."
     },
     {
       "id": "expression",
@@ -24573,6 +27905,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'speech'."
     },
     {
+      "id": "turn-off",
+      "word": "turn off",
+      "ipa": "/ˌtɝn ˈɔf/",
+      "pos": "phrasal verb",
+      "meaning": "tắt (đèn, máy); làm mất hứng",
+      "context": "Don't forget to turn off the AC when you leave.",
+      "contextVi": "Ra về nhớ tắt máy lạnh nhé.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🔌",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'turn off' để nhắc đồng nghiệp tắt máy tính trước khi về."
+    },
+    {
       "id": "fight",
       "word": "fight",
       "ipa": "/faɪt/",
@@ -24599,6 +27945,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'height'."
+    },
+    {
+      "id": "turn-on",
+      "word": "turn on",
+      "ipa": "/ˌtɝn ˈɑn/",
+      "pos": "phrasal verb",
+      "meaning": "bật (đèn, máy)",
+      "context": "Can you turn on the lights? It's so dark in here.",
+      "contextVi": "Bật đèn lên giùm cái, trong này tối quá.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "💡",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'turn on' để nhờ người nhà bật bình nóng lạnh."
     },
     {
       "id": "zero",
@@ -24629,6 +27989,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'speaker'."
     },
     {
+      "id": "turn-out",
+      "word": "turn out",
+      "ipa": "/ˌtɝn ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "hóa ra, thành ra; tắt (đèn); có mặt",
+      "context": "I hope the photos turn out okay.",
+      "contextVi": "Mong là ảnh chụp ra đẹp.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🎲",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'turn out' để kể một chuyện hóa ra tốt hơn bạn nghĩ."
+    },
+    {
       "id": "designer",
       "word": "designer",
       "ipa": "/dɪˈzaɪnə/",
@@ -24655,6 +28029,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'secret'."
+    },
+    {
+      "id": "turn-over",
+      "word": "turn over",
+      "ipa": "/ˌtɝn ˈoʊvər/",
+      "pos": "phrasal verb",
+      "meaning": "lật lại, trở mặt; giao lại (cho ai)",
+      "context": "Turn over the pancake when you see bubbles.",
+      "contextVi": "Thấy nổi bong bóng thì lật bánh lại nhé.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🥞",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'turn over' để hướng dẫn bạn cách chiên trứng."
     },
     {
       "id": "perform",
@@ -24685,6 +28073,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'injury'."
     },
     {
+      "id": "turn-up",
+      "word": "turn up",
+      "ipa": "/ˌtɝn ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "vặn to (âm lượng); xuất hiện, đến",
+      "context": "Turn up the volume, I love this song!",
+      "contextVi": "Vặn to lên đi, mình mê bài này lắm!",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🔊",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'turn up' để kể về một người bạn hay đến trễ các buổi hẹn."
+    },
+    {
       "id": "lawyer",
       "word": "lawyer",
       "ipa": "/ˈlɔɪə/",
@@ -24711,6 +28113,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'fail'."
+    },
+    {
+      "id": "use-up",
+      "word": "use up",
+      "ipa": "/ˌjuz ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "dùng hết, xài hết",
+      "context": "Don't use up all the hot water, okay?",
+      "contextVi": "Đừng xài hết nước nóng nhé.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🪫",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'use up' để nhắc người nhà đừng dùng hết dầu gội."
     },
     {
       "id": "jazz",
@@ -24741,6 +28157,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'physics'."
     },
     {
+      "id": "veg-out",
+      "word": "veg out",
+      "ipa": "/ˌvɛdʒ ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "nằm ườn, thư giãn không làm gì",
+      "context": "I just wanna veg out on the couch tonight.",
+      "contextVi": "Tối nay mình chỉ muốn nằm ườn trên sofa thôi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🛋️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'veg out' để kể bạn làm gì sau một tuần làm việc mệt mỏi."
+    },
+    {
       "id": "extreme",
       "word": "extreme",
       "ipa": "/ɪkˈstriːm/",
@@ -24767,6 +28197,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'cycle'."
+    },
+    {
+      "id": "wait-around",
+      "word": "wait around",
+      "ipa": "/ˌweɪt əˈraʊnd/",
+      "pos": "phrasal verb",
+      "meaning": "chờ đợi loanh quanh, ngồi không chờ",
+      "context": "I can't wait around all day for the delivery.",
+      "contextVi": "Tôi không thể ngồi chờ cả ngày để nhận hàng được.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "⌛",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'wait around' để than phiền về lần chờ shipper quá lâu."
     },
     {
       "id": "contain",
@@ -24797,6 +28241,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'rise'."
     },
     {
+      "id": "wait-for",
+      "word": "wait for",
+      "ipa": "/ˈweɪt fɔr/",
+      "pos": "phrasal verb",
+      "meaning": "chờ, đợi (ai, cái gì)",
+      "context": "Can you wait for me at the bus stop?",
+      "contextVi": "Đợi mình ở trạm xe buýt nhé?",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "⏰",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'wait for' để hẹn bạn đợi bạn ở cổng trường."
+    },
+    {
       "id": "scene",
       "word": "scene",
       "ipa": "/siːn/",
@@ -24823,6 +28281,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'lady'."
+    },
+    {
+      "id": "wait-on",
+      "word": "wait on",
+      "ipa": "/ˈweɪt ˌɑn/",
+      "pos": "phrasal verb",
+      "meaning": "phục vụ (bàn, khách); chờ (kết quả, ai)",
+      "context": "I used to wait on tables in college.",
+      "contextVi": "Hồi đại học mình từng đi làm bồi bàn.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🧑‍🍳",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'wait on' để kể về một công việc làm thêm phục vụ khách."
     },
     {
       "id": "seat",
@@ -24853,6 +28325,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'recording'."
     },
     {
+      "id": "wait-up",
+      "word": "wait up",
+      "ipa": "/ˌweɪt ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "thức chờ (ai về); đợi với (khi đi)",
+      "context": "I'll be home late, so don't wait up.",
+      "contextVi": "Mình về muộn, đừng thức chờ nhé.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🌃",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'wait up' để dặn người nhà đừng thức chờ khi bạn tăng ca."
+    },
+    {
       "id": "tip",
       "word": "tip",
       "ipa": "/tɪp/",
@@ -24879,6 +28365,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'mine'."
+    },
+    {
+      "id": "wake-up",
+      "word": "wake up",
+      "ipa": "/ˌweɪk ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "thức dậy; đánh thức",
+      "context": "I usually wake up at six on weekdays.",
+      "contextVi": "Ngày thường mình hay dậy lúc sáu giờ.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "⏰",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'wake up' để kể giờ giấc buổi sáng của bạn khi đi làm."
     },
     {
       "id": "ski",
@@ -24909,6 +28409,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'soccer'."
     },
     {
+      "id": "walk-away",
+      "word": "walk away",
+      "ipa": "/ˌwɔk əˈweɪ/",
+      "pos": "phrasal verb",
+      "meaning": "bỏ đi; từ bỏ (thỏa thuận, mối quan hệ)",
+      "context": "Don't just walk away when I'm talking to you.",
+      "contextVi": "Tôi đang nói mà đừng có bỏ đi thế.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🚶‍♂️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'walk away' để kể lần bạn bỏ đi khi người bán hét giá quá cao."
+    },
+    {
       "id": "connected",
       "word": "connected",
       "ipa": "/kəˈnektɪd/",
@@ -24935,6 +28449,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'moon'."
+    },
+    {
+      "id": "walk-in-on",
+      "word": "walk in on",
+      "ipa": "/ˌwɔk ˈɪn ɑn/",
+      "pos": "phrasal verb",
+      "meaning": "vô tình bắt gặp (ai đang làm gì)",
+      "context": "I really don't wanna walk in on them again.",
+      "contextVi": "Tôi thật không muốn lỡ bước vào gặp cảnh đó lần nữa.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "😳",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'walk in on' để kể một lần bạn vô tình bắt gặp cảnh ngượng ngùng."
     },
     {
       "id": "manner",
@@ -24965,6 +28493,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'fear'."
     },
     {
+      "id": "walk-out",
+      "word": "walk out",
+      "ipa": "/ˌwɔk ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "bỏ ra ngoài (phản đối); đình công",
+      "context": "Half the staff might walk out if they cut pay.",
+      "contextVi": "Cắt lương là chắc nửa số nhân viên bỏ việc.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🚪",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'walk out' để kể lần có khán giả bỏ về giữa buổi diễn."
+    },
+    {
       "id": "beat",
       "word": "beat",
       "ipa": "/biːt/",
@@ -24991,6 +28533,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'smoking'."
+    },
+    {
+      "id": "walk-through",
+      "word": "walk through",
+      "ipa": "/ˌwɔk ˈθru/",
+      "pos": "phrasal verb",
+      "meaning": "hướng dẫn từng bước; đi xuyên qua",
+      "context": "Let's walk through the steps one more time.",
+      "contextVi": "Mình đi lại từng bước một lần nữa nhé.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "👣",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'walk through' để hướng dẫn nhân viên mới quy trình mở cửa hàng."
     },
     {
       "id": "achieve",
@@ -25021,6 +28577,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'sky'."
     },
     {
+      "id": "wander-off",
+      "word": "wander off",
+      "ipa": "/ˌwɑndər ˈɔf/",
+      "pos": "phrasal verb",
+      "meaning": "đi lang thang lạc mất, tự ý đi đâu mất",
+      "context": "Don't wander off, the mall is huge.",
+      "contextVi": "Đừng có đi lung tung, trung tâm này rộng lắm.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🧭",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'wander off' để dặn em nhỏ khi đi chợ đông người."
+    },
+    {
       "id": "hide",
       "word": "hide",
       "ipa": "/haɪd/",
@@ -25047,6 +28617,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'refer'."
+    },
+    {
+      "id": "warm-up",
+      "word": "warm up",
+      "ipa": "/ˌwɔrm ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "khởi động; hâm nóng; ấm lên",
+      "context": "Let's warm up before we go for a run.",
+      "contextVi": "Khởi động chút rồi hãy chạy nhé.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🔥",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'warm up' để nhờ người nhà hâm nóng đồ ăn tối."
     },
     {
       "id": "certainly",
@@ -25077,6 +28661,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'toy'."
     },
     {
+      "id": "wash-up",
+      "word": "wash up",
+      "ipa": "/ˌwɑʃ ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "rửa tay mặt (cho sạch sẽ); rửa bát",
+      "context": "Go wash up, dinner is almost ready.",
+      "contextVi": "Đi rửa tay đi, sắp ăn cơm rồi.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🧼",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'wash up' để nhắc tụi nhỏ rửa tay trước bữa ăn."
+    },
+    {
       "id": "mostly",
       "word": "mostly",
       "ipa": "/ˈməʊstli/",
@@ -25103,6 +28701,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'factory'."
+    },
+    {
+      "id": "watch-out",
+      "word": "watch out",
+      "ipa": "/ˌwɑtʃ ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "coi chừng, cẩn thận",
+      "context": "Watch out, the floor is still wet!",
+      "contextVi": "Coi chừng, sàn còn ướt đấy!",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "⚠️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'watch out' để cảnh báo khách hàng về bậc thềm trơn ở cửa hàng."
     },
     {
       "id": "onto",
@@ -25133,6 +28745,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'planet'."
     },
     {
+      "id": "watch-out-for",
+      "word": "watch out for",
+      "ipa": "/ˌwɑtʃ ˈaʊt fɔr/",
+      "pos": "phrasal verb",
+      "meaning": "đề phòng, cảnh giác với; để mắt tới",
+      "context": "Watch out for pickpockets in this area.",
+      "contextVi": "Khu này nhớ cẩn thận móc túi nhé.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "👀",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'watch out for' để dặn bạn bè khi đi du lịch nước ngoài."
+    },
+    {
       "id": "recipe",
       "word": "recipe",
       "ipa": "/ˈresəpi/",
@@ -25159,6 +28785,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'empty'."
+    },
+    {
+      "id": "water-down",
+      "word": "water down",
+      "ipa": "/ˌwɔtər ˈdaʊn/",
+      "pos": "phrasal verb",
+      "meaning": "làm loãng; làm nhẹ đi, giảm bớt",
+      "context": "Please don't water down the drinks this time.",
+      "contextVi": "Lần này đừng pha đồ uống loãng nữa nhé.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "💧",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'water down' để kể về một quán pha cà phê quá loãng."
     },
     {
       "id": "hole",
@@ -25189,6 +28829,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'ideal'."
     },
     {
+      "id": "wear-off",
+      "word": "wear off",
+      "ipa": "/ˌwɛr ˈɔf/",
+      "pos": "phrasal verb",
+      "meaning": "hết tác dụng, phai dần",
+      "context": "The coffee will wear off in an hour or so.",
+      "contextVi": "Tầm một tiếng nữa là cà phê hết tác dụng.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "☕",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'wear off' để kể khi thuốc giảm đau bắt đầu hết tác dụng."
+    },
+    {
       "id": "stress",
       "word": "stress",
       "ipa": "/stres/",
@@ -25215,6 +28869,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'discover'."
+    },
+    {
+      "id": "wear-out",
+      "word": "wear out",
+      "ipa": "/ˌwɛr ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "mòn, sờn, hỏng (vì dùng nhiều); làm kiệt sức",
+      "context": "Cheap shoes wear out really fast.",
+      "contextVi": "Giày rẻ mòn nhanh lắm.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "👟",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'wear out' để kể món đồ bạn dùng nhiều đến mức sờn cũ."
     },
     {
       "id": "shape",
@@ -25245,6 +28913,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'exist'."
     },
     {
+      "id": "weigh-in",
+      "word": "weigh in",
+      "ipa": "/ˌweɪ ˈɪn/",
+      "pos": "phrasal verb",
+      "meaning": "góp ý kiến, cho ý kiến (vào cuộc bàn luận)",
+      "context": "Hey, can you weigh in on this before we decide?",
+      "contextVi": "Ê, cho ý kiến vụ này trước khi mình chốt được không?",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "⚖️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'weigh in' để nhờ sếp cho ý kiến về kế hoạch của nhóm."
+    },
+    {
       "id": "wheel",
       "word": "wheel",
       "ipa": "/wiːl/",
@@ -25271,6 +28953,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'noise'."
+    },
+    {
+      "id": "wind-down",
+      "word": "wind down",
+      "ipa": "/ˌwaɪnd ˈdaʊn/",
+      "pos": "phrasal verb",
+      "meaning": "thư giãn, xả hơi; kết thúc dần",
+      "context": "I like to wind down with a book after work.",
+      "contextVi": "Tan làm mình thích đọc sách để thư giãn.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🌅",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'wind down' để kể bạn thư giãn thế nào trước khi ngủ."
     },
     {
       "id": "climate",
@@ -25301,6 +28997,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'instruction'."
     },
     {
+      "id": "wind-up",
+      "word": "wind up",
+      "ipa": "/ˌwaɪnd ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "rốt cuộc, cuối cùng lại (ở đâu, làm gì); kết thúc",
+      "context": "We always wind up at the same noodle place.",
+      "contextVi": "Rốt cuộc lần nào tụi mình cũng ghé đúng quán mì đó.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🌀",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'wind up' để kể một buổi tối đi chơi rốt cuộc kết thúc ở đâu."
+    },
+    {
       "id": "kill",
       "word": "kill",
       "ipa": "/kɪl/",
@@ -25327,6 +29037,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'mathematics'."
+    },
+    {
+      "id": "wipe-out",
+      "word": "wipe out",
+      "ipa": "/ˌwaɪp ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "xóa sạch, quét sạch; làm kiệt sức; ngã nhào",
+      "context": "One bad investment could wipe out all your savings.",
+      "contextVi": "Một vụ đầu tư dở là bay sạch tiền tiết kiệm.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🌊",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'wipe out' để kể về một cơn bão từng quét sạch mùa màng ở quê bạn."
     },
     {
       "id": "employer",
@@ -25357,6 +29081,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'trouble'."
     },
     {
+      "id": "wolf-down",
+      "word": "wolf down",
+      "ipa": "/ˌwʊlf ˈdaʊn/",
+      "pos": "phrasal verb",
+      "meaning": "ăn ngấu nghiến, ăn vội",
+      "context": "Don't wolf down your food, you'll get a stomachache.",
+      "contextVi": "Đừng ăn ngấu nghiến thế, đau bụng đấy.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🐺",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'wolf down' để kể lần bạn phải ăn vội bữa trưa ở chỗ làm."
+    },
+    {
       "id": "coach",
       "word": "coach",
       "ipa": "/kəʊtʃ/",
@@ -25383,6 +29121,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'audience'."
+    },
+    {
+      "id": "work-on",
+      "word": "work on",
+      "ipa": "/ˈwɝk ˌɑn/",
+      "pos": "phrasal verb",
+      "meaning": "đang làm, xử lý; cải thiện (kỹ năng)",
+      "context": "I need to work on my speaking skills.",
+      "contextVi": "Mình cần luyện thêm kỹ năng nói.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🛠️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'work on' để kể một kỹ năng bạn đang cố cải thiện."
     },
     {
       "id": "affect",
@@ -25413,6 +29165,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'plate'."
     },
     {
+      "id": "work-out",
+      "word": "work out",
+      "ipa": "/ˌwɝk ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "tập thể dục; ổn thỏa, suôn sẻ; tìm ra",
+      "context": "I try to work out three times a week.",
+      "contextVi": "Mình cố tập thể dục ba buổi một tuần.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🏋️‍♀️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'work out' để kể lịch tập gym của bạn trong tuần."
+    },
+    {
       "id": "extremely",
       "word": "extremely",
       "ipa": "/ɪkˈstriːmli/",
@@ -25439,6 +29205,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'chemistry'."
+    },
+    {
+      "id": "work-through",
+      "word": "work through",
+      "ipa": "/ˌwɝk ˈθru/",
+      "pos": "phrasal verb",
+      "meaning": "vượt qua, giải quyết dần (vấn đề)",
+      "context": "Don't worry, we'll work through it together.",
+      "contextVi": "Đừng lo, mình sẽ cùng nhau vượt qua mà.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🤜",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'work through' để động viên người yêu khi hai bạn gặp khó khăn."
     },
     {
       "id": "anyway",
@@ -25469,6 +29249,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'circle'."
     },
     {
+      "id": "work-up",
+      "word": "work up",
+      "ipa": "/ˌwɝk ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "tạo ra, gây dựng dần (sự thèm ăn, can đảm)",
+      "context": "Let's go hiking and work up an appetite.",
+      "contextVi": "Đi leo núi cho đói bụng rồi ăn cho ngon.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🥾",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'work up' để kể lần bạn phải lấy hết can đảm để nói chuyện với crush."
+    },
+    {
       "id": "anywhere",
       "word": "anywhere",
       "ipa": "/ˈeniweə/",
@@ -25495,6 +29289,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'wet'."
+    },
+    {
+      "id": "wrap-up",
+      "word": "wrap up",
+      "ipa": "/ˌræp ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "kết thúc, chốt lại; gói lại",
+      "context": "Okay, let's wrap up the meeting here.",
+      "contextVi": "Rồi, mình kết thúc buổi họp ở đây nhé.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🎀",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'wrap up' để đề nghị kết thúc buổi học nhóm vì đã muộn."
     },
     {
       "id": "respond",
@@ -25525,6 +29333,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'wave'."
     },
     {
+      "id": "write-back",
+      "word": "write back",
+      "ipa": "/ˌraɪt ˈbæk/",
+      "pos": "phrasal verb",
+      "meaning": "viết thư trả lời, nhắn lại",
+      "context": "Please write back when you get the chance.",
+      "contextVi": "Rảnh thì nhắn lại cho mình nhé.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "✉️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'write back' để kể lần bạn chờ mãi mà người ta không trả lời email."
+    },
+    {
       "id": "symbol",
       "word": "symbol",
       "ipa": "/ˈsɪmbl/",
@@ -25551,6 +29373,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'celebrity'."
+    },
+    {
+      "id": "write-down",
+      "word": "write down",
+      "ipa": "/ˌraɪt ˈdaʊn/",
+      "pos": "phrasal verb",
+      "meaning": "ghi lại, viết ra",
+      "context": "Can you write down your number for me?",
+      "contextVi": "Ghi giùm mình số điện thoại của bạn nhé?",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "✍️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'write down' để nhờ khách hàng ghi lại địa chỉ giao hàng."
     },
     {
       "id": "pub",
@@ -25581,6 +29417,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'biology'."
     },
     {
+      "id": "write-off",
+      "word": "write off",
+      "ipa": "/ˌraɪt ˈɔf/",
+      "pos": "phrasal verb",
+      "meaning": "gạt bỏ, coi như bỏ đi; xóa (nợ)",
+      "context": "Don't write off the idea just yet.",
+      "contextVi": "Đừng vội gạt bỏ ý tưởng đó.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "❌",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'write off' để khuyên bạn đừng vội đánh giá thấp một người mới."
+    },
+    {
       "id": "ancient",
       "word": "ancient",
       "ipa": "/ˈeɪnʃənt/",
@@ -25607,6 +29457,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'crazy'."
+    },
+    {
+      "id": "write-up",
+      "word": "write up",
+      "ipa": "/ˌraɪt ˈʌp/",
+      "pos": "phrasal verb",
+      "meaning": "viết (báo cáo, bài) hoàn chỉnh; lập biên bản",
+      "context": "Can you write up a quick summary of the call?",
+      "contextVi": "Viết giùm bản tóm tắt nhanh cuộc gọi nhé?",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "📄",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'write up' để nhờ đồng nghiệp viết biên bản buổi họp."
     },
     {
       "id": "comedy",
@@ -25637,6 +29501,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'gun'."
     },
     {
+      "id": "zone-out",
+      "word": "zone out",
+      "ipa": "/ˌzoʊn ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "mất tập trung, ngẩn người",
+      "context": "Sorry, I always zone out in long meetings.",
+      "contextVi": "Xin lỗi, họp dài là mình hay ngẩn người lắm.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "😶‍🌫️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'zone out' để kể lúc bạn hay mất tập trung trong lớp."
+    },
+    {
       "id": "discovery",
       "word": "discovery",
       "ipa": "/dɪˈskʌvəri/",
@@ -25665,6 +29543,20 @@
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'neither'."
     },
     {
+      "id": "zoom-in",
+      "word": "zoom in",
+      "ipa": "/ˌzum ˈɪn/",
+      "pos": "phrasal verb",
+      "meaning": "phóng to (ảnh, màn hình); tập trung vào",
+      "context": "Can you zoom in on the photo? I can't see.",
+      "contextVi": "Phóng to ảnh lên được không? Mình không thấy gì.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🔎",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'zoom in' để nhờ bạn phóng to bản đồ trên điện thoại khi đi du lịch."
+    },
+    {
       "id": "engineer",
       "word": "engineer",
       "ipa": "/ˌendʒɪˈnɪə/",
@@ -25691,6 +29583,20 @@
       "image": "",
       "mnemonic": "",
       "outputPrompt": "Đặt một câu của riêng bạn có dùng 'lifestyle'."
+    },
+    {
+      "id": "zoom-out",
+      "word": "zoom out",
+      "ipa": "/ˌzum ˈaʊt/",
+      "pos": "phrasal verb",
+      "meaning": "thu nhỏ (ảnh, bản đồ); nhìn tổng quát",
+      "context": "Zoom out a bit so we can see the whole map.",
+      "contextVi": "Thu nhỏ lại chút cho thấy cả bản đồ.",
+      "source": "Spoken core · phrasal verb",
+      "emoji": "🗺️",
+      "image": "",
+      "mnemonic": "",
+      "outputPrompt": "Dùng 'zoom out' để hướng dẫn người lớn tuổi dùng bản đồ trên điện thoại."
     },
     {
       "id": "replace",
