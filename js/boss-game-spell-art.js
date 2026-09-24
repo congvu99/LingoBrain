@@ -1,7 +1,8 @@
 /* Game Pháp Sư Lexoria — hiệu ứng phép trên canvas: hạt (js/game-particles.js), quả phép bay, sóng xung kích,
    số sát thương, rung/loé. Chỉ phản ứng theo st.events của boss-game-logic.js (không tự quyết thời điểm).
    Quả phép bay đúng BOSS_TUNING.impactMs → chạm quái đúng lúc event 'impact'.
-   Cần game-particles.js, boss-game-spell-presets.js, boss-game-mage-art.js (mageStaffTip).
+   Cần game-particles.js, boss-game-spell-presets.js, boss-game-mage-art.js (mageStaffTip),
+   boss-game-sprite-actors.js (diễn viên/đạn sprite ở sân tile — hàm chỉ gọi lúc chạy, nạp sau file này cũng được).
    Trận đồ/thiên thạch/tia sét/cột băng/gai đá/lốc + cắt cảnh tuyệt kỹ nằm ở js/boss-game-tier3-ultimate-fx.js
    (nạp sau file này) — gọi qua bossFxSpawnCircle/bossFxSpawnCustom/bossFxUltimateEvent/stepBossTier3Fx nếu có, để file này không vượt 200 dòng. */
 
@@ -10,6 +11,7 @@ const BOSS_FX_MAX_PARTS = 300;
 function createBossFx() {
   const reduced = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
   return { ps: createParticles(BOSS_FX_MAX_PARTS, reduced), shots: [], castN: 0, rings: [], texts: [], reduced,
+    actor: createBossActors(), sprites: [],   // diễn viên + VFX sprite (boss-game-sprite-actors.js)
     shake: 0, flash: 0, flashColor: '#fff', monHit: 0, mageHurt: 0, castPose: 0, typo: 0,
     layout: { mage: { x: 0, y: 0, s: 1 }, mon: { x: 0, y: 0, s: 1 } } };
 }
@@ -41,7 +43,7 @@ function bossFxEvent(fx, e, st) {
     fx.typo = 0.3;
     bossBurst(fx, m.x, m.y - m.s * 0.5, BOSS_FX_COMMON.typo);
   } else if (e.type === 'cast') {
-    const { p, scale } = bossSpellPreset(e.element, e.tier), tip = mageStaffTip(m.x, m.y, m.s, 'cast');
+    const { p, scale } = bossSpellPreset(e.element, e.tier), tip = L.pixel ? bossMageCastPoint(m) : mageStaffTip(m.x, m.y, m.s, 'cast');
     p.cast.forEach(o => bossBurst(fx, tip.x, tip.y, o, scale));
     const dur = BOSS_TUNING.impactMs[e.tier] / 1000, id = ++fx.castN;
     for (let h = 0; h < (e.hits || 1); h++) {
@@ -91,6 +93,7 @@ function bossFxEvent(fx, e, st) {
   } else if (e.type === 'ultimate' || e.type === 'ultimateEnd') {
     if (typeof bossFxUltimateEvent === 'function') bossFxUltimateEvent(fx, e, st);
   }
+  bossActorEvent(fx, e, st);   // sau cùng: shot của lần niệm này đã có trong fx.shots để gắn sprite đạn
 }
 
 function bossFxText(fx, x, y, text, color, size) { fx.texts.push({ x, y, text, color, size, life: 1.1, max: 1.1 }); }
@@ -108,27 +111,27 @@ function stepBossFx(fx, dtGame, dtReal) {
   fx.shake = Math.max(0, fx.shake - 40 * dtReal);
   fx.flash = Math.max(0, fx.flash - 2.2 * dtReal);
   ['monHit', 'mageHurt', 'castPose', 'typo'].forEach(k => { fx[k] = Math.max(0, fx[k] - dtReal); });
+  stepBossActors(fx, dtReal);
   if (typeof stepBossTier3Fx === 'function') stepBossTier3Fx(fx, dtReal);   // trận đồ/thiên thạch/… + cắt cảnh tuyệt kỹ
+}
+
+/* Hạt kiểu pixel: ô vuông toạ độ nguyên (không nhoè), cạnh ≥ 2px */
+function bossPixelDot(ctx, x, y, size) {
+  const z = Math.max(2, Math.round(size));
+  ctx.fillRect(Math.round(x - z / 2), Math.round(y - z / 2), z, z);
 }
 
 function drawBossFx(ctx, fx, quality) {
   drawParticles(ctx, fx.ps, (ctx, p, a) => {
-    if (p.kind === 'shard') {
-      ctx.save(); ctx.globalAlpha = a; ctx.translate(p.x, p.y); ctx.rotate(p.rot);
-      ctx.fillStyle = p.color; ctx.beginPath(); ctx.moveTo(0, -p.size); ctx.lineTo(p.size * 0.45, 0); ctx.lineTo(0, p.size); ctx.lineTo(-p.size * 0.45, 0); ctx.fill(); ctx.restore();
-    } else if (p.kind === 'smoke') {
-      ctx.globalAlpha = a * 0.28; ctx.fillStyle = p.color;
-      ctx.beginPath(); ctx.arc(p.x, p.y, p.size * (1.6 - a * 0.6), 0, 6.283); ctx.fill();
-    }
+    if (p.kind === 'shard') { ctx.globalAlpha = a; ctx.fillStyle = p.color; bossPixelDot(ctx, p.x, p.y, p.size * 1.2); }
+    else if (p.kind === 'smoke') { ctx.globalAlpha = a * 0.28; ctx.fillStyle = p.color; bossPixelDot(ctx, p.x, p.y, p.size * (3.2 - a * 1.2)); }
   });
   ctx.globalCompositeOperation = 'lighter';
   drawParticles(ctx, fx.ps, (ctx, p, a) => {
-    if (p.kind === 'spark') {
-      ctx.globalAlpha = a; ctx.strokeStyle = p.color; ctx.lineWidth = p.size;
-      ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.x - p.vx * 0.03, p.y - p.vy * 0.03); ctx.stroke();
-    } else if (p.kind === 'orb') {
+    if (p.kind === 'spark' || p.kind === 'orb') {   // tia lửa: ô chính + ô đuôi nhỏ theo hướng bay
       ctx.globalAlpha = a; ctx.fillStyle = p.color;
-      ctx.beginPath(); ctx.arc(p.x, p.y, p.size * (0.5 + a * 0.5), 0, 6.283); ctx.fill();
+      bossPixelDot(ctx, p.x, p.y, p.kind === 'orb' ? p.size * (1 + a) : p.size * 1.4);
+      if (p.kind === 'spark') bossPixelDot(ctx, p.x - p.vx * 0.025, p.y - p.vy * 0.025, p.size);
     }
   });
   for (const s of fx.shots) {
@@ -136,6 +139,12 @@ function drawBossFx(ctx, fx, quality) {
     const k = Math.min(1, s.t / s.dur), pr = s.p.projectile, r = pr.size * s.scale;
     const x = s.x0 + (s.x1 - s.x0) * k, y = s.y0 + (s.y1 - s.y0) * k - Math.sin(k * Math.PI) * 30;
     ctx.globalAlpha = 1;
+    if (s.sprite) {   // đạn sprite (Lửa) không quầng gradient; ảnh chưa nạp → rơi xuống quả cầu cũ
+      ctx.globalCompositeOperation = 'source-over';
+      const ok = drawBossShotSprite(ctx, s, x, y, k);
+      ctx.globalCompositeOperation = 'lighter';
+      if (ok) continue;
+    }
     if (quality >= 1) {   // quầng sáng tốn fill-rate: bỏ khi đang hạ chất lượng
       const g = ctx.createRadialGradient(x, y, 0, x, y, r * 3);
       g.addColorStop(0, pr.glow); g.addColorStop(1, 'rgba(0,0,0,0)');

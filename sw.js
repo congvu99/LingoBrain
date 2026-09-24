@@ -1,6 +1,6 @@
 /* Service worker: cache-first cho toàn bộ file tĩnh. Đổi CACHE mỗi lần deploy để người dùng nhận bản mới.
    MP3 trong audio/ nằm ở cache riêng AUDIO_CACHE, cache dần khi phát, không xoá khi lên version. */
-const CACHE = 'lingobrain-v2.14.0';
+const CACHE = 'lingobrain-v2.15.0';
 const AUDIO_CACHE = 'lingobrain-audio';
 const ASSETS = [
   './',
@@ -55,6 +55,9 @@ const ASSETS = [
   './js/boss-game-spell-art.js',
   './js/boss-game-tier3-shapes.js',
   './js/boss-game-tier3-ultimate-fx.js',
+  './js/boss-game-sprite-atlas.js',
+  './js/boss-game-arena.js',
+  './js/boss-game-sprite-actors.js',
   './js/boss-game-render.js',
   './js/boss-game-result-ui.js',
   './js/boss-game-story-journal-ui.js',
@@ -65,7 +68,17 @@ const ASSETS = [
   './js/word-game-rounds.js',
   './js/word-game-ui.js',
   './js/app-shell.js',
-  './js/pwa-register.js'
+  './js/pwa-register.js',
+  './img/boss/actor/mage-f.png',
+  './img/boss/actor/mage-m.png',
+  './img/boss/actor/slime.png',
+  './img/boss/fx/fireball.png',
+  './img/boss/fx/flam.png',
+  './img/boss/fx/explosion.png',
+  './img/boss/fx/smoke.png',
+  './img/boss/tile/floor.png',
+  './img/boss/tile/nature.png',
+  './img/boss/tile/house.png'
 ];
 
 self.addEventListener('install', e => {

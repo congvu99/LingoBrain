@@ -16,6 +16,12 @@ describe('static-file-server (Node)', () => {
     assert.equal(r('/audio/index.json').file, 'audio/index.json');
     assert.equal(r('/audio/000e47a23f0c.mp3').file, 'audio/000e47a23f0c.mp3');
   });
+  it('ảnh sprite Pháp sư: đúng thư mục img/boss/<nhóm>/, chỉ .png', () => {
+    assert.equal(r('/img/boss/actor/mage-f.png').file, 'img/boss/actor/mage-f.png');
+    assert.equal(r('/img/boss/tile/floor.png').file, 'img/boss/tile/floor.png');
+    ['/img/boss/actor/x.js', '/img/boss/other/x.png', '/img/boss/x.png', '/img/x.png', '/img/boss/fx/a/b.png', '/img/boss/fx/.x.png', '/img/boss/fx/../../server.js']
+      .forEach(u => assert.equal(r(u).status, 404, u));
+  });
   it('chặn file ngoài danh sách → 404', () => {
     ['/server.js', '/server/database.js', '/package.json', '/package-lock.json', '/.git/config', '/.git/HEAD', '/plans/x.md',
       '/tests/run-tests.html', '/tools/generate_edge_tts_audio.py', '/docs/system-architecture.md', '/README.md',

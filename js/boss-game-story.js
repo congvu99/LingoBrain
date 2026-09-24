@@ -14,7 +14,7 @@ const BOSS_REGIONS = [
 ];
 
 const BOSS_MONSTERS = [
-  { id: 'goblin', name: 'Goblin', shape: 'humanoid', region: 'ashford', size: 0.85, weak: 'fire', hpMul: 1, clockMul: 1,
+  { id: 'goblin', name: 'Goblin', sprite: 'slime', shape: 'humanoid', region: 'ashford', size: 0.85, weak: 'fire', hpMul: 1, clockMul: 1,
     attackFx: 'slash', features: { horns: true },
     palette: { body: '#4c7a3a', dark: '#2e4d22', accent: '#7ea24f', eye: '#ff5a3c', skin: '#5c8a44' } },
   { id: 'wolf', name: 'Sói Bóng Đêm', shape: 'beast', region: 'ashford', size: 0.9, weak: 'storm', hpMul: 1, clockMul: 1,

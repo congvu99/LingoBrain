@@ -1,7 +1,7 @@
 ---
 phase: 1
 title: "Asset pipeline and sprite atlas"
-status: pending
+status: completed
 priority: P1
 dependencies: []
 ---
@@ -39,9 +39,9 @@ dependencies: []
 5. Chạy `node tests/run-tests.js` và `node --check js/boss-game-sprite-atlas.js`.
 
 ## Success Criteria
-- [ ] Test atlas xanh; toàn bộ test xanh; `pwa-assets` xanh.
-- [ ] `git status` repo chính không còn `assets/` untracked.
-- [ ] Tổng dung lượng `img/boss/` < 300KB.
+- [x] Test atlas xanh; toàn bộ test xanh; `pwa-assets` xanh.
+- [x] `.gitignore` có `assets/ninja-adventure/` (repo chính hết untracked sau khi merge).
+- [x] Tổng dung lượng `img/boss/` < 300KB (169KB).
 
 ## Risk Assessment
 - Quên thêm png vào ASSETS thì offline mất hình. Giảm rủi ro: test pwa-assets kiểm thêm mọi `img/boss/*.png` được `BOSS_SPRITES` tham chiếu đều có trong ASSETS.

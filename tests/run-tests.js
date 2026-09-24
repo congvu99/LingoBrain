@@ -21,7 +21,8 @@ const PURE_MODULES = [
   'js/boss-game-elements.js',
   'js/boss-game-logic.js',
   'js/boss-game-progress.js',
-  'js/boss-game-story.js'         // dữ liệu thuần: BOSS_REGIONS, BOSS_MONSTERS, BOSS_STORY
+  'js/boss-game-story.js',        // dữ liệu thuần: BOSS_REGIONS, BOSS_MONSTERS, BOSS_STORY
+  'js/boss-game-sprite-atlas.js'  // phần thuần: BOSS_SPRITES, spriteFrame, pixelScale (phần DOM chỉ định nghĩa hàm)
 ];
 // require/Buffer/process chỉ cho test Node-only (server/*); test dùng chung trình duyệt không được phụ thuộc chúng
 const ctx = vm.createContext({ console, Math, Date, JSON, Array, Object, String, Number, RegExp, Error, Promise, fs, path, ROOT: root, require, Buffer, process, setTimeout, clearTimeout, AbortController });

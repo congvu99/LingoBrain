@@ -49,6 +49,7 @@ function startBossBattle(opts) {
     off: [], monsterName: mon.name, monster: mon, region, gender: bossProg.gender.v, fps: 60, frames: 0, fpsAt: now, quality: 1, showFps: BOSS_SHOW_FPS,
     st: createBattle({ monster: mon, groups, tiers, mods, hearts: 3 + mods.maxHeartsAdd + (buff ? 1 : 0), difficulty: opts.difficulty, carryDmg: opts.carryDmg, now }) };
   pauseBattle(ui.st, now);                           // đồng hồ trùm chỉ chạy sau đếm ngược
+  loadBossSprites();                                 // đếm ngược 3-2-1 che thời gian nạp; lỗi nạp → vẽ tay thay thế
   document.documentElement.classList.add('game-lock');
   if (window.visualViewport) { bossListen(visualViewport, 'resize', fitBossGame); bossListen(visualViewport, 'scroll', fitBossGame); }
   bossListen(window, 'resize', fitBossGame);
@@ -117,7 +118,7 @@ function flushBossTyped(ui) {
 function fitBossGame() {
   const el = $('#bossGame'), ui = bossUi;
   if (!el || !ui) return;
-  fitGameToViewport(el, ui, BOSS_MAX_DPR, (w, h) => { layoutBoss(ui.fx, w, h); drawBossScene(ui.ctx, ui.st, ui, performance.now()); });
+  fitGameToViewport(el, ui, BOSS_MAX_DPR, (w, h) => { layoutBoss(ui.fx, w, h, ui); drawBossScene(ui.ctx, ui.st, ui, performance.now()); });
 }
 
 function bossFrame(t) {

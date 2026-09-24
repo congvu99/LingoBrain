@@ -1,7 +1,7 @@
 /* Khoá localStorage, helper chung, trạng thái toàn cục của app.
    Nạp sau js/srs-scheduler.js (cần migrateV1) và js/boss-progress-sync-merge.js (cần cleanBoss). */
 
-const APP_VERSION = '2.14.0';
+const APP_VERSION = '2.15.0';
 const K_DECK = 'eng.deck.v1', K_SRS = 'eng.srs.v2', K_SRS_V1 = 'eng.srs.v1',
       K_CFG = 'eng.cfg.v1', K_PLAN = 'eng.plan.v1', K_DAY = 'eng.day.v1',
       K_GAMEMISS = 'eng.gamemiss.v1', K_GAMESCORE = 'eng.gamescore.v1', K_BOSS = 'eng.boss.v1';

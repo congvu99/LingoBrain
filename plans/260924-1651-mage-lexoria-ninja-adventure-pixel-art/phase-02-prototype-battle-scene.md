@@ -1,7 +1,7 @@
 ---
 phase: 2
 title: "Prototype battle scene"
-status: pending
+status: in-progress
 priority: P1
 dependencies: [1]
 ---
@@ -44,8 +44,8 @@ Bản thử để user duyệt cảm nhận: một trận với pháp sư sprite
 6. Smoke test trên desktop (`?fps`) + chụp màn; gửi user link LAN/iPhone để duyệt.
 
 ## Success Criteria
-- [ ] Trận đầu chương 1 hiện pháp sư + Slime + nền Ashford bằng sprite, sắc nét ở DPR 2.
-- [ ] Niệm Lửa: ra đòn + Fireball + nổ khớp `impact`; quái nháy/giật; thắng thì quái tan.
+- [x] Trận đầu chương 1 hiện pháp sư + Slime + nền Ashford bằng sprite, sắc nét ở DPR 2.
+- [x] Niệm Lửa: ra đòn + Fireball + nổ khớp `impact`; quái nháy/giật; thắng thì quái tan.
 - [ ] FPS desktop ≥ 50; test xanh; không file > 200 dòng.
 - [ ] **User duyệt trên iPhone** trước khi sang phase 3.
 

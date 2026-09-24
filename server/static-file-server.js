@@ -7,6 +7,8 @@ const { pipeline } = require('stream');
 // file ở gốc: liệt kê từng tên (ảnh chụp màn hình vô tình để ở gốc không bị lộ)
 const ROOT_FILES = ['index.html', 'manifest.json', 'sw.js', 'words.json', 'icon.svg', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'];
 const DIRS = ['css', 'js', 'audio'];                  // chỉ 1 cấp
+// ảnh sprite game Pháp sư: đúng các thư mục này, chỉ .png (img/boss/<nhóm>/<file>.png)
+const IMG_DIRS = ['img/boss/actor', 'img/boss/fx', 'img/boss/tile'];
 const NAME_RX = /^[A-Za-z0-9_-][A-Za-z0-9._-]*$/;
 const NO_CACHE = ['index.html', 'sw.js', 'words.json', 'audio/index.json'];
 const MIME = {
@@ -29,6 +31,9 @@ function resolveStaticPath(url) {
   if (parts.some(s => !NAME_RX.test(s))) return { status: 404 };     // chặn '', '.', '..', file ẩn
   if (parts.length === 1 && ROOT_FILES.indexOf(parts[0]) >= 0) return { status: 200, file: parts[0] };
   if (parts.length === 2 && DIRS.indexOf(parts[0]) >= 0 && MIME[path.posix.extname(parts[1])]) return { status: 200, file: parts.join('/') };
+  if (parts.length === 4 && IMG_DIRS.indexOf(parts.slice(0, 3).join('/')) >= 0 && path.posix.extname(parts[3]) === '.png') {
+    return { status: 200, file: parts.join('/') };
+  }
   return { status: 404 };
 }
 function mimeFor(file) {

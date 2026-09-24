@@ -1,7 +1,7 @@
 ---
 title: "Mage Lexoria pixel art overhaul (Ninja Adventure)"
 description: "Thay toàn bộ hình vẽ canvas của game Pháp sư bằng sprite Ninja Adventure (CC0), góc nhìn trận kiểu Pokémon; làm bản thử trước."
-status: pending
+status: in-progress
 priority: P2
 branch: "integration-mage"
 tags: [frontend, game, graphics]
@@ -34,8 +34,8 @@ Gói gốc nằm ở `D:\project\eng\assets\ninja-adventure\` (109MB, **không c
 ## Phases
 | Phase | Name | Status |
 |-------|------|--------|
-| 1 | [Asset pipeline and sprite atlas](./phase-01-asset-pipeline-and-sprite-atlas.md) | Pending |
-| 2 | [Prototype battle scene](./phase-02-prototype-battle-scene.md) | Pending |
+| 1 | [Asset pipeline and sprite atlas](./phase-01-asset-pipeline-and-sprite-atlas.md) | Completed |
+| 2 | [Prototype battle scene](./phase-02-prototype-battle-scene.md) | Code done — chờ user duyệt iPhone |
 | 3 | [Full monster roster and regions](./phase-03-full-monster-roster-and-regions.md) | Pending |
 | 4 | [Element VFX and ultimates](./phase-04-element-vfx-and-ultimates.md) | Pending |
 | 5 | [Hub portraits cleanup and docs](./phase-05-hub-portraits-cleanup-and-docs.md) | Pending |
@@ -54,6 +54,6 @@ Gói gốc nằm ở `D:\project\eng\assets\ninja-adventure\` (109MB, **không c
 - Credit pixel-boy & AAA trong README (CC0, ghi nhận tự nguyện).
 
 ## Câu hỏi chưa giải
-1. Pháp sư nam: `NinjaMageOrange` (mũ phù thuỷ cam, dễ thương) hay `SorcererOrange` (mũ xám, áo cam)?
+1. ~~Pháp sư nam~~ → chốt `NinjaMageOrange` (2026-09-24).
 2. Duyệt bảng đổi tên 12 quái ở phase 3.
 3. Có đổi chữ HUD sang `NormalFont.ttf` của gói không? (mặc định: không, YAGNI)
