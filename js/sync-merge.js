@@ -11,8 +11,8 @@
   const WORD_ID = /^[a-z0-9_-]{1,64}$/, TASK_ID = /^[a-z0-9_-]{1,32}$/, DATE = /^\d{4}-\d{2}-\d{2}$/;
   const BANNED = ['__proto__', 'constructor', 'prototype'];
   const SENT_MAX = 5, HIST_KEEP = 50, HIST_SEND = 20;
-  // trần số key: chặn payload phình (words.json có ~2500 từ; giáo án tối đa 30 việc)
-  const SRS_MAX = 5000, TASK_MAX = 30, HISTORY_DAYS = 400;
+  // trần số key: chặn payload phình (words.json có ~5000 mục, chừa gấp đôi; giáo án tối đa 30 việc)
+  const SRS_MAX = 10000, TASK_MAX = 30, HISTORY_DAYS = 400;
 
   // lấy lúc gọi: Node (server, có module) → require; trình duyệt / vm test → hàm global đã nạp trước
   const bossApi = () => typeof module !== 'undefined' && module.exports ? require('./boss-progress-sync-merge.js') : root;

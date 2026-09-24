@@ -65,6 +65,7 @@ server/seed-cli-args.js  parseArgs (--reset, --skip-deck, --allow-shrink, --rese
 server/password-hashing-and-session-tokens.js  hashPassword, verifyPassword, generateToken
 tools/generate_edge_tts_audio.py   tạo MP3 từ words.json (dùng edge-tts), output: audio/<sha1>.mp3 + audio/index.json
 tools/seed-database.js   CLI: nạp schema + bộ từ + tạo tài khoản chủ (chủ yếu để tạo owner, server tự seed)
+tools/spoken-core-batch.js  CLI check|merge|reorder batch mục "Spoken core" vào words.json; xen kẽ 2 Oxford : 1 Spoken (dùng slug của srs-scheduler, wordRx của word-games)
 audio/                   MP3 giọng Neural (en-US-ChristopherNeural), index.json ánh xạ text→file
 tests/                   harness tự viết; `node tests/run-tests.js` (thuần) · tests/run-tests.html (thêm IndexedDB + DB test)
 ```

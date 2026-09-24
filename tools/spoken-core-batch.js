@@ -13,7 +13,7 @@ const ROOT = path.join(__dirname, '..');
 const WORDS_PATH = path.join(ROOT, 'words.json');
 const FIELDS = ['id', 'word', 'ipa', 'pos', 'meaning', 'context', 'contextVi', 'source', 'emoji', 'image', 'mnemonic', 'outputPrompt'];
 const SPOKEN_PREFIX = 'Spoken core · ';
-const SPOKEN_GROUPS = ['phrasal verb', 'chunk', 'discourse', 'word'];
+const SPOKEN_GROUPS = ['chunk', 'word', 'phrasal verb', 'discourse']; // cũng là thứ tự xoay vòng khi sắp thẻ mới
 const WORD_MAX = 30;            // cụm dài hơn khó gõ trong game và tràn thẻ
 const MEANING_HEAD_MAX = 49;    // vế nghĩa đầu hiện trên máy bay (PLANE_LABEL_MAX = 50)
 const GENERIC_EMOJI = '📘';
@@ -58,10 +58,21 @@ function validateEntries(deckWords, batch) {
   return { errors, warnings };
 }
 
+/* Xoay vòng các nhóm con Spoken (cụm nói sẵn → từ đơn → phrasal verb → từ nối) để thẻ mới không dồn một loại liền nhau.
+   Giữ thứ tự nội bộ mỗi nhóm con → chạy lại cho cùng kết quả. */
+function rotateSpoken(spoken) {
+  const sub = SPOKEN_GROUPS.map(g => spoken.filter(w => w.source === SPOKEN_PREFIX + g));
+  const out = [], n = Math.max(0, ...sub.map(s => s.length));
+  for (let i = 0; i < n; i++) sub.forEach(s => { if (i < s.length) out.push(s[i]); });
+  const known = new Set(SPOKEN_GROUPS.map(g => SPOKEN_PREFIX + g));
+  return out.concat(spoken.filter(w => !known.has(w.source))); // nhóm con lạ: không làm rơi mục
+}
+
 /* Mục phim (F) giữ đầu; sau đó lặp O,O,S; nhóm nào hết thì nối phần còn lại. Giữ thứ tự nội bộ mỗi nhóm. */
 function interleave(words) {
   const g = { F: [], O: [], S: [] };
   words.forEach(w => g[groupOf(w)].push(w));
+  g.S = rotateSpoken(g.S);
   const out = g.F.slice(), pos = { O: 0, S: 0 };
   while (pos.O < g.O.length || pos.S < g.S.length) {
     INTERLEAVE.forEach(k => { if (pos[k] < g[k].length) out.push(g[k][pos[k]++]); });

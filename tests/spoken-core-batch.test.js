@@ -57,6 +57,13 @@ describe('spoken core batch (Node)', () => {
     const oxfordLeft = ['o1', 'o2', 'o3', 'o4', 'o5', 'o6', 'o7'].map(id => mk(id, 'Oxford')).concat([mk('s1', 'Spoken core · word')]);
     assert.deepEqual(sc.interleave(oxfordLeft).map(w => w.id), ['o1', 'o2', 's1', 'o3', 'o4', 'o5', 'o6', 'o7']);
   });
+  it('interleave: xoay vòng nhóm con Spoken (chunk → word → phrasal verb → discourse), không rơi mục lạ', () => {
+    const mk = (id, g) => ({ id, source: 'Spoken core · ' + g });
+    const s = [mk('p1', 'phrasal verb'), mk('p2', 'phrasal verb'), mk('p3', 'phrasal verb'), mk('c1', 'chunk'), mk('w1', 'word'), mk('d1', 'discourse'), mk('x1', 'other')];
+    const out = sc.interleave(s).map(w => w.id);
+    assert.deepEqual(out, ['c1', 'w1', 'p1', 'd1', 'p2', 'p3', 'x1']);
+    assert.deepEqual(sc.interleave(sc.interleave(s)).map(w => w.id), out);
+  });
   it('words.json hiện tại đã đúng thứ tự xen kẽ và mục Spoken đều hợp lệ', () => {
     const words = JSON.parse(fs.readFileSync(path.join(ROOT, 'words.json'), 'utf8')).words;
     assert.deepEqual(sc.interleave(words).map(w => w.id), words.map(w => w.id));

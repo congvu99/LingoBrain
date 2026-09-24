@@ -1,7 +1,7 @@
 ---
 phase: 4
 title: Discourse markers and spoken words batch
-status: in-progress
+status: completed
 priority: P2
 dependencies:
   - 3

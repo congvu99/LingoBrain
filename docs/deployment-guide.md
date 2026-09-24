@@ -65,7 +65,7 @@ PORT=3000
    - Cần thấy: `npm install` ✓ → `npm start` ✓
    - Cần thấy log dòng: **`listening on :3000`** → **`schema ready`**
    - Nếu chỉ thấy `listening` nhưng không thấy `schema ready` trong 30 giây → xem mục "Khắc phục sự cố"
-   - Nếu `AUTO_SEED=true` (mặc định): sẽ thấy **`deck seeded: 2505 words, 5009 audio (+2505 ~0 -0)`** hoặc **`deck up to date`** (nếu deploy lại)
+   - Nếu `AUTO_SEED=true` (mặc định): sẽ thấy **`deck seeded: 5033 words, 10065 audio (+5033 ~0 -0)`** hoặc **`deck up to date`** (nếu deploy lại)
 
 3. Nếu nền tảng không tự nhận `package.json`, thêm **Dockerfile** vào root repo:
 
@@ -126,8 +126,8 @@ SHOW server_encoding;
 
 -- 2. Bảng mới
 SELECT count(*) FROM users;
-SELECT count(*) FROM words;           -- phải = 2505
-SELECT count(*) FROM audio_clips;     -- phải = 5009
+SELECT count(*) FROM words;           -- phải = 5033
+SELECT count(*) FROM audio_clips;     -- phải = 10065
 SELECT count(*) FROM deck_meta;       -- phải = 1
 
 -- 3. Nội dung
@@ -160,9 +160,9 @@ curl -s -D - -o /dev/null -H "If-None-Match: $ETAG" https://app-123.nhan-hoa.loc
 # 4. Proxy có nén không (không bắt buộc; không có → ghi roadmap)
 curl -s -D - -o /dev/null -H "Accept-Encoding: gzip" https://app-123.nhan-hoa.local/api/words | grep -i content-encoding
 
-# 5. Audio index (5009 mục)
+# 5. Audio index (10065 mục)
 curl -s https://app-123.nhan-hoa.local/api/audio-index | jq '.items | length'
-  # Kỳ vọng: 5009
+  # Kỳ vọng: 10065
 ```
 
 ### Luồng chỉnh sửa bộ từ
