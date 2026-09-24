@@ -32,7 +32,7 @@ js/fruit-game-ui.js      Chém chữ: khung phủ, pointer events vuốt, canvas
 js/word-game-rounds.js   game: khung đồng hồ 60s + vẽ 3 dạng câu hỏi
 js/word-game-ui.js       game: chip chọn, vòng đời ván, màn kết thúc
 js/app-shell.js          tab, bindUI, phím tắt, init
-js/pwa-register.js       đăng ký service worker, toast bản mới
+js/pwa-register.js       đăng ký service worker, tự cập nhật (kiểm tra khi mở lại app, tải lại lúc rảnh)
 js/deck-source.js        tải bộ từ từ /api/words (DB) → fallback words.json; pruneSrs chỉ khi từ API    [thuần]
 sw.js, manifest.json     PWA network-first /api/words + /api/audio-index (SW cache); audio/ cache-first riêng
 server.js                Node.js entry: routing, PWA, DB pool, auto-seed từ words.json + audio/index.json

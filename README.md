@@ -47,7 +47,7 @@ Trên điện thoại: mở link → **Thêm vào màn hình chính** (iOS: nút
 **Khi deploy bản mới:**
 - Tăng `APP_VERSION` trong `js/app-storage.js` và `CACHE` trong `sw.js` (test `pwa-assets` bắt buộc 2 số này khớp)
 - Server tự nạp bộ từ từ `words.json` + `audio/index.json` nếu hash nội dung khác trong `deck_meta`; xem `node tools/seed-database.js --help` để tạo tài khoản chủ
-- Người dùng sẽ thấy toast "Có bản mới → Tải lại"; bộ từ cập nhật tự động qua `/api/words`
+- Máy người dùng (cả điện thoại/PWA) **tự lên bản mới**: mở app hoặc quay lại app từ nền thì tự kiểm tra, tải xong tự tải lại trang (đang chơi dở / đang gõ thì chờ xong); bộ từ cập nhật tự động qua `/api/words`
 
 ## Tab Giáo án
 

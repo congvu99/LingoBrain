@@ -152,7 +152,8 @@ curl -s -D - -o /dev/null https://app-123.nhan-hoa.local/api/words
   # Kỳ vọng: 200, header ETag: "<hash>", Cache-Control: no-cache
 
 # 3. Cache + If-None-Match (304)
-ETAG=$(curl -s -D - -o /dev/null https://app-123.nhan-hoa.local/api/words | grep -i '^etag' | cut -d' ' -f2- | tr -d '')
+ETAG=$(curl -s -D - -o /dev/null https://app-123.nhan-hoa.local/api/words | grep -i '^etag' | cut -d' ' -f2- | tr -d '
+')
 curl -s -D - -o /dev/null -H "If-None-Match: $ETAG" https://app-123.nhan-hoa.local/api/words
   # Kỳ vọng: 304 Not Modified
 
@@ -261,7 +262,7 @@ Khi smoke test ✓ trên subdomain:
 2. **Đợi TLS sẵn sàng** trước khi trỏ.
 
 3. **Thử trên iPhone (PWA):**
-   - Nếu đã cài PWA bản cũ → thấy toast "Có bản mới" → tải lại
+   - Nếu đã cài PWA bản cũ → tự lên bản mới vài giây sau khi mở / quay lại app (không cần F5)
    - Offline vẫn hoạt động (cũ); online → sync tự động
    - Tiến độ cũ trên máy vẫn còn (merge với server)
 
@@ -282,7 +283,7 @@ Mỗi lần push code mới, cập nhật:
 - `sw.js`: `CACHE = "lingobrain-2.11.0"` (phải trùng APP_VERSION)
 - Test `tests/pwa-assets.test.js` xanh (kiểm tra đúp version)
 
-Client sẽ thấy toast "Có bản mới → Tải lại". Bộ từ cập nhật tự động qua `/api/words` khi server nạp từ `words.json` (nếu hash khác).
+Client tự lên bản mới: SW mới `skipWaiting` ngay khi cài xong, trang tự tải lại lúc rảnh (không đang chơi / không đang gõ); mở lại app từ nền cũng kiểm tra bản mới. Bộ từ cập nhật tự động qua `/api/words` khi server nạp từ `words.json` (nếu hash khác).
 
 ### Backup DB:
 

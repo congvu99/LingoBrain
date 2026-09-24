@@ -1,6 +1,6 @@
 /* Service worker: cache-first cho toàn bộ file tĩnh. Đổi CACHE mỗi lần deploy để người dùng nhận bản mới.
    MP3 trong audio/ nằm ở cache riêng AUDIO_CACHE, cache dần khi phát, không xoá khi lên version. */
-const CACHE = 'lingobrain-v2.13.1';
+const CACHE = 'lingobrain-v2.13.2';
 const AUDIO_CACHE = 'lingobrain-audio';
 const ASSETS = [
   './',
@@ -48,11 +48,13 @@ const ASSETS = [
 self.addEventListener('install', e => {
   // cache:'reload' bỏ qua HTTP cache của trình duyệt: css/js có max-age=3600, không bỏ qua thì bản cài mới
   // gộp index.html mới với css/js cũ → giao diện vỡ, JS cũ không khớp HTML mới
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS.map(u => new Request(u, { cache: 'reload' })))));
+  // tải xong bản mới là kích hoạt luôn, không chờ người dùng bấm: pwa-register.js tự tải lại trang khi rảnh
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS.map(u => new Request(u, { cache: 'reload' })))).then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', e => {
   e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE && k !== AUDIO_CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim()));
 });
+// SW bản cũ (chưa tự skipWaiting) đang chờ: trang mới nhắn để kích hoạt
 self.addEventListener('message', e => { if (e.data === 'SKIP_WAITING') self.skipWaiting(); });
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
