@@ -5,7 +5,7 @@
 
 ## 1. Vấn đề & yêu cầu
 - User: "đồ hoạ quá xấu". Gốc: toàn bộ hình vẽ bằng canvas path (programmer art) → không thể đẹp bằng pixel art hoạ sĩ.
-- Chốt với user: **chỉ miễn phí** · tông **tươi sáng dễ thương** · **phong cách châu Âu** · **dùng cá nhân/phi lợi nhuận** · phạm vi **chỉ game Pháp sư** · **bản thử trước**.
+- Chốt với user: **chỉ miễn phí** · tông **tươi sáng dễ thương** · đã cân nhắc phong cách châu Âu, **cuối cùng chọn Ninja Adventure trọn bộ** (đồng bộ + đủ nhất) · **dùng cá nhân/phi lợi nhuận** · phạm vi **chỉ game Pháp sư** · **bản thử trước**.
 
 ## 2. Bối cảnh codebase
 - Vẽ tay: `boss-game-mage-art.js`, `boss-game-monster-shapes.js`, `boss-game-monster-art.js`, `boss-game-scene.js`, `boss-game-tier3-shapes.js`.
@@ -19,24 +19,24 @@
 | B. Mua 1–2 gói đồng bộ (~10–25 USD) | đẹp, đủ hoạt ảnh | tốn tiền | loại (user chỉ miễn phí) |
 | C. AI (Nano Banana/Imagen) | đúng chủ đề | không làm được sprite hoạt ảnh nhất quán | chỉ phụ trợ nền/tranh truyện nếu cần |
 | D. Pixel hoá hình vẽ code | 0 ảnh | vẫn programmer art | loại |
-| E. Ninja Adventure trọn bộ (pixel-boy, CC0) + góc nhìn kiểu Pokémon | 1 nhóm vẽ → đồng bộ; 50+ nhân vật, 30+ quái, 9 trùm, 30+ VFX, icon phép, tileset, font, nhạc; CC0 | top-down → phải đổi góc trận; quái hơi hướng ninja → đổi tên vài quái trong truyện; sprite 16px phóng ×4 | loại sau khi user muốn **phong cách châu Âu** |
+| E. Ninja Adventure trọn bộ (pixel-boy, CC0) + góc nhìn kiểu Pokémon | 1 nhóm vẽ → đồng bộ; 50+ nhân vật, 30+ quái, 9 trùm, 30+ VFX, icon phép, tileset, font, nhạc; CC0 | top-down → phải đổi góc trận; quái hơi hướng ninja → đổi tên vài quái trong truyện; sprite 16px phóng ×4 | **chọn** (user chốt sau khi so với các bộ châu Âu) |
 | F. Chỉ 0x72 DungeonTileset II | 1 nguồn, châu Âu | 4 vùng đều hầm ngục; fx tự vẽ kém | loại |
 | MiniFolks (LYASeeK) / Tiny Swords (Pixel Frog) | đẹp, châu Âu | quái/goblin là gói **trả phí**; Tiny Swords không có phù thuỷ | loại |
-| **G. 0x72 DungeonTileset II (nhân vật + quái) + Ninja Adventure (VFX + tile ngoài trời)** — cả hai CC0, cùng 16px chibi | châu Âu; có **phù thuỷ nam/nữ**; quái trung cổ đủ 12 slot; fx đồng bộ từ Ninja | 2 nguồn (lệch nhẹ); 0x72 thiếu hoạt ảnh tấn công/chết → bù bằng code (nhún, nháy trắng, tan ô pixel); không có rồng → trùm cuối Oblivion = quỷ lớn 0x72 hoặc rồng trong 9 trùm Ninja | **chọn** |
+| **G. 0x72 DungeonTileset II (nhân vật + quái) + Ninja Adventure (VFX + tile ngoài trời)** — cả hai CC0, cùng 16px chibi | châu Âu; có **phù thuỷ nam/nữ**; quái trung cổ đủ 12 slot; fx đồng bộ từ Ninja | 2 nguồn (lệch nhẹ); 0x72 thiếu hoạt ảnh tấn công/chết; không có rồng | loại — user chọn 1 nguồn đồng bộ (E) |
 
 ## 4. Giải pháp chốt
-- **Nguồn hình:** nhân vật + quái = 0x72 DungeonTileset II (wizzard_m/f, knight, goblin, imp, skeleton, zombie, orc/orc shaman, ogre, big demon, necromancer…); VFX phép + tile ngoài trời (làng, núi, hang) = Ninja Adventure; tile hầm mộ = 0x72.
-- **Hoạt ảnh thiếu (0x72 chỉ idle/run):** tấn công = nhún + lao nhẹ; trúng đòn = nháy trắng + giật lùi; chết = tan thành ô pixel theo bảng màu sprite (code).
+- **Nguồn hình:** TOÀN BỘ từ Ninja Adventure (pixel-boy, CC0): pháp sư nam/nữ = nhân vật gần nghĩa nhất trong 50+ nhân vật; 12 quái/trùm từ 30+ quái + 9 trùm; VFX phép; tileset ngoài trời/hang/nội thất cho 4 vùng; font/UI nếu hợp.
+- **Hoạt ảnh thiếu** (nếu sprite chỉ có đi/đứng): tấn công = nhún + lao nhẹ; trúng đòn = nháy trắng + giật lùi; chết = tan thành ô pixel theo bảng màu sprite (code).
 - **Góc nhìn trận kiểu Pokémon:** pháp sư dưới-trái, quái giữa-trên-phải (trùm to hơn), sàn tile theo 4 vùng (làng Ashford, hầm mộ, núi đá, hang rồng) ghép từ tileset → offscreen 1 lần/đổi cỡ.
 - **Module mới `js/boss-game-sprite-atlas.js`:** nạp ảnh, cắt khung, hoạt ảnh theo tên (idle/attack/hurt/death), hiển thị chuẩn pixel (`imageSmoothingEnabled=false`, phóng số nguyên, làm tròn toạ độ).
 - **Gắn event có sẵn:** `cast` → pháp sư ra đòn + VFX theo hệ; `impact` → quái trúng đòn + nổ; `hurt` → pháp sư trúng đòn; `won` → quái chết + tan; bậc 1/2/3 = cùng VFX ×1/×1.5/×2 + vòng pixel; tuyệt kỹ = VFX lớn + cắt cảnh hiện có (thay chân dung vẽ tay bằng sprite).
 - **Hạt:** ô vuông pixel theo bảng màu gói (bỏ hình tròn mờ/gradient).
-- **Dữ liệu:** `BOSS_MONSTERS.shape` → `sprite`; ánh xạ 12 quái sang sprite 0x72 (tên quái châu Âu gần như giữ nguyên: Goblin, Xương, Troll→Ogre, Hiệp sĩ đen…); trùm cuối Oblivion: quỷ lớn 0x72 hoặc rồng Ninja — chọn khi xem hình; sửa truyện tối thiểu.
+- **Dữ liệu:** `BOSS_MONSTERS.shape` → `sprite`; ánh xạ 12 quái sang quái/trùm Ninja Adventure, đổi tên + vùng trong truyện cho khớp hình (giữ `{id}` từ, giữ khung 4 chương × 7 trận, giữ bảng khắc hệ); trùm cuối Oblivion = trùm rồng của gói nếu có.
 - **Bỏ khi làm toàn bộ:** mage-art, monster-shapes, monster-art, phần vẽ tay của scene + tier3-shapes (YAGNI, không giữ fallback song song).
 - **Giữ nguyên:** logic, sync, progress, test, UI DOM (hub, cây, kết trận), `game-particles.js` (chỉ đổi cách vẽ hạt ở phía boss).
 
 ## 5. Lộ trình
-1. **Bản thử:** phù thuỷ 0x72, 1 quái 0x72 (Goblin), VFX Lửa Ninja, 1 nền vùng Ashford (tile ngoài trời Ninja) — kiểm độ lệch 2 nguồn → duyệt trên iPhone (cảm nhận + `?fps`).
+1. **Bản thử:** 1 pháp sư, 1 quái, VFX Lửa, 1 nền vùng 1 — tất cả từ Ninja Adventure → duyệt trên iPhone (cảm nhận + `?fps`).
 2. **Toàn bộ** (nếu duyệt): 12 quái/trùm, VFX 5 hệ × 3 bậc, 5 tuyệt kỹ, 4 vùng, pháp sư nam/nữ, chân dung sảnh; xoá file vẽ tay; cập nhật docs.
 
 ## 6. Rủi ro
@@ -53,7 +53,7 @@
 - User duyệt cảm nhận → mới làm toàn bộ.
 
 ## 8. Việc cần trước khi làm
-- **User tải 2 zip:** 0x72 DungeonTileset II https://0x72.itch.io/dungeontileset-ii → `assets/0x72/`; Ninja Adventure https://pixel-boy.itch.io/ninja-adventure-asset-pack → `assets/ninja-adventure/` (chỉ commit sheet dùng thật; ghi credit dù CC0).
+- **User tải zip** Ninja Adventure: https://pixel-boy.itch.io/ninja-adventure-asset-pack → giải nén vào `assets/ninja-adventure/` (chỉ commit sheet dùng thật; ghi credit pixel-boy & AAA dù CC0).
 - Sau đó: kiểm nội dung gói → lập plan chi tiết (`/ck:plan`).
 
 ## Nguồn
@@ -63,6 +63,6 @@
 - Tham khảo đã loại: https://free-game-assets.itch.io/free-wizard-sprite-sheets-pixel-art · https://shat-tm.itch.io/monster-sprites · https://nyoki-studio.itch.io/asset-pack-pixel-art-monsters-32-mobs-5-bosses-commercial-use-ok · https://pixellootstore.itch.io/pixel-effect-pack-rpg2d-game-assets-fire-ice-lightning-tornado-magic
 
 ## Câu hỏi chưa giải
-- Ninja Adventure có đủ VFX Băng/Sét/Đất/Gió không? (kiểm khi có zip; thiếu → phối màu lại VFX gần nhất)
-- Trùm cuối Oblivion: quỷ lớn (0x72) hay rồng (Ninja)?
+- Gói có nhân vật hợp làm pháp sư nam/nữ và đủ VFX Băng/Sét/Đất/Gió không? (kiểm khi có zip; thiếu → phối màu lại VFX gần nhất)
+- Đổi tên quái/vùng trong truyện theo hình gói: user duyệt danh sách ánh xạ trong plan.
 - Có muốn dùng luôn nhạc/âm thanh của gói (37 bản nhạc, 100+ SFX) không? — ngoài phạm vi vòng này.
