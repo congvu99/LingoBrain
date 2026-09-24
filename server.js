@@ -1,6 +1,7 @@
 /* LingoBrain server: phục vụ web tĩnh + API tài khoản/đồng bộ trên cùng domain.
    Env: PORT (3000), DATABASE_URL (thiếu → chỉ web tĩnh, API 503), PGSSL=true|false, PGSSLROOTCERT (file CA, tuỳ chọn),
-   TRUST_PROXY_HOPS (0 = không tin X-Forwarded-For; sau reverse proxy của nền tảng đặt 1).
+   TRUST_PROXY_HOPS (0 = không tin X-Forwarded-For; sau reverse proxy của nền tảng đặt 1),
+   AUTO_SEED (mặc định bật; false = không tự nạp words.json + audio/index.json vào DB khi nội dung đổi).
    Web tĩnh không phụ thuộc DB: DB sập/sai thì trang vẫn mở, chỉ API trả 503. */
 const http = require('http');
 const { serveStatic, securityHeaders } = require('./server/static-file-server.js');
@@ -14,9 +15,15 @@ let api = null;
 if (process.env.DATABASE_URL) {
   const { createDatabase } = require('./server/database.js');
   const { createApi } = require('./server/auth-and-sync-routes.js');
+  const { seedIfChanged, loadDeckFiles } = require('./server/deck-seeder.js');
   const db = createDatabase(process.env.DATABASE_URL, { ssl: process.env.PGSSL === 'true', caFile: process.env.PGSSLROOTCERT, log });
   api = createApi({ pool: db.pool, isReady: () => db.ready, trustHops: TRUST_PROXY_HOPS, log });
-  db.start();   // chạy nền, không chặn listen
+  const autoSeed = process.env.AUTO_SEED !== 'false';
+  // chạy nền, không chặn listen; seed xong xoá cache bộ từ trong RAM
+  db.start({ onReady: async () => {
+    if (autoSeed) await seedIfChanged(db.pool, () => loadDeckFiles(__dirname), log);
+    api.invalidateDeck();
+  } });
 } else {
   log('DATABASE_URL chưa đặt → chỉ phục vụ web tĩnh, API trả 503');
 }

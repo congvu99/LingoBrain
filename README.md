@@ -6,11 +6,12 @@ Web tĩnh, **ưu tiên mobile**, giao diện xanh ngọc thân thiện, ưu tiê
 eng/
 ├── index.html        khung app (3 tab)
 ├── css/paper-theme.css
-├── js/               13 module nhỏ (xem docs/system-architecture.md)
-├── sw.js, manifest.json   PWA
-├── words.json        bộ từ (nguồn duy nhất, người dùng không sửa được)
+├── js/               15 module nhỏ (xem docs/system-architecture.md)
+├── sw.js, manifest.json   PWA (cache /api/words, /api/audio-index)
+├── server.js + server/      Node.js (auth, sync, bộ từ từ DB qua API)
+├── words.json        bộ từ (nguồn biên tập + seed input + fallback offline)
 ├── audio/            MP3 giọng máy tạo sẵn + index.json
-├── tools/            tạo MP3 (generate_edge_tts_audio.py)
+├── tools/            tạo MP3 (generate_edge_tts_audio.py), seed DB (seed-database.js)
 └── tests/            node tests/run-tests.js · tests/run-tests.html
 ```
 
@@ -19,7 +20,14 @@ eng/
 ## Chạy thử
 
 ```bash
+# Development (local): tĩnh + API
+npm install
+npm start
+
+# Hoặc chỉ tĩnh (offline mode):
 npx serve .          # hoặc: python -m http.server 8080
+
+# Tests:
 node tests/run-tests.js
 ```
 
@@ -36,7 +44,10 @@ node tests/run-tests.js
 
 Trên điện thoại: mở link → **Thêm vào màn hình chính** (iOS: nút Chia sẻ). Từ đó mở không mạng vẫn chạy.
 
-**Khi deploy bản mới:** tăng `APP_VERSION` trong `js/app-storage.js` và `CACHE` trong `sw.js` (test `pwa-assets` bắt buộc 2 số này khớp). Người dùng sẽ thấy toast "Có bản mới → Tải lại".
+**Khi deploy bản mới:**
+- Tăng `APP_VERSION` trong `js/app-storage.js` và `CACHE` trong `sw.js` (test `pwa-assets` bắt buộc 2 số này khớp)
+- Server tự nạp bộ từ từ `words.json` + `audio/index.json` nếu hash nội dung khác trong `deck_meta`; xem `node tools/seed-database.js --help` để tạo tài khoản chủ
+- Người dùng sẽ thấy toast "Có bản mới → Tải lại"; bộ từ cập nhật tự động qua `/api/words`
 
 ## Tab Giáo án
 
@@ -99,11 +110,12 @@ Bỏ ván giữa chừng (đổi tab hoặc bấm ←) thì không tính điểm
 
 ## Bộ từ
 
-Bộ từ **chỉ** lấy từ `words.json`; người dùng không nạp, thêm, sửa hay xoá từ được. Tab Quản lý chỉ hiện danh sách từ để xem.
+Bộ từ đọc từ **API `/api/words` (DB)** nếu có, hoặc **fallback `words.json`** nếu lỗi/offline. Người dùng không nạp, thêm, sửa hay xoá từ được. Tab Quản lý chỉ hiện danh sách từ để xem.
 
-- Mỗi lần mở app đều tải `words.json` (service worker network-first: có mạng lấy bản mới nhất, mất mạng dùng bản đã cache). Sửa `words.json` rồi deploy là người dùng thấy ở lần mở kế tiếp.
+- Client: tải từ API trước (cache qua service worker network-first); lỗi 404, 503 hoặc offline → dùng `words.json`. Chỉ lấy tiến độ (pruneSrs) khi bộ từ đến từ API — bản fallback có thể lệch DB nên không bao giờ được xoá tiến độ.
+- Chỉnh sửa: sửa `words.json` (+ tạo lại audio `python tools/generate_edge_tts_audio.py` nếu cần) → commit → deploy → server tự cập nhật DB từ `words.json` + `audio/index.json` khi nhận thấy hash nội dung đổi. Không chạy CLI với file local lên production.
 - Trường: `word`, `meaning` (bắt buộc), `ipa`, `pos`, `context`, `contextVi`, `source`, `emoji`, `image`, `mnemonic`, `outputPrompt`. `id` sinh từ `word` nếu thiếu.
-- Tiến độ gắn theo `id`: sửa nội dung từ thì tiến độ giữ nguyên; **gỡ từ khỏi `words.json` thì tiến độ của từ đó bị xoá** ở lần mở kế tiếp (tải `words.json` lỗi thì không xoá gì).
+- Tiến độ gắn theo `id`: sửa nội dung từ thì tiến độ giữ nguyên; **gỡ từ khỏi `words.json` thì tiến độ của từ đó bị xoá** ở lần mở kế tiếp khi bộ từ từ API (tải từ file không xoá gì).
 - Backup (Góc của bạn → Tải backup) chỉ gồm tiến độ, giáo án, cài đặt, kỷ lục game. Khôi phục backup bản cũ có kèm bộ từ thì phần bộ từ bị bỏ qua.
 
 ## Tạo MP3 giọng máy

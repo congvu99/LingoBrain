@@ -5,12 +5,14 @@
 <script src="test-harness.js"></script>
 <script src="../js/srs-scheduler.js"></script>
 <script src="../js/sync-merge.js"></script>
+<script src="../js/deck-source.js"></script>
 <script src="../js/app-storage.js"></script>
 <script src="../js/recording-store.js"></script>
 <script src="../js/review-mode-picker.js"></script>
 <script src="../js/stats-dashboard.js"></script>
 <script src="../js/word-import.js"></script>
 <script src="srs-scheduler.test.js"></script>
+<script src="deck-source.test.js"></script>
 <script src="sync-merge.test.js"></script>
 <script src="review-mode-picker.test.js"></script>
 <script src="stats-dashboard.test.js"></script>
@@ -18,8 +20,10 @@
 <script src="recording-store.test.js"></script>
 <script>
 (async () => {
-  for (const fn of (window.__asyncTests || [])) {
-    try { await fn(); it('recording-store async', () => {}); } catch (e) { it('recording-store async', () => { throw e; }); }
+  // mỗi mục là hàm hoặc {name, fn} (giống tests/run-tests.js)
+  for (const t of (window.__asyncTests || [])) {
+    const name = t.name || 'async', fn = t.fn || t;
+    try { await fn(); it(name, () => {}); } catch (e) { it(name, () => { throw e; }); }
   }
   const lines = [];
   const ok = __reportTests(s => lines.push(s));

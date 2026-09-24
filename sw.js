@@ -1,6 +1,6 @@
 /* Service worker: cache-first cho toàn bộ file tĩnh. Đổi CACHE mỗi lần deploy để người dùng nhận bản mới.
    MP3 trong audio/ nằm ở cache riêng AUDIO_CACHE, cache dần khi phát, không xoá khi lên version. */
-const CACHE = 'lingobrain-v2.10.0';
+const CACHE = 'lingobrain-v2.11.0';
 const AUDIO_CACHE = 'lingobrain-audio';
 const ASSETS = [
   './',
@@ -16,6 +16,7 @@ const ASSETS = [
   './js/srs-scheduler.js',
   './js/sync-merge.js',
   './js/app-storage.js',
+  './js/deck-source.js',
   './js/speech-synthesis.js',
   './js/recording-store.js',
   './js/daily-plan.js',
@@ -50,6 +51,19 @@ self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
   const url = new URL(e.request.url);
   if (url.origin !== location.origin) return;
+  // bộ từ / audio index từ DB: network-first, lỗi mạng hoặc máy chủ lỗi (≥500) → bản đã cache; chưa có cache → trả lỗi để client dùng file tĩnh
+  const deckApi = /^\/api\/(words|audio-index)$/.exec(url.pathname);
+  if (deckApi) {
+    const key = './api/' + deckApi[1];
+    e.respondWith(
+      fetch(e.request).then(res => {
+        if (res.status === 200) { const copy = res.clone(); caches.open(CACHE).then(c => c.put(key, copy)); return res; }
+        if (res.status < 500) return res;
+        return caches.match(key).then(hit => hit || res);
+      }).catch(() => caches.match(key).then(hit => hit || Response.error()))
+    );
+    return;
+  }
   if (url.pathname.startsWith('/api/')) return;   // API đồng bộ: luôn đi mạng, không cache
   // words.json, audio/index.json: network-first, bỏ qua query chống cache khi lưu/đọc, để bản mới trên máy chủ luôn thắng cache cũ
   const fresh = /\/(words\.json|audio\/index\.json)$/.exec(url.pathname);

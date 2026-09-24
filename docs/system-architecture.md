@@ -1,6 +1,6 @@
 # System Architecture — LingoBrain v2
 
-Cập nhật 2026-09-16. Web tĩnh, không build tool, không framework, không server. Dữ liệu trong `localStorage` (+ IndexedDB cho ghi âm).
+Cập nhật 2026-09-24. Web tĩnh + API Node.js. Dữ liệu người dùng trong `localStorage` (+ IndexedDB cho ghi âm) + PostgreSQL (tài khoản, tiến độ đồng bộ, bộ từ).
 
 ## File
 
@@ -28,13 +28,92 @@ js/word-game-rounds.js   game: khung đồng hồ 60s + vẽ 3 dạng câu hỏi
 js/word-game-ui.js       game: chip chọn, vòng đời ván, màn kết thúc
 js/app-shell.js          tab, bindUI, phím tắt, init
 js/pwa-register.js       đăng ký service worker, toast bản mới
-sw.js, manifest.json     PWA cache-first; đổi CACHE (= APP_VERSION) khi deploy; audio/ cache-first riêng
+js/deck-source.js        tải bộ từ từ /api/words (DB) → fallback words.json; pruneSrs chỉ khi từ API    [thuần]
+sw.js, manifest.json     PWA network-first /api/words + /api/audio-index (SW cache); audio/ cache-first riêng
+server.js                Node.js entry: routing, PWA, DB pool, auto-seed từ words.json + audio/index.json
+server/schema.sql        DDL: users, sessions, progress (tài khoản + đồng bộ) + words, audio_clips, deck_meta (bộ từ)
+server/database.js       Pool + readSchema, sslOption
+server/auth-and-sync-routes.js   POST /register · /login · PUT /sync · GET /progress
+server/deck-routes.js    GET /api/words · /api/audio-index (ETag, If-None-Match, RAM cache, single-flight)
+server/deck-rows.js      wordsToRows, audioToRows, rowsToWords, contentHash (utils)
+server/deck-seeder.js    seedIfChanged, loadDeckFiles, seedDeck, advisory lock, shrink guard
+server/owner-account.js  upsertOwner (tạo/reset tài khoản chủ từ CLI)
+server/seed-cli-args.js  parseArgs (--reset, --skip-deck, --allow-shrink, --reset-owner-password, ...)
+server/password-hashing-and-session-tokens.js  hashPassword, verifyPassword, generateToken
 tools/generate_edge_tts_audio.py   tạo MP3 từ words.json (dùng edge-tts), output: audio/<sha1>.mp3 + audio/index.json
+tools/seed-database.js   CLI: nạp schema + bộ từ + tạo tài khoản chủ (chủ yếu để tạo owner, server tự seed)
 audio/                   MP3 giọng Neural (en-US-ChristopherNeural), index.json ánh xạ text→file
-tests/                   harness tự viết; `node tests/run-tests.js` (thuần) · tests/run-tests.html (thêm IndexedDB)
+tests/                   harness tự viết; `node tests/run-tests.js` (thuần) · tests/run-tests.html (thêm IndexedDB + DB test)
 ```
 
 Script là classic `<script src>` dùng global, không ES module → mở `file://` vẫn chạy. Module "thuần" không đụng DOM/localStorage ở top-level và có `module.exports` để Node test.
+
+## Schema PostgreSQL (server/schema.sql)
+
+| Bảng | Cột chính | Mục đích |
+|---|---|---|
+| `users` | `id` (PK), `username` (UNIQUE), `pass_hash`, `created_at` | Tài khoản người dùng |
+| `sessions` | `token_hash` (PK), `user_id` (FK), `created_at`, `last_used_at` | Phiên đăng nhập (1 user → nhiều phiên) |
+| `progress` | `user_id` (PK, FK), `data` (JSONB), `updated_at` | Tiến độ đồng bộ (SRS, giáo án, cài đặt) |
+| `words` | `id` (PK), 12 cột nội dung (snake_case), `sort_order`, `updated_at` | Bộ từ (seed từ words.json) |
+| `audio_clips` | `text` (PK), `file` (CHECK: `^[0-9a-f]{12}\.mp3$`) | Audio index (seed từ audio/index.json) |
+| `deck_meta` | `id` (PK = 1), `deck`, `updated`, `voice`, `content_hash`, `seeded_at` | Metadata: tên bộ, hash (để auto-seed), giọng TTS |
+
+Auto-seed: so `content_hash` của `words.json` + `audio/index.json` với `deck_meta.content_hash` → khác → seed 1 transaction (advisory lock đầu tiên, chối shrink nếu < 50% bộ hiện tại).
+
+## API (Công khai)
+
+**GET /api/words** — bộ từ (shape như words.json)
+```
+Response 200: {deck, updated, words: [{id, word, ipa, pos, meaning, context, contextVi, source, emoji, image, mnemonic, outputPrompt}]}
+Header: ETag: "<content_hash>", Cache-Control: no-cache
+If-None-Match khớp (so khớp yếu, chấp nhận W/"…" và danh sách) → 304
+Chưa seed / bảng rỗng → 503 {error: "Bộ từ chưa được nạp"} · DB chưa ready → 503 {error: "Máy chủ chưa sẵn sàng, thử lại sau"}
+```
+
+**GET /api/audio-index** — audio index (shape như audio/index.json)
+```
+Response 200: {voice: "en-US-ChristopherNeural", items: {text: "file.mp3", ...}}
+Header, 304, 503 như /api/words
+```
+
+**POST /api/register** — đăng ký tài khoản (không auth)
+```
+Body: {username, password}
+201 {token, username} → tạo users + progress {"v":1} + session
+409 → username đã tồn tại
+400 → sai định dạng (tên 3–20 a-z 0-9 _, mật khẩu 6–128)
+```
+
+**POST /api/login** — đăng nhập
+```
+Body: {username, password}
+200 {token, username} → tạo session (hết hạn trượt 180 ngày)
+401 → sai tài khoản hoặc mật khẩu
+503 → DB chưa ready
+```
+
+**PUT /api/sync** — gửi tiến độ (auth: Authorization: Bearer token)
+```
+Body: {data: {v, srsEpoch, srs, cfg, ...}}
+200 {data, updatedAt} → merge + lưu, trả bản merged
+401 → token sai/hết hạn
+503 → DB chưa ready
+```
+
+**POST /api/logout** — thu hồi phiên hiện tại (Bearer token) → 204
+
+**HEAD không route** (405) — dùng `curl -D - -o /dev/null URL` thay vì `curl -I`.
+
+**Rate limit:** 120/min/IP (xem `TRUST_PROXY_HOPS` ở Bước 2). Chung limiter cho tất cả `/api/*`.
+
+## Luồng bộ từ trên client
+
+1. **App mở:** `js/deck-source.js` gọi `fetchFirstOk()` → thử `/api/words` trước, lỗi (404/503/mất mạng) → fallback `words.json`
+2. **Nếu từ API (`tag='api'`):** gọi `pruneSrs(srs, deck)` để xoá tiến độ từ bị gỡ khỏi bộ từ
+3. **Nếu từ fallback file (`tag='file'`):** KHÔNG gọi pruneSrs (file có thể lệch DB → giữ tiến độ)
+4. **SW cache:** `/api/words` và `/api/audio-index` network-first (query lấy bản mới, offline dùng cache)
+5. **ETag + If-None-Match:** request có `If-None-Match` trùng ETag → server trả 304 (không gửi lại body)
 
 ## Dữ liệu
 
@@ -47,6 +126,8 @@ Script là classic `<script src>` dùng global, không ES module → mở `file:
 | `eng.plan.v1`, `eng.day.v1` | giáo án, checkbox/streak/caption hôm nay |
 | `eng.gamemiss.v1` | `[id]` từ trả lời sai trong game, tối đa 10 — kênh duy nhất từ game sang engine ôn |
 | `eng.gamescore.v1` | `{[gameId]: {best, plays}}` kỷ lục mỗi game; Bắn máy bay tách theo cấp: `planes` (Vừa), `planes-easy`, `planes-hard` |
+| `eng.auth.v1` | `{token, username}` khi đăng nhập (dùng cho `/api/sync`) |
+| `eng.syncmeta.v1` | `{cfgTs, planTs, dayTs, srsEpoch, owner, syncedAt}` — mốc đồng bộ |
 | IndexedDB `lingobrain/recordings` | `{id, taskId, date, caption, blob, type}` |
 
 ## Thuật toán ôn (js/srs-scheduler.js)

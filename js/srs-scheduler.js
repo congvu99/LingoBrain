@@ -131,8 +131,8 @@ function buildQueue(deck, srs, cfg, now, miss) {
   return front.concat(out);
 }
 
-/* Xoá tiến độ của id không còn trong bộ từ (bộ từ chỉ lấy từ words.json). Trả về số bản ghi đã xoá.
-   Bộ từ rỗng = tải words.json thất bại, KHÔNG dọn, nếu không sẽ mất sạch tiến độ. */
+/* Xoá tiến độ của id không còn trong bộ từ. Trả về số bản ghi đã xoá.
+   Chỉ gọi với bộ từ tải từ API (js/deck-source.js shouldPruneDeck). Bộ từ rỗng = tải thất bại, KHÔNG dọn, nếu không sẽ mất sạch tiến độ. */
 function pruneSrs(deck, srs) {
   if (!deck || !deck.words || !deck.words.length) return 0;
   const ids = new Set(deck.words.map(w => w.id));

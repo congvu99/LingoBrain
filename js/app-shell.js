@@ -45,7 +45,7 @@ function bindUI() {
   $('#setNew').value = cfg.newPerDay; $('#setMax').value = cfg.maxSession;
   $('#setNew').onchange = e => { cfg.newPerDay = Math.max(1, +e.target.value || 5); save(K_CFG, cfg); restartSession(); };
   $('#setMax').onchange = e => { cfg.maxSession = Math.max(5, +e.target.value || 40); save(K_CFG, cfg); restartSession(); };
-  // backup chỉ chứa tiến độ + giáo án + cài đặt; bộ từ luôn lấy từ words.json
+  // backup chỉ chứa tiến độ + giáo án + cài đặt; bộ từ luôn lấy từ máy chủ (js/deck-source.js)
   $('#btnExportAll').onclick = () => download('lingobrain-backup-' + dkey() + '.json', { version: APP_VERSION, srs, cfg, plan, day, gameScore, gameMiss });
   $('#btnRestore').onclick = () => $('#fileRestore').click();
   $('#fileRestore').onchange = e => {
@@ -78,15 +78,15 @@ function bindUI() {
 }
 
 (async function init() {
-  // words.json là nguồn duy nhất: tải mỗi lần mở (SW network-first → bản mới nhất, mất mạng thì bản đã cache)
-  try {
-    const r = await fetch('words.json?_=' + Date.now());
-    if (!r.ok) throw 0;
-    const j = await r.json();
+  // bộ từ tải mỗi lần mở: /api/words (DB; SW network-first, mất mạng thì bản đã cache) → lỗi thì words.json
+  const src = await fetchFirstOk(deckSources(Date.now()), u => fetch(u), isDeckJson);
+  if (src) {
+    const j = src.data;
     deck = { deck: j.deck || 'Bộ từ của tôi', words: (j.words || j).map(normWord).filter(Boolean) };
-  } catch (e) { /* file:// hoặc offline lần đầu → giữ bộ rỗng, render() báo lỗi */ }
+  } /* không nguồn nào được (file:// hoặc offline lần đầu) → giữ bộ rỗng, render() báo lỗi */
   try { localStorage.removeItem(K_DECK); } catch (e) {}
-  if (pruneSrs(deck, srs)) save(K_SRS, srs);   // bỏ tiến độ của từ tự nạp cũ / từ đã gỡ khỏi words.json
+  // bỏ tiến độ của từ đã gỡ khỏi bộ — chỉ khi bộ từ đến từ API; bản fallback words.json có thể lệch DB nên không dọn
+  if (src && shouldPruneDeck(src.tag) && pruneSrs(deck, srs)) save(K_SRS, srs);
   bindUI();
   rollDay();
   const initialMiss = gameMiss.slice();   // giữ lại để dựng lại hàng đợi sau lần đồng bộ đầu

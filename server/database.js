@@ -1,18 +1,15 @@
-/* Kết nối PostgreSQL + tạo bảng. Không bao giờ làm chết process: lỗi pool/client chỉ log,
-   tạo schema thử lại nền (2s → 30s) — trong lúc chưa xong API trả 503, web tĩnh vẫn chạy. */
+/* Kết nối PostgreSQL + tạo bảng (server/schema.sql). Không bao giờ làm chết process: lỗi pool/client chỉ log,
+   tạo schema thử lại nền (2s → 30s) — trong lúc chưa xong API trả 503, web tĩnh vẫn chạy.
+   Sau schema chạy onReady (seed bộ từ): lỗi kết nối → thử lại cùng backoff, lỗi khác → log rồi dừng. */
 const fs = require('fs');
+const path = require('path');
 const { Pool } = require('pg');
 
-const SCHEMA = `
-CREATE TABLE IF NOT EXISTS users (
-  id serial PRIMARY KEY, username text UNIQUE NOT NULL, pass_hash text NOT NULL, created_at timestamptz DEFAULT now());
-CREATE TABLE IF NOT EXISTS sessions (
-  token_hash text PRIMARY KEY, user_id int NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  created_at timestamptz DEFAULT now(), last_used_at timestamptz DEFAULT now());
-CREATE INDEX IF NOT EXISTS sessions_user_idx ON sessions(user_id);
-CREATE TABLE IF NOT EXISTS progress (
-  user_id int PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE, data jsonb NOT NULL, updated_at timestamptz DEFAULT now());
-`;
+let schemaSql = null;
+function readSchema() {
+  if (schemaSql == null) schemaSql = fs.readFileSync(path.join(__dirname, 'schema.sql'), 'utf8');
+  return schemaSql;
+}
 
 // TLS tới DB: PGSSL=true bật mã hoá; có PGSSLROOTCERT (file CA) thì xác thực chứng chỉ, không thì chỉ mã hoá
 function sslOption(ssl, caFile) {
@@ -25,12 +22,24 @@ function createDatabase(url, { ssl, caFile, log }) {
   // client rảnh bị ngắt (DB khởi động lại/bảo trì) → pg phát 'error'; không bắt thì Node thoát
   pool.on('error', e => log('pg pool error: ' + e.message));
   const db = { pool, ready: false };
-  db.start = async function start() {
-    let wait = 2000;
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  db.start = async function start({ onReady, firstWaitMs = 2000 } = {}) {
+    let wait = firstWaitMs;
     for (;;) {
-      try { await pool.query(SCHEMA); db.ready = true; log('schema ready'); return; }
+      try { await pool.query(readSchema()); db.ready = true; log('schema ready'); break; }
       catch (e) { log('schema chưa tạo được (' + e.message + '), thử lại sau ' + wait / 1000 + 's'); }
-      await new Promise(r => setTimeout(r, wait));
+      await sleep(wait);
+      wait = Math.min(wait * 2, 30000);
+    }
+    if (!onReady) return;
+    wait = firstWaitMs;
+    for (;;) {
+      try { await onReady(); return; }
+      catch (e) {
+        if (!isDbUnavailable(e)) { log('seed bộ từ lỗi (' + e.message + '), giữ dữ liệu cũ'); return; }
+        log('seed bộ từ chưa chạy được (' + e.message + '), thử lại sau ' + wait / 1000 + 's');
+      }
+      await sleep(wait);
       wait = Math.min(wait * 2, 30000);
     }
   };
@@ -67,4 +76,4 @@ function isDbUnavailable(e) {
     /timeout exceeded when trying to connect|Connection terminated/i.test(e.message || '');
 }
 
-module.exports = { createDatabase, withTransaction, isDbUnavailable };
+module.exports = { createDatabase, withTransaction, isDbUnavailable, readSchema, sslOption };

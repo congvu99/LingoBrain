@@ -1,6 +1,6 @@
 {
   "name": "lingobrain",
-  "version": "2.10.0",
+  "version": "2.11.0",
   "private": true,
   "description": "LingoBrain — web ôn từ tiếng Anh (PWA) + server đồng bộ tiến độ",
   "main": "server.js",

@@ -5,6 +5,7 @@ const root = path.join(__dirname, '..');
 const PURE_MODULES = [
   'js/srs-scheduler.js',
   'js/sync-merge.js',
+  'js/deck-source.js',
   'js/cloud-sync-engine.js',   // không phải thuần hẳn nhưng không đụng DOM ở top-level → test bằng stub
   'js/review-mode-picker.js',
   'js/stats-dashboard.js',

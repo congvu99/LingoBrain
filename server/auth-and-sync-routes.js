@@ -1,4 +1,5 @@
-/* API tài khoản + đồng bộ: POST /api/register · /api/login · /api/logout, PUT /api/sync.
+/* API tài khoản + đồng bộ: POST /api/register · /api/login · /api/logout, PUT /api/sync;
+   bộ từ công khai: GET /api/words · /api/audio-index (server/deck-routes.js).
    Mọi phản hồi là JSON. Gộp dữ liệu dùng chung js/sync-merge.js với client. */
 const path = require('path');
 const { mergeSync, sanitizePayload } = require(path.join(__dirname, '..', 'js', 'sync-merge.js'));
@@ -6,6 +7,7 @@ const cred = require('./password-hashing-and-session-tokens.js');
 const { clientIp, isJsonRequest, createRateLimiter, createSemaphore, readJsonBody } = require('./request-guards.js');
 const { securityHeaders } = require('./static-file-server.js');
 const { withTransaction, isDbUnavailable } = require('./database.js');
+const { createDeckRoutes } = require('./deck-routes.js');
 
 const AUTH_BODY_MAX = 10 * 1024, SYNC_BODY_MAX = 10 * 1024 * 1024;
 const STORED_MAX = 8 * 1024 * 1024;   // dữ liệu một tài khoản sau gộp
@@ -101,14 +103,17 @@ function createApi({ pool, isReady, trustHops, log }) {
     });
   }
 
-  const ROUTES = { 'POST /api/register': register, 'POST /api/login': login, 'POST /api/logout': logout, 'PUT /api/sync': sync };
-  const PATHS = ['/api/register', '/api/login', '/api/logout', '/api/sync'];
+  const deck = createDeckRoutes({ pool });
+  const ROUTES = { 'POST /api/register': register, 'POST /api/login': login, 'POST /api/logout': logout, 'PUT /api/sync': sync,
+    'GET /api/words': deck.words, 'GET /api/audio-index': deck.audioIndex };
+  const PATHS = ['/api/register', '/api/login', '/api/logout', '/api/sync', '/api/words', '/api/audio-index'];
 
-  return async function handleApi(req, res, https) {
-    const send = (status, body) => {
+  async function handleApi(req, res, https) {
+    // body chuỗi = JSON dựng sẵn (bộ từ); extra ghi đè header mặc định (ETag, Cache-Control)
+    const send = (status, body, extra) => {
       if (res.headersSent) return;
-      res.writeHead(status, Object.assign({ 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' }, securityHeaders(https)));
-      res.end(body == null ? '' : JSON.stringify(body));
+      res.writeHead(status, Object.assign({ 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' }, securityHeaders(https), extra));
+      res.end(body == null ? '' : typeof body === 'string' ? body : JSON.stringify(body));
     };
     const p = req.url.split('?')[0];
     try {
@@ -116,16 +121,19 @@ function createApi({ pool, isReady, trustHops, log }) {
       if (!apiIp.hit(ipOf(req), Date.now())) return send(429, { error: 'Quá nhiều yêu cầu, đợi 1 phút' });
       const fn = ROUTES[req.method + ' ' + p];
       if (!fn) return PATHS.indexOf(p) >= 0 ? send(405, { error: 'Sai phương thức' }) : send(404, { error: 'Không có API này' });
-      if (p !== '/api/logout' && !isJsonRequest(req.headers)) return send(415, { error: 'Cần Content-Type: application/json' });
-      const [status, body] = await fn(req);
-      send(status, body);
+      const hasBody = req.method === 'POST' || req.method === 'PUT';
+      if (hasBody && p !== '/api/logout' && !isJsonRequest(req.headers)) return send(415, { error: 'Cần Content-Type: application/json' });
+      const [status, body, extra] = await fn(req);
+      send(status, body, extra);
     } catch (e) {
       if (e.status) return send(e.status, e.body || { error: e.status === 413 ? 'Dữ liệu quá lớn' : 'Yêu cầu không hợp lệ' });
       if (isDbUnavailable(e)) { log('db unavailable ' + p + ': ' + e.message); return send(503, { error: 'Máy chủ tạm thời không kết nối được dữ liệu, thử lại sau' }); }
       log('api error ' + p + ': ' + (e && e.message));   // không log body / mật khẩu / token
       send(500, { error: 'Lỗi máy chủ' });
     }
-  };
+  }
+  handleApi.invalidateDeck = deck.invalidate;   // gọi sau khi seed xong trong cùng process
+  return handleApi;
 }
 
 module.exports = { createApi };

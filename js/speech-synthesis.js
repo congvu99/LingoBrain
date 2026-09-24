@@ -1,4 +1,4 @@
-/* Phát âm: ưu tiên MP3 giọng Neural tạo sẵn (audio/index.json, tạo bằng tools/generate_edge_tts_audio.py);
+/* Phát âm: ưu tiên MP3 giọng Neural tạo sẵn (danh mục từ /api/audio-index, lỗi thì audio/index.json — tạo bằng tools/generate_edge_tts_audio.py);
    text không có sẵn (từ tự nạp, chữ gõ tay) hoặc phát lỗi → giọng hệ thống (Web Speech API). */
 let voice = null;
 // Giọng nam tự nhiên trước (Edge có bản "Online (Natural)"), rồi giọng nam quen của Chrome / Apple
@@ -17,7 +17,7 @@ const player = typeof Audio !== 'undefined' ? new Audio() : null;
 let playToken = 0, blobUrl = null;
 // Phải khớp normalize() trong tools/generate_edge_tts_audio.py
 function audioKey(t) { return String(t || '').replace(/\s+/g, ' ').trim(); }
-fetch('audio/index.json').then(r => r.ok ? r.json() : null).then(m => { audioMap = (m && m.items) || null; }).catch(() => {});
+fetchFirstOk(audioSources(), u => fetch(u), isAudioIndexJson).then(src => { audioMap = src ? cleanAudioItems(src.data.items) : null; });
 // iOS chỉ cho thẻ Audio phát sau fetch bất đồng bộ nếu nó từng play() trong một cử chỉ thật (touchend/click/phím)
 // → phát 1 mẫu im lặng; gọi lại mỗi cử chỉ / mỗi speak() cho tới khi play() thành công
 let unlocked = false;
