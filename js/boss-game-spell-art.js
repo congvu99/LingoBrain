@@ -1,7 +1,9 @@
 /* Game Pháp Sư Lexoria — hiệu ứng phép trên canvas: hạt (js/game-particles.js), quả phép bay, sóng xung kích,
    số sát thương, rung/loé. Chỉ phản ứng theo st.events của boss-game-logic.js (không tự quyết thời điểm).
    Quả phép bay đúng BOSS_TUNING.impactMs → chạm quái đúng lúc event 'impact'.
-   Cần game-particles.js, boss-game-spell-presets.js, boss-game-mage-art.js (mageStaffTip). */
+   Cần game-particles.js, boss-game-spell-presets.js, boss-game-mage-art.js (mageStaffTip).
+   Trận đồ/thiên thạch/tia sét/cột băng/gai đá/lốc + cắt cảnh tuyệt kỹ nằm ở js/boss-game-tier3-ultimate-fx.js
+   (nạp sau file này) — gọi qua các hàm bossFxTier3* nếu có, để file này không vượt 200 dòng. */
 
 const BOSS_FX_MAX_PARTS = 300;
 
@@ -46,6 +48,9 @@ function bossFxEvent(fx, e, st) {
       fx.shots.push({ x0: tip.x, y0: tip.y, x1: q.x, y1: q.y - q.s * 0.45 + (h ? q.s * 0.15 : 0), t: -h * 0.08, dur, p, scale, id });
     }
     fx.castPose = 0.4;
+    if (e.crit) bossBurst(fx, tip.x, tip.y, BOSS_FX_COMMON.fastCrit);
+    // trận đồ bậc 3: xuất hiện dưới chân pháp sư, sống đúng bằng thời gian bay tới lúc phép chạm
+    if (p.circle && typeof bossFxSpawnCircle === 'function') bossFxSpawnCircle(fx, m.x, m.y - m.s * 0.1, m.s * 0.5, p.circle, dur);
   } else if (e.type === 'impact') {
     const shot = fx.shots[0];
     if (shot) fx.shots = fx.shots.filter(s => s.id !== shot.id);   // Xích sét: 2 quả cùng một lần niệm
@@ -57,11 +62,20 @@ function bossFxEvent(fx, e, st) {
     fx.flash = Math.max(fx.flash, (fx.reduced ? 0.4 : 1) * p.flash * scale); fx.flashColor = p.flashColor;
     fx.monHit = 0.25;
     bossFxText(fx, x, y - q.s * 0.3, '−' + Math.round(e.dmg), e.tier === 3 ? '#ffd23f' : '#ffffff', 16 + e.tier * 5);
+    // hình lớn bậc 3 (thiên thạch/tia sét/cột băng/gai đá/lốc) tại quái
+    if (p.custom && typeof bossFxSpawnCustom === 'function') bossFxSpawnCustom(fx, p.custom, q.x, q.y - q.s * 0.45, q.s, p.ring);
   } else if (e.type === 'burnTick') {
     bossBurst(fx, q.x, q.y - q.s * 0.4, { kind: 'orb', speed: 80, life: 0.5, size: 4, colors: ['#ff9a3c', '#ff5a1f'], g: -80, n: 6 });
     bossFxText(fx, q.x + q.s * 0.3, q.y - q.s * 0.7, '−' + Math.round(e.dmg), '#ffb347', 14);
   } else if (e.type === 'fizzle' || e.type === 'giveup') {
     bossBurst(fx, m.x + m.s * 0.2, m.y - m.s * 0.9, BOSS_FX_COMMON.fizzle);
+  } else if (e.type === 'hint') {   // gợi ý chữ (Gió) — lá bay quanh chữ đầu
+    const r = bossRuneAt(m, 0, total);
+    bossBurst(fx, r.x, r.y, BOSS_FX_COMMON.hint);
+  } else if (e.type === 'typoForgiven') {   // gió lướt tha lỗi gõ sai (Gió)
+    bossBurst(fx, m.x, m.y - m.s * 0.6, BOSS_FX_COMMON.typoForgiven);
+  } else if (e.type === 'unfreeze') {
+    bossBurst(fx, q.x, q.y - q.s * 0.4, BOSS_FX_COMMON.unfreeze);
   } else if (e.type === 'hurt') {
     bossBurst(fx, m.x, m.y - m.s * 0.5, BOSS_FX_COMMON.bossHit);
     fx.mageHurt = 0.45;
@@ -69,9 +83,13 @@ function bossFxEvent(fx, e, st) {
     fx.flash = Math.max(fx.flash, 0.28); fx.flashColor = '#ff2d4d';
   } else if (e.type === 'shieldBlock') {
     bossBurst(fx, m.x + m.s * 0.3, m.y - m.s * 0.5, BOSS_FX_COMMON.shield);
+    bossBurst(fx, m.x + m.s * 0.3, m.y - m.s * 0.5, BOSS_FX_COMMON.shieldPop);
+    fx.rings.push({ x: m.x + m.s * 0.3, y: m.y - m.s * 0.5, r: m.s * 0.08, vr: 200, life: 0.35, max: 0.35, color: '#c9a36b' });
     bossFxText(fx, m.x, m.y - m.s * 1.1, 'Khiên chặn!', '#d9c08a', 15);
   } else if (e.type === 'won') {
     bossBurst(fx, q.x, q.y - q.s * 0.45, { kind: 'spark', speed: 420, life: 0.8, size: 2.6, colors: ['#fff4c2', '#ffd23f', '#ffffff'], n: 60 });
+  } else if (e.type === 'ultimate' || e.type === 'ultimateEnd') {
+    if (typeof bossFxUltimateEvent === 'function') bossFxUltimateEvent(fx, e, st);
   }
 }
 
@@ -90,6 +108,7 @@ function stepBossFx(fx, dtGame, dtReal) {
   fx.shake = Math.max(0, fx.shake - 40 * dtReal);
   fx.flash = Math.max(0, fx.flash - 2.2 * dtReal);
   ['monHit', 'mageHurt', 'castPose', 'typo'].forEach(k => { fx[k] = Math.max(0, fx[k] - dtReal); });
+  if (typeof stepBossTier3Fx === 'function') stepBossTier3Fx(fx, dtReal);   // trận đồ/thiên thạch/… + cắt cảnh tuyệt kỹ
 }
 
 function drawBossFx(ctx, fx, quality) {

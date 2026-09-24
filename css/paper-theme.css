@@ -342,6 +342,11 @@ html.game-lock .tabbar{display:none}
 .boss-diff button{background:var(--card);color:var(--ink);border-color:var(--rule)}
 .boss-diff button b{color:inherit;opacity:.7}
 .boss-diff button[aria-checked="true"]{border-color:var(--accent);background:var(--accent-wash);box-shadow:none}
+.boss-ult{background:linear-gradient(180deg,#4a2c7a,#2a1550);color:#ffe9a8;border-color:#e8c46a;
+  box-shadow:0 0 8px rgba(232,196,106,.35)}
+.boss-ult:active{transform:scale(.96)}
+@media (prefers-reduced-motion: no-preference){.boss-ult:not([hidden]){animation:boss-ult-pulse 1.2s ease-in-out infinite}}
+@keyframes boss-ult-pulse{50%{box-shadow:0 0 16px rgba(232,196,106,.75)}}
 /* màn kết thúc: cặp từ hay nhầm */
 .game-confusions ul{list-style:none;margin:4px 0 12px;padding:0}
 .game-confusions li{margin:2px 0}

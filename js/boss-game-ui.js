@@ -35,6 +35,7 @@ function startBossBattle(opts) {
     '<div class="plane-input-row">' +
       '<input id="bossInput" type="text" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" ' +
       'enterkeyhint="go" aria-label="gõ từ tiếng Anh để niệm chú" placeholder="gõ từ tiếng Anh để niệm chú…">' +
+      '<button class="btn-sm boss-ult" id="bossUlt" aria-label="dùng tuyệt kỹ (Shift+Enter)" hidden>✨ Tuyệt kỹ</button>' +
       '<button class="btn-sm" id="bossSkip" aria-label="bỏ từ này">Bỏ</button>' +
       '<button class="btn-sm" id="bossPause" aria-label="tạm dừng">⏸</button></div></div>';
   bindGameQuit();
@@ -68,11 +69,13 @@ function bossListen(target, type, fn) { target.addEventListener(type, fn); bossU
 function bindBossControls(ui) {
   const input = ui.input;
   // nút trong trận không được cướp focus ô gõ (desktop + iPhone), nếu không bàn phím đóng → tự tạm dừng
-  ['#bossPause', '#bossSkip', '#gQuit'].forEach(s => { const b = $(s); b.onmousedown = e => e.preventDefault(); b.addEventListener('touchstart', e => e.preventDefault(), { passive: false }); });
+  ['#bossPause', '#bossSkip', '#bossUlt', '#gQuit'].forEach(s => { const b = $(s); b.onmousedown = e => e.preventDefault(); b.addEventListener('touchstart', e => e.preventDefault(), { passive: false }); });
   $('#bossPause').onclick = () => pauseBoss();
   $('#bossPause').addEventListener('touchend', () => pauseBoss());
   $('#bossSkip').onclick = () => { if (ui.started && !ui.paused) giveUp(ui.st, performance.now()); };
   $('#bossSkip').addEventListener('touchend', e => { e.preventDefault(); $('#bossSkip').onclick(); });
+  $('#bossUlt').onclick = () => { if (ui.started && !ui.paused) useUltimate(ui.st, performance.now()); };
+  $('#bossUlt').addEventListener('touchend', e => { e.preventDefault(); $('#bossUlt').onclick(); });
   $('#gQuit').addEventListener('touchend', e => { e.preventDefault(); quitGame(); });
   $('#bossGo').onclick = () => { input.focus(); resumeBoss(); };
   ui.field.onmousedown = e => { if (!e.target.closest('button')) e.preventDefault(); };
@@ -118,6 +121,8 @@ function bossFrame(t) {
   stepBossFx(ui.fx, dtGame, dtMs / 1000);
   bossMeasureFps(ui, t);
   drawBossScene(ui.ctx, st, ui, t);
+  const ultBtn = $('#bossUlt');   // hiện khi Nộ đầy và trường phái có tuyệt kỹ (bậc 3 nhánh trường phái)
+  if (ultBtn) ultBtn.hidden = !(st.mods.ultimate && st.rage >= BOSS_TUNING.rageMax);
   if (st.phase !== 'play' && !ui.ending) {
     ui.ending = true;
     setTimeout(() => { if (game && game.seq === ui.seq && bossUi === ui) showBossResult(ui); }, BOSS_END_DELAY);

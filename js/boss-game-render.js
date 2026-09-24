@@ -1,6 +1,8 @@
 /* Game Pháp Sư Lexoria — ghép một khung hình từ state trận (boss-game-logic.js) + fx (boss-game-spell-art.js).
    Chỉ vẽ, không đổi state. Nền và quái ở đây là bản tạm (phase sau thay bằng nền vùng + 12 quái).
-   Chậm thời gian: k = mức chậm 0..1 → zoom tới 1.06 về phía pháp sư, lớp xám + viền tối. */
+   Chậm thời gian: k = mức chậm 0..1 → zoom tới 1.06 về phía pháp sư, lớp xám + viền tối.
+   Trận đồ/hình lớn bậc 3/cắt cảnh tuyệt kỹ nằm ở js/boss-game-tier3-ultimate-fx.js — gọi qua hook drawBossPassiveFx
+   (trong khối rung/zoom) và drawBossUltimateCutscene (sau khi bỏ transform, phủ toàn màn). */
 
 const BOSS_HEART = '❤️', BOSS_HEART_EMPTY = '🖤';
 
@@ -66,7 +68,7 @@ function drawRuneCircle(ctx, st, fx) {
   ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
 }
 
-function drawBossHud(ctx, st, ui) {
+function drawBossHud(ctx, st, ui, now) {
   const w = ui.w, pad = 10, bw = Math.min(220, w * 0.48), k = st.hp / st.hpMax;
   ctx.font = '700 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
   ctx.textAlign = 'right'; ctx.fillStyle = '#f3e9ff'; ctx.fillText(ui.monsterName, w - pad, pad + 12);
@@ -77,9 +79,11 @@ function drawBossHud(ctx, st, ui) {
   ctx.textAlign = 'left'; ctx.font = '16px -apple-system,"Segoe UI Emoji",sans-serif';
   ctx.fillText(BOSS_HEART.repeat(Math.max(0, st.hearts)) + BOSS_HEART_EMPTY.repeat(Math.max(0, st.heartsMax - st.hearts)) +
     (st.shield ? ' 🛡️' : ''), pad, pad + 16);
-  for (let i = 0; i < BOSS_TUNING.rageMax; i++) {   // Nộ: 8 ô
-    ctx.fillStyle = i < st.rage ? (st.rage >= BOSS_TUNING.rageMax ? '#ffd23f' : '#ff8a3c') : 'rgba(255,255,255,.15)';
-    ctx.fillRect(pad + i * 13, pad + 24, 10, 6);
+  const rageFull = st.rage >= BOSS_TUNING.rageMax, glow = rageFull ? 0.5 + 0.5 * Math.sin(now / 130) : 0;
+  for (let i = 0; i < BOSS_TUNING.rageMax; i++) {   // Nộ: 8 ô — đầy thì rung nhẹ + sáng nhấp nháy
+    ctx.fillStyle = i < st.rage ? (rageFull ? (glow > 0.5 ? '#fff6c2' : '#ffd23f') : '#ff8a3c') : 'rgba(255,255,255,.15)';
+    const jitter = rageFull && !ui.fx.reduced ? Math.sin(now / 45 + i) * 1.2 : 0;
+    ctx.fillRect(pad + i * 13, pad + 24 + jitter, 10, 6);
   }
   if (ui.showFps) {
     ctx.fillStyle = '#9f9'; ctx.font = '11px ui-monospace,monospace';
@@ -95,12 +99,16 @@ function drawBossScene(ctx, st, ui, now) {
   const z = 1 + 0.06 * k, zx = m.x, zy = m.y - m.s * 0.5;
   if (z !== 1) { ctx.translate(zx, zy); ctx.scale(z, z); ctx.translate(-zx, -zy); }
   drawBossBackdrop(ctx, w, h);
+  const lift = typeof bossMonsterLiftPx === 'function' ? bossMonsterLiftPx(fx) : 0;
+  ctx.save(); if (lift) ctx.translate(0, -lift);
   drawTempMonster(ctx, fx.layout.mon, ui.time, fx.monHit, st.frozen);
   drawBossClock(ctx, st, fx.layout.mon, now);
+  ctx.restore();
   const pose = fx.mageHurt > 0 ? 'hurt' : fx.castPose > 0 ? 'cast' : st.typed.length ? 'chant' : 'idle';
   drawMage(ctx, m.x, m.y, m.s, { gender: ui.gender, pose, t: ui.time, element: st.mods.element });
   drawRuneCircle(ctx, st, fx);
   drawBossFx(ctx, fx, ui.quality);
+  if (typeof drawBossPassiveFx === 'function') drawBossPassiveFx(ctx, fx, st, now);   // trận đồ, hình lớn bậc 3, phủ băng
   ctx.restore();
   if (k > 0.01) {   // hậu kỳ chậm thời gian: nhạt màu + viền tối
     ctx.fillStyle = 'rgba(40,36,60,' + (0.22 * k) + ')'; ctx.fillRect(0, 0, w, h);
@@ -109,5 +117,6 @@ function drawBossScene(ctx, st, ui, now) {
     ctx.fillStyle = v; ctx.fillRect(0, 0, w, h);
   }
   if (fx.flash > 0) { ctx.globalAlpha = Math.min(0.6, fx.flash); ctx.fillStyle = fx.flashColor; ctx.fillRect(0, 0, w, h); ctx.globalAlpha = 1; }
-  drawBossHud(ctx, st, ui);
+  drawBossHud(ctx, st, ui, now);
+  if (typeof drawBossUltimateCutscene === 'function') drawBossUltimateCutscene(ctx, fx, ui, now);   // cắt cảnh tuyệt kỹ, phủ cả HUD
 }
