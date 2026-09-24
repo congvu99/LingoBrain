@@ -1,5 +1,6 @@
 /* Game Pháp Sư Lexoria — ghép một khung hình từ state trận (boss-game-logic.js) + fx (boss-game-spell-art.js).
-   Chỉ vẽ, không đổi state. Nền và quái ở đây là bản tạm (phase sau thay bằng nền vùng + 12 quái).
+   Chỉ vẽ, không đổi state. Nền vùng (boss-game-scene.js) build offscreen 1 lần/đổi cỡ, cache theo ui.fx.bg*;
+   quái vẽ bằng boss-game-monster-art.js theo ui.monster (BOSS_MONSTERS, boss-game-story.js).
    Chậm thời gian: k = mức chậm 0..1 → zoom tới 1.06 về phía pháp sư, lớp xám + viền tối.
    Trận đồ/hình lớn bậc 3/cắt cảnh tuyệt kỹ nằm ở js/boss-game-tier3-ultimate-fx.js — gọi qua hook drawBossPassiveFx
    (trong khối rung/zoom) và drawBossUltimateCutscene (sau khi bỏ transform, phủ toàn màn). */
@@ -15,34 +16,14 @@ function layoutBoss(fx, w, h) {
 
 function slowAmount(st) { return Math.max(0, Math.min(1, (1 - st.timeScale) / (1 - BOSS_TUNING.slowScale))); }
 
-function drawBossBackdrop(ctx, w, h) {
-  const g = ctx.createLinearGradient(0, 0, 0, h);
-  g.addColorStop(0, '#120b2e'); g.addColorStop(0.62, '#2b1d4f'); g.addColorStop(0.63, '#1b2a1f'); g.addColorStop(1, '#0d150f');
-  ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
-  ctx.fillStyle = 'rgba(255,240,200,.85)';   // trăng
-  ctx.beginPath(); ctx.arc(w * 0.82, h * 0.16, Math.min(w, h) * 0.06, 0, 6.283); ctx.fill();
-}
-
-/* Quái tạm dáng thú: thân elip, đầu có sừng, mắt đỏ; nhún theo thời gian game; trúng đòn loé trắng */
-function drawTempMonster(ctx, q, t, hit, frozen) {
-  const bob = Math.sin(t * 2.4) * q.s * 0.02, s = q.s;
-  ctx.save(); ctx.translate(q.x, q.y + bob);
-  ctx.fillStyle = 'rgba(0,0,0,.35)'; ctx.beginPath(); ctx.ellipse(0, -bob, s * 0.36, s * 0.06, 0, 0, 6.283); ctx.fill();
-  const body = frozen ? '#6aa9c9' : '#3a2450', dark = frozen ? '#3d7894' : '#24163a';
-  ctx.fillStyle = dark;
-  [-0.2, -0.05, 0.12, 0.26].forEach(lx => ctx.fillRect(lx * s, -s * 0.2, s * 0.07, s * 0.2));   // chân
-  ctx.fillStyle = body;
-  ctx.beginPath(); ctx.ellipse(0, -s * 0.32, s * 0.34, s * 0.19, 0, 0, 6.283); ctx.fill();          // thân
-  ctx.beginPath(); ctx.ellipse(-s * 0.3, -s * 0.48, s * 0.15, s * 0.13, -0.3, 0, 6.283); ctx.fill(); // đầu (quay về pháp sư)
-  ctx.fillStyle = '#d8c9a8';
-  [[-0.36, -0.58, -0.5], [-0.24, -0.6, -0.34]].forEach(([x, y, tx]) => {                            // sừng
-    ctx.beginPath(); ctx.moveTo(x * s, y * s); ctx.quadraticCurveTo(tx * s, (y - 0.14) * s, (tx - 0.04) * s, (y - 0.2) * s); ctx.lineTo((x + 0.04) * s, y * s); ctx.fill();
-  });
-  ctx.fillStyle = frozen ? '#e6fbff' : '#ff3b3b';
-  ctx.beginPath(); ctx.arc(-s * 0.37, -s * 0.49, s * 0.022, 0, 6.283); ctx.fill();                  // mắt
-  if (hit > 0) { ctx.globalAlpha = Math.min(1, hit * 4) * 0.7; ctx.fillStyle = '#ffffff';
-    ctx.beginPath(); ctx.ellipse(-s * 0.05, -s * 0.36, s * 0.42, s * 0.26, 0, 0, 6.283); ctx.fill(); ctx.globalAlpha = 1; }
-  ctx.restore();
+/* Nền vùng: build offscreen 1 lần khi đổi cỡ/DPR/vùng, sau đó chỉ drawImage lại mỗi khung hình (rẻ) */
+function drawBossRegion(ctx, ui, w, h) {
+  const fx = ui.fx, region = ui.region;
+  if (!fx.bg || fx.bgW !== w || fx.bgH !== h || fx.bgDpr !== ui.dpr || fx.bgRegion !== (region && region.id)) {
+    fx.bg = buildRegionBackdrop(region, w, h, ui.dpr || 1);
+    fx.bgW = w; fx.bgH = h; fx.bgDpr = ui.dpr; fx.bgRegion = region && region.id;
+  }
+  ctx.drawImage(fx.bg, 0, 0, w, h);
 }
 
 /* Vòng nạp đòn của trùm quanh quái; còn < 25% → nhấp nháy đỏ; đang đóng băng → xanh băng */
@@ -98,10 +79,10 @@ function drawBossScene(ctx, st, ui, now) {
   if (fx.shake) ctx.translate((Math.random() - 0.5) * fx.shake, (Math.random() - 0.5) * fx.shake);
   const z = 1 + 0.06 * k, zx = m.x, zy = m.y - m.s * 0.5;
   if (z !== 1) { ctx.translate(zx, zy); ctx.scale(z, z); ctx.translate(-zx, -zy); }
-  drawBossBackdrop(ctx, w, h);
+  drawBossRegion(ctx, ui, w, h);
   const lift = typeof bossMonsterLiftPx === 'function' ? bossMonsterLiftPx(fx) : 0;
   ctx.save(); if (lift) ctx.translate(0, -lift);
-  drawTempMonster(ctx, fx.layout.mon, ui.time, fx.monHit, st.frozen);
+  drawMonster(ctx, fx.layout.mon, ui.monster, { t: ui.time, hit: fx.monHit, frozen: st.frozen, pose: bossMonsterPose(st, fx) });
   drawBossClock(ctx, st, fx.layout.mon, now);
   ctx.restore();
   const pose = fx.mageHurt > 0 ? 'hurt' : fx.castPose > 0 ? 'cast' : st.typed.length ? 'chant' : 'idle';

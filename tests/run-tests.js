@@ -20,7 +20,8 @@ const PURE_MODULES = [
   'js/boss-game-spell-math.js',       // cần plane-game-text.js + word-games.js
   'js/boss-game-elements.js',
   'js/boss-game-logic.js',
-  'js/boss-game-progress.js'
+  'js/boss-game-progress.js',
+  'js/boss-game-story.js'         // dữ liệu thuần: BOSS_REGIONS, BOSS_MONSTERS, BOSS_STORY
 ];
 // require/Buffer/process chỉ cho test Node-only (server/*); test dùng chung trình duyệt không được phụ thuộc chúng
 const ctx = vm.createContext({ console, Math, Date, JSON, Array, Object, String, Number, RegExp, Error, Promise, fs, path, ROOT: root, require, Buffer, process, setTimeout, clearTimeout, AbortController });

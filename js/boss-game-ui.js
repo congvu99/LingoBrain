@@ -25,7 +25,8 @@ function startBossBattle(opts) {
   const { groups, tiers } = bossBattleGroups();
   if (!groups.length) return toast('❌ Chưa đủ từ đã học');
   game = { id: 'boss', seq: ++gameSeq, miss: [], over: false, stop: stopBossBattle };
-  const mods = modifiersFor(bossProg.alloc, bossProg.element.v), mon = bossTempMonster(opts.beat);
+  const mods = modifiersFor(bossProg.alloc, bossProg.element.v), picked = bossPickMonster(opts.beat, bossProg.wins);
+  const mon = Object.assign({}, picked.monster, { hp: bossMonsterHp(picked.monster) }), region = picked.region;
   // buff Ôn từ: chốt cả ngày ngay khi bắt đầu trận (đánh lại/luyện phép không qua hub vẫn chốt được)
   const buff = reviewBuff(bossProg, srs, Date.now(), opts.date);
   if (buff && bossProg.buffDate !== opts.date) { bossProg.buffDate = opts.date; saveBoss(); }
@@ -45,7 +46,7 @@ function startBossBattle(opts) {
   const canvas = $('#bossCanvas'), now = performance.now();
   const ui = bossUi = { seq: game.seq, opts, xpAtStart: bossProg.xp, buff, raf: 0, last: 0, time: 0, started: false, paused: false,
     ending: false, countdown: 0, canvas, ctx: canvas.getContext('2d'), fx: createBossFx(), input: $('#bossInput'), field: $('#bossField'),
-    off: [], monsterName: mon.name, gender: bossProg.gender.v, fps: 60, frames: 0, fpsAt: now, quality: 1, showFps: BOSS_SHOW_FPS,
+    off: [], monsterName: mon.name, monster: mon, region, gender: bossProg.gender.v, fps: 60, frames: 0, fpsAt: now, quality: 1, showFps: BOSS_SHOW_FPS,
     st: createBattle({ monster: mon, groups, tiers, mods, hearts: 3 + mods.maxHeartsAdd + (buff ? 1 : 0), difficulty: opts.difficulty, carryDmg: opts.carryDmg, now }) };
   pauseBattle(ui.st, now);                           // đồng hồ trùm chỉ chạy sau đếm ngược
   document.documentElement.classList.add('game-lock');

@@ -1,7 +1,7 @@
 /* Game Pháp Sư Lexoria — màn lần đầu. Lần đầu = bossProg.gender.ts === 0 (cleanBoss trả ts=0 khi chưa từng chọn).
    Đang đăng nhập mà phiên này CHƯA có lần sync thành công/thất bại → chờ (tránh đè cây kỹ năng đã có ở máy khác);
    ngoại tuyến thì không chờ được — cho qua thẳng màn chọn. Chọn xong → xem trước chân dung → đoạn mở đầu truyện
-   (Phase 4, chỉ để chỗ gọi showStoryCard) → hub. Cần js/boss-game-mage-art.js (drawMage), boss-game-hub-ui.js
+   (thẻ truyện trận đầu hiện ngay trong sảnh) → hub. Cần js/boss-game-mage-art.js (drawMage), boss-game-hub-ui.js
    (startBossHub) nạp trước. */
 
 let bossFirstRunWait = 0;   // interval id của màn "Đang đồng bộ…"; dọn ở stopBossHub()
@@ -61,7 +61,5 @@ function bossDrawPreview(g) {
 function bossConfirmGender(g) {
   bossProg.gender = { v: g === 'm' ? 'm' : 'f', ts: Date.now() };
   saveBoss();
-  // đoạn mở đầu truyện (Phase 4); chưa có thì thẳng vào hub
-  if (typeof showStoryCard === 'function') showStoryCard(-1, 'intro', () => startBossHub());
-  else startBossHub();
+  startBossHub();   // sảnh hiện luôn thẻ truyện trận đầu (mở đầu hành trình)
 }

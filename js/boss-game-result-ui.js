@@ -86,6 +86,9 @@ function showBossResult(ui) {
     : o.kind === 'practice' ? 'Luyện phép chỉ cộng XP.'
     : won ? 'Trận hôm nay đã xong — ngày mai có trận mới.'
     : 'Oblivion cười khẩy… quái còn giữ vết thương trong hôm nay: ' + Math.ceil(st.hp) + '/' + st.hpMax + ' HP. Đánh lại ngay được.';
+  // Thắng trận truyện thật (không trùng máy khác) → đoạn kết (outro); từ đã học tô màu + bấm nghe
+  const storyOutro = won && o.kind === 'story' && !dup && BOSS_STORY[o.beat]
+    ? '<p class="serif boss-story-outro">' + bossStoryHtml(BOSS_STORY[o.beat].outro) + '</p>' : '';
   $('#app').innerHTML = '<div class="card page game-end boss-result">' +
     '<div class="step-label">' + esc(GAME_LABEL.boss + ' · ' + ui.monsterName) + '</div>' +
     '<div class="game-end-score"><b>' + (won ? 'Thắng!' : 'Thua') + '</b><span class="mono">+' + earned + ' XP' + (ui.buff ? ' ✨' : '') + '</span></div>' +
@@ -93,17 +96,14 @@ function showBossResult(ui) {
     '<div class="bar-track" aria-label="kinh nghiệm"><div class="bar" id="bossResultBar" style="width:' + startPct + '%"></div></div>' +
     '<span class="mono small muted">Lv ' + lv1 + ' · ' + Math.floor(bossProg.xp - from1) + ' / ' + (to1 - from1) + ' XP</span>' +
     (leveledUp ? '<p class="ok"><b>LÊN CẤP ' + lv1 + '!</b> Có thêm 1 điểm cho cây nguyên tố.</p>' : '') +
-    '<p class="small muted">' + esc(note) + '</p>' +
+    '<p class="small muted">' + esc(note) + '</p>' + storyOutro +
     (words.length ? '<p class="small">' + words.length + ' từ vừa sai sẽ được ôn trước ở phiên tới:</p><p class="serif">' + words.map(esc).join(' · ') + '</p>'
       : '<p class="small ok">Không sai từ nào.</p>') +
     '<div class="row"><button class="btn-primary" id="bossAgain">' + (won ? 'Luyện phép' : 'Đánh lại') + '</button>' +
     '<button class="btn-ghost" id="bossToHub">Về sảnh</button></div></div>';
   requestAnimationFrame(() => { const bar = $('#bossResultBar'); if (bar) bar.style.width = endPct + '%'; });
+  bossBindWordTap($('.boss-result'));
   // "Đánh lại" / "Luyện phép" là cử chỉ thật → startBossBattle focus được ô gõ trên iOS
   $('#bossAgain').onclick = () => startBossBattle(bossTodayOpts(o.difficulty));
-  $('#bossToHub').onclick = () => {
-    // trận truyện thắng thật (không trùng) → outro (Phase 4); chưa có thì thẳng về sảnh
-    if (won && o.kind === 'story' && !dup && typeof showStoryCard === 'function') showStoryCard(o.beat, 'outro', () => openBossHub());
-    else openBossHub();
-  };
+  $('#bossToHub').onclick = () => openBossHub();
 }

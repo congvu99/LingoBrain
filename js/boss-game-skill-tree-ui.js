@@ -1,7 +1,7 @@
 /* Game Pháp Sư Lexoria — cây nguyên tố (DOM): 5 cột × 3 bậc + chọn trường phái. Điểm chỉ tăng, không có
    reset (mergeBoss gộp alloc theo max từng nhánh — xem boss-progress-sync-merge.js). Nội tại bậc 1–2 của MỌI
    nhánh đã cộng đều bật; trường phái chỉ quyết định màu phép, khắc hệ và tuyệt kỹ (bậc 3). Cần js/boss-game-elements.js,
-   js/boss-progress-sync-merge.js (BOSS_ELEMENTS), js/boss-game-hub-ui.js (bossTodayOpts, bossTempMonster) nạp trước. */
+   js/boss-progress-sync-merge.js (BOSS_ELEMENTS), js/boss-game-hub-ui.js (bossTodayOpts) + boss-game-story-journal-ui.js (bossPickMonster) nạp trước. */
 
 const BOSS_RANK_DESC = {
   fire: ['+15% sát thương mọi phép', 'Trùm bị đốt thêm sát thương theo thời gian', 'Tuyệt kỹ: Mưa sao băng'],
@@ -13,7 +13,7 @@ const BOSS_RANK_DESC = {
 
 function renderSkillTree() {
   const lv = levelFromXp(bossProg.xp), left = pointsLeft(lv, bossProg.alloc);
-  const o = bossTodayOpts(bossDifficulty(cfg.bossLevel)), mon = bossTempMonster(o.beat);
+  const o = bossTodayOpts(bossDifficulty(cfg.bossLevel)), mon = bossPickMonster(o.beat, bossProg.wins).monster;
   $('#app').innerHTML = '<div class="card page boss-tree">' +
     '<div class="game-head"><button class="btn-sm btn-ghost" id="bossTreeBack" aria-label="về sảnh">←</button>' +
       '<b class="serif">Cây nguyên tố</b><span class="spacer"></span><span class="mono small">Điểm còn: ' + left + '</span></div>' +
