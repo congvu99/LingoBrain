@@ -26,6 +26,9 @@ function startBossBattle(opts) {
   if (!groups.length) return toast('❌ Chưa đủ từ đã học');
   game = { id: 'boss', seq: ++gameSeq, miss: [], over: false, stop: stopBossBattle };
   const mods = modifiersFor(bossProg.alloc, bossProg.element.v), mon = bossTempMonster(opts.beat);
+  // buff Ôn từ: chốt cả ngày ngay khi bắt đầu trận (đánh lại/luyện phép không qua hub vẫn chốt được)
+  const buff = reviewBuff(bossProg, srs, Date.now(), opts.date);
+  if (buff && bossProg.buffDate !== opts.date) { bossProg.buffDate = opts.date; saveBoss(); }
   $('#app').innerHTML = '<div class="boss-game" id="bossGame">' + gameHeadHtml('') +
     '<div class="boss-prompt" id="bossPrompt" data-tier="1" aria-live="polite"><span class="boss-tier" id="bossTier"></span>' +
       '<span class="boss-prompt-text serif" id="bossPromptText"></span><span class="boss-letters mono" id="bossLetters"></span></div>' +
@@ -39,10 +42,10 @@ function startBossBattle(opts) {
       '<button class="btn-sm" id="bossPause" aria-label="tạm dừng">⏸</button></div></div>';
   bindGameQuit();
   const canvas = $('#bossCanvas'), now = performance.now();
-  const ui = bossUi = { seq: game.seq, opts, xpAtStart: bossProg.xp, raf: 0, last: 0, time: 0, started: false, paused: false,
+  const ui = bossUi = { seq: game.seq, opts, xpAtStart: bossProg.xp, buff, raf: 0, last: 0, time: 0, started: false, paused: false,
     ending: false, countdown: 0, canvas, ctx: canvas.getContext('2d'), fx: createBossFx(), input: $('#bossInput'), field: $('#bossField'),
     off: [], monsterName: mon.name, gender: bossProg.gender.v, fps: 60, frames: 0, fpsAt: now, quality: 1, showFps: BOSS_SHOW_FPS,
-    st: createBattle({ monster: mon, groups, tiers, mods, hearts: 3 + mods.maxHeartsAdd, difficulty: opts.difficulty, carryDmg: opts.carryDmg, now }) };
+    st: createBattle({ monster: mon, groups, tiers, mods, hearts: 3 + mods.maxHeartsAdd + (buff ? 1 : 0), difficulty: opts.difficulty, carryDmg: opts.carryDmg, now }) };
   pauseBattle(ui.st, now);                           // đồng hồ trùm chỉ chạy sau đếm ngược
   document.documentElement.classList.add('game-lock');
   if (window.visualViewport) { bossListen(visualViewport, 'resize', fitBossGame); bossListen(visualViewport, 'scroll', fitBossGame); }
