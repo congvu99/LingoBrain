@@ -1,5 +1,5 @@
 /* Game Pháp Sư Lexoria — DỮ LIỆU THUẦN: 4 vùng đất, 12 quái (5 dáng tham số), 28 đoạn truyện (index = beat).
-   Không có hàm ở đây (chỉ literal) — logic tra cứu (theo beat/wins) nằm ở boss-game-hub-ui.js.
+   Không có hàm ở đây (chỉ literal) — logic tra cứu (theo beat/wins) nằm ở boss-game-story-journal-ui.js.
    '{id}' trong intro/outro = từ tiếng Anh có thật trong words.json (kiểm bằng tests/boss-game-story.test.js);
    đã học → tô màu + bấm nghe (storySegments ở boss-game-progress.js). weak ∈ BOSS_ELEMENTS (boss-progress-sync-merge.js).
    Khắc hệ theo brainstorm: ch.1 sợ 🔥 fire · ch.2 🌿 earth · ch.3 ❄️ ice · ch.4 ⚡ storm (CHỈ áp cho trùm chương;

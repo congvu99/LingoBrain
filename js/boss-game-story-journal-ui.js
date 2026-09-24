@@ -3,7 +3,10 @@
    Mọi text động qua esc(); nạp trước boss-game-hub-ui.js (BOSS_BEATS_PER_CHAPTER ở hub chỉ dùng lúc gọi). */
 
 const BOSS_SHAPE_EMOJI = { humanoid: '👹', beast: '🐺', wraith: '👻', flyer: '🦅', dragon: '🐉' };
-const bossMonsterHp = m => Math.round((m.hpMul || 1) * BOSS_TUNING.hp.minion);
+// hpMul 1 = quái thường (hp.minion), 2 = trùm chương (hp.boss) → chỉnh BOSS_TUNING.hp là đủ
+const bossMonsterHp = m => Math.round((m.hpMul || 1) > 1 ? m.hpMul / 2 * BOSS_TUNING.hp.boss : (m.hpMul || 1) * BOSS_TUNING.hp.minion);
+// rand tất định theo chuỗi (ngày): sảnh, cây nguyên tố và trận cùng thấy MỘT quái; vết thương Vô tận chỉ mang cho đúng quái đó
+function bossDateRand(seed) { let h = 2166136261; for (const c of String(seed)) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return () => ((h = Math.imul(h ^ (h >>> 15), 2246822507) >>> 0) % 1e6) / 1e6; }
 
 /* Quái id đã từng gặp (mọi beat ≤ beat cao nhất đã thắng), giữ thứ tự xuất hiện; chưa thắng trận nào → quái đầu chương 1 */
 function bossEncounteredMonsterIds(wins) {
@@ -13,10 +16,10 @@ function bossEncounteredMonsterIds(wins) {
   return ids.length ? ids : [BOSS_MONSTERS[0].id];
 }
 
-/* Quái + vùng cho 1 beat: trận truyện tra thẳng BOSS_STORY; luyện phép/vô tận → quái ngẫu nhiên đã gặp (đủ đa dạng
-   mà không lộ quái chưa từng đánh), vùng theo quái đó */
+/* Quái + vùng cho 1 beat: trận truyện tra thẳng BOSS_STORY; luyện phép/vô tận → quái đã gặp, chọn theo ngày (đổi mỗi ngày,
+   cố định trong ngày), vùng theo quái đó */
 function bossPickMonster(beat, wins, rand) {
-  rand = rand || Math.random;
+  rand = rand || bossDateRand(dkey());
   const seg = beat >= 0 && beat < BOSS_STORY.length ? BOSS_STORY[beat] : null;
   const ids = seg ? null : bossEncounteredMonsterIds(wins);
   const id = seg ? seg.monster : ids[Math.floor(rand() * ids.length)];

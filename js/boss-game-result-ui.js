@@ -53,24 +53,30 @@ function bossUltCastCount(st) { return st.log.filter(l => l.ok && l.tier === 3).
 
 /* true = trận truyện/vô tận này đã bị máy khác thắng trong lúc đánh (sync giữa trận) → tính như Luyện phép */
 function bossDupWin(o) { return o.kind !== 'practice' && todayBattle(bossProg, o.date).kind === 'practice'; }
+/* Chốt "trùng thắng" MỘT lần khi trận vừa kết thúc, TRƯỚC khi chính trận này ghi wins (ghi xong thì bossDupWin luôn true).
+   Còn đang đánh thì kiểm trực tiếp, không chốt. */
+function bossDup(ui) {
+  if (ui.dup == null && ui.st.phase !== 'play') ui.dup = bossDupWin(ui.opts);
+  return ui.dup != null ? ui.dup : bossDupWin(ui.opts);
+}
 
 /* XP trận = sát thương × xpPerDmg (+ thưởng thắng trận truyện, trừ khi trùng thắng) × buff Ôn từ */
 function bossEarned(ui) {
-  const st = ui.st, T = BOSS_TUNING, isStoryWin = st.phase === 'won' && ui.opts.kind !== 'practice' && !bossDupWin(ui.opts);
+  const st = ui.st, T = BOSS_TUNING, isStoryWin = st.phase === 'won' && ui.opts.kind !== 'practice' && !bossDup(ui);
   return Math.floor((st.dealt * T.xpPerDmg + (isStoryWin ? T.xpStoryWin : 0)) * (ui.buff ? T.buffXpMul : 1));
 }
 
 /* Lưu giữa trận / kết trận: ẩn app, pagehide, thoát, đổi tab đều gọi — idempotent */
 function persistBattle(ui) {
   if (!ui || !ui.st) return;
-  const o = ui.opts, dup = bossDupWin(o);
+  const o = ui.opts, dup = bossDup(ui);
   recordProgress(bossProg, { date: o.date, beat: o.beat, carryDmg: o.carryDmg, dealt: ui.st.dealt, xpAtStart: ui.xpAtStart,
     earned: bossEarned(ui), won: ui.st.phase === 'won' && !dup, story: o.kind !== 'practice' && !dup });
   saveBoss();
 }
 
 function showBossResult(ui) {
-  const st = ui.st, o = ui.opts, won = st.phase === 'won', dup = bossDupWin(o);
+  const st = ui.st, o = ui.opts, won = st.phase === 'won', dup = bossDup(ui);
   game.miss = st.miss.slice();
   const missed = game.miss.slice();
   flushMiss();

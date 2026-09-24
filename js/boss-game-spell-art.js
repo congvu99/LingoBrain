@@ -3,7 +3,7 @@
    Quả phép bay đúng BOSS_TUNING.impactMs → chạm quái đúng lúc event 'impact'.
    Cần game-particles.js, boss-game-spell-presets.js, boss-game-mage-art.js (mageStaffTip).
    Trận đồ/thiên thạch/tia sét/cột băng/gai đá/lốc + cắt cảnh tuyệt kỹ nằm ở js/boss-game-tier3-ultimate-fx.js
-   (nạp sau file này) — gọi qua các hàm bossFxTier3* nếu có, để file này không vượt 200 dòng. */
+   (nạp sau file này) — gọi qua bossFxSpawnCircle/bossFxSpawnCustom/bossFxUltimateEvent/stepBossTier3Fx nếu có, để file này không vượt 200 dòng. */
 
 const BOSS_FX_MAX_PARTS = 300;
 

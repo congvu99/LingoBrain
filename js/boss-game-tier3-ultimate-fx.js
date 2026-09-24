@@ -56,7 +56,7 @@ function drawBossPassiveFx(ctx, fx, st, now) {
     else if (c.type === 'tornado') drawTornado(ctx, c.x, c.y, c.r, now / 1000, c.color, k);
     else if (c.type === 'bolt') drawLightningBolt(ctx, { x: c.x, y: c.y - c.r * 2.2 }, { x: c.x, y: c.y }, Math.round(c.x + c.y), c.color, 1 - Math.abs(k - 0.15) * 3);
   });
-  if (st.frozen) {   // phủ băng: quầng lạnh quanh quái, không đụng drawTempMonster
+  if (st.frozen) {   // phủ băng: quầng lạnh quanh quái (thân quái do drawMonster vẽ)
     const q = fx.layout.mon;
     ctx.globalAlpha = 0.35; ctx.fillStyle = '#bff4ff';
     ctx.beginPath(); ctx.ellipse(q.x, q.y - q.s * 0.32, q.s * 0.4, q.s * 0.24, 0, 0, 6.283); ctx.fill();

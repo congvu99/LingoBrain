@@ -21,9 +21,9 @@ function bossBattleGroups() {
 
 /* opts = {date, kind: 'story'|'endless'|'practice', beat, carryDmg, difficulty} (bossTodayOpts ở hub) */
 function startBossBattle(opts) {
-  if (game && game.stop) { const s = game.stop; game.stop = null; s(); flushMiss(); }   // trận/sảnh cũ: dọn + chốt từ sai trước khi thay game
   const { groups, tiers } = bossBattleGroups();
-  if (!groups.length) return toast('❌ Chưa đủ từ đã học');
+  if (!groups.length) return toast('❌ Chưa đủ từ đã học');   // kiểm trước: sảnh đang mở vẫn giữ nguyên
+  if (game && game.stop) { const s = game.stop; game.stop = null; s(); flushMiss(); }   // trận/sảnh cũ: dọn + chốt từ sai trước khi thay game
   game = { id: 'boss', seq: ++gameSeq, miss: [], over: false, stop: stopBossBattle };
   const mods = modifiersFor(bossProg.alloc, bossProg.element.v), picked = bossPickMonster(opts.beat, bossProg.wins);
   const mon = Object.assign({}, picked.monster, { hp: bossMonsterHp(picked.monster) }), region = picked.region;

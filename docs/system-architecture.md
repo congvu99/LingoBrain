@@ -40,15 +40,20 @@ js/boss-game-logic.js           Pháp sư: máy trạng thái 1 trận (đồng 
 js/boss-game-progress.js        Pháp sư: đường cấp, trận hôm nay/beat kế, ghi tiến trình idempotent, chuỗi ngày, buff Ôn từ, đoạn truyện   [thuần]
 js/boss-game-spell-presets.js   Pháp sư: dữ liệu hiệu ứng phép theo hệ × bậc + tuyệt kỹ + fallback bậc thiếu
 js/boss-game-story.js           Pháp sư: dữ liệu vùng, quái, 28 đoạn truyện
-js/boss-game-spell-art.js       Pháp sư: vẽ hiệu ứng phép (thiên thạch, tia sét, cột băng, gai đá, lốc), quả bay, số sát thương
+js/boss-game-spell-art.js       Pháp sư: fx trận — hạt, quả phép bay đúng mốc va chạm, sóng xung kích, số sát thương, preset + fallback bậc
+js/boss-game-tier3-shapes.js    Pháp sư: hình vẽ lớn bậc 3 — trận đồ, thiên thạch, tia sét, cột băng, gai đá, lốc
+js/boss-game-tier3-ultimate-fx.js  Pháp sư: trận đồ/hình lớn bậc 3, cắt cảnh 5 tuyệt kỹ, hiệu ứng nội tại (phủ băng, khiên…)
 js/boss-game-mage-art.js        Pháp sư: vẽ pháp sư nam/nữ theo pose (idle/chant/cast/hurt)
 js/boss-game-monster-shapes.js  Pháp sư: 5 dáng quái (humanoid, beast, wraith, flyer, dragon)
 js/boss-game-monster-art.js     Pháp sư: vẽ quái theo dáng/pose/bảng màu, hiệu ứng trúng đòn/đóng băng
+js/boss-game-scene.js           Pháp sư: nền 4 vùng vẽ sẵn offscreen theo cỡ/dpr
 js/boss-game-render.js          Pháp sư: ghép khung hình cảnh trận từ state + hiệu ứng
 js/boss-game-ui.js              Pháp sư: khung trận DOM/canvas, input ẩn + phím, vòng rAF, tạm dừng, lưu tiến trình giữa trận
-js/boss-game-hub-ui.js          Pháp sư: sảnh chọn trận, màn lần đầu, thẻ truyện, Nhật ký
+js/boss-game-story-journal-ui.js  Pháp sư: quái theo beat (Vô tận/Luyện phép chọn theo ngày), thẻ truyện, Nhật ký hành trình, từ đã học bấm nghe
+js/boss-game-hub-ui.js          Pháp sư: sảnh — chân dung, cấp/XP, chuỗi ngày, buff Ôn từ, trận hôm nay, cấp độ, refreshBossHub sau sync
+js/boss-game-first-run-ui.js    Pháp sư: màn lần đầu — chờ sync khi đang đăng nhập, chọn pháp sư nam/nữ
 js/boss-game-skill-tree-ui.js   Pháp sư: cây kỹ năng nguyên tố + chọn trường phái
-js/boss-game-result-ui.js       Pháp sư: màn kết trận (XP, lên cấp, outro, từ sai)
+js/boss-game-result-ui.js       Pháp sư: thẻ đề trong trận, lưu tiến trình (persistBattle), màn kết (XP, lên cấp, outro, từ sai, chốt trùng thắng)
 js/app-shell.js          tab, bindUI, phím tắt, init
 js/pwa-register.js       đăng ký service worker, tự cập nhật (kiểm tra khi mở lại app, tải lại lúc rảnh)
 js/deck-source.js        tải bộ từ từ /api/words (DB) → fallback words.json; pruneSrs chỉ khi từ API    [thuần]
