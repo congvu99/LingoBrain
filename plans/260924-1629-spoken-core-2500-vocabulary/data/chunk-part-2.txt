@@ -1,0 +1,169 @@
+agree-disagree	so what
+agree-disagree	who cares
+reactions-emotions	oh my god
+reactions-emotions	you're kidding
+reactions-emotions	are you serious
+reactions-emotions	are you kidding me
+reactions-emotions	you've got to be kidding
+reactions-emotions	I can't believe it
+reactions-emotions	that's awesome
+reactions-emotions	that's so cool
+reactions-emotions	how cool is that
+reactions-emotions	that's crazy
+reactions-emotions	that's insane
+reactions-emotions	that's wild
+reactions-emotions	that's weird
+reactions-emotions	that's funny
+reactions-emotions	that's hilarious
+reactions-emotions	good one
+reactions-emotions	that's too bad
+reactions-emotions	that's a shame
+reactions-emotions	what a shame
+reactions-emotions	what a pity
+reactions-emotions	I'm sorry to hear that
+reactions-emotions	that sucks
+reactions-emotions	oh no
+reactions-emotions	oh well
+reactions-emotions	oh man
+reactions-emotions	oh boy
+reactions-emotions	thank god
+reactions-emotions	what a relief
+reactions-emotions	about time
+reactions-emotions	here we go again
+reactions-emotions	not again
+reactions-emotions	you're telling me
+reactions-emotions	lucky you
+reactions-emotions	lucky me
+reactions-emotions	good luck
+reactions-emotions	break a leg
+reactions-emotions	fingers crossed
+reactions-emotions	I'm so happy for you
+reactions-emotions	I'm proud of you
+reactions-emotions	well done
+reactions-emotions	good job
+reactions-emotions	nice work
+reactions-emotions	way to go
+reactions-emotions	you nailed it
+reactions-emotions	you did it
+reactions-emotions	you rock
+reactions-emotions	that's the spirit
+reactions-emotions	hang in there
+reactions-emotions	keep it up
+reactions-emotions	don't give up
+reactions-emotions	you can do it
+reactions-emotions	chin up
+reactions-emotions	it's gonna be okay
+reactions-emotions	everything will be fine
+reactions-emotions	don't worry about it
+reactions-emotions	don't sweat it
+reactions-emotions	take it easy
+reactions-emotions	I'm so bored
+reactions-emotions	I'm starving
+reactions-emotions	I'm stuffed
+reactions-emotions	I'm exhausted
+reactions-emotions	I'm beat
+reactions-emotions	I'm freaking out
+reactions-emotions	I'm so nervous
+reactions-emotions	I'm so excited
+reactions-emotions	I can't wait
+reactions-emotions	I'm dying to know
+reactions-emotions	I'm not in the mood
+reactions-emotions	I'm fed up
+reactions-emotions	I've had enough
+reactions-emotions	I'm sick of it
+reactions-emotions	that drives me crazy
+reactions-emotions	it gets on my nerves
+reactions-emotions	what a mess
+reactions-emotions	what a nightmare
+reactions-emotions	what a joke
+reactions-emotions	you scared me
+reactions-emotions	my heart stopped
+reactions-emotions	I'm speechless
+requests-offers	do you mind
+requests-offers	would you mind
+requests-offers	can you do me a favor
+requests-offers	could you help me
+requests-offers	can I ask you something
+requests-offers	can I borrow your pen
+requests-offers	could you give me a hand
+requests-offers	would you like some coffee
+requests-offers	would you like to join us
+requests-offers	do you want to come
+requests-offers	do you want some
+requests-offers	can I get you anything
+requests-offers	can I help you
+requests-offers	is there anything I can do
+requests-offers	let me help you
+requests-offers	let me know
+requests-offers	let me see
+requests-offers	let me check
+requests-offers	let me get that
+requests-offers	I'll take care of it
+requests-offers	leave it to me
+requests-offers	I've got this
+requests-offers	I got you
+requests-offers	no problem
+requests-offers	no worries
+requests-offers	not at all
+requests-offers	my pleasure
+requests-offers	don't mention it
+requests-offers	you're welcome
+requests-offers	it's nothing
+requests-offers	happy to help
+requests-offers	glad I could help
+requests-offers	be my guest
+requests-offers	go for it
+requests-offers	feel free
+requests-offers	if you don't mind
+requests-offers	if it's okay with you
+requests-offers	is that okay
+requests-offers	is it okay if I sit here
+requests-offers	mind if I join you
+requests-offers	do you have a minute
+requests-offers	got a minute
+requests-offers	can we talk
+requests-offers	can you hold on
+requests-offers	hold on a second
+requests-offers	just a moment
+requests-offers	one sec
+requests-offers	give me a second
+requests-offers	bear with me
+requests-offers	keep it down
+requests-offers	come here
+requests-offers	come on in
+requests-offers	have a seat
+requests-offers	take a seat
+requests-offers	make it quick
+requests-offers	would you like anything else
+requests-offers	anything else
+requests-offers	what can I get you
+requests-offers	for here or to go
+requests-offers	can I have the check
+requests-offers	can I get a refill
+requests-offers	could you say that again
+requests-offers	sorry, what
+requests-offers	come again
+requests-offers	say that again
+requests-offers	could you speak up
+requests-offers	could you slow down
+requests-offers	what do you mean
+requests-offers	what does that mean
+requests-offers	how do you spell that
+requests-offers	how do you say this in English
+requests-offers	can you show me
+requests-offers	could you explain
+requests-offers	can you repeat that
+requests-offers	I didn't catch that
+requests-offers	pardon me
+requests-offers	excuse me
+requests-offers	sorry to bother you
+requests-offers	I was wondering if
+requests-offers	would it be possible
+requests-offers	could I possibly
+requests-offers	if that's not too much trouble
+requests-offers	thanks in advance
+requests-offers	thank you so much
+requests-offers	thanks a lot
+requests-offers	thanks a bunch
+requests-offers	I really appreciate it
+requests-offers	I owe you one

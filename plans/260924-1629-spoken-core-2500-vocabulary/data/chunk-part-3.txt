@@ -1,0 +1,169 @@
+requests-offers	you're a lifesaver
+requests-offers	you shouldn't have
+requests-offers	that's very kind of you
+requests-offers	how thoughtful
+apologies-problems	my bad
+apologies-problems	sorry about that
+apologies-problems	I'm so sorry
+apologies-problems	I apologize
+apologies-problems	my apologies
+apologies-problems	it was my fault
+apologies-problems	that's on me
+apologies-problems	I didn't mean it
+apologies-problems	I didn't mean to
+apologies-problems	it won't happen again
+apologies-problems	no hard feelings
+apologies-problems	it's all good
+apologies-problems	never mind
+apologies-problems	forget it
+apologies-problems	no harm done
+apologies-problems	it happens
+apologies-problems	these things happen
+apologies-problems	accidents happen
+apologies-problems	don't be sorry
+apologies-problems	you don't have to apologize
+apologies-problems	what's wrong
+apologies-problems	what happened
+apologies-problems	is everything okay
+apologies-problems	are you okay
+apologies-problems	are you alright
+apologies-problems	what's the matter
+apologies-problems	what's the problem
+apologies-problems	something's wrong
+apologies-problems	something came up
+apologies-problems	I'm running late
+apologies-problems	I'm on my way
+apologies-problems	I'll be there in five
+apologies-problems	I'm stuck in traffic
+apologies-problems	I lost track of time
+apologies-problems	I forgot
+apologies-problems	it slipped my mind
+apologies-problems	I'm not feeling well
+apologies-problems	I'm under the weather
+apologies-problems	I'm coming down with something
+apologies-problems	I can't make it
+apologies-problems	I have to cancel
+apologies-problems	can we reschedule
+apologies-problems	rain check
+apologies-problems	I'm afraid not
+apologies-problems	I'm afraid I can't
+apologies-problems	I wish I could
+apologies-problems	maybe next time
+apologies-problems	I'll pass
+apologies-problems	not today
+apologies-problems	thanks but no thanks
+apologies-problems	I'm good
+apologies-problems	no thanks
+apologies-problems	I'm all set
+apologies-problems	I'm just looking
+apologies-problems	that's not gonna work
+apologies-problems	it's not working
+apologies-problems	it's broken
+apologies-problems	it's out of order
+apologies-problems	the battery is dead
+apologies-problems	I'm out of battery
+apologies-problems	there's no signal
+apologies-problems	the Wi-Fi is down
+apologies-problems	it's not my day
+apologies-problems	just my luck
+apologies-problems	what a bummer
+apologies-problems	that's life
+apologies-problems	it is what it is
+apologies-problems	we'll figure it out
+apologies-problems	let's see what happens
+apologies-problems	we'll see
+apologies-problems	better late than never
+apologies-problems	better safe than sorry
+apologies-problems	no pain no gain
+apologies-problems	easier said than done
+apologies-problems	it's not the end of the world
+apologies-problems	could be worse
+apologies-problems	look on the bright side
+apologies-problems	it's no big deal
+apologies-problems	no big deal
+apologies-problems	what's done is done
+apologies-problems	let it go
+plans-invitations	what are you up to
+plans-invitations	are you free tonight
+plans-invitations	are you busy
+plans-invitations	do you have any plans
+plans-invitations	let's hang out sometime
+plans-invitations	we should get together
+plans-invitations	let's grab a coffee
+plans-invitations	let's grab lunch
+plans-invitations	let's get a drink
+plans-invitations	wanna grab a bite
+plans-invitations	are you hungry
+plans-invitations	let's eat out
+plans-invitations	my treat
+plans-invitations	it's on me
+plans-invitations	let's split the bill
+plans-invitations	let's go Dutch
+plans-invitations	let's meet up
+plans-invitations	where should we meet
+plans-invitations	what time works for you
+plans-invitations	how about seven
+plans-invitations	how about tomorrow
+plans-invitations	is Friday good for you
+plans-invitations	does that work for you
+plans-invitations	that works
+plans-invitations	see you then
+plans-invitations	I'll pick you up
+plans-invitations	I'll text you
+plans-invitations	text me when you get there
+plans-invitations	call me
+plans-invitations	give me a call
+plans-invitations	drop me a line
+plans-invitations	let's play it by ear
+plans-invitations	we'll see how it goes
+plans-invitations	let's keep it simple
+plans-invitations	let's get started
+plans-invitations	let's get going
+plans-invitations	let's go
+plans-invitations	let's roll
+plans-invitations	let's head out
+plans-invitations	let's call it a day
+plans-invitations	let's call it a night
+plans-invitations	let's wrap it up
+plans-invitations	I'm heading home
+plans-invitations	I'm off
+plans-invitations	I'm out of here
+plans-invitations	I'll be right back
+plans-invitations	be right back
+plans-invitations	back in a minute
+plans-invitations	I'll catch up later
+plans-invitations	save me a seat
+plans-invitations	wait for me
+plans-invitations	don't wait for me
+plans-invitations	I'll be late
+plans-invitations	go on without me
+plans-invitations	shall we
+plans-invitations	ready to go
+plans-invitations	are you ready
+plans-invitations	all set
+plans-invitations	I'm ready when you are
+plans-invitations	what's the rush
+plans-invitations	take your time
+plans-invitations	no rush
+plans-invitations	there's no hurry
+plans-invitations	we have plenty of time
+plans-invitations	we're running out of time
+plans-invitations	time's up
+plans-invitations	it's getting late
+plans-invitations	it's about time
+plans-invitations	any time now
+plans-invitations	in a minute
+plans-invitations	in a bit
+plans-invitations	in a while
+plans-invitations	right away
+plans-invitations	right now
+plans-invitations	as soon as possible
+plans-invitations	sooner or later
+plans-invitations	at the last minute
+plans-invitations	just in time
+plans-invitations	on time
+plans-invitations	so far
+plans-invitations	for now
+plans-invitations	for the time being
+plans-invitations	until further notice
+plans-invitations	from now on

@@ -1,0 +1,842 @@
+greetings-smalltalk	how's it going
+greetings-smalltalk	what's up
+greetings-smalltalk	not much
+greetings-smalltalk	how are you doing
+greetings-smalltalk	how have you been
+greetings-smalltalk	long time no see
+greetings-smalltalk	good to see you
+greetings-smalltalk	nice to meet you
+greetings-smalltalk	pleased to meet you
+greetings-smalltalk	how was your day
+greetings-smalltalk	how was your weekend
+greetings-smalltalk	how's work
+greetings-smalltalk	how's everything
+greetings-smalltalk	how's your family
+greetings-smalltalk	what have you been up to
+greetings-smalltalk	same old same old
+greetings-smalltalk	not bad
+greetings-smalltalk	pretty good
+greetings-smalltalk	can't complain
+greetings-smalltalk	hanging in there
+greetings-smalltalk	could be better
+greetings-smalltalk	never better
+greetings-smalltalk	so far so good
+greetings-smalltalk	what's new
+greetings-smalltalk	how's life
+greetings-smalltalk	how do you do
+greetings-smalltalk	good morning
+greetings-smalltalk	good afternoon
+greetings-smalltalk	good evening
+greetings-smalltalk	have a good one
+greetings-smalltalk	have a nice day
+greetings-smalltalk	have a good weekend
+greetings-smalltalk	take care
+greetings-smalltalk	see you later
+greetings-smalltalk	see you soon
+greetings-smalltalk	see you around
+greetings-smalltalk	catch you later
+greetings-smalltalk	talk to you later
+greetings-smalltalk	talk soon
+greetings-smalltalk	gotta go
+greetings-smalltalk	I have to run
+greetings-smalltalk	it was nice talking to you
+greetings-smalltalk	say hi to your mom
+greetings-smalltalk	keep in touch
+greetings-smalltalk	welcome back
+greetings-smalltalk	welcome home
+greetings-smalltalk	good night
+greetings-smalltalk	sweet dreams
+greetings-smalltalk	sleep well
+greetings-smalltalk	nice weather today
+greetings-smalltalk	it's freezing
+greetings-smalltalk	it's boiling
+greetings-smalltalk	what a day
+greetings-smalltalk	where are you from
+greetings-smalltalk	what do you do
+greetings-smalltalk	how long have you been here
+greetings-smalltalk	are you from around here
+greetings-smalltalk	small world
+greetings-smalltalk	fancy meeting you here
+greetings-smalltalk	look who it is
+greetings-smalltalk	you look great
+greetings-smalltalk	you haven't changed a bit
+greetings-smalltalk	it's been ages
+greetings-smalltalk	it's been a while
+greetings-smalltalk	what brings you here
+greetings-smalltalk	are you new here
+greetings-smalltalk	first time here
+greetings-smalltalk	any plans for the weekend
+greetings-smalltalk	how was your trip
+greetings-smalltalk	did you have a good time
+greetings-smalltalk	how did it go
+greetings-smalltalk	what's the plan
+greetings-smalltalk	what's the occasion
+greetings-smalltalk	happy birthday
+greetings-smalltalk	good for you
+greetings-smalltalk	welcome aboard
+greetings-smalltalk	make yourself at home
+greetings-smalltalk	help yourself
+greetings-smalltalk	after you
+greetings-smalltalk	here you go
+greetings-smalltalk	there you go
+greetings-smalltalk	bless you
+agree-disagree	fair enough
+agree-disagree	I agree
+agree-disagree	me too
+agree-disagree	me neither
+agree-disagree	same here
+agree-disagree	you're right
+agree-disagree	you're absolutely right
+agree-disagree	that's true
+agree-disagree	that makes sense
+agree-disagree	good point
+agree-disagree	I see your point
+agree-disagree	I guess so
+agree-disagree	I suppose so
+agree-disagree	I think so
+agree-disagree	I don't think so
+agree-disagree	not really
+agree-disagree	I'm not sure about that
+agree-disagree	I'm not so sure
+agree-disagree	I don't know about that
+agree-disagree	I beg to differ
+agree-disagree	that's not what I meant
+agree-disagree	I see what you mean
+agree-disagree	I get it
+agree-disagree	got it
+agree-disagree	I hear you
+agree-disagree	you have a point
+agree-disagree	you can say that again
+agree-disagree	tell me about it
+agree-disagree	no doubt
+agree-disagree	for sure
+agree-disagree	of course
+agree-disagree	sure thing
+agree-disagree	big time
+agree-disagree	kind of
+agree-disagree	sort of
+agree-disagree	more or less
+agree-disagree	it depends
+agree-disagree	maybe not
+agree-disagree	could be
+agree-disagree	probably not
+agree-disagree	I doubt it
+agree-disagree	no way
+agree-disagree	not a chance
+agree-disagree	over my dead body
+agree-disagree	that's a good idea
+agree-disagree	sounds good
+agree-disagree	sounds like a plan
+agree-disagree	works for me
+agree-disagree	I'm in
+agree-disagree	count me in
+agree-disagree	count me out
+agree-disagree	I'm down
+agree-disagree	I'm up for it
+agree-disagree	why not
+agree-disagree	let's do it
+agree-disagree	it's a deal
+agree-disagree	you got it
+agree-disagree	if you say so
+agree-disagree	whatever you say
+agree-disagree	suit yourself
+agree-disagree	it's up to you
+agree-disagree	your call
+agree-disagree	either way
+agree-disagree	I don't mind
+agree-disagree	I don't care
+agree-disagree	it doesn't matter
+agree-disagree	no preference
+agree-disagree	whatever works
+agree-disagree	let's agree to disagree
+agree-disagree	point taken
+agree-disagree	fair point
+agree-disagree	that's fair
+agree-disagree	I stand corrected
+agree-disagree	my point exactly
+agree-disagree	you know what I mean
+agree-disagree	you know what
+agree-disagree	to be honest
+agree-disagree	to be fair
+agree-disagree	in my opinion
+agree-disagree	if you ask me
+agree-disagree	the way I see it
+agree-disagree	as far as I know
+agree-disagree	not that I know of
+agree-disagree	that's the thing
+agree-disagree	that's the point
+agree-disagree	that's beside the point
+agree-disagree	that's not the point
+agree-disagree	so what
+agree-disagree	who cares
+reactions-emotions	oh my god
+reactions-emotions	you're kidding
+reactions-emotions	are you serious
+reactions-emotions	are you kidding me
+reactions-emotions	you've got to be kidding
+reactions-emotions	I can't believe it
+reactions-emotions	that's awesome
+reactions-emotions	that's so cool
+reactions-emotions	how cool is that
+reactions-emotions	that's crazy
+reactions-emotions	that's insane
+reactions-emotions	that's wild
+reactions-emotions	that's weird
+reactions-emotions	that's funny
+reactions-emotions	that's hilarious
+reactions-emotions	good one
+reactions-emotions	that's too bad
+reactions-emotions	that's a shame
+reactions-emotions	what a shame
+reactions-emotions	what a pity
+reactions-emotions	I'm sorry to hear that
+reactions-emotions	that sucks
+reactions-emotions	oh no
+reactions-emotions	oh well
+reactions-emotions	oh man
+reactions-emotions	oh boy
+reactions-emotions	thank god
+reactions-emotions	what a relief
+reactions-emotions	about time
+reactions-emotions	here we go again
+reactions-emotions	not again
+reactions-emotions	you're telling me
+reactions-emotions	lucky you
+reactions-emotions	lucky me
+reactions-emotions	good luck
+reactions-emotions	break a leg
+reactions-emotions	fingers crossed
+reactions-emotions	I'm so happy for you
+reactions-emotions	I'm proud of you
+reactions-emotions	well done
+reactions-emotions	good job
+reactions-emotions	nice work
+reactions-emotions	way to go
+reactions-emotions	you nailed it
+reactions-emotions	you did it
+reactions-emotions	you rock
+reactions-emotions	that's the spirit
+reactions-emotions	hang in there
+reactions-emotions	keep it up
+reactions-emotions	don't give up
+reactions-emotions	you can do it
+reactions-emotions	chin up
+reactions-emotions	it's gonna be okay
+reactions-emotions	everything will be fine
+reactions-emotions	don't worry about it
+reactions-emotions	don't sweat it
+reactions-emotions	take it easy
+reactions-emotions	I'm so bored
+reactions-emotions	I'm starving
+reactions-emotions	I'm stuffed
+reactions-emotions	I'm exhausted
+reactions-emotions	I'm beat
+reactions-emotions	I'm freaking out
+reactions-emotions	I'm so nervous
+reactions-emotions	I'm so excited
+reactions-emotions	I can't wait
+reactions-emotions	I'm dying to know
+reactions-emotions	I'm not in the mood
+reactions-emotions	I'm fed up
+reactions-emotions	I've had enough
+reactions-emotions	I'm sick of it
+reactions-emotions	that drives me crazy
+reactions-emotions	it gets on my nerves
+reactions-emotions	what a mess
+reactions-emotions	what a nightmare
+reactions-emotions	what a joke
+reactions-emotions	you scared me
+reactions-emotions	my heart stopped
+reactions-emotions	I'm speechless
+requests-offers	do you mind
+requests-offers	would you mind
+requests-offers	can you do me a favor
+requests-offers	could you help me
+requests-offers	can I ask you something
+requests-offers	can I borrow your pen
+requests-offers	could you give me a hand
+requests-offers	would you like some coffee
+requests-offers	would you like to join us
+requests-offers	do you want to come
+requests-offers	do you want some
+requests-offers	can I get you anything
+requests-offers	can I help you
+requests-offers	is there anything I can do
+requests-offers	let me help you
+requests-offers	let me know
+requests-offers	let me see
+requests-offers	let me check
+requests-offers	let me get that
+requests-offers	I'll take care of it
+requests-offers	leave it to me
+requests-offers	I've got this
+requests-offers	I got you
+requests-offers	no problem
+requests-offers	no worries
+requests-offers	not at all
+requests-offers	my pleasure
+requests-offers	don't mention it
+requests-offers	you're welcome
+requests-offers	it's nothing
+requests-offers	happy to help
+requests-offers	glad I could help
+requests-offers	be my guest
+requests-offers	go for it
+requests-offers	feel free
+requests-offers	if you don't mind
+requests-offers	if it's okay with you
+requests-offers	is that okay
+requests-offers	is it okay if I sit here
+requests-offers	mind if I join you
+requests-offers	do you have a minute
+requests-offers	got a minute
+requests-offers	can we talk
+requests-offers	can you hold on
+requests-offers	hold on a second
+requests-offers	just a moment
+requests-offers	one sec
+requests-offers	give me a second
+requests-offers	bear with me
+requests-offers	keep it down
+requests-offers	come here
+requests-offers	come on in
+requests-offers	have a seat
+requests-offers	take a seat
+requests-offers	make it quick
+requests-offers	would you like anything else
+requests-offers	anything else
+requests-offers	what can I get you
+requests-offers	for here or to go
+requests-offers	can I have the check
+requests-offers	can I get a refill
+requests-offers	could you say that again
+requests-offers	sorry, what
+requests-offers	come again
+requests-offers	say that again
+requests-offers	could you speak up
+requests-offers	could you slow down
+requests-offers	what do you mean
+requests-offers	what does that mean
+requests-offers	how do you spell that
+requests-offers	how do you say this in English
+requests-offers	can you show me
+requests-offers	could you explain
+requests-offers	can you repeat that
+requests-offers	I didn't catch that
+requests-offers	pardon me
+requests-offers	excuse me
+requests-offers	sorry to bother you
+requests-offers	I was wondering if
+requests-offers	would it be possible
+requests-offers	could I possibly
+requests-offers	if that's not too much trouble
+requests-offers	thanks in advance
+requests-offers	thank you so much
+requests-offers	thanks a lot
+requests-offers	thanks a bunch
+requests-offers	I really appreciate it
+requests-offers	I owe you one
+requests-offers	you're a lifesaver
+requests-offers	you shouldn't have
+requests-offers	that's very kind of you
+requests-offers	how thoughtful
+apologies-problems	my bad
+apologies-problems	sorry about that
+apologies-problems	I'm so sorry
+apologies-problems	I apologize
+apologies-problems	my apologies
+apologies-problems	it was my fault
+apologies-problems	that's on me
+apologies-problems	I didn't mean it
+apologies-problems	I didn't mean to
+apologies-problems	it won't happen again
+apologies-problems	no hard feelings
+apologies-problems	it's all good
+apologies-problems	never mind
+apologies-problems	forget it
+apologies-problems	no harm done
+apologies-problems	it happens
+apologies-problems	these things happen
+apologies-problems	accidents happen
+apologies-problems	don't be sorry
+apologies-problems	you don't have to apologize
+apologies-problems	what's wrong
+apologies-problems	what happened
+apologies-problems	is everything okay
+apologies-problems	are you okay
+apologies-problems	are you alright
+apologies-problems	what's the matter
+apologies-problems	what's the problem
+apologies-problems	something's wrong
+apologies-problems	something came up
+apologies-problems	I'm running late
+apologies-problems	I'm on my way
+apologies-problems	I'll be there in five
+apologies-problems	I'm stuck in traffic
+apologies-problems	I lost track of time
+apologies-problems	I forgot
+apologies-problems	it slipped my mind
+apologies-problems	I'm not feeling well
+apologies-problems	I'm under the weather
+apologies-problems	I'm coming down with something
+apologies-problems	I can't make it
+apologies-problems	I have to cancel
+apologies-problems	can we reschedule
+apologies-problems	rain check
+apologies-problems	I'm afraid not
+apologies-problems	I'm afraid I can't
+apologies-problems	I wish I could
+apologies-problems	maybe next time
+apologies-problems	I'll pass
+apologies-problems	not today
+apologies-problems	thanks but no thanks
+apologies-problems	I'm good
+apologies-problems	no thanks
+apologies-problems	I'm all set
+apologies-problems	I'm just looking
+apologies-problems	that's not gonna work
+apologies-problems	it's not working
+apologies-problems	it's broken
+apologies-problems	it's out of order
+apologies-problems	the battery is dead
+apologies-problems	I'm out of battery
+apologies-problems	there's no signal
+apologies-problems	the Wi-Fi is down
+apologies-problems	it's not my day
+apologies-problems	just my luck
+apologies-problems	what a bummer
+apologies-problems	that's life
+apologies-problems	it is what it is
+apologies-problems	we'll figure it out
+apologies-problems	let's see what happens
+apologies-problems	we'll see
+apologies-problems	better late than never
+apologies-problems	better safe than sorry
+apologies-problems	no pain no gain
+apologies-problems	easier said than done
+apologies-problems	it's not the end of the world
+apologies-problems	could be worse
+apologies-problems	look on the bright side
+apologies-problems	it's no big deal
+apologies-problems	no big deal
+apologies-problems	what's done is done
+apologies-problems	let it go
+plans-invitations	what are you up to
+plans-invitations	are you free tonight
+plans-invitations	are you busy
+plans-invitations	do you have any plans
+plans-invitations	let's hang out sometime
+plans-invitations	we should get together
+plans-invitations	let's grab a coffee
+plans-invitations	let's grab lunch
+plans-invitations	let's get a drink
+plans-invitations	wanna grab a bite
+plans-invitations	are you hungry
+plans-invitations	let's eat out
+plans-invitations	my treat
+plans-invitations	it's on me
+plans-invitations	let's split the bill
+plans-invitations	let's go Dutch
+plans-invitations	let's meet up
+plans-invitations	where should we meet
+plans-invitations	what time works for you
+plans-invitations	how about seven
+plans-invitations	how about tomorrow
+plans-invitations	is Friday good for you
+plans-invitations	does that work for you
+plans-invitations	that works
+plans-invitations	see you then
+plans-invitations	I'll pick you up
+plans-invitations	I'll text you
+plans-invitations	text me when you get there
+plans-invitations	call me
+plans-invitations	give me a call
+plans-invitations	drop me a line
+plans-invitations	let's play it by ear
+plans-invitations	we'll see how it goes
+plans-invitations	let's keep it simple
+plans-invitations	let's get started
+plans-invitations	let's get going
+plans-invitations	let's go
+plans-invitations	let's roll
+plans-invitations	let's head out
+plans-invitations	let's call it a day
+plans-invitations	let's call it a night
+plans-invitations	let's wrap it up
+plans-invitations	I'm heading home
+plans-invitations	I'm off
+plans-invitations	I'm out of here
+plans-invitations	I'll be right back
+plans-invitations	be right back
+plans-invitations	back in a minute
+plans-invitations	I'll catch up later
+plans-invitations	save me a seat
+plans-invitations	wait for me
+plans-invitations	don't wait for me
+plans-invitations	I'll be late
+plans-invitations	go on without me
+plans-invitations	shall we
+plans-invitations	ready to go
+plans-invitations	are you ready
+plans-invitations	all set
+plans-invitations	I'm ready when you are
+plans-invitations	what's the rush
+plans-invitations	take your time
+plans-invitations	no rush
+plans-invitations	there's no hurry
+plans-invitations	we have plenty of time
+plans-invitations	we're running out of time
+plans-invitations	time's up
+plans-invitations	it's getting late
+plans-invitations	it's about time
+plans-invitations	any time now
+plans-invitations	in a minute
+plans-invitations	in a bit
+plans-invitations	in a while
+plans-invitations	right away
+plans-invitations	right now
+plans-invitations	as soon as possible
+plans-invitations	sooner or later
+plans-invitations	at the last minute
+plans-invitations	just in time
+plans-invitations	on time
+plans-invitations	so far
+plans-invitations	for now
+plans-invitations	for the time being
+plans-invitations	until further notice
+plans-invitations	from now on
+plans-invitations	once in a while
+plans-invitations	every now and then
+plans-invitations	all the time
+plans-invitations	most of the time
+plans-invitations	at the moment
+plans-invitations	these days
+plans-invitations	the other day
+plans-invitations	last minute
+plans-invitations	any day now
+plans-invitations	what's the dress code
+plans-invitations	should I bring anything
+plans-invitations	bring a friend
+plans-invitations	the more the merrier
+plans-invitations	I wouldn't miss it
+plans-invitations	I'll be there
+plans-invitations	I can't wait to see you
+plans-invitations	looking forward to it
+plans-invitations	thanks for having me
+plans-invitations	thanks for coming
+plans-invitations	thanks for inviting me
+work-customers	how can I help you
+work-customers	what can I do for you
+work-customers	are you being helped
+work-customers	is someone helping you
+work-customers	I'll be right with you
+work-customers	thanks for waiting
+work-customers	sorry for the wait
+work-customers	sorry to keep you waiting
+work-customers	let me check for you
+work-customers	let me find out
+work-customers	I'll ask my manager
+work-customers	one moment please
+work-customers	I'll get back to you
+work-customers	I'll look into it
+work-customers	I'll follow up
+work-customers	I'll keep you posted
+work-customers	keep me posted
+work-customers	keep me in the loop
+work-customers	is there anything else
+work-customers	will that be all
+work-customers	anything else I can help with
+work-customers	here's your receipt
+work-customers	would you like a bag
+work-customers	cash or card
+work-customers	do you take cards
+work-customers	how much is it
+work-customers	how much does it cost
+work-customers	it's on sale
+work-customers	what a deal
+work-customers	it's a bargain
+work-customers	that's a rip-off
+work-customers	it's out of stock
+work-customers	we're sold out
+work-customers	we're closed
+work-customers	we're open until nine
+work-customers	what time do you close
+work-customers	can I try it on
+work-customers	where's the fitting room
+work-customers	can I return this
+work-customers	do you have a receipt
+work-customers	I'd like a refund
+work-customers	I'd like to exchange this
+work-customers	let me run it again
+work-customers	sign here please
+work-customers	enter your PIN
+work-customers	have a great day
+work-customers	enjoy your meal
+work-customers	come back soon
+work-customers	thanks for stopping by
+work-customers	we appreciate your business
+work-customers	my shift starts at nine
+work-customers	I'm on break
+work-customers	I'm off today
+work-customers	I'm working late
+work-customers	I have a day off
+work-customers	can you cover my shift
+work-customers	can we swap shifts
+work-customers	I'm clocking out
+work-customers	it's been a long day
+work-customers	busy day
+work-customers	it's slow today
+work-customers	we're short-staffed
+work-customers	we're swamped
+work-customers	I'm up to my ears
+work-customers	I'm on it
+work-customers	I'll handle it
+work-customers	I'll take it from here
+work-customers	good catch
+work-customers	heads up
+work-customers	just a heads up
+work-customers	quick question
+work-customers	can I run something by you
+work-customers	let's touch base
+work-customers	let's circle back
+work-customers	what's the deadline
+work-customers	it's due tomorrow
+work-customers	I'm almost done
+work-customers	I'm done
+work-customers	I need a break
+work-customers	let's take five
+work-customers	back to work
+work-customers	good work today
+work-customers	great teamwork
+work-customers	I'm new here
+work-customers	I'm still learning
+work-customers	I'm getting the hang of it
+work-customers	practice makes perfect
+work-customers	learn the ropes
+work-customers	on the same page
+work-customers	behind schedule
+work-customers	ahead of schedule
+work-customers	up to date
+work-customers	in charge
+work-customers	out of the office
+work-customers	on sick leave
+work-customers	on vacation
+work-customers	off the record
+work-customers	by the book
+work-customers	at the end of the day
+work-customers	to make a long story short
+work-customers	long story short
+work-customers	in a nutshell
+work-customers	bottom line
+work-customers	the thing is
+work-customers	here's the deal
+work-customers	here's the thing
+work-customers	that being said
+work-customers	having said that
+work-customers	on the other hand
+work-customers	in other words
+work-customers	what I mean is
+work-customers	for example
+work-customers	for instance
+work-customers	let me put it this way
+phone-texting	who's calling
+phone-texting	can I speak to Tom
+phone-texting	wrong number
+phone-texting	you're breaking up
+phone-texting	I can't hear you
+phone-texting	can you hear me now
+phone-texting	I'll call you back
+phone-texting	call me back
+phone-texting	leave a message
+phone-texting	I missed your call
+phone-texting	my phone died
+phone-texting	text me
+phone-texting	send me the link
+phone-texting	what's your number
+phone-texting	can I get your number
+phone-texting	what's your email
+phone-texting	check your inbox
+phone-texting	I'll send it over
+phone-texting	did you get my message
+phone-texting	I left you a voicemail
+phone-texting	put it on speaker
+phone-texting	you're on mute
+phone-texting	can you see my screen
+phone-texting	let's hop on a call
+phone-texting	I'm on the phone
+phone-texting	reply all
+phone-texting	just kidding
+phone-texting	no offense
+phone-texting	none taken
+phone-texting	by the way
+phone-texting	miss you
+phone-texting	love you
+phone-texting	night night
+directions-travel	how do I get to the station
+directions-travel	is it far from here
+directions-travel	it's just around the corner
+directions-travel	go straight
+directions-travel	turn left
+directions-travel	turn right
+directions-travel	keep going
+directions-travel	you can't miss it
+directions-travel	it's within walking distance
+directions-travel	it's a ten-minute walk
+directions-travel	I'm lost
+directions-travel	I'm not from around here
+directions-travel	can you show me on the map
+directions-travel	which way is the exit
+directions-travel	is this seat taken
+directions-travel	is this the right bus
+directions-travel	how long does it take
+directions-travel	when does it leave
+directions-travel	what time does it arrive
+directions-travel	one way or round trip
+directions-travel	window or aisle
+directions-travel	I'd like to check in
+directions-travel	I have a reservation
+directions-travel	do you have any rooms
+directions-travel	is breakfast included
+directions-travel	what's the Wi-Fi password
+directions-travel	can I get a taxi
+directions-travel	keep the change
+directions-travel	pull over here
+directions-travel	drop me off here
+directions-travel	how much to the airport
+directions-travel	I'm here on vacation
+directions-travel	I'm here on business
+directions-travel	have a safe trip
+directions-travel	safe travels
+directions-travel	welcome to town
+food-restaurant	table for two
+food-restaurant	can I see the menu
+food-restaurant	what do you recommend
+food-restaurant	what's good here
+food-restaurant	I'll have the same
+food-restaurant	I'll have what she's having
+food-restaurant	I'm allergic to nuts
+food-restaurant	no ice please
+food-restaurant	medium rare
+food-restaurant	to go please
+food-restaurant	can I get a box
+food-restaurant	it's delicious
+food-restaurant	this is so good
+food-restaurant	I'm full
+food-restaurant	seconds please
+food-restaurant	bon appetit
+food-restaurant	dinner is ready
+food-restaurant	what's for dinner
+food-restaurant	let's order in
+food-restaurant	let's get takeout
+food-restaurant	I'm craving pizza
+food-restaurant	I could eat
+food-restaurant	I'm on a diet
+food-restaurant	just water please
+food-restaurant	the usual
+food-restaurant	same as always
+food-restaurant	can we get the bill
+food-restaurant	separate checks please
+food-restaurant	is service included
+food-restaurant	it tastes funny
+food-restaurant	it's too salty
+food-restaurant	it's too spicy
+health-feelings	I don't feel good
+health-feelings	I feel sick
+health-feelings	I have a headache
+health-feelings	I have a cold
+health-feelings	I have a sore throat
+health-feelings	my back is killing me
+health-feelings	I need to see a doctor
+health-feelings	get well soon
+health-feelings	take it easy today
+health-feelings	I need some rest
+health-feelings	I didn't sleep well
+health-feelings	I'm wide awake
+health-feelings	I'm half asleep
+health-feelings	I'm in a good mood
+health-feelings	I'm in a bad mood
+health-feelings	I'm stressed out
+health-feelings	I'm burned out
+health-feelings	I'm on edge
+health-feelings	I'm so embarrassed
+health-feelings	I feel bad
+health-feelings	I feel terrible
+health-feelings	I feel like a new person
+health-feelings	I feel much better
+health-feelings	I'm doing better
+health-feelings	I've got a lot on my plate
+health-feelings	I need to clear my head
+health-feelings	I need some fresh air
+money-idioms	it costs an arm and a leg
+money-idioms	money's tight
+money-idioms	I'm broke
+money-idioms	I can't afford it
+money-idioms	it's worth it
+money-idioms	it's not worth it
+money-idioms	save money
+money-idioms	waste of money
+money-idioms	waste of time
+money-idioms	it's a steal
+money-idioms	I'm saving up
+money-idioms	pay me back later
+money-idioms	we're even
+money-idioms	keep the receipt
+money-idioms	piece of cake
+money-idioms	hit the road
+money-idioms	on the fly
+money-idioms	in the long run
+money-idioms	out of the blue
+money-idioms	once in a blue moon
+money-idioms	under the weather
+money-idioms	on cloud nine
+money-idioms	a no-brainer
+money-idioms	beats me
+money-idioms	search me
+money-idioms	your guess is as good as mine
+money-idioms	I have no idea
+money-idioms	no clue
+money-idioms	it rings a bell
+money-idioms	it's on the tip of my tongue
+money-idioms	it's up in the air
+money-idioms	the sooner the better
+money-idioms	all of a sudden
+money-idioms	no matter what
+money-idioms	just in case
+money-idioms	as usual
+money-idioms	as always
+money-idioms	not yet
+money-idioms	not anymore
+money-idioms	not at the moment
+money-idioms	not so fast
+money-idioms	not my thing
+money-idioms	not my cup of tea
+money-idioms	it's not my style
+money-idioms	to each their own
+money-idioms	you only live once
+money-idioms	it's now or never
+money-idioms	go with the flow
+money-idioms	take it or leave it
+money-idioms	make up your mind
+money-idioms	speak of the devil
+money-idioms	what's the catch
+money-idioms	there's a catch
+money-idioms	no strings attached
+money-idioms	it's a long story
+money-idioms	I'll tell you later
+money-idioms	between you and me
+money-idioms	keep it to yourself
+money-idioms	my lips are sealed
+money-idioms	you never know
+money-idioms	it's hard to say
+money-idioms	so to speak
+money-idioms	if I were you
+money-idioms	you'd better hurry
+money-idioms	you should try it
+money-idioms	trust me
+money-idioms	believe me
+money-idioms	mark my words
+money-idioms	I told you so
+money-idioms	see what I mean
+money-idioms	you'll see
+money-idioms	we're good
+money-idioms	all good

@@ -1,9 +1,10 @@
 ---
 phase: 3
-title: "Spoken chunks batch"
-status: pending
+title: Spoken chunks batch
+status: in-progress
 priority: P2
-dependencies: [2]
+dependencies:
+  - 2
 ---
 
 # Phase 3: Spoken chunks batch
