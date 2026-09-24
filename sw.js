@@ -54,6 +54,8 @@ const ASSETS = [
   './js/boss-game-render.js',
   './js/boss-game-result-ui.js',
   './js/boss-game-hub-ui.js',
+  './js/boss-game-first-run-ui.js',
+  './js/boss-game-skill-tree-ui.js',
   './js/boss-game-ui.js',
   './js/word-game-rounds.js',
   './js/word-game-ui.js',

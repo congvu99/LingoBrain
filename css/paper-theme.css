@@ -347,6 +347,21 @@ html.game-lock .tabbar{display:none}
 .boss-ult:active{transform:scale(.96)}
 @media (prefers-reduced-motion: no-preference){.boss-ult:not([hidden]){animation:boss-ult-pulse 1.2s ease-in-out infinite}}
 @keyframes boss-ult-pulse{50%{box-shadow:0 0 16px rgba(232,196,106,.75)}}
+/* ---- Pháp sư: sảnh đầy đủ, cây nguyên tố, màn lần đầu, kết trận ---- */
+.boss-hub-portrait{display:flex;align-items:center;gap:14px}
+.boss-hub-portrait canvas{flex:none;border-radius:var(--r-sm);background:#150c30}
+.boss-buff-chip{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0}
+.boss-hub-nav{gap:8px}
+.boss-gender-pick button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-wash)}
+.boss-tree-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:12px;margin:10px 0}
+.boss-tree-col{display:flex;flex-direction:column;gap:6px;padding:10px;border:1px solid var(--rule);border-radius:var(--r-sm);background:var(--card)}
+.boss-tree-col[data-active="true"]{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-wash)}
+.boss-tree-ranks{display:flex;gap:6px}
+.boss-tree-rank{width:34px;height:34px;padding:0;border-radius:999px;font:inherit;border:1px solid var(--rule);background:var(--paper-2)}
+.boss-tree-rank[data-state="done"]{background:var(--accent);color:var(--card);border-color:var(--accent)}
+.boss-tree-rank[data-state="next"]{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-wash)}
+.boss-tree-rank[data-state="locked"]{opacity:.4}
+.boss-result .bar-track{margin:8px 0}
 /* màn kết thúc: cặp từ hay nhầm */
 .game-confusions ul{list-style:none;margin:4px 0 12px;padding:0}
 .game-confusions li{margin:2px 0}
