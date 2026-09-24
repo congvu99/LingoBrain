@@ -3,7 +3,8 @@
    Mọi con số cân bằng CHỈ nằm trong BOSS_TUNING. */
 
 const BOSS_TUNING = {
-  hp: { minion: 250, boss: 500 },
+  // ~40 phép/quái thường (sát thương trung bình ~25 × ~4s/từ ≈ 2–3 phút ở cấp Vừa), trùm chương gấp đôi (~4–5 phút)
+  hp: { minion: 1000, boss: 2000 },
   tierBase: [0, 10, 20, 40],          // sát thương gốc theo bậc ✦ / ✦✦ / ✦✦✦
   tierShare: [0.3, 0.4],              // 30% từ khó nhất trong pool → ✦✦✦, 40% kế → ✦✦, còn lại ✦
   speed: { baseMs: 1500, perLetterMs: 350 },
@@ -16,7 +17,7 @@ const BOSS_TUNING = {
   ultimateMs: 1500,                   // cắt cảnh tuyệt kỹ (thời gian thật, đồng hồ trùm dừng)
   slowScale: 0.35, slowIdleMs: 1500, slowCapPerLetterMs: 1200,
   weakMul: 1.5, critMul: 1.5,
-  xpPerDmg: 0.5, xpStoryWin: 100, buffXpMul: 1.5
+  xpPerDmg: 0.1, xpStoryWin: 100, buffXpMul: 1.5   // ~200 XP/trận truyện → đủ 15 điểm cây (cấp 16) sau vài tuần chơi đều
 };
 const BOSS_MIN_SELF_LETTERS = 3;      // nghĩa chứa chính từ (≥3 chữ: piano, taxi…) → lộ đáp án, loại khỏi pool
 
