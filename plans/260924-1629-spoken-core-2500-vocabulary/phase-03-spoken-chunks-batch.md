@@ -1,7 +1,7 @@
 ---
 phase: 3
 title: Spoken chunks batch
-status: in-progress
+status: completed
 priority: P2
 dependencies:
   - 2

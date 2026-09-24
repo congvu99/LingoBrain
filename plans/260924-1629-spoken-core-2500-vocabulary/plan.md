@@ -30,8 +30,8 @@ Nguồn quyết định: [brainstorm report](../reports/brainstorm-260924-1629-s
 |-------|------|--------|
 | 1 | [Batch tooling validator and interleave merge](./phase-01-batch-tooling-validator-and-interleave-merge.md) | Completed |
 | 2 | [Phrasal verbs batch](./phase-02-phrasal-verbs-batch.md) | Completed |
-| 3 | [Spoken chunks batch](./phase-03-spoken-chunks-batch.md) | In Progress |
-| 4 | [Discourse markers and spoken words batch](./phase-04-discourse-markers-and-spoken-words-batch.md) | Pending |
+| 3 | [Spoken chunks batch](./phase-03-spoken-chunks-batch.md) | Completed |
+| 4 | [Discourse markers and spoken words batch](./phase-04-discourse-markers-and-spoken-words-batch.md) | In Progress |
 | 5 | [Release verification](./phase-05-release-verification.md) | Pending |
 
 Thứ tự: 1 → 2 → 3 → 4 → 5 (tuần tự; 2–4 cùng sửa `words.json`, không chạy song song).

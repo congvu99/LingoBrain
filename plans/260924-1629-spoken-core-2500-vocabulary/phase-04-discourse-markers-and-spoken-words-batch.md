@@ -1,9 +1,10 @@
 ---
 phase: 4
-title: "Discourse markers and spoken words batch"
-status: pending
+title: Discourse markers and spoken words batch
+status: in-progress
 priority: P2
-dependencies: [3]
+dependencies:
+  - 3
 ---
 
 # Phase 4: Discourse markers and spoken words batch
