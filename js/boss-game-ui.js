@@ -21,7 +21,7 @@ function bossBattleGroups() {
 
 /* opts = {date, kind: 'story'|'endless'|'practice', beat, carryDmg, difficulty} (bossTodayOpts ở hub) */
 function startBossBattle(opts) {
-  if (game && game.stop) { const s = game.stop; game.stop = null; s(); }
+  if (game && game.stop) { const s = game.stop; game.stop = null; s(); flushMiss(); }   // trận/sảnh cũ: dọn + chốt từ sai trước khi thay game
   const { groups, tiers } = bossBattleGroups();
   if (!groups.length) return toast('❌ Chưa đủ từ đã học');
   game = { id: 'boss', seq: ++gameSeq, miss: [], over: false, stop: stopBossBattle };
@@ -47,20 +47,28 @@ function startBossBattle(opts) {
   document.documentElement.classList.add('game-lock');
   if (window.visualViewport) { bossListen(visualViewport, 'resize', fitBossGame); bossListen(visualViewport, 'scroll', fitBossGame); }
   bossListen(window, 'resize', fitBossGame);
-  bossListen(document, 'visibilitychange', () => { if (document.hidden) { pauseBoss(); persistBattle(ui); } });
-  bossListen(window, 'pagehide', () => persistBattle(ui));
+  // ẩn app: iOS có thể huỷ PWA ở nền, pwa-register có thể tải lại trang → lưu tiến trình + từ sai ngay
+  bossListen(document, 'visibilitychange', () => { if (document.hidden) { pauseBoss(); persistBattle(ui); bossSaveMiss(ui); } });
+  bossListen(window, 'pagehide', () => { persistBattle(ui); bossSaveMiss(ui); });
   bindBossControls(ui);
   fitBossGame();
   bossUiEvents(ui);                                  // đề đầu tiên (event 'next' đã có sẵn)
   ui.input.focus();                                  // đồng bộ trong lần chạm "Bắt đầu" → iOS bật bàn phím
   ui.countdown = readyCountdown(n => { $('#bossMsg').innerHTML = readyNumHtml(n); }, () => {
     if (bossUi !== ui) return;
-    ui.countdown = 0; ui.started = true;
+    ui.countdown = 0; ui.started = true; ui.frames = 0; ui.fpsAt = performance.now();
     $('#bossOverlay').hidden = true;
     resumeBattle(ui.st, performance.now());
     ui.raf = requestAnimationFrame(bossFrame);
     if (document.hidden || document.activeElement !== ui.input) pauseBoss();
   });
+}
+
+/* Từ sai của trận dở vào gameMiss ngay (addMiss khử trùng → gọi nhiều lần vẫn đúng; flushMiss lúc kết cũng vậy) */
+function bossSaveMiss(ui) {
+  if (!ui.st.miss.length) return;
+  ui.st.miss.forEach(id => { gameMiss = addMiss(gameMiss, id); });
+  save(K_GAMEMISS, gameMiss);
 }
 
 function bossListen(target, type, fn) { target.addEventListener(type, fn); bossUi.off.push(() => target.removeEventListener(type, fn)); }
@@ -82,7 +90,7 @@ function bindBossControls(ui) {
   input.oninput = e => { if (!e.isComposing) flushBossTyped(ui); };
   input.addEventListener('compositionend', () => flushBossTyped(ui));
   input.onkeydown = e => {   // phím toàn cục (app-shell) bỏ qua INPUT → xử lý tại đây
-    if (e.key === 'Escape') { e.preventDefault(); return toggleBossPause(); }
+    if (e.key === 'Escape') { e.preventDefault(); return ui.started ? toggleBossPause() : quitGame(); }   // đang đếm ngược: Esc = thoát như Bắn máy bay
     if (e.key === 'Enter' && !e.isComposing) {
       e.preventDefault();
       if (!ui.started || ui.paused) return;
@@ -147,7 +155,7 @@ function pauseBoss() {
 function resumeBoss() {
   const ui = bossUi;
   if (!ui || !ui.paused) return;
-  ui.paused = false; ui.last = 0;
+  ui.paused = false; ui.last = 0; ui.frames = 0; ui.fpsAt = performance.now();   // khung dừng không tính vào FPS
   resumeBattle(ui.st, performance.now());
   $('#bossOverlay').hidden = true;
   ui.input.focus();
