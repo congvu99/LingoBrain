@@ -44,7 +44,26 @@ const FILES = {
   'actor/dragon-blue-body2.png': 'Actor/Boss/DragonBlue/Body2.png',
   'actor/dragon-blue-body-end.png': 'Actor/Boss/DragonBlue/BodyEnd.png',
   // tile sân đấu 3 vùng còn lại (đá/đồ vật hàng xa của cliffs + dragonlair dùng chung TilesetNature đã copy ở trên)
-  'tile/village.png': 'Backgrounds/Tilesets/TilesetVillageAbandoned.png'
+  'tile/village.png': 'Backgrounds/Tilesets/TilesetVillageAbandoned.png',
+  // đạn + va chạm hệ (phase 4) — đo khung thật bằng IHDR/xem ảnh, xem js/boss-game-sprite-atlas.js
+  'fx/ice-spike.png': 'FX/Projectile/IceSpike.png',
+  'fx/energy-ball.png': 'FX/Projectile/EnergyBall.png',
+  'fx/rock-proj.png': 'FX/Projectile/SpriteSheetRock.png',
+  'fx/spirit-wind.png': 'FX/Magic/Spirit/SpriteSheet.png',
+  'fx/ice-flake.png': 'FX/Elemental/Ice/SpriteSheet.png',
+  'fx/ice-pillar.png': 'FX/Elemental/Ice/SpriteSheetB.png',
+  'fx/thunder.png': 'FX/Elemental/Thunder/SpriteSheet.png',
+  'fx/rock-impact.png': 'FX/Elemental/Rock/SpriteSheet.png',
+  'fx/rock-spike.png': 'FX/Elemental/RockSpike/SpriteSheet.png',
+  'fx/smoke-circular.png': 'FX/Smoke/SmokeCircular/SpriteSheet.png',
+  'fx/leaf.png': 'FX/Particle/Leaf.png',
+  'fx/magic-circle.png': 'FX/Magic/Circle/SpriteSheetOrange.png',
+  'fx/shield.png': 'FX/Magic/Shield/SpriteSheetBlue.png',
+  'fx/boost.png': 'FX/Magic/Boost/SpriteSheet.png',
+  'fx/aura.png': 'FX/Magic/Aura/SpriteSheet.png',   // buff Ôn từ quanh pháp sư (review phase 4: mục 8)
+  // Faceset 38×38 cho cắt cảnh tuyệt kỹ (thay chân dung vẽ tay drawMage)
+  'actor/mage-f-face.png': 'Actor/Character/SorcererBlack/Faceset.png',
+  'actor/mage-m-face.png': 'Actor/Character/NinjaMageOrange/Faceset.png'
 };
 
 if (!fs.existsSync(SRC)) { console.error('Không thấy gói: ' + SRC); process.exit(1); }

@@ -16,25 +16,45 @@ const bossMageSprite = gender => (gender === 'm' ? 'mageM' : 'mageF');
 /* Điểm phép phóng ra: phía trên vai phải pháp sư (quay lưng, nhìn về quái) */
 function bossMageCastPoint(m) { return { x: m.x + m.s * 0.18, y: m.y - m.s * 0.78 }; }
 
-/* VFX sprite một lượt tại tâm (x, y); scale nguyên */
-function bossSpawnSprite(fx, name, x, y, scale, delay) {
-  fx.sprites.push({ name, x, y, scale: Math.max(1, Math.round(scale)), t: -(delay || 0) });
+/* VFX sprite một lượt tại tâm (x, y); scale nguyên. opts: delay (giây trễ); vel {vx,vy px/s — VFX di chuyển vd
+   thiên thạch rơi; follow — mỗi khung tự cập nhật y theo bossMonsterLiftPx, VFX "bay theo" quái bị nâng, vd lốc
+   xoáy}; life (giây sống tối đa — BẮT BUỘC cho VFX di chuyển có anim lặp vô hạn như fireball, nếu không
+   spriteAnimDone không bao giờ true → rò rỉ fx.sprites mãi, xem review phase 4 #1; thiếu life → gỡ theo
+   spriteAnimDone như cũ); anim (khác 'idle', vd 'cycle' — bản lặp vô hạn dùng cùng life để VFX sống lâu hơn 1 lượt). */
+function bossSpawnSprite(fx, name, x, y, scale, opts) {
+  const o = opts || {}, vel = o.vel || {};
+  fx.sprites.push({
+    name, x, y, baseY: y, scale: Math.max(1, Math.round(scale)), t: -(o.delay || 0),
+    vx: vel.vx || 0, vy: vel.vy || 0, follow: !!vel.follow,
+    life: o.life != null ? o.life : null, anim: o.anim || 'idle'
+  });
+}
+
+/* fh thật của khoá VFX (flam/explosion/thunder/rockSpike... cỡ khác hẳn nhau, luôn đo lại, không đoán) */
+function bossVfxFh(name) { return (BOSS_SPRITES[name] && BOSS_SPRITES[name].fh) || 32; }
+
+/* Cỡ VFX va chạm/tuyệt kỹ theo `vfx` riêng từng khoá trong BOSS_SPRITES (review #2: KHÔNG dùng chung 0.7 cho mọi
+   khoá — windLeaf/smokeCircular nhỏ hơn hẳn explosion/rockSpike); thiếu `vfx` → mặc định 0.7. */
+function bossVfxScale(name, targetS, mul) {
+  const def = BOSS_SPRITES[name], factor = (def && def.vfx != null) ? def.vfx : 0.7;
+  return pixelScale(targetS * factor * (mul || 1), bossVfxFh(name));
 }
 
 function bossActorEvent(fx, e, st) {
   const A = fx.actor, L = fx.layout, q = L.mon;
-  const el = e.element || st.mods.element, mul = e.tier === 3 ? 2 : e.tier === 2 ? 1.5 : 1;
+  const el = e.element || st.mods.element, tier = e.tier || st.tier, mul = tier === 3 ? 2 : tier === 2 ? 1.5 : 1;
   if (e.type === 'cast') {
     A.mage.cast = BOSS_CAST_S;
-    if (el === 'fire') fx.shots.forEach(s => { if (s.id === fx.castN) s.sprite = 'fireball'; });
+    const preset = bossSpellPreset(el, tier).p;
+    if (preset.sprite && preset.sprite.proj) fx.shots.forEach(s => { if (s.id === fx.castN) s.sprite = preset.sprite.proj; });
   } else if (e.type === 'impact') {
     A.mon.hitAnimT = 0;   // mốc bắt đầu hoạt ảnh Hit riêng (nếu quái có spriteHit) — xem drawBossMonsterSprite
     A.mon.flash = BOSS_FLASH_S; A.mon.recoil = BOSS_RECOIL_S;
-    if (el === 'fire') {
-      const cy = q.y - q.s * 0.45;
-      bossSpawnSprite(fx, 'explosion', q.x, cy, pixelScale(q.s * 0.8, 40) * mul);
-      bossSpawnSprite(fx, 'flam', q.x, q.y - q.s * 0.3, pixelScale(q.s * 0.55, 30) * mul, 0.08);
-    }
+    const preset = bossSpellPreset(el, e.tier).p, cy = q.y - q.s * 0.45;
+    // nhiều VFX cùng hệ (vd Explosion×2, Thunder×3, SmokeCircular×2) lệch nhẹ vị trí/độ trễ để không đè khít lên nhau
+    (preset.sprite && preset.sprite.impact || []).forEach((name, i) => {
+      bossSpawnSprite(fx, name, q.x + (i - 0.5) * q.s * 0.14, cy - i * q.s * 0.05, bossVfxScale(name, q.s, mul), { delay: i * 0.06 });
+    });
   } else if (e.type === 'hurt') {
     A.mon.lunge = BOSS_LUNGE_S;
     A.mage.flash = 0.35; A.mage.recoil = 0.3;
@@ -83,7 +103,12 @@ function stepBossActors(fx, dtReal) {
     p.life -= dtReal; p.x += p.vx * dtReal; p.y += p.vy * dtReal; p.vy -= 40 * dtReal;   // bay lên như tro
     return p.life > 0;
   });
-  fx.sprites = fx.sprites.filter(s => { s.t += dtReal; return !spriteAnimDone(BOSS_SPRITES[s.name], 'idle', s.t); });
+  fx.sprites = fx.sprites.filter(s => {
+    s.t += dtReal;
+    if (s.t > 0 && (s.vx || s.vy)) { s.x += s.vx * dtReal; s.y += s.vy * dtReal; s.baseY = s.y; }   // thiên thạch rơi
+    if (s.follow && typeof bossMonsterLiftPx === 'function') s.y = s.baseY - bossMonsterLiftPx(fx);   // bay theo quái bị nâng
+    return s.life != null ? s.t < s.life : !spriteAnimDone(BOSS_SPRITES[s.name], s.anim, s.t);   // life ưu tiên hơn spriteAnimDone (xem bossSpawnSprite)
+  });
 }
 
 /* Bóng elip bằng ô pixel (unit px/ô) — cùng độ thô với sprite, không nhoè như ellipse() */
@@ -151,13 +176,24 @@ function drawBossMageSprite(ctx, fx, st, gender, t) {
   return true;
 }
 
-/* Đạn sprite (Fireball) dọc đường cong của shot; đầu đạn quay theo hướng bay (sprite gốc hướng lên) */
+/* Đạn sprite dọc đường cong của shot; xoay theo hướng bay CHỈ khi def có rotOffset (hình có "đầu" rõ, vd fireball
+   hướng lên/iceSpikeProj nằm ngang; xoáy gió spiritProj không xoay). Cỡ theo fh THẬT (bossVfxFh) — trước hardcode
+   16 khiến spiritProj to gấp đôi, iceSpikeProj nhỏ hơn ý muốn (review #3). */
 function drawBossShotSprite(ctx, s, x, y, k) {
-  const dx = s.x1 - s.x0, dy = (s.y1 - s.y0) - Math.cos(k * Math.PI) * Math.PI * 30;
-  const scale = Math.max(1, Math.round(pixelScale(s.p.projectile.size * 4, 16) * s.scale));   // bậc 1/2/3 ≈ 32/48/64px
-  return drawSprite(ctx, s.sprite, 'idle', s.t, x, y, scale, { center: true, rot: Math.atan2(dy, dx) + Math.PI / 2 });
+  const def = BOSS_SPRITES[s.sprite], dx = s.x1 - s.x0, dy = (s.y1 - s.y0) - Math.cos(k * Math.PI) * Math.PI * 30;
+  const scale = Math.max(1, Math.round(pixelScale(s.p.projectile.size * 4, bossVfxFh(s.sprite)) * s.scale));   // bậc 1/2/3 ≈ 32/48/64px
+  const opt = { center: true };
+  if (def && def.rotOffset != null) opt.rot = Math.atan2(dy, dx) + def.rotOffset;
+  return drawSprite(ctx, s.sprite, 'idle', s.t, x, y, scale, opt);
 }
 
+/* VFX một lượt/di chuyển (fx.sprites); có vx/vy + def.rotOffset (vd fireball thiên thạch) → xoay theo hướng bay
+   thật (review #4: trước vẽ thẳng đứng, đuôi lửa đi trước thay vì đi sau). */
 function drawBossSpriteFx(ctx, fx) {
-  for (const s of fx.sprites) if (s.t >= 0) drawSprite(ctx, s.name, 'idle', s.t, s.x, s.y, s.scale, { center: true });
+  for (const s of fx.sprites) {
+    if (s.t < 0) continue;
+    const def = BOSS_SPRITES[s.name], opt = { center: true };
+    if ((s.vx || s.vy) && def && def.rotOffset != null) opt.rot = Math.atan2(s.vy, s.vx) + def.rotOffset;
+    drawSprite(ctx, s.name, s.anim, s.t, s.x, s.y, s.scale, opt);
+  }
 }

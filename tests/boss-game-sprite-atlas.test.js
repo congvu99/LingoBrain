@@ -50,6 +50,21 @@
         assert.ok(sw.indexOf("'./" + src + "'") >= 0, 'sw.js ASSETS thiếu ' + src);
       });
     });
+    it('mọi khoá sprite trong preset phép (5 hệ × 3 bậc) + tuyệt kỹ đều tồn tại trong BOSS_SPRITES', () => {
+      Object.keys(BOSS_SPELL_PRESETS).forEach(el => {
+        [1, 2, 3].forEach(tier => {
+          const sp = BOSS_SPELL_PRESETS[el][tier].sprite;
+          assert.ok(sp && sp.proj && BOSS_SPRITES[sp.proj], el + ' bậc ' + tier + ' thiếu sprite.proj hợp lệ');
+          assert.ok(Array.isArray(sp.impact) && sp.impact.length > 0, el + ' bậc ' + tier + ' thiếu sprite.impact');
+          sp.impact.forEach(name => assert.ok(BOSS_SPRITES[name], el + ' bậc ' + tier + ' impact "' + name + '" không có trong BOSS_SPRITES'));
+        });
+      });
+      Object.keys(BOSS_ULTIMATE_PRESETS).forEach(id => {
+        const u = BOSS_ULTIMATE_PRESETS[id];
+        assert.ok(u.sprite && BOSS_SPRITES[u.sprite], id + ' thiếu sprite hợp lệ');
+        if (u.bigSprite) assert.ok(BOSS_SPRITES[u.bigSprite], id + ' bigSprite "' + u.bigSprite + '" không có trong BOSS_SPRITES');
+      });
+    });
     it('khung của mọi anim nằm trong ảnh (đọc cỡ PNG từ IHDR)', () => {
       Object.keys(BOSS_SPRITES).forEach(k => {
         const d = BOSS_SPRITES[k], b = fs.readFileSync(path.join(ROOT, d.src)), W = b.readUInt32BE(16), H = b.readUInt32BE(20);

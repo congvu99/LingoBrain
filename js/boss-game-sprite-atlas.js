@@ -43,10 +43,38 @@ const BOSS_SPRITES = {
   oblivionBody1: { src: 'img/boss/actor/dragon-blue-body1.png', fw: 31, fh: 27, anims: { idle: { frames: 1 } } },
   oblivionBody2: { src: 'img/boss/actor/dragon-blue-body2.png', fw: 31, fh: 27, anims: { idle: { frames: 1 } } },
   oblivionBodyEnd: { src: 'img/boss/actor/dragon-blue-body-end.png', fw: 29, fh: 40, anims: { idle: { frames: 1 } } },
-  fireball: { src: 'img/boss/fx/fireball.png', fw: 16, fh: 16, anims: { idle: { frames: 4, fps: 14 } } },   // đuôi lửa chĩa xuống: bay "lên"
-  flam: { src: 'img/boss/fx/flam.png', fw: 25, fh: 30, anims: { idle: { frames: 8, fps: 16, loop: false } } },
-  explosion: { src: 'img/boss/fx/explosion.png', fw: 40, fh: 40, anims: { idle: { frames: 9, fps: 18, loop: false } } },
+  // rotOffset: góc (rad) cộng vào atan2(hướng bay) để ảnh gốc (vẽ tĩnh) khớp hướng di chuyển; thiếu = không tự xoay
+  // theo hướng bay (hình không có "đầu" rõ, ví dụ xoáy gió). vfx: cỡ mục tiêu = vfx × chiều cao quái (mặc định 0.7
+  // nếu thiếu) — dùng ở bossActorEvent/bossFxUltimateEvent, KHÔNG áp cho đạn bay (đạn tự tính theo projectile.size).
+  fireball: { src: 'img/boss/fx/fireball.png', fw: 16, fh: 16, anims: { idle: { frames: 4, fps: 14 } }, rotOffset: Math.PI / 2, vfx: 0.35 },   // đuôi lửa chĩa xuống: bay "lên"
+  flam: { src: 'img/boss/fx/flam.png', fw: 25, fh: 30, vfx: 0.55,
+    anims: { idle: { frames: 8, fps: 16, loop: false }, cycle: { frames: 8, fps: 10 } } },   // cycle: bỏng thụ động (lặp)
+  explosion: { src: 'img/boss/fx/explosion.png', fw: 40, fh: 40, vfx: 0.75, anims: { idle: { frames: 9, fps: 18, loop: false } } },
   smoke: { src: 'img/boss/fx/smoke.png', fw: 32, fh: 32, anims: { idle: { frames: 6, fps: 12, loop: false } } },
+  // đạn hệ (phase 4) — dải ngang, frames đo thật bằng IHDR + xem ảnh (không suy từ chiều cao)
+  iceSpikeProj: { src: 'img/boss/fx/ice-spike.png', fw: 18, fh: 10, anims: { idle: { frames: 8, fps: 16 } }, rotOffset: 0 },   // hình nằm ngang (xem ảnh gốc), không phải chĩa lên
+  energyBallProj: { src: 'img/boss/fx/energy-ball.png', fw: 16, fh: 16, anims: { idle: { frames: 4, fps: 16 } }, rotOffset: Math.PI / 2 },
+  rockProj: { src: 'img/boss/fx/rock-proj.png', fw: 16, fh: 16, anims: { idle: { frames: 4, fps: 12 } } },   // tròn — không cần xoay theo hướng bay
+  spiritProj: { src: 'img/boss/fx/spirit-wind.png', fw: 32, fh: 32, anims: { idle: { frames: 5, fps: 12 } } },   // xoáy gió — không có "đầu" rõ, không tự xoay theo hướng bay
+  // va chạm hệ (phase 4)
+  iceFlake: { src: 'img/boss/fx/ice-flake.png', fw: 32, fh: 32, vfx: 0.4,
+    anims: { idle: { frames: 10, fps: 16, loop: false }, cycle: { frames: 10, fps: 8 } } },   // cycle: dùng cho thụ động đóng băng (lặp)
+  icePillar: { src: 'img/boss/fx/ice-pillar.png', fw: 32, fh: 32, vfx: 0.75, anims: { idle: { frames: 9, fps: 14, loop: false } } },
+  thunder: { src: 'img/boss/fx/thunder.png', fw: 16, fh: 28, vfx: 0.55, anims: { idle: { frames: 10, fps: 18, loop: false } } },
+  rockImpact: { src: 'img/boss/fx/rock-impact.png', fw: 30, fh: 30, vfx: 0.55, anims: { idle: { frames: 14, fps: 16, loop: false } } },
+  rockSpike: { src: 'img/boss/fx/rock-spike.png', fw: 54, fh: 48, vfx: 0.8, anims: { idle: { frames: 10, fps: 14, loop: false } } },
+  smokeCircular: { src: 'img/boss/fx/smoke-circular.png', fw: 30, fh: 14, vfx: 0.45,
+    anims: { idle: { frames: 8, fps: 12, loop: false }, cycle: { frames: 8, fps: 10 } } },   // cycle: lốc xoáy tuyệt kỹ (lặp suốt ultimateMs)
+  windLeaf: { src: 'img/boss/fx/leaf.png', fw: 12, fh: 7, vfx: 0.12, anims: { idle: { frames: 6, fps: 12, loop: false } } },   // hạt lá nhỏ, không phải sprite chính
+  // trận đồ bậc 3: 1 sheet vòng tròn trắng/cam, tô màu hệ bằng opt.solid (bossTintedFrame) — thay drawMagicCircle vẽ tay
+  magicCircle: { src: 'img/boss/fx/magic-circle.png', fw: 32, fh: 32, anims: { idle: { frames: 4, fps: 8 } } },
+  // khiên thụ động ở pháp sư: loop:false — nổi lên 1 lần lúc có khiên rồi giữ khung cuối, không lặp nhấp nháy
+  shieldSprite: { src: 'img/boss/fx/shield.png', fw: 24, fh: 26, vfx: 0.45, anims: { idle: { frames: 6, fps: 10, loop: false } } },
+  boost: { src: 'img/boss/fx/boost.png', fw: 53, fh: 35, vfx: 0.55, anims: { idle: { frames: 8, fps: 14, loop: false } } },   // tuyệt kỹ Hồi Sinh
+  auraSprite: { src: 'img/boss/fx/aura.png', fw: 25, fh: 24, vfx: 0.55, anims: { idle: { frames: 5, fps: 8 } } },   // buff Ôn từ quanh pháp sư (lặp)
+  // chân dung Faceset 38×38 (1 khung) cho cắt cảnh tuyệt kỹ — thay drawMage vẽ tay
+  mageFFace: { src: 'img/boss/actor/mage-f-face.png', fw: 38, fh: 38, anims: { idle: { frames: 1 } } },
+  mageMFace: { src: 'img/boss/actor/mage-m-face.png', fw: 38, fh: 38, anims: { idle: { frames: 1 } } },
   // tileset: chỉ cắt ô bằng toạ độ (boss-game-arena.js), không có anim
   tileFloor: { src: 'img/boss/tile/floor.png', fw: 16, fh: 16, anims: {} },
   tileNature: { src: 'img/boss/tile/nature.png', fw: 16, fh: 16, anims: {} },
@@ -114,7 +142,9 @@ function bossTintedFrame(name, f, color) {
 }
 
 /* Vẽ khung anim của sprite. (x, y) = giữa-chân (mặc định) hoặc tâm (opt.center); scale = số nguyên.
-   opt = { flash (0..1 độ phủ bóng), tint (màu bóng, mặc định trắng), alpha, flipX, rot (radian, quanh tâm), center }.
+   opt = { flash (0..1 độ phủ bóng), tint (màu bóng, mặc định trắng), alpha, flipX, rot (radian, quanh tâm), center,
+     solid (màu — vẽ hẳn bóng một màu theo hình khung thay vì ảnh gốc, dùng cho trận đồ tô màu hệ),
+     scaleY (bóp dẹt chiều cao, 0..1 — trận đồ nằm phẳng dưới chân, phối cảnh giả 3D) }.
    Trả false nếu ảnh chưa sẵn sàng. */
 function drawSprite(ctx, name, anim, t, x, y, scale, opt) {
   const img = bossSpriteImage(name);
@@ -124,13 +154,18 @@ function drawSprite(ctx, name, anim, t, x, y, scale, opt) {
   ctx.imageSmoothingEnabled = false;   // trong save/restore: không rò sang drawImage có phóng khác của ctx
   if (o.alpha != null) ctx.globalAlpha *= o.alpha;
   ctx.translate(Math.round(x), Math.round(o.center ? y : y - h / 2));   // gốc = tâm khung
+  if (o.scaleY != null) ctx.scale(1, o.scaleY);
   if (o.rot) ctx.rotate(o.rot);
   if (o.flipX) ctx.scale(-1, 1);
   const dx = -Math.round(w / 2), dy = -Math.round(h / 2);
-  ctx.drawImage(img, f.sx, f.sy, f.sw, f.sh, dx, dy, w, h);
-  if (o.flash > 0) {
-    ctx.globalAlpha *= Math.min(1, o.flash);
-    ctx.drawImage(bossTintedFrame(name, f, o.tint || '#ffffff'), dx, dy, w, h);
+  if (o.solid) {
+    ctx.drawImage(bossTintedFrame(name, f, o.solid), dx, dy, w, h);
+  } else {
+    ctx.drawImage(img, f.sx, f.sy, f.sw, f.sh, dx, dy, w, h);
+    if (o.flash > 0) {
+      ctx.globalAlpha *= Math.min(1, o.flash);
+      ctx.drawImage(bossTintedFrame(name, f, o.tint || '#ffffff'), dx, dy, w, h);
+    }
   }
   ctx.restore();
   return true;

@@ -1,7 +1,7 @@
 ---
 phase: 4
 title: "Element VFX and ultimates"
-status: pending
+status: completed
 priority: P2
 dependencies: [2]
 ---
@@ -47,10 +47,23 @@ Bậc 1/2/3 phân biệt bằng cỡ (×1/×1.5/×2), số đạn và vòng Magi
 5. Test + smoke test từng hệ (đổi hệ trong cây kỹ năng) + từng tuyệt kỹ.
 
 ## Success Criteria
-- [ ] 5 hệ nhìn khác nhau rõ; 3 bậc phân biệt được bằng mắt.
-- [ ] 5 tuyệt kỹ có VFX + cắt cảnh sprite; timing khớp `ultimateMs`/`impactMs`.
-- [ ] Reduced-motion không có loé/phủ toàn màn; FPS ≥ 50 khi tuyệt kỹ.
+- [x] 5 hệ nhìn khác nhau rõ; 3 bậc phân biệt được bằng mắt.
+- [x] 5 tuyệt kỹ có VFX + cắt cảnh sprite; timing khớp `ultimateMs`/`impactMs`.
+- [x] Reduced-motion không có loé/phủ toàn màn.
+- [ ] FPS ≥ 50 khi tuyệt kỹ — **chưa đo** (chỉ xem số HUD debug tại thời điểm chụp ảnh tĩnh, không phải benchmark
+  liên tục); user tự kiểm bằng `?fps` nếu cần số liệu chắc chắn.
 
 ## Risk Assessment
 - Khung FX không vuông (Flam 200×30): phải xác định số khung theo ảnh, không suy từ chiều cao; ghi `frames` tường minh trong def.
 - Gió yếu nhất về hình: nếu user chê thì tô màu lại (palette swap) Spirit/Smoke, không vẽ tay.
+
+## Kết quả thực hiện (2026-09-24)
+Xem báo cáo đầy đủ: `plans/reports/fullstack-developer-260924-1826-mage-pixel-art-phase-4-report.md`.
+Tóm tắt: đo khung 16 sheet FX bằng công cụ decode PNG tự viết (không có sharp/pngjs) + xem lưới overlay xác nhận
+biên khung khớp thật (không đoán); test `boss-game-sprite-atlas.test.js` xác nhận lại tự động qua IHDR khi chạy
+`node tests/run-tests.js` (430/430 xanh). `sprite: {proj, impact}` là dữ liệu trong preset (data-driven, không
+hard-code hệ trong code); trận đồ bậc 3 dùng 1 sheet `magicCircle` tô màu hệ qua `opt.solid` (bossTintedFrame) cho
+cả 5 hệ (không chỉ lửa như mô tả ban đầu — tổng quát hơn, không cần thêm asset). Đã xoá hẳn
+`js/boss-game-tier3-shapes.js` + mọi hàm vẽ tay (drawMeteor/IcePillar/RockSpikes/Tornado/LightningBolt/
+drawMagicCircle) + cơ chế `fx.customs`/`bossFxSpawnCustom`. Cắt cảnh tuyệt kỹ dùng Faceset 38×38 (mage-f-face.png/
+mage-m-face.png) thay `drawMage`. img/boss 339KB (dưới mốc mềm ~350KB).

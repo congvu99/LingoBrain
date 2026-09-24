@@ -4,8 +4,9 @@
    Quái vẽ bằng boss-game-sprite-actors.js; sprite chưa nạp xong → bỏ qua vẽ quái lượt đó (không throw).
    Pháp sư vẫn có phương án vẽ tay drawMage (boss-game-mage-art.js) dự phòng khi sprite chưa nạp — xoá ở phase 5.
    Chậm thời gian: k = mức chậm 0..1 → zoom tới 1.06 về phía pháp sư, lớp xám + viền tối.
-   Trận đồ/hình lớn bậc 3/cắt cảnh tuyệt kỹ nằm ở js/boss-game-tier3-ultimate-fx.js — gọi qua hook drawBossPassiveFx
-   (trong khối rung/zoom) và drawBossUltimateCutscene (sau khi bỏ transform, phủ toàn màn). */
+   Trận đồ (magic circle, lớp mặt đất — vẽ TRƯỚC pháp sư) + VFX tuyệt kỹ/thụ động/cắt cảnh nằm ở
+   js/boss-game-tier3-ultimate-fx.js — gọi qua hook drawBossGroundFx, drawBossPassiveFx (trong khối rung/zoom) và
+   drawBossUltimateCutscene (sau khi bỏ transform, phủ toàn màn). */
 
 const BOSS_HEART = '❤️', BOSS_HEART_EMPTY = '🖤';
 
@@ -106,6 +107,7 @@ function drawBossScene(ctx, st, ui, now) {
   const z = 1 + 0.06 * k, zx = m.x, zy = m.y - m.s * 0.5;
   if (z !== 1) { ctx.translate(zx, zy); ctx.scale(z, z); ctx.translate(-zx, -zy); }
   drawBossRegion(ctx, ui, w, h);
+  if (typeof drawBossGroundFx === 'function') drawBossGroundFx(ctx, fx);   // trận đồ — lớp mặt đất, vẽ trước pháp sư (review #7)
   const lift = typeof bossMonsterLiftPx === 'function' ? bossMonsterLiftPx(fx) : 0;
   ctx.save(); if (lift) ctx.translate(0, -lift);
   drawBossMonsterSprite(ctx, fx, st, ui.time);   // sprite chưa nạp → tự bỏ qua, không văng lỗi
@@ -117,7 +119,7 @@ function drawBossScene(ctx, st, ui, now) {
   drawRuneCircle(ctx, st, fx);
   drawBossSpriteFx(ctx, fx);
   drawBossFx(ctx, fx, ui.quality);
-  if (typeof drawBossPassiveFx === 'function') drawBossPassiveFx(ctx, fx, st, now);   // trận đồ, hình lớn bậc 3, phủ băng
+  if (typeof drawBossPassiveFx === 'function') drawBossPassiveFx(ctx, fx, st, ui, now);   // đóng băng/bỏng/khiên/buff Ôn từ
   ctx.restore();
   if (k > 0.01) {   // hậu kỳ chậm thời gian: nhạt màu + viền tối
     ctx.fillStyle = 'rgba(40,36,60,' + (0.22 * k) + ')'; ctx.fillRect(0, 0, w, h);

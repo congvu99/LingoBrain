@@ -3,8 +3,9 @@
    Quả phép bay đúng BOSS_TUNING.impactMs → chạm quái đúng lúc event 'impact'.
    Cần game-particles.js, boss-game-spell-presets.js,
    boss-game-sprite-actors.js (diễn viên/đạn sprite ở sân tile — hàm chỉ gọi lúc chạy, nạp sau file này cũng được).
-   Trận đồ/thiên thạch/tia sét/cột băng/gai đá/lốc + cắt cảnh tuyệt kỹ nằm ở js/boss-game-tier3-ultimate-fx.js
-   (nạp sau file này) — gọi qua bossFxSpawnCircle/bossFxSpawnCustom/bossFxUltimateEvent/stepBossTier3Fx nếu có, để file này không vượt 200 dòng. */
+   Trận đồ (magic circle sprite) + cắt cảnh tuyệt kỹ nằm ở js/boss-game-tier3-ultimate-fx.js (nạp sau file này)
+   — gọi qua bossFxSpawnCircle/bossFxUltimateEvent/stepBossTier3Fx nếu có, để file này không vượt 200 dòng.
+   VFX sprite theo hệ (đạn/va chạm/hình lớn bậc 3) nằm ở js/boss-game-sprite-actors.js (bossActorEvent). */
 
 const BOSS_FX_MAX_PARTS = 300;
 
@@ -64,8 +65,7 @@ function bossFxEvent(fx, e, st) {
     fx.flash = Math.max(fx.flash, (fx.reduced ? 0.4 : 1) * p.flash * scale); fx.flashColor = p.flashColor;
     fx.monHit = 0.25;
     bossFxText(fx, x, y - q.s * 0.3, '−' + Math.round(e.dmg), e.tier === 3 ? '#ffd23f' : '#ffffff', 16 + e.tier * 5);
-    // hình lớn bậc 3 (thiên thạch/tia sét/cột băng/gai đá/lốc) tại quái
-    if (p.custom && typeof bossFxSpawnCustom === 'function') bossFxSpawnCustom(fx, p.custom, q.x, q.y - q.s * 0.45, q.s, p.ring);
+    // VFX sprite theo hệ (đạn/va chạm, kể cả hình lớn bậc 3) do bossActorEvent lo, gọi cuối hàm này (xem dưới)
   } else if (e.type === 'burnTick') {
     bossBurst(fx, q.x, q.y - q.s * 0.4, { kind: 'orb', speed: 80, life: 0.5, size: 4, colors: ['#ff9a3c', '#ff5a1f'], g: -80, n: 6 });
     bossFxText(fx, q.x + q.s * 0.3, q.y - q.s * 0.7, '−' + Math.round(e.dmg), '#ffb347', 14);
@@ -112,7 +112,7 @@ function stepBossFx(fx, dtGame, dtReal) {
   fx.flash = Math.max(0, fx.flash - 2.2 * dtReal);
   ['monHit', 'mageHurt', 'castPose', 'typo'].forEach(k => { fx[k] = Math.max(0, fx[k] - dtReal); });
   stepBossActors(fx, dtReal);
-  if (typeof stepBossTier3Fx === 'function') stepBossTier3Fx(fx, dtReal);   // trận đồ/thiên thạch/… + cắt cảnh tuyệt kỹ
+  if (typeof stepBossTier3Fx === 'function') stepBossTier3Fx(fx, dtReal);   // trận đồ (fx.circles) + cắt cảnh tuyệt kỹ
 }
 
 /* Hạt kiểu pixel: ô vuông toạ độ nguyên (không nhoè), cạnh ≥ 2px */

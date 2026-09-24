@@ -1,6 +1,6 @@
 /* Service worker: cache-first cho toàn bộ file tĩnh. Đổi CACHE mỗi lần deploy để người dùng nhận bản mới.
    MP3 trong audio/ nằm ở cache riêng AUDIO_CACHE, cache dần khi phát, không xoá khi lên version. */
-const CACHE = 'lingobrain-v2.16.0';
+const CACHE = 'lingobrain-v2.17.0';
 const AUDIO_CACHE = 'lingobrain-audio';
 const ASSETS = [
   './',
@@ -50,7 +50,6 @@ const ASSETS = [
   './js/boss-game-spell-presets.js',
   './js/boss-game-mage-art.js',
   './js/boss-game-spell-art.js',
-  './js/boss-game-tier3-shapes.js',
   './js/boss-game-tier3-ultimate-fx.js',
   './js/boss-game-sprite-atlas.js',
   './js/boss-game-dragon-composite.js',
@@ -96,7 +95,24 @@ const ASSETS = [
   './img/boss/actor/dragon-blue-body1.png',
   './img/boss/actor/dragon-blue-body2.png',
   './img/boss/actor/dragon-blue-body-end.png',
-  './img/boss/tile/village.png'
+  './img/boss/tile/village.png',
+  './img/boss/fx/ice-spike.png',
+  './img/boss/fx/energy-ball.png',
+  './img/boss/fx/rock-proj.png',
+  './img/boss/fx/spirit-wind.png',
+  './img/boss/fx/ice-flake.png',
+  './img/boss/fx/ice-pillar.png',
+  './img/boss/fx/thunder.png',
+  './img/boss/fx/rock-impact.png',
+  './img/boss/fx/rock-spike.png',
+  './img/boss/fx/smoke-circular.png',
+  './img/boss/fx/leaf.png',
+  './img/boss/fx/magic-circle.png',
+  './img/boss/fx/shield.png',
+  './img/boss/fx/boost.png',
+  './img/boss/fx/aura.png',
+  './img/boss/actor/mage-f-face.png',
+  './img/boss/actor/mage-m-face.png'
 ];
 
 self.addEventListener('install', e => {

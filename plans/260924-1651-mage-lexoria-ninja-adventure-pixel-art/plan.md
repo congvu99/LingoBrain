@@ -37,7 +37,7 @@ Gói gốc nằm ở `D:\project\eng\assets\ninja-adventure\` (109MB, **không c
 | 1 | [Asset pipeline and sprite atlas](./phase-01-asset-pipeline-and-sprite-atlas.md) | Completed |
 | 2 | [Prototype battle scene](./phase-02-prototype-battle-scene.md) | Code done — chờ user duyệt iPhone |
 | 3 | [Full monster roster and regions](./phase-03-full-monster-roster-and-regions.md) | Completed |
-| 4 | [Element VFX and ultimates](./phase-04-element-vfx-and-ultimates.md) | Pending |
+| 4 | [Element VFX and ultimates](./phase-04-element-vfx-and-ultimates.md) | Completed |
 | 5 | [Hub portraits cleanup and docs](./phase-05-hub-portraits-cleanup-and-docs.md) | Pending |
 
 **Cổng duyệt:** hết phase 2, user duyệt cảm nhận trên iPhone thì mới làm phase 3–5.
