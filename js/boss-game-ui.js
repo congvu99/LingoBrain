@@ -25,7 +25,8 @@ function startBossBattle(opts) {
   const { groups, tiers } = bossBattleGroups();
   if (!groups.length) return toast('❌ Chưa đủ từ đã học');
   game = { id: 'boss', seq: ++gameSeq, miss: [], over: false, stop: stopBossBattle };
-  const mods = modifiersFor(bossProg.alloc, bossProg.element.v), mon = bossTempMonster(opts.beat);
+  const mods = modifiersFor(bossProg.alloc, bossProg.element.v), picked = bossPickMonster(opts.beat, bossProg.wins);
+  const mon = Object.assign({}, picked.monster, { hp: bossMonsterHp(picked.monster) }), region = picked.region;
   $('#app').innerHTML = '<div class="boss-game" id="bossGame">' + gameHeadHtml('') +
     '<div class="boss-prompt" id="bossPrompt" data-tier="1" aria-live="polite"><span class="boss-tier" id="bossTier"></span>' +
       '<span class="boss-prompt-text serif" id="bossPromptText"></span><span class="boss-letters mono" id="bossLetters"></span></div>' +
@@ -41,7 +42,7 @@ function startBossBattle(opts) {
   const canvas = $('#bossCanvas'), now = performance.now();
   const ui = bossUi = { seq: game.seq, opts, xpAtStart: bossProg.xp, raf: 0, last: 0, time: 0, started: false, paused: false,
     ending: false, countdown: 0, canvas, ctx: canvas.getContext('2d'), fx: createBossFx(), input: $('#bossInput'), field: $('#bossField'),
-    off: [], monsterName: mon.name, gender: bossProg.gender.v, fps: 60, frames: 0, fpsAt: now, quality: 1, showFps: BOSS_SHOW_FPS,
+    off: [], monsterName: mon.name, monster: mon, region, gender: bossProg.gender.v, fps: 60, frames: 0, fpsAt: now, quality: 1, showFps: BOSS_SHOW_FPS,
     st: createBattle({ monster: mon, groups, tiers, mods, hearts: 3 + mods.maxHeartsAdd, difficulty: opts.difficulty, carryDmg: opts.carryDmg, now }) };
   pauseBattle(ui.st, now);                           // đồng hồ trùm chỉ chạy sau đếm ngược
   document.documentElement.classList.add('game-lock');
