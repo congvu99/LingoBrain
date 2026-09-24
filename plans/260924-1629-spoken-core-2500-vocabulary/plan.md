@@ -1,14 +1,19 @@
 ---
-title: "Spoken core 2500 vocabulary"
-description: "Thêm ~2500 mục khẩu ngữ (phrasal verb, cụm nói sẵn, discourse, từ đơn khẩu ngữ) vào words.json, xếp xen kẽ Oxford, có MP3 edge-tts"
+title: Spoken core 2500 vocabulary
+description: >-
+  Thêm ~2500 mục khẩu ngữ (phrasal verb, cụm nói sẵn, discourse, từ đơn khẩu
+  ngữ) vào words.json, xếp xen kẽ Oxford, có MP3 edge-tts
 status: pending
 priority: P2
-branch: "main"
-tags: [vocabulary, words-json, audio]
+branch: main
+tags:
+  - vocabulary
+  - words-json
+  - audio
 blockedBy: []
 blocks: []
-created: "2026-09-24T09:35:56.606Z"
-createdBy: "ck:plan"
+created: '2026-09-24T09:35:56.606Z'
+createdBy: 'ck:plan'
 source: skill
 ---
 
@@ -23,7 +28,7 @@ Nguồn quyết định: [brainstorm report](../reports/brainstorm-260924-1629-s
 
 | Phase | Name | Status |
 |-------|------|--------|
-| 1 | [Batch tooling validator and interleave merge](./phase-01-batch-tooling-validator-and-interleave-merge.md) | Pending |
+| 1 | [Batch tooling validator and interleave merge](./phase-01-batch-tooling-validator-and-interleave-merge.md) | Completed |
 | 2 | [Phrasal verbs batch](./phase-02-phrasal-verbs-batch.md) | Pending |
 | 3 | [Spoken chunks batch](./phase-03-spoken-chunks-batch.md) | Pending |
 | 4 | [Discourse markers and spoken words batch](./phase-04-discourse-markers-and-spoken-words-batch.md) | Pending |

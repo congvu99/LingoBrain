@@ -1,7 +1,7 @@
 ---
 phase: 1
-title: "Batch tooling validator and interleave merge"
-status: pending
+title: Batch tooling validator and interleave merge
+status: completed
 priority: P1
 dependencies: []
 ---
@@ -23,7 +23,7 @@ Batch file: mảng mục 12 trường, cùng shape `words.json`. Lưu ở `plans
 
 Luật check (mỗi mục):
 - Đủ 12 trường, đều string; không trường thừa.
-- `id` = slug(word): lowercase, bỏ `'`, ký tự ngoài `[a-z0-9]` → `-`, gộp `-` (khớp quy ước `reach out` → `reach-out`). `I'm down` → `im-down`.
+- `id` = `slug(word)` dùng lại từ `js/srs-scheduler.js` (ký tự ngoài `[a-z0-9]` → `-`): `reach out` → `reach-out`, `o'clock` → `o-clock`, `I'm down` → `i-m-down`. Bỏ nháy sẽ trùng Oxford (`it's`→`its`, `I'll`→`ill`) nên không dùng.
 - Không trùng `id` và `word.toLowerCase()` với `words.json` hiện tại + trong batch.
 - `word`: không nháy cong, ≤ 30 ký tự, không khoảng trắng đầu/cuối/kép.
 - `ipa` khớp `^/.+/$`.
@@ -44,7 +44,7 @@ Reorder: nhóm F = mục không phải Oxford/Spoken (5 mục phim, giữ đầu
 
 ## Implementation Steps
 1. Đọc `tests/run-tests.js` + `test-harness.js` để theo đúng cách nạp test.
-2. Viết hàm thuần `slugId`, `validateEntries(deckWords, batch) → errors[]`, `interleave(words) → words`.
+2. Dùng lại `slug` (srs-scheduler); viết hàm thuần `validateEntries(deckWords, batch) → errors[]`, `interleave(words) → words`.
 3. Viết CLI `check|merge|reorder` quanh hàm thuần; `merge` ghi file bằng `JSON.stringify(obj, null, 2) + '\n'` (so khớp format hiện tại trước khi ghi).
 4. Test: slug (`I'm down`, `no one`), trùng id/word, nháy cong, IPA sai, context không chứa cụm (`figured out` với `figure out` → lỗi), emoji 📘, interleave 7 O + 3 S + 2 F → đúng thứ tự, idempotent (reorder 2 lần = 1 lần).
 5. Chạy `node tools/spoken-core-batch.js reorder` trên bộ hiện tại → diff `words.json` phải rỗng (chưa có S).

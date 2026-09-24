@@ -121,6 +121,6 @@ function addMiss(list, id) {
 }
 
 if (typeof module !== 'undefined') module.exports = {
-  GAME_IDS, GAME_LABEL, MIN_LEARNED, SCRAMBLE_ROUND, TIMED_ROUND, SPRINT_SECONDS, MISS_MAX,
+  GAME_IDS, GAME_LABEL, MIN_LEARNED, CLOZE_MAX_SENTENCE, SCRAMBLE_ROUND, TIMED_ROUND, SPRINT_SECONDS, MISS_MAX,
   wordRx, gamePool, gameAvailability, pickGameWords, scrambleTiles, buildWordOptions, comboMult, addMiss
 };
