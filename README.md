@@ -11,7 +11,7 @@ eng/
 ├── server.js + server/      Node.js (auth, sync, bộ từ từ DB qua API)
 ├── words.json        bộ từ (nguồn biên tập + seed input + fallback offline)
 ├── audio/            MP3 giọng máy tạo sẵn + index.json
-├── tools/            tạo MP3 (generate_edge_tts_audio.py), seed DB (seed-database.js)
+├── tools/            tạo MP3 (generate_edge_tts_audio.py), seed DB (seed-database.js), thêm mục Spoken core (spoken-core-batch.js)
 └── tests/            node tests/run-tests.js · tests/run-tests.html
 ```
 
@@ -127,7 +127,7 @@ Chip riêng (khác 5 game "Chơi nhanh" ở trên) trong hàng game, mở khi c�
 
 **Credit hình ảnh**: toàn bộ sprite pixel (pháp sư, quái, trùm, VFX, sân đấu, chân dung) dùng gói
 [**Ninja Adventure** by pixel-boy & AAA](https://pixel-boy.itch.io/ninja-adventure-asset-pack) — **CC0** (miễn phí,
-ghi nhận tự nguyện). Gói gốc (~109MB) không commit vào repo; chỉ sheet dùng thật được copy tay vào `img/boss/`
+ghi nhận tự nguyện). Gói gốc (~109MB) nằm ở `assets/ninja-adventure/` (chỉ để tra cứu, app không nạp); chỉ sheet dùng thật được copy tay vào `img/boss/`
 bằng `tools/copy-boss-sprites.js` (cần gói gốc ở `assets/ninja-adventure/` lúc chạy, xem
 `docs/system-architecture.md` mục "Sprite Pháp Sư Lexoria").
 
@@ -140,6 +140,9 @@ Bộ từ đọc từ **API `/api/words` (DB)** nếu có, hoặc **fallback `wo
 - Trường: `word`, `meaning` (bắt buộc), `ipa`, `pos`, `context`, `contextVi`, `source`, `emoji`, `image`, `mnemonic`, `outputPrompt`. `id` sinh từ `word` nếu thiếu.
 - Tiến độ gắn theo `id`: sửa nội dung từ thì tiến độ giữ nguyên; **gỡ từ khỏi `words.json` thì tiến độ của từ đó bị xoá** ở lần mở kế tiếp khi bộ từ từ API (tải từ file không xoá gì).
 - Backup (Góc của bạn → Tải backup) chỉ gồm tiến độ, giáo án, cài đặt, kỷ lục game. Khôi phục backup bản cũ có kèm bộ từ thì phần bộ từ bị bỏ qua.
+- Thành phần (~5030 mục): 2500 từ Oxford 3000/5000 (A1–B2) + ~2530 mục **Spoken core** cho giao tiếp với người bản địa — `source` = `Spoken core · phrasal verb` (703), `· chunk` (841 cụm nói sẵn), `· discourse` (166 từ nối/rút gọn như gonna, I mean), `· word` (818 từ đơn khẩu ngữ lọc từ tần suất phụ đề phim).
+- Thứ tự = thứ tự thẻ mới: mục phim đầu, rồi lặp 2 Oxford : 1 Spoken; trong Spoken xoay vòng chunk → word → phrasal verb → discourse. Oxford hết (~thẻ 3750) thì phần Spoken còn lại nối cuối.
+- Thêm mục Spoken theo đợt: `node tools/spoken-core-batch.js check <batch.json>` (kiểm id = slug(word), trùng, IPA, context chứa từ liền mạch, emoji/prompt riêng…) → `merge <batch.json>` (gộp + sắp lại) → tạo MP3. `reorder` chỉ sắp lại, chạy lại không đổi gì.
 
 ## Tạo MP3 giọng máy
 

@@ -177,20 +177,20 @@
       const s = sanitizePayload({ plan: { data: [{ id: '"><img onerror=x>', title: 'x' }, { id: 't2', title: 'ok', act: 'evil' }], ts: 1 } }, NOW);
       assert.equal(s.plan.data.length, 1); assert.equal(s.plan.data[0].id, 't2'); assert.equal(s.plan.data[0].act, undefined);
     });
-    it('giới hạn số key: srs ≤ 5000, done/caption ≤ 30, history ≤ 400 ngày mới nhất (chống phình payload)', () => {
+    it('giới hạn số key: srs ≤ 10000, done/caption ≤ 30, history ≤ 400 ngày mới nhất (chống phình payload)', () => {
       const srs = {}, done = {}, caption = {}, history = {};
-      for (let i = 0; i < 6000; i++) srs['w' + i] = {};
+      for (let i = 0; i < 12000; i++) srs['w' + i] = {};
       for (let i = 0; i < 50; i++) { done['t' + i] = 1; caption['t' + i] = 'x'; }
       for (let i = 0; i < 1000; i++) history[new Date(Date.UTC(2020, 0, 1) + i * 86400000).toISOString().slice(0, 10)] = 1;
       const s = sanitizePayload({ srs, day: { data: { date: '2026-09-23', done, caption, history }, ts: 1 } }, NOW);
-      assert.equal(Object.keys(s.srs).length, 5000); assert.equal(Object.keys(s.day.data.done).length, 30);
+      assert.equal(Object.keys(s.srs).length, 10000); assert.equal(Object.keys(s.day.data.done).length, 30);
       assert.equal(Object.keys(s.day.data.caption).length, 30); assert.equal(Object.keys(s.day.data.history).length, 400);
       assert.ok(s.day.data.history['2022-09-26'], 'giữ ngày mới nhất'); assert.equal(s.day.data.history['2020-01-01'], undefined);
     });
     it('mergeSync cũng giữ giới hạn khi hợp 2 bên', () => {
       const a = { srs: {} }, b = { srs: {} };
-      for (let i = 0; i < 4000; i++) { a.srs['a' + i] = rec({ last: i }); b.srs['b' + i] = rec({ last: i }); }
-      assert.equal(Object.keys(mergeSync(a, b).srs).length, 5000);
+      for (let i = 0; i < 6000; i++) { a.srs['a' + i] = rec({ last: i }); b.srs['b' + i] = rec({ last: i }); }
+      assert.equal(Object.keys(mergeSync(a, b).srs).length, 10000);
     });
     it('cfg kẹp theo giới hạn ô nhập', () => assert.deepEqual(sanitizePayload({ cfg: { data: { newPerDay: 999, maxSession: 1 }, ts: 1 } }, NOW).cfg.data, { newPerDay: 50, maxSession: 5 }));
     it('day: ngày sai định dạng → bỏ cả khối; key lạ trong done/caption bị loại', () => {

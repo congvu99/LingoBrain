@@ -1,5 +1,5 @@
 /* Copy các sheet Ninja Adventure (pixel-boy, CC0) mà game Pháp sư dùng thật vào img/boss/ — chạy tay một lần,
-   không phải bước build. Gói gốc (≈109MB) nằm ngoài git ở assets/ninja-adventure/.
+   không phải bước build. Gói gốc (≈109MB) ở assets/ninja-adventure/ (app không nạp trực tiếp).
    Dùng: node tools/copy-boss-sprites.js [thư-mục-gói]   (mặc định: <repo>/assets/ninja-adventure)
    Đích đổi tên kebab-case, phẳng theo nhóm actor/ fx/ tile/ — khớp src trong js/boss-game-sprite-atlas.js. */
 const fs = require('fs');

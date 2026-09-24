@@ -1,0 +1,166 @@
+directions-travel	it's just around the corner
+directions-travel	go straight
+directions-travel	turn left
+directions-travel	turn right
+directions-travel	keep going
+directions-travel	you can't miss it
+directions-travel	it's within walking distance
+directions-travel	it's a ten-minute walk
+directions-travel	I'm lost
+directions-travel	I'm not from around here
+directions-travel	can you show me on the map
+directions-travel	which way is the exit
+directions-travel	is this seat taken
+directions-travel	is this the right bus
+directions-travel	how long does it take
+directions-travel	when does it leave
+directions-travel	what time does it arrive
+directions-travel	one way or round trip
+directions-travel	window or aisle
+directions-travel	I'd like to check in
+directions-travel	I have a reservation
+directions-travel	do you have any rooms
+directions-travel	is breakfast included
+directions-travel	what's the Wi-Fi password
+directions-travel	can I get a taxi
+directions-travel	keep the change
+directions-travel	pull over here
+directions-travel	drop me off here
+directions-travel	how much to the airport
+directions-travel	I'm here on vacation
+directions-travel	I'm here on business
+directions-travel	have a safe trip
+directions-travel	safe travels
+directions-travel	welcome to town
+food-restaurant	table for two
+food-restaurant	can I see the menu
+food-restaurant	what do you recommend
+food-restaurant	what's good here
+food-restaurant	I'll have the same
+food-restaurant	I'll have what she's having
+food-restaurant	I'm allergic to nuts
+food-restaurant	no ice please
+food-restaurant	medium rare
+food-restaurant	to go please
+food-restaurant	can I get a box
+food-restaurant	it's delicious
+food-restaurant	this is so good
+food-restaurant	I'm full
+food-restaurant	seconds please
+food-restaurant	bon appetit
+food-restaurant	dinner is ready
+food-restaurant	what's for dinner
+food-restaurant	let's order in
+food-restaurant	let's get takeout
+food-restaurant	I'm craving pizza
+food-restaurant	I could eat
+food-restaurant	I'm on a diet
+food-restaurant	just water please
+food-restaurant	the usual
+food-restaurant	same as always
+food-restaurant	can we get the bill
+food-restaurant	separate checks please
+food-restaurant	is service included
+food-restaurant	it tastes funny
+food-restaurant	it's too salty
+food-restaurant	it's too spicy
+health-feelings	I don't feel good
+health-feelings	I feel sick
+health-feelings	I have a headache
+health-feelings	I have a cold
+health-feelings	I have a sore throat
+health-feelings	my back is killing me
+health-feelings	I need to see a doctor
+health-feelings	get well soon
+health-feelings	take it easy today
+health-feelings	I need some rest
+health-feelings	I didn't sleep well
+health-feelings	I'm wide awake
+health-feelings	I'm half asleep
+health-feelings	I'm in a good mood
+health-feelings	I'm in a bad mood
+health-feelings	I'm stressed out
+health-feelings	I'm burned out
+health-feelings	I'm on edge
+health-feelings	I'm so embarrassed
+health-feelings	I feel bad
+health-feelings	I feel terrible
+health-feelings	I feel like a new person
+health-feelings	I feel much better
+health-feelings	I'm doing better
+health-feelings	I've got a lot on my plate
+health-feelings	I need to clear my head
+health-feelings	I need some fresh air
+money-idioms	it costs an arm and a leg
+money-idioms	money's tight
+money-idioms	I'm broke
+money-idioms	I can't afford it
+money-idioms	it's worth it
+money-idioms	it's not worth it
+money-idioms	save money
+money-idioms	waste of money
+money-idioms	waste of time
+money-idioms	it's a steal
+money-idioms	I'm saving up
+money-idioms	pay me back later
+money-idioms	we're even
+money-idioms	keep the receipt
+money-idioms	piece of cake
+money-idioms	hit the road
+money-idioms	on the fly
+money-idioms	in the long run
+money-idioms	out of the blue
+money-idioms	once in a blue moon
+money-idioms	under the weather
+money-idioms	on cloud nine
+money-idioms	a no-brainer
+money-idioms	beats me
+money-idioms	search me
+money-idioms	your guess is as good as mine
+money-idioms	I have no idea
+money-idioms	no clue
+money-idioms	it rings a bell
+money-idioms	it's on the tip of my tongue
+money-idioms	it's up in the air
+money-idioms	the sooner the better
+money-idioms	all of a sudden
+money-idioms	no matter what
+money-idioms	just in case
+money-idioms	as usual
+money-idioms	as always
+money-idioms	not yet
+money-idioms	not anymore
+money-idioms	not at the moment
+money-idioms	not so fast
+money-idioms	not my thing
+money-idioms	not my cup of tea
+money-idioms	it's not my style
+money-idioms	to each their own
+money-idioms	you only live once
+money-idioms	it's now or never
+money-idioms	go with the flow
+money-idioms	take it or leave it
+money-idioms	make up your mind
+money-idioms	speak of the devil
+money-idioms	what's the catch
+money-idioms	there's a catch
+money-idioms	no strings attached
+money-idioms	it's a long story
+money-idioms	I'll tell you later
+money-idioms	between you and me
+money-idioms	keep it to yourself
+money-idioms	my lips are sealed
+money-idioms	you never know
+money-idioms	it's hard to say
+money-idioms	so to speak
+money-idioms	if I were you
+money-idioms	you'd better hurry
+money-idioms	you should try it
+money-idioms	trust me
+money-idioms	believe me
+money-idioms	mark my words
+money-idioms	I told you so
+money-idioms	see what I mean
+money-idioms	you'll see
+money-idioms	we're good
+money-idioms	all good

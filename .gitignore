@@ -27,5 +27,3 @@ Thumbs.db
 dist/
 build/
 
-# Gói gốc Ninja Adventure (≈109MB) — chỉ sheet dùng thật được chép vào img/boss/ (tools/copy-boss-sprites.js)
-assets/ninja-adventure/

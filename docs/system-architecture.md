@@ -70,7 +70,8 @@ server/seed-cli-args.js  parseArgs (--reset, --skip-deck, --allow-shrink, --rese
 server/password-hashing-and-session-tokens.js  hashPassword, verifyPassword, generateToken
 tools/generate_edge_tts_audio.py   tạo MP3 từ words.json (dùng edge-tts), output: audio/<sha1>.mp3 + audio/index.json
 tools/seed-database.js   CLI: nạp schema + bộ từ + tạo tài khoản chủ (chủ yếu để tạo owner, server tự seed)
-tools/copy-boss-sprites.js  chạy tay: copy sheet Ninja Adventure (CC0, ngoài git) dùng thật vào img/boss/ cho game Pháp sư
+tools/copy-boss-sprites.js  chạy tay: copy sheet Ninja Adventure (CC0) dùng thật vào img/boss/ cho game Pháp sư
+tools/spoken-core-batch.js  CLI check|merge|reorder batch mục "Spoken core" vào words.json; xen kẽ 2 Oxford : 1 Spoken (dùng slug của srs-scheduler, wordRx của word-games)
 audio/                   MP3 giọng Neural (en-US-ChristopherNeural), index.json ánh xạ text→file
 img/boss/                sprite pixel Pháp sư (Ninja Adventure — xem README mục Credit), chép bằng tools/copy-boss-sprites.js, precache trong sw.js
 tests/                   harness tự viết; `node tests/run-tests.js` (thuần) · tests/run-tests.html (thêm IndexedDB + DB test)
@@ -185,7 +186,7 @@ Backup (Tải backup / Khôi phục, `js/app-shell.js` + `js/word-import.js`) ma
 
 Toàn bộ hình vẽ trận (pháp sư, quái, trùm, VFX, sân đấu) và chân dung DOM (sảnh, màn chọn, thẻ truyện, Nhật ký,
 cây kỹ năng) đều dùng sprite từ gói **Ninja Adventure**, không còn hình vẽ tay canvas. Đường ống:
-1. Gói gốc (~109MB, **không commit**) nằm ở `assets/ninja-adventure/`. `tools/copy-boss-sprites.js` copy tay
+1. Gói gốc (~109MB) nằm ở `assets/ninja-adventure/` — chỉ để tra cứu, không nằm trong sw.js, server không phục vụ. `tools/copy-boss-sprites.js` copy tay
    đúng sheet dùng thật (đổi tên kebab-case, phẳng vào `img/boss/{actor,fx,tile}/`) — chạy lại khi cần thêm sheet.
 2. `js/boss-game-sprite-atlas.js` khai báo `BOSS_SPRITES` (khoá → `{src, fw, fh, anims}`), cắt khung qua
    `spriteFrame`/`drawSprite` (canvas, `imageSmoothingEnabled=false`, toạ độ làm tròn, scale số nguyên).

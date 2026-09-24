@@ -1,0 +1,169 @@
+plans-invitations	once in a while
+plans-invitations	every now and then
+plans-invitations	all the time
+plans-invitations	most of the time
+plans-invitations	at the moment
+plans-invitations	these days
+plans-invitations	the other day
+plans-invitations	last minute
+plans-invitations	any day now
+plans-invitations	what's the dress code
+plans-invitations	should I bring anything
+plans-invitations	bring a friend
+plans-invitations	the more the merrier
+plans-invitations	I wouldn't miss it
+plans-invitations	I'll be there
+plans-invitations	I can't wait to see you
+plans-invitations	looking forward to it
+plans-invitations	thanks for having me
+plans-invitations	thanks for coming
+plans-invitations	thanks for inviting me
+work-customers	how can I help you
+work-customers	what can I do for you
+work-customers	are you being helped
+work-customers	is someone helping you
+work-customers	I'll be right with you
+work-customers	thanks for waiting
+work-customers	sorry for the wait
+work-customers	sorry to keep you waiting
+work-customers	let me check for you
+work-customers	let me find out
+work-customers	I'll ask my manager
+work-customers	one moment please
+work-customers	I'll get back to you
+work-customers	I'll look into it
+work-customers	I'll follow up
+work-customers	I'll keep you posted
+work-customers	keep me posted
+work-customers	keep me in the loop
+work-customers	is there anything else
+work-customers	will that be all
+work-customers	anything else I can help with
+work-customers	here's your receipt
+work-customers	would you like a bag
+work-customers	cash or card
+work-customers	do you take cards
+work-customers	how much is it
+work-customers	how much does it cost
+work-customers	it's on sale
+work-customers	what a deal
+work-customers	it's a bargain
+work-customers	that's a rip-off
+work-customers	it's out of stock
+work-customers	we're sold out
+work-customers	we're closed
+work-customers	we're open until nine
+work-customers	what time do you close
+work-customers	can I try it on
+work-customers	where's the fitting room
+work-customers	can I return this
+work-customers	do you have a receipt
+work-customers	I'd like a refund
+work-customers	I'd like to exchange this
+work-customers	let me run it again
+work-customers	sign here please
+work-customers	enter your PIN
+work-customers	have a great day
+work-customers	enjoy your meal
+work-customers	come back soon
+work-customers	thanks for stopping by
+work-customers	we appreciate your business
+work-customers	my shift starts at nine
+work-customers	I'm on break
+work-customers	I'm off today
+work-customers	I'm working late
+work-customers	I have a day off
+work-customers	can you cover my shift
+work-customers	can we swap shifts
+work-customers	I'm clocking out
+work-customers	it's been a long day
+work-customers	busy day
+work-customers	it's slow today
+work-customers	we're short-staffed
+work-customers	we're swamped
+work-customers	I'm up to my ears
+work-customers	I'm on it
+work-customers	I'll handle it
+work-customers	I'll take it from here
+work-customers	good catch
+work-customers	heads up
+work-customers	just a heads up
+work-customers	quick question
+work-customers	can I run something by you
+work-customers	let's touch base
+work-customers	let's circle back
+work-customers	what's the deadline
+work-customers	it's due tomorrow
+work-customers	I'm almost done
+work-customers	I'm done
+work-customers	I need a break
+work-customers	let's take five
+work-customers	back to work
+work-customers	good work today
+work-customers	great teamwork
+work-customers	I'm new here
+work-customers	I'm still learning
+work-customers	I'm getting the hang of it
+work-customers	practice makes perfect
+work-customers	learn the ropes
+work-customers	on the same page
+work-customers	behind schedule
+work-customers	ahead of schedule
+work-customers	up to date
+work-customers	in charge
+work-customers	out of the office
+work-customers	on sick leave
+work-customers	on vacation
+work-customers	off the record
+work-customers	by the book
+work-customers	at the end of the day
+work-customers	to make a long story short
+work-customers	long story short
+work-customers	in a nutshell
+work-customers	bottom line
+work-customers	the thing is
+work-customers	here's the deal
+work-customers	here's the thing
+work-customers	that being said
+work-customers	having said that
+work-customers	on the other hand
+work-customers	in other words
+work-customers	what I mean is
+work-customers	for example
+work-customers	for instance
+work-customers	let me put it this way
+phone-texting	who's calling
+phone-texting	can I speak to Tom
+phone-texting	wrong number
+phone-texting	you're breaking up
+phone-texting	I can't hear you
+phone-texting	can you hear me now
+phone-texting	I'll call you back
+phone-texting	call me back
+phone-texting	leave a message
+phone-texting	I missed your call
+phone-texting	my phone died
+phone-texting	text me
+phone-texting	send me the link
+phone-texting	what's your number
+phone-texting	can I get your number
+phone-texting	what's your email
+phone-texting	check your inbox
+phone-texting	I'll send it over
+phone-texting	did you get my message
+phone-texting	I left you a voicemail
+phone-texting	put it on speaker
+phone-texting	you're on mute
+phone-texting	can you see my screen
+phone-texting	let's hop on a call
+phone-texting	I'm on the phone
+phone-texting	reply all
+phone-texting	just kidding
+phone-texting	no offense
+phone-texting	none taken
+phone-texting	by the way
+phone-texting	miss you
+phone-texting	love you
+phone-texting	night night
+directions-travel	how do I get to the station
+directions-travel	is it far from here

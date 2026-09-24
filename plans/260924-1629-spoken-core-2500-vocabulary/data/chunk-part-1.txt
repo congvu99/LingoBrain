@@ -1,0 +1,169 @@
+greetings-smalltalk	how's it going
+greetings-smalltalk	what's up
+greetings-smalltalk	not much
+greetings-smalltalk	how are you doing
+greetings-smalltalk	how have you been
+greetings-smalltalk	long time no see
+greetings-smalltalk	good to see you
+greetings-smalltalk	nice to meet you
+greetings-smalltalk	pleased to meet you
+greetings-smalltalk	how was your day
+greetings-smalltalk	how was your weekend
+greetings-smalltalk	how's work
+greetings-smalltalk	how's everything
+greetings-smalltalk	how's your family
+greetings-smalltalk	what have you been up to
+greetings-smalltalk	same old same old
+greetings-smalltalk	not bad
+greetings-smalltalk	pretty good
+greetings-smalltalk	can't complain
+greetings-smalltalk	hanging in there
+greetings-smalltalk	could be better
+greetings-smalltalk	never better
+greetings-smalltalk	so far so good
+greetings-smalltalk	what's new
+greetings-smalltalk	how's life
+greetings-smalltalk	how do you do
+greetings-smalltalk	good morning
+greetings-smalltalk	good afternoon
+greetings-smalltalk	good evening
+greetings-smalltalk	have a good one
+greetings-smalltalk	have a nice day
+greetings-smalltalk	have a good weekend
+greetings-smalltalk	take care
+greetings-smalltalk	see you later
+greetings-smalltalk	see you soon
+greetings-smalltalk	see you around
+greetings-smalltalk	catch you later
+greetings-smalltalk	talk to you later
+greetings-smalltalk	talk soon
+greetings-smalltalk	gotta go
+greetings-smalltalk	I have to run
+greetings-smalltalk	it was nice talking to you
+greetings-smalltalk	say hi to your mom
+greetings-smalltalk	keep in touch
+greetings-smalltalk	welcome back
+greetings-smalltalk	welcome home
+greetings-smalltalk	good night
+greetings-smalltalk	sweet dreams
+greetings-smalltalk	sleep well
+greetings-smalltalk	nice weather today
+greetings-smalltalk	it's freezing
+greetings-smalltalk	it's boiling
+greetings-smalltalk	what a day
+greetings-smalltalk	where are you from
+greetings-smalltalk	what do you do
+greetings-smalltalk	how long have you been here
+greetings-smalltalk	are you from around here
+greetings-smalltalk	small world
+greetings-smalltalk	fancy meeting you here
+greetings-smalltalk	look who it is
+greetings-smalltalk	you look great
+greetings-smalltalk	you haven't changed a bit
+greetings-smalltalk	it's been ages
+greetings-smalltalk	it's been a while
+greetings-smalltalk	what brings you here
+greetings-smalltalk	are you new here
+greetings-smalltalk	first time here
+greetings-smalltalk	any plans for the weekend
+greetings-smalltalk	how was your trip
+greetings-smalltalk	did you have a good time
+greetings-smalltalk	how did it go
+greetings-smalltalk	what's the plan
+greetings-smalltalk	what's the occasion
+greetings-smalltalk	happy birthday
+greetings-smalltalk	good for you
+greetings-smalltalk	welcome aboard
+greetings-smalltalk	make yourself at home
+greetings-smalltalk	help yourself
+greetings-smalltalk	after you
+greetings-smalltalk	here you go
+greetings-smalltalk	there you go
+greetings-smalltalk	bless you
+agree-disagree	fair enough
+agree-disagree	I agree
+agree-disagree	me too
+agree-disagree	me neither
+agree-disagree	same here
+agree-disagree	you're right
+agree-disagree	you're absolutely right
+agree-disagree	that's true
+agree-disagree	that makes sense
+agree-disagree	good point
+agree-disagree	I see your point
+agree-disagree	I guess so
+agree-disagree	I suppose so
+agree-disagree	I think so
+agree-disagree	I don't think so
+agree-disagree	not really
+agree-disagree	I'm not sure about that
+agree-disagree	I'm not so sure
+agree-disagree	I don't know about that
+agree-disagree	I beg to differ
+agree-disagree	that's not what I meant
+agree-disagree	I see what you mean
+agree-disagree	I get it
+agree-disagree	got it
+agree-disagree	I hear you
+agree-disagree	you have a point
+agree-disagree	you can say that again
+agree-disagree	tell me about it
+agree-disagree	no doubt
+agree-disagree	for sure
+agree-disagree	of course
+agree-disagree	sure thing
+agree-disagree	big time
+agree-disagree	kind of
+agree-disagree	sort of
+agree-disagree	more or less
+agree-disagree	it depends
+agree-disagree	maybe not
+agree-disagree	could be
+agree-disagree	probably not
+agree-disagree	I doubt it
+agree-disagree	no way
+agree-disagree	not a chance
+agree-disagree	over my dead body
+agree-disagree	that's a good idea
+agree-disagree	sounds good
+agree-disagree	sounds like a plan
+agree-disagree	works for me
+agree-disagree	I'm in
+agree-disagree	count me in
+agree-disagree	count me out
+agree-disagree	I'm down
+agree-disagree	I'm up for it
+agree-disagree	why not
+agree-disagree	let's do it
+agree-disagree	it's a deal
+agree-disagree	you got it
+agree-disagree	if you say so
+agree-disagree	whatever you say
+agree-disagree	suit yourself
+agree-disagree	it's up to you
+agree-disagree	your call
+agree-disagree	either way
+agree-disagree	I don't mind
+agree-disagree	I don't care
+agree-disagree	it doesn't matter
+agree-disagree	no preference
+agree-disagree	whatever works
+agree-disagree	let's agree to disagree
+agree-disagree	point taken
+agree-disagree	fair point
+agree-disagree	that's fair
+agree-disagree	I stand corrected
+agree-disagree	my point exactly
+agree-disagree	you know what I mean
+agree-disagree	you know what
+agree-disagree	to be honest
+agree-disagree	to be fair
+agree-disagree	in my opinion
+agree-disagree	if you ask me
+agree-disagree	the way I see it
+agree-disagree	as far as I know
+agree-disagree	not that I know of
+agree-disagree	that's the thing
+agree-disagree	that's the point
+agree-disagree	that's beside the point
+agree-disagree	that's not the point
