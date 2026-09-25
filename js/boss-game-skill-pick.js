@@ -49,7 +49,7 @@ function bossStrongerBurn(a, b) {
    Trả {dmg (đã Math.round), hits (số quả/đòn để FX vẽ — KHÔNG tách pendingImpacts riêng, xem boss-game-logic.js),
    threatDrainMul, burn, freeze} — burn/freeze gắn vào pendingImpacts để boss-game-logic.js/bossApplyHit áp lúc
    phép CHẠM (impact), không áp ngay lúc niệm. shield/heal/ultAdd áp NGAY (phòng thủ/hồi, không cần chờ chạm). */
-function bossApplySkillEffect(st, skill, baseDmg, alreadyCrit) {
+function bossApplySkillEffect(st, skill, baseDmg, alreadyCrit, now) {
   const eff = (skill && skill.effect) || {}, T = BOSS_TUNING;
   let dmg = baseDmg, hits = 1;
   if (eff.crit && !alreadyCrit) dmg *= T.critMul;
@@ -57,7 +57,9 @@ function bossApplySkillEffect(st, skill, baseDmg, alreadyCrit) {
   if (eff.extraHits) { dmg += eff.extraHits * baseDmg * 0.5; hits += eff.extraHits; }
   if (eff.shield) st.shield = Math.min(T.shieldCap, (st.shield || 0) + eff.shield);
   if (eff.heal) st.hearts = Math.min(st.heartsMax, st.hearts + eff.heal);
-  if (eff.ultAdd) {
+  // ultAdd cũng bị chặn trong lúc hồi chiêu (st.ultCooldownUntil) — cùng luật với bossComboOnCast, không có
+  // đường tắt nào cộng thanh tuyệt kỹ được trong lúc hồi (Gió ultAdd dồn quá nhanh).
+  if (eff.ultAdd && !(st.ultCooldownUntil && now < st.ultCooldownUntil)) {
     const wasFull = st.ult >= T.ultMax;
     st.ult = Math.min(T.ultMax, st.ult + eff.ultAdd);
     if (!wasFull && st.ult >= T.ultMax && st.mods && st.mods.ultimate && st.events) bossEmit(st, 'ultFull', {});   // chiêu tự phát làm đầy thanh tuyệt kỹ cũng phải báo, giống combo cast (bossComboOnCast)
@@ -73,7 +75,7 @@ function bossApplySkillEffect(st, skill, baseDmg, alreadyCrit) {
    thế nào (giữ castComplete ngắn, logic.js ≤ 200 dòng — xem plan.md "Ràng buộc chung").
    combo dùng để bắt "vừa chạm bội số 3/6" = combo SẼ có SAU cast này (cộng đúng như bossComboOnCast sẽ làm),
    KHÔNG phải combo đã dùng để nhân dmg đầu vào (đó vẫn là combo TRƯỚC khi cộng — giữ nguyên hợp đồng nhân combo hiện có). */
-function bossResolveSkillCast(st, dmg, crit, letters, speed) {
+function bossResolveSkillCast(st, dmg, crit, letters, speed, now) {
   // comboNow = combo SẼ có sau cast này NẾU không lỗi gõ; cast có typo không tăng combo (bossComboOnCast) nên
   // comboNow phải về 0 (không phải st.combo cũ) — nếu không, 1 cast lỗi ngay tại bội số 3/6 vẫn khớp combo3/combo6
   // (bossSkillSlotMatches yêu cầu ctx.combo > 0 && % === 0, 0 luôn trượt điều kiện này).
@@ -82,7 +84,7 @@ function bossResolveSkillCast(st, dmg, crit, letters, speed) {
   const skill = bossPickSkill(ctx, st.mods.element, st.level, st.skillTable);
   st.afterHit = false;   // "cast đầu tiên sau khi bị đánh" tiêu thụ ngay ở lần niệm kế, dù slot nào được chọn
   if (!skill) return { dmg, hits: 1, threatDrainMul: 1, skillId: null, skillName: null, burn: null, freeze: null };
-  const applied = bossApplySkillEffect(st, skill, dmg, crit);
+  const applied = bossApplySkillEffect(st, skill, dmg, crit, now);
   return {
     dmg: applied.dmg, hits: applied.hits, threatDrainMul: applied.threatDrainMul,
     // skillName = tên chiêu ĐÃ ghi đè theo dạng tiến hoá nếu có (st.skillTable, xem bossSkillsFor) — float text

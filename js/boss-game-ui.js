@@ -140,7 +140,7 @@ function bossFrame(t) {
   stepBossFx(ui.fx, dtGame, dtMs / 1000);
   bossMeasureFps(ui, t);
   drawBossScene(ui.ctx, st, ui, t);
-  const ultBtn = $('#bossUlt');   // hiện khi thanh tuyệt kỹ đầy và trường phái có tuyệt kỹ (bậc 3 nhánh trường phái)
+  const ultBtn = $('#bossUlt');   // hiện khi thanh tuyệt kỹ đầy và trường phái có tuyệt kỹ (mọi trường phái có sẵn từ đầu)
   if (ultBtn) ultBtn.hidden = !(st.mods.ultimate && st.ult >= BOSS_TUNING.ultMax);
   if (st.phase !== 'play' && !ui.ending) {
     ui.ending = true;

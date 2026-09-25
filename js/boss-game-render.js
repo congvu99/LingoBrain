@@ -93,9 +93,10 @@ function drawBossHud(ctx, st, ui, now) {
   ctx.fillText(BOSS_HEART.repeat(Math.max(0, st.hearts)) + BOSS_HEART_EMPTY.repeat(Math.max(0, st.heartsMax - st.hearts)) +
     (st.shield ? ' 🛡️' : ''), pad, pad + 16);
   const ultFull = st.ult >= BOSS_TUNING.ultMax, glow = ultFull ? 0.5 + 0.5 * Math.sin(now / 130) : 0;
-  for (let i = 0; i < BOSS_TUNING.ultMax; i++) {   // thanh tuyệt kỹ: 10 ô — đầy thì rung nhẹ + sáng nhấp nháy
-    ctx.fillStyle = i < st.ult ? (ultFull ? (glow > 0.5 ? '#fff6c2' : '#ffd23f') : '#ff8a3c') : 'rgba(255,255,255,.15)';
-    const jitter = ultFull && !ui.fx.reduced ? Math.sin(now / 45 + i) * 1.2 : 0;
+  const ultCooling = !!(st.ultCooldownUntil && now < st.ultCooldownUntil);   // hồi chiêu: tô xám mờ, không tính đầy/rung
+  for (let i = 0; i < BOSS_TUNING.ultMax; i++) {   // thanh tuyệt kỹ: ultMax ô — đầy thì rung nhẹ + sáng nhấp nháy
+    ctx.fillStyle = ultCooling ? 'rgba(150,150,165,.35)' : i < st.ult ? (ultFull ? (glow > 0.5 ? '#fff6c2' : '#ffd23f') : '#ff8a3c') : 'rgba(255,255,255,.15)';
+    const jitter = ultFull && !ultCooling && !ui.fx.reduced ? Math.sin(now / 45 + i) * 1.2 : 0;
     ctx.fillRect(pad + i * 13, pad + 24 + jitter, 10, 6);
   }
   if (comboOn) {   // "COMBO ×n" ngay cạnh thanh tuyệt kỹ, ẩn khi combo < 2
@@ -108,7 +109,7 @@ function drawBossHud(ctx, st, ui, now) {
   }
 }
 
-/* Chế độ chuỗi niệm: thanh thời gian 9s (đếm ngược) + 3 chấm tiến độ + đề đang chờ gõ, giữa màn phía trên.
+/* Chế độ chuỗi niệm: thanh thời gian chainMs (đếm ngược) + chainWords chấm tiến độ + đề đang chờ gõ, giữa màn phía trên.
    x/y/bw tính ở bossChainHudLayout (boss-game-combo-chain.js, thuần) — đặt HẲN dưới khối HUD trên cùng (ô tuyệt
    kỹ/tim/tên quái) để không đè nhau ở khung hẹp ~360px. */
 function drawBossChainHud(ctx, st, ui, now) {
@@ -116,8 +117,8 @@ function drawBossChainHud(ctx, st, ui, now) {
   const remain = Math.max(0, Math.min(1, (c.until - now) / BOSS_TUNING.chainMs));
   ctx.fillStyle = 'rgba(0,0,0,.5)'; ctx.fillRect(x, y, bw, 8);
   ctx.fillStyle = '#b06bff'; ctx.fillRect(x, y, bw * remain, 8);
-  const dot = 10, gap = 8, total = dot * 3 + gap * 2, dx = w / 2 - total / 2;
-  for (let i = 0; i < 3; i++) {
+  const n = BOSS_TUNING.chainWords, dot = 10, gap = 8, total = dot * n + gap * (n - 1), dx = w / 2 - total / 2;
+  for (let i = 0; i < n; i++) {
     ctx.fillStyle = i < c.hits ? '#ffd23f' : 'rgba(255,255,255,.25)';
     ctx.beginPath(); ctx.arc(dx + i * (dot + gap) + dot / 2, y + 20, dot / 2, 0, 6.283); ctx.fill();
   }

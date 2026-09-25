@@ -16,8 +16,9 @@ function bossFxSpawnCircle(fx, x, y, r, color, life) {
 function bossFxUltimateEvent(fx, e, st) {
   if (e.type === 'ultimateEnd') { fx.ultimate = null; return; }
   const u = BOSS_ULTIMATE_PRESETS[e.id] || BOSS_ULTIMATE_PRESETS.meteor, ultS = BOSS_TUNING.ultimateMs / 1000;
-  const perfect = e.k >= 1.5;
-  fx.ultimate = { id: e.id, name: u.name, color: u.color, life: ultS, max: ultS, perfect };
+  // perfect = gõ trọn HẾT từ trong chuỗi (e.perfect, tính ở bossEndChain theo hits — KHÔNG theo k): bonus
+  // bậc 3/dạng tiến hoá có thể đẩy k qua 1.5 dù gõ thiếu từ, không được giả nhãn HOÀN HẢO
+  fx.ultimate = { id: e.id, name: u.name, color: u.color, life: ultS, max: ultS, perfect: !!e.perfect };
   if (!fx.reduced) fx.shake = Math.max(fx.shake, u.shake);
   if (!fx.reduced) { fx.flash = Math.max(fx.flash, u.flash); fx.flashColor = u.color; }   // giảm chuyển động: bỏ loé toàn màn
   const q = fx.layout.mon, m = fx.layout.mage;
@@ -116,7 +117,7 @@ function drawBossUltimateCutscene(ctx, fx, ui, now) {
   ctx.font = '800 34px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
   ctx.lineWidth = 5; ctx.strokeStyle = 'rgba(0,0,0,.7)'; ctx.strokeText(u.name, w / 2, h * 0.42);
   ctx.fillText(u.name, w / 2, h * 0.42);
-  if (u.perfect) {   // chuỗi niệm gõ trọn 3 từ (k = 1.5)
+  if (u.perfect) {   // chuỗi niệm gõ trọn hết từ
     ctx.font = '800 16px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
     ctx.strokeText('HOÀN HẢO', w / 2, h * 0.42 + 24); ctx.fillText('HOÀN HẢO', w / 2, h * 0.42 + 24);
   }
