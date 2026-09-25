@@ -13,7 +13,8 @@
        dùng cho chiêu motion 'ground' (không có vật bay ra khỏi tay, cần dấu hiệu đang niệm),
      impact: [khoá sprite] thay preset hệ×bậc lúc phép CHẠM quái (bossActorEvent 'impact', boss-game-sprite-actors.js);
        nhiều khoá = nhiều lớp vẽ lệch nhẹ vị trí/độ trễ (xem bossActorEvent),
-     scale: hệ số nhân thêm vào cỡ VFX va chạm (1 = như preset gốc)
+     scale: hệ số nhân thêm vào cỡ VFX va chạm (1 = như preset gốc),
+     pillar: (tuỳ chọn) lặp impact[0] n lần xếp chồng thành cột từ chân quái (bossImpactSpawns, skill-motion.js)
    }
    BOSS_EVO_SKILL_VISUALS[skillId] (phase 3) — 1 bản nâng cấp mỗi chiêu (không theo từng dạng tiến hoá riêng,
    xem plan.md Session 1 "Quyết định"): chỉ khai cho skillId có slot bị GHI ĐÈ trong ≥1 dạng của BOSS_EVO
@@ -25,7 +26,7 @@
 const BOSS_SKILL_VISUALS = {
   // ---- Lửa ----
   'fire-combo3': { proj: 'fireball', motion: 'fan', cast: [], impact: ['flam'], scale: 1 },
-  'fire-long': { proj: null, motion: 'ground', cast: ['magicCircle'], impact: ['flam', 'explosion'], scale: 1.3 },
+  'fire-long': { proj: null, motion: 'ground', cast: ['magicCircle'], impact: ['flam', 'particleFire'], pillar: 3, scale: 1.3 },
   'fire-fast': { proj: 'shurikenMagic', motion: 'straight', cast: [], impact: ['sparkMagic'], scale: 0.9 },
   'fire-combo6': { proj: null, motion: 'ground', cast: [], impact: ['magicCircle', 'particleFire'], scale: 1.1 },
   'fire-execute': { proj: 'fireball', motion: 'sky', cast: [], impact: ['explosion', 'smoke'], scale: 1.4 },
@@ -39,7 +40,7 @@ const BOSS_SKILL_VISUALS = {
   'ice-counter': { proj: null, motion: 'straight', cast: [], impact: ['water'], scale: 1 },
   // ---- Sét ----
   'storm-combo3': { proj: 'energyBallProj', motion: 'straight', cast: [], impact: ['sparkMagic'], scale: 0.9 },
-  'storm-long': { proj: null, motion: 'sky', cast: [], impact: ['thunder', 'circleSpark'], scale: 1.3 },
+  'storm-long': { proj: null, motion: 'sky', cast: [], impact: ['thunder', 'circleSpark'], pillar: 2, scale: 1.3 },
   'storm-fast': { proj: 'kunai', motion: 'straight', cast: [], impact: ['cut'], scale: 1 },
   'storm-combo6': { proj: 'energyBallProj', motion: 'fan', cast: [], impact: ['circleSpark2'], scale: 1 },
   'storm-execute': { proj: null, motion: 'sky', cast: [], impact: ['bigEnergyBall', 'thunder'], scale: 1.4 },

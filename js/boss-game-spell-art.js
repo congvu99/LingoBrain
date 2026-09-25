@@ -61,7 +61,7 @@ function bossFxEvent(fx, e, st) {
     for (let h = 0; h < n; h++) {
       fx.shots.push({
         x0: tip.x, y0: tip.y, x1: q.x, y1: q.y - q.s * 0.45 + (h ? q.s * 0.15 : 0), t: -h * 0.08, dur, p, scale, id,
-        mageS: m.s, motion, sprite: vis ? vis.proj : undefined, h, hits: n, reduced: fx.reduced
+        mageS: m.s, motion, sprite: vis ? vis.proj : undefined, vis: !!vis, h, hits: n, reduced: fx.reduced
       });
     }
     fx.castPose = 0.4;
@@ -73,10 +73,15 @@ function bossFxEvent(fx, e, st) {
     if (shot) fx.shots = fx.shots.filter(s => s.id !== shot.id);   // Xích sét: 2 quả cùng một lần niệm
     const { p, scale } = shot || bossSpellPreset(st.mods.element, e.tier);
     const x = q.x, y = q.y - q.s * 0.45;
-    p.impact.forEach(o => bossBurst(fx, x, y, o, scale));
+    // Chiêu có hình riêng: sprite VFX (bossActorEvent) là lớp chính, nhưng drawBossFx vẽ hạt SAU sprite → khói
+    // (ô vuông tối 70–115px) + mảnh vỡ + ~70 tia lửa của preset hệ×bậc che kín hình (vd Hoả trụ chỉ thấy khói).
+    // + orb (cầu sáng cộng màu, hệ Sét thành khối trắng) → chỉ giữ tia sáng (1/3 số hạt) và chớp nhẹ; basic giữ nguyên preset như trước.
+    const vis = typeof bossSkillVisualFor === 'function' ? bossSkillVisualFor(e.skill, e.evolved) : null;
+    const bursts = vis ? p.impact.filter(o => o.kind === 'spark').map(o => Object.assign({}, o, { n: Math.ceil(o.n / 3) })) : p.impact;
+    bursts.forEach(o => bossBurst(fx, x, y, o, scale));
     fx.rings.push({ x, y, r: q.s * 0.15, vr: 380 * scale, life: 0.45, max: 0.45, color: p.ring });
     if (!fx.reduced) fx.shake = Math.max(fx.shake, p.shake * scale);
-    fx.flash = Math.max(fx.flash, (fx.reduced ? 0.4 : 1) * p.flash * scale); fx.flashColor = p.flashColor;
+    fx.flash = Math.max(fx.flash, (fx.reduced ? 0.4 : 1) * (vis ? 0.35 : 1) * p.flash * scale); fx.flashColor = p.flashColor;
     fx.monHit = 0.25;
     bossFxText(fx, x, y - q.s * 0.3, '−' + Math.round(e.dmg), e.tier === 3 ? '#ffd23f' : '#ffffff', 16 + e.tier * 5);
     // VFX sprite theo hệ (đạn/va chạm, kể cả hình lớn bậc 3) do bossActorEvent lo, gọi cuối hàm này (xem dưới)
@@ -118,8 +123,8 @@ function stepBossFx(fx, dtGame, dtReal) {
   for (const s of fx.shots) {
     s.t += dtReal;
     const k = Math.min(1, Math.max(0, s.t / s.dur)), tr = s.p.projectile.trail;
-    // 'ground' ẩn tới impact (không đạn, không hạt vệt) — trồi VFX ở chân quái lúc chạm, xem bossActorEvent
-    if (s.t > 0 && k < 1 && s.motion !== 'ground') {
+    // 'ground' ẩn tới impact (không đạn, không hạt vệt); chiêu có hình riêng bỏ vệt khói (ô vuông tối che hình)
+    if (s.t > 0 && k < 1 && s.motion !== 'ground' && !(s.vis && tr.kind === 'smoke')) {
       const pos = bossShotPos(s, k);
       bossBurst(fx, pos.x, pos.y, tr, s.scale);
     }

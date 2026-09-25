@@ -101,6 +101,23 @@ function bossSkillVisualFor(skillId, evolved) {
   });
 }
 
+/* Vị trí + cỡ từng VFX va chạm tại quái q (tâm cy). Basic (vis null): y như cũ — lệch nhẹ ngang/dọc, cỡ theo
+   bossVfxScale. Chiêu có hình riêng: hình CHÍNH (impact[0]) cao ≥ 1.1× quái × vis.scale (trước ~0.5–0.8× quái,
+   chìm dưới hạt preset); `pillar: n` = lặp hình chính n lần xếp chồng từ chân quái lên thành cột (Hoả trụ, sét
+   giáng — bộ Ninja Adventure không có sheet cột lửa). Cần bossVfxScale/bossVfxFh/pixelScale (sprite-actors/atlas). */
+function bossImpactSpawns(list, q, cy, vis, vmul) {
+  const out = list.map((name, i) => ({
+    name, x: q.x + (i - 0.5) * q.s * 0.14, y: cy - i * q.s * 0.05, delay: i * 0.06,
+    scale: Math.max(bossVfxScale(name, q.s, vmul), vis && !i ? pixelScale(q.s * 1.1 * Math.max(1, vis.scale), bossVfxFh(name)) : 1)
+  }));
+  const n = vis && out.length ? (vis.pillar || 1) : 1;
+  if (n > 1) {
+    const top = out[0], h = bossVfxFh(top.name) * top.scale;
+    out.splice(0, 1, ...Array.from({ length: n }, (_, j) => Object.assign({}, top, { x: q.x, y: q.y - h * (0.5 + j * 0.8), delay: j * 0.05 })));
+  }
+  return out;
+}
+
 function drawBossShotSprite(ctx, s, x, y, k) {
   const def = BOSS_SPRITES[s.sprite];
   // Cỡ theo chiều cao pháp sư (cùng lưới pixel với cảnh): size preset 8/12/16+ ≈ 1×/1.25×/1.5× pháp sư, không vượt 1.5×

@@ -93,5 +93,25 @@
       const withArc = Object.assign({}, BASE, { motion: 'arc' });
       assert.deepEqual(bossShotPos(s, 0.6), bossShotPos(withArc, 0.6));
     });
+
+    const Q = { x: 200, y: 300, s: 48 }, CY = Q.y - Q.s * 0.45;
+    it('bossImpactSpawns: basic (vis null) giữ vị trí/cỡ cũ theo bossVfxScale', () => {
+      const out = bossImpactSpawns(['flam', 'explosion'], Q, CY, null, 1.5);
+      assert.equal(out.length, 2);
+      assert.equal(out[0].scale, bossVfxScale('flam', Q.s, 1.5));
+      assert.equal(out[1].x, Q.x + 0.5 * Q.s * 0.14);
+    });
+    it('bossImpactSpawns: hình chính của chiêu có hình riêng cao ≥ ~1.1× quái', () => {
+      const out = bossImpactSpawns(['flam'], Q, CY, { impact: ['flam'], scale: 1 }, 1);
+      assert.ok(BOSS_SPRITES.flam.fh * out[0].scale >= Q.s * 0.9);
+    });
+    it('bossImpactSpawns: pillar n → n bản hình chính xếp chồng lên từ chân quái, lớp sau giữ nguyên', () => {
+      const out = bossImpactSpawns(['flam', 'particleFire'], Q, CY, { impact: ['flam', 'particleFire'], scale: 1.3, pillar: 3 }, 1);
+      assert.equal(out.length, 4);
+      assert.deepEqual(out.slice(0, 3).map(o => o.name), ['flam', 'flam', 'flam']);
+      assert.ok(out[0].y > out[1].y && out[1].y > out[2].y, 'cột đi lên');
+      assert.ok(out[0].y < Q.y, 'đáy cột trên chân quái');
+      assert.equal(out[3].name, 'particleFire');
+    });
   });
 })();

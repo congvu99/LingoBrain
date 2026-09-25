@@ -60,10 +60,8 @@ function bossActorEvent(fx, e, st) {
     // (nhánh sau chỉ evaluate khi KHÔNG có vis, tránh gọi bossSpellPreset thừa — review L3).
     const list = vis ? vis.impact : ((bossSpellPreset(el, e.tier).p.sprite || {}).impact || []);
     const vmul = vis ? mul * vis.scale : mul;
-    // nhiều VFX cùng hệ (vd Explosion×2, Thunder×3, SmokeCircular×2) lệch nhẹ vị trí/độ trễ để không đè khít lên nhau
-    list.forEach((name, i) => {
-      bossSpawnSprite(fx, name, q.x + (i - 0.5) * q.s * 0.14, cy - i * q.s * 0.05, bossVfxScale(name, q.s, vmul), { delay: i * 0.06 });
-    });
+    // vị trí/cỡ (lệch nhẹ, hình chính đủ lớn, cột `pillar`) — bossImpactSpawns, js/boss-game-skill-motion.js
+    bossImpactSpawns(list, q, cy, vis, vmul).forEach(s => bossSpawnSprite(fx, s.name, s.x, s.y, s.scale, { delay: s.delay }));
   } else if (e.type === 'hurt') {
     A.mon.lunge = BOSS_LUNGE_S;
     A.mage.flash = 0.35; A.mage.recoil = 0.3;
