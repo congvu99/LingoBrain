@@ -19,12 +19,18 @@ const PURE_MODULES = [
   'js/boss-game-spell-presets.js',    // dữ liệu preset — cần cho test trần hạt bằng preset thật
   'js/boss-game-spell-math.js',       // cần plane-game-text.js + word-games.js
   'js/boss-game-elements.js',
+  'js/boss-game-evolution-forms.js',   // dữ liệu 30 dạng tiến hoá — cần trước boss-game-evolution.js/test
+  'js/boss-game-evolution-sprites.js', // 30 sheet + 30 face dạng tiến hoá (dữ liệu thuần)
+  'js/boss-game-evolution.js',
+  'js/boss-game-skill-roster.js',     // dữ liệu 35 chiêu tự phát (thuần, không hàm) — nạp trước skill-pick.js
+  'js/boss-game-skill-pick.js',       // chọn/áp chiêu + bossApplyHit (thuần) — nạp trước boss-game-logic.js
   'js/boss-game-threat-gauge.js',     // thanh tấn công trùm (thuần) — nạp trước boss-game-logic.js
   'js/boss-game-combo-chain.js',      // combo + thanh tuyệt kỹ + chuỗi niệm (thuần) — nạp trước boss-game-logic.js
   'js/boss-game-logic.js',
   'js/boss-game-progress.js',
   'js/boss-game-story.js',        // dữ liệu thuần: BOSS_REGIONS, BOSS_MONSTERS, BOSS_STORY
   'js/boss-game-sprite-atlas.js', // phần thuần: BOSS_SPRITES, spriteFrame, pixelScale (phần DOM chỉ định nghĩa hàm)
+  'js/boss-game-skill-sprites.js',   // gắn BOSS_SKILL_SPRITES vào BOSS_SPRITES (dữ liệu thuần) — nạp sau sprite-atlas.js
   'js/boss-game-dragon-composite.js',   // chỉ định nghĩa hàm/hằng số ở top-level, không đụng DOM khi nạp
   'js/boss-game-arena.js',        // BOSS_ARENAS (dữ liệu) + buildBossArena tự trả null khi không có document
   'js/boss-game-sprite-actors.js'   // chỉ định nghĩa hàm ở top-level; hàm đụng DOM (ctx canvas) chỉ chạy khi gọi,

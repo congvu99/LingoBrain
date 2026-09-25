@@ -57,7 +57,12 @@ function renderBossHub(buff) {
       '<small>Tắt bộ gõ tiếng Việt trước khi chơi.</small></p>' +
     bossJournalHtml(bossProg.wins) +
     '<div class="row boss-hub-nav"><button class="btn-ghost" id="bossTreeBtn">🌳 Cây nguyên tố</button>' +
-      '<button class="btn-ghost" id="bossJournalBtn">📖 Nhật ký</button></div>' +
+      '<button class="btn-ghost" id="bossSkillBookBtn">📖 Sổ chiêu</button>' +
+      '<button class="btn-ghost" id="bossEvoBtn">🧬 Tiến hoá' +
+        (bossEvoHasUpgrade(bossProg.element.v, lv, bossActiveForm(bossProg.evo, bossProg.element.v, lv)) &&
+          bossEvoMilestoneTier(lv) > bossEvoNoticeSeen(bossProg.element.v)
+          ? ' <span class="boss-evo-badge">Có thể tiến hoá!</span>' : '') + '</button>' +
+      '<button class="btn-ghost" id="bossJournalBtn">📔 Nhật ký</button></div>' +
     '<div class="row"><button class="btn-primary" id="bossStart">' + (o.kind === 'story' ? 'Chiến đấu' : 'Bắt đầu') + '</button></div></div>';
   bindGameQuit();
   bossBindWordTap($('.boss-hub'));
@@ -68,6 +73,8 @@ function renderBossHub(buff) {
   const goReview = $('#bossBuffReview');
   if (goReview) goReview.onclick = () => showTab('plan');
   $('#bossTreeBtn').onclick = () => renderSkillTree();
+  $('#bossSkillBookBtn').onclick = () => renderSkillBook();
+  $('#bossEvoBtn').onclick = () => renderBossEvolution();
   $('#bossJournalBtn').onclick = () => renderJournal();
   $('#bossStart').onclick = () => startBossBattle(bossTodayOpts(cfg.bossLevel));   // cử chỉ thật → focus ô gõ được trên iOS
 }
@@ -79,8 +86,14 @@ function bossBuffChipHtml(buff) {
       '<button class="btn-sm btn-ghost" id="bossBuffReview">Sang Ôn từ</button></p>';
 }
 
+/* Sprite pháp sư ở sảnh: dạng tiến hoá đang dùng (đủ cấp) hoặc gốc theo giới tính nếu chưa chọn/chưa đủ cấp */
+function bossHubMageSprite() {
+  const lv = levelFromXp(bossProg.xp), el = bossProg.element.v, form = bossActiveForm(bossProg.evo, el, lv);
+  return bossMageSprite(bossProg.gender.v, bossFormSprite(el, form));
+}
+
 function bossDrawPortrait() {
-  bossPortraitLoop($('#bossPortrait'), bossMageSprite(bossProg.gender.v));
+  bossPortraitLoop($('#bossPortrait'), bossHubMageSprite());
 }
 
 /* Dọn interval "đang đồng bộ" + vòng lặp chân dung nếu người dùng thoát giữa chừng (sảnh hoặc màn lần đầu) */

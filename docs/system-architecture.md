@@ -36,8 +36,15 @@ js/game-viewport-fit.js  DÙNG CHUNG (Bắn máy bay + Pháp sư): co khung theo
 js/boss-progress-sync-merge.js  Pháp Sư Lexoria: BOSS_ELEMENTS, emptyBoss/cleanBoss/mergeBoss cho `eng.boss.v1`, dùng chung server   [thuần, nạp TRƯỚC sync-merge.js + app-storage.js]
 js/boss-game-spell-math.js      Pháp sư: BOSS_TUNING, độ khó từ, bậc chiêu tương đối trong pool, hệ số tốc độ/sát thương, pool nhóm đồng nghĩa   [thuần]
 js/boss-game-elements.js        Pháp sư: bảng cây 5 nguyên tố → modifier, điểm còn lại, điều kiện lên bậc   [thuần]
+js/boss-game-evolution-forms.js  Pháp sư: dữ liệu 30 dạng tiến hoá (5 hệ × 6 dạng) — name/parent/level/sprite/face/mods/skillOverrides/ultBonus   [thuần, dữ liệu]
+js/boss-game-evolution-sprites.js  Pháp sư: 30 sheet nhân vật + 30 faceset dạng tiến hoá, gộp vào BOSS_SPRITES qua boss-game-skill-sprites.js   [thuần, dữ liệu]
+js/boss-game-evolution.js       Pháp sư: bossEvoUnlocked/bossActiveForm/bossEvoMods/bossSkillsFor/bossEvoUltBonus/bossFoldEvoMods/bossBattleMods + badge "Có thể tiến hoá!"   [thuần]
+js/boss-game-skill-roster.js    Pháp sư: dữ liệu 35 chiêu tự phát (5 hệ × 7 slot) + BOSS_SKILL_FX (tên nổi/VFX theo chiêu)   [thuần, dữ liệu]
+js/boss-game-skill-pick.js      Pháp sư: chọn chiêu theo slot/cấp/điều kiện, áp effect lên dmg/thanh, bossApplyHit dùng chung phép thường + đòn chuỗi niệm   [thuần]
+js/boss-game-skill-fx.js        Pháp sư: tên chiêu nổi + VFX phụ theo BOSS_SKILL_FX lúc cast/impact
+js/boss-game-skill-sprites.js   Pháp sư: 13 sheet FX chiêu tự phát, gộp vào BOSS_SPRITES (Object.assign, sau atlas) — cũng gộp BOSS_EVO_SPRITES ở đây   [thuần, dữ liệu]
 js/boss-game-threat-gauge.js    Pháp sư: thanh tấn công trùm (đầy theo giờ, niệm đúng giảm, gõ sai/bỏ tăng, đầy → đánh)   [thuần]
-js/boss-game-combo-chain.js     Pháp sư: combo (nhân sát thương), thanh tuyệt kỹ 10 nấc, chuỗi niệm 3 từ + áp hiệu lực tuyệt kỹ theo hệ số   [thuần]
+js/boss-game-combo-chain.js     Pháp sư: combo (nhân sát thương), thanh tuyệt kỹ 10 nấc, chuỗi niệm 3 từ + áp hiệu lực tuyệt kỹ theo hệ số (evoUltBonus cộng vào k, meteor/chain dùng ceil khi có bonus)   [thuần]
 js/boss-game-logic.js           Pháp sư: máy trạng thái 1 trận (thanh tấn công, chậm thời gian, khoá cắt cảnh, gõ/typo, combo/chuỗi niệm rẽ sang boss-game-combo-chain.js, DoT, freeze, events[])   [thuần]
 js/boss-game-progress.js        Pháp sư: đường cấp, trận hôm nay/beat kế, ghi tiến trình idempotent, chuỗi ngày, buff Ôn từ, đoạn truyện   [thuần]
 js/boss-game-spell-presets.js   Pháp sư: dữ liệu hiệu ứng phép theo hệ × bậc + tuyệt kỹ + fallback bậc thiếu
@@ -52,10 +59,12 @@ js/boss-game-tier3-ultimate-fx.js  Pháp sư: trận đồ (magic circle sprite)
 js/boss-game-render.js          Pháp sư: ghép khung hình cảnh trận từ state + hiệu ứng (toàn sprite, không còn vẽ tay)
 js/boss-game-ui.js              Pháp sư: khung trận DOM/canvas, input ẩn + phím, vòng rAF, tạm dừng, lưu tiến trình giữa trận
 js/boss-game-story-journal-ui.js  Pháp sư: quái theo beat (Vô tận/Luyện phép chọn theo ngày), thẻ truyện + Nhật ký (Faceset <img> quái), từ đã học bấm nghe
-js/boss-game-hub-ui.js          Pháp sư: sảnh — chân dung sprite, cấp/XP, chuỗi ngày, buff Ôn từ, trận hôm nay, cấp độ, refreshBossHub sau sync
+js/boss-game-hub-ui.js          Pháp sư: sảnh — chân dung sprite (theo dạng tiến hoá đang dùng), cấp/XP, chuỗi ngày, buff Ôn từ, trận hôm nay, cấp độ, nút Tiến hoá + badge, refreshBossHub sau sync
 js/boss-game-first-run-ui.js    Pháp sư: màn lần đầu — chờ sync khi đang đăng nhập, chọn pháp sư nam/nữ (chân dung sprite xem trước)
 js/boss-game-skill-tree-ui.js   Pháp sư: cây kỹ năng nguyên tố + chọn trường phái, icon Skill Icon/Spell cạnh mỗi hệ
-js/boss-game-result-ui.js       Pháp sư: thẻ đề trong trận, lưu tiến trình (persistBattle), màn kết (XP, lên cấp, outro, từ sai, chốt trùng thắng)
+js/boss-game-skill-book-ui.js   Pháp sư: "Sổ chiêu" — liệt kê 7 chiêu tự phát của hệ đang chọn, khoá/mở theo cấp
+js/boss-game-evolution-ui.js    Pháp sư: "Tiến hoá" — cây 1→2→4 dạng của hệ đang chọn, khoá/mở theo cấp, chạm chọn lưu bossProg.evo[el] qua saveBoss()
+js/boss-game-result-ui.js       Pháp sư: thẻ đề trong trận, lưu tiến trình (persistBattle), màn kết (XP, lên cấp, badge tiến hoá khi vừa lên mốc, outro, từ sai, chốt trùng thắng)
 js/app-shell.js          tab, bindUI, phím tắt, init
 js/pwa-register.js       đăng ký service worker, tự cập nhật (kiểm tra khi mở lại app, tải lại lúc rảnh)
 js/deck-source.js        tải bộ từ từ /api/words (DB) → fallback words.json; pruneSrs chỉ khi từ API    [thuần]
@@ -161,7 +170,7 @@ Body: {data: {v, srsEpoch, srs, cfg, plan, day, gameScore, boss}}
 | `eng.gamescore.v1` | `{[gameId]: {best, plays}}` kỷ lục mỗi game; Bắn máy bay / Chém chữ tách theo cấp: `planes` (Vừa), `planes-easy`, `planes-hard`, `fruit` (Vừa), `fruit-easy`, `fruit-hard` (tổng 9 khoá, sync-merge cho tối đa 20) |
 | `eng.auth.v1` | `{token, username}` khi đăng nhập (dùng cho `/api/sync`) |
 | `eng.syncmeta.v1` | `{cfgTs, planTs, dayTs, srsEpoch, owner, syncedAt}` — mốc đồng bộ |
-| `eng.boss.v1` | Tiến trình Pháp Sư Lexoria: `{v, xp, wins:{date:beat}, day:{date,beat,dmg}\|null, alloc:{el:0..3}, gender:{v,ts}, element:{v,ts}, buffDate}` — không có `deviceId` |
+| `eng.boss.v1` | Tiến trình Pháp Sư Lexoria: `{v, xp, wins:{date:beat}, day:{date,beat,dmg}\|null, alloc:{el:0..3}, gender:{v,ts}, element:{v,ts}, buffDate, evo:{el:{v,ts}}}` (`evo` phase 5: `v` = formId `<hệ>-a\|b[1\|2]` hoặc `''` = dạng gốc) — không có `deviceId` |
 | IndexedDB `lingobrain/recordings` | `{id, taskId, date, caption, blob, type}` |
 
 `bossProg` (biến toàn cục, `js/app-storage.js`) giữ `eng.boss.v1` đang hoạt động; `saveBoss()` = `save('eng.boss.v1', bossProg)`. Đồng bộ có thể **thay hẳn object** `bossProg` (`applySyncPayload`), nên mọi nơi ghi tiến trình phải đọc `bossProg` **tại thời điểm ghi**, không giữ tham chiếu cũ.
@@ -177,6 +186,7 @@ Luật gộp từng trường của `mergeBoss(a, b)` (giao hoán, kết hợp, 
 - `alloc` (điểm cây kỹ năng): **max theo từng nhánh** — không có cơ chế trừ điểm nên bậc chỉ tăng, gộp max luôn an toàn.
 - `gender`, `element` (`{v, ts}`): mốc `ts` lớn hơn thắng cả khối; hoà thì so `v` để tất định.
 - `buffDate`: lấy chuỗi lớn hơn (ngày gần nhất đã đạt buff Ôn từ).
+- `evo` (phase 5, `{el: {v, ts}}` 5 hệ): mỗi hệ gộp LWW **độc lập** theo `ts` riêng (`mergePick`, giống `gender`/`element` nhưng lặp lại cho từng hệ) — id lạ/sai hệ bị `cleanBoss` lọc về `''` (dạng gốc) bằng `BOSS_EVO_FORMS[el]` (allow-list, đặt trong `boss-progress-sync-merge.js` vì server dùng chung, chỉ id không kèm tên/sprite/chỉ số). Cấp chưa đủ để mở dạng đã chọn (XP gộp từ máy khác) → UI hiện dạng gốc, KHÔNG xoá `evo` đã lưu (`bossActiveForm`).
 
 **Hợp đồng CHỈ TIẾN**: một khi đã phát hành, `boss` không bao giờ bị gỡ khỏi `sanitizePayload`/`mergeSync` phía server — gỡ sẽ xoá `boss` của **mọi** tài khoản trên DB ở lần sync kế tiếp (server chạy `sanitizePayload` trên cả bản đã lưu lẫn bản mới trước khi ghi lại). **Rollback chỉ làm ở client**: gỡ `'boss'` khỏi `GAME_IDS` (`js/word-games.js`) để ẩn chip, hạ `APP_VERSION`/`CACHE`; trường `boss` vẫn đi qua sync vô hại (không ai đọc/ghi nó nữa).
 
@@ -200,6 +210,12 @@ cây kỹ năng) đều dùng sprite từ gói **Ninja Adventure**, không còn 
    với `src` lấy từ bảng hằng (`BOSS_MONSTERS[].face`, `img/boss/fx/icon-<hệ>[-disabled].png`), không phải hình vẽ.
 6. Mọi ảnh nằm trong `sw.js` ASSETS (offline PWA); `tests/boss-game-sprite-atlas.test.js` + `boss-game-story.test.js`
    kiểm khung không tràn ảnh và mọi ảnh có trên đĩa + trong `sw.js`.
+7. Chiêu tự phát (phase 4, 13 sheet FX) và dạng tiến hoá (phase 5, 30 sheet nhân vật + 30 faceset) khai ở file dữ
+   liệu riêng (`js/boss-game-skill-sprites.js`, `js/boss-game-evolution-sprites.js`) để không phình
+   `boss-game-sprite-atlas.js` (≤ 200 dòng) — gộp vào `BOSS_SPRITES` bằng `Object.assign` ở cuối
+   `boss-game-skill-sprites.js` (nạp SAU atlas, SAU cả `boss-game-evolution-sprites.js`), không sửa atlas.
+   `bossMageSprite(gender, form)`: `form` = khoá sprite đã tra sẵn (`bossFormSprite(el, formId)`,
+   `js/boss-game-evolution.js`) — rỗng thì rơi về sprite theo giới tính (dạng gốc).
 
 ## Thuật toán ôn (js/srs-scheduler.js)
 
@@ -241,6 +257,7 @@ Kênh duy nhất từ game sang engine ôn là **danh sách từ sai**: `flushMi
 - Logic trả mảng sự kiện `fire | hit | explode | shield`; `plane-game-effects.js` biến thành hạt (tối đa 500, giảm 60% khi `prefers-reduced-motion`), sóng xung kích, chớp, rung, chữ tiếng Anh bay lên. Nền tinh vân vẽ sẵn vào canvas phụ mỗi lần đổi cỡ.
 - Nhãn: vế nghĩa trước `;`, giữ ghi chú trong ngoặc ("một (mạo từ không xác định)"), tối đa 50 ký tự, tự xuống dòng khi vẽ (cache theo mục tiêu trong `WeakMap`).
 - Ô gõ ẩn: mỗi ký tự trong sự kiện `input` = 1 phát bắn, rồi xoá ô; bỏ qua khi IME đang soạn (`isComposing`, xử lý ở `compositionend`). Canvas theo `devicePixelRatio` (tối đa 2).
+- Ô gõ tàng hình `.game-type-sink` (dùng chung với Pháp sư): `<input>` 1×1px, `opacity:0`, `pointer-events:none`, 16px, nằm trong field ở `top:0` — chỉ làm mồi bàn phím ảo iOS (`display:none` không focus được), không chiếm hàng riêng → field cao thêm ~56px. Nút ⏸ nằm trên header qua `gameHeadHtml(progress, extraHtml)`. Pháp sư: "Bỏ" ở cột phải `#bossPrompt`, "✨ Tuyệt kỹ" nổi góc dưới-phải field (`.boss-ult-float`).
 - Dùng chung object `game`: `syncPlaneGame()` chép `score/right/wrong/streak/bestStreak/miss` sang `game` → `endGame()`/`flushMiss()` dùng chung. `game.stop = stopPlaneLoop` được `stopGameTimer()` gọi → huỷ rAF, gỡ listener, gỡ `html.game-lock`.
 - iOS: khung `position:fixed` đặt `top/height` theo `visualViewport`; `focus()` gọi đồng bộ trong handler chạm "Bắt đầu"/"Chơi tiếp"; `blur`/`visibilitychange` → tạm dừng (dừng hẳn rAF). `#app` nằm trong `.wrap` (z-index 1) nên giấu tabbar khi chơi. Esc: ô gõ tự bắt để tạm dừng/tiếp; `app-shell` gọi `togglePlanePause()` thay vì `quitGame()` (trừ màn kết thúc).
 

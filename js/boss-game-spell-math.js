@@ -11,6 +11,7 @@ const BOSS_TUNING = {
   clock: { easy: 12, normal: 10, hard: 8 },   // giây để thanh tấn công đầy (hub hiện "10s"); tên giữ nguyên, xem boss-game-threat-gauge.js
   threatDrain: 0.35, threatTypo: 0.1, threatMiss: 0.25,   // thanh tấn công (0..1): niệm đúng giảm, gõ sai/bỏ tăng
   ultMax: 10,                         // thanh tuyệt kỹ (thay Nộ 8 từ cũ) — xem js/boss-game-combo-chain.js
+  shieldCap: 2,                       // trần khiên — áp cho MỌI nguồn cộng khiên (nội tại/chiêu/tuyệt kỹ)
   comboStep: 0.05, comboCap: 1.5,     // combo: sát thương ×min(comboCap, 1 + comboStep×combo)
   chainMs: 9000,                      // chuỗi niệm (thời gian thật) sau khi kích hoạt tuyệt kỹ
   impactMs: [0, 250, 450, 800],       // trễ từ lúc niệm xong tới lúc phép chạm, theo bậc

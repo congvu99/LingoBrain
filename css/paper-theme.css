@@ -274,8 +274,6 @@ html.game-lock .tabbar{display:none}
 .plane-game .game-head{border-bottom-color:rgba(255,255,255,.08)}
 .plane-game .game-head .mono{font-size:13px;color:#c7cff5}
 .plane-game .btn-ghost{color:#c7cff5}
-.plane-game .plane-input-row input,.plane-game .plane-input-row button{background:#10152e;color:#eef2ff;border-color:#2a335c;box-shadow:none}
-.plane-game .plane-input-row input:focus{border-color:#5ee7ff;box-shadow:0 0 0 3px rgba(94,231,255,.18)}
 .plane-field{position:relative;flex:1;min-height:0;overflow:hidden;border-radius:var(--r-sm);background:#03040d}
 .plane-field canvas{position:absolute;inset:0;display:block;touch-action:none}
 .plane-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -286,9 +284,13 @@ html.game-lock .tabbar{display:none}
 .plane-diff button{min-width:78px;flex-direction:column;gap:2px;padding:6px 12px;background:#10152e;color:#eef2ff;border-color:#2a335c;box-shadow:none}
 .plane-diff button b{font-size:11px;color:#c7cff5}
 .plane-diff button[aria-checked="true"]{border-color:#5ee7ff;background:#15325a;box-shadow:0 0 0 2px rgba(94,231,255,.25)}
-.plane-input-row{display:flex;gap:6px;flex:none;padding-top:8px}
-.plane-input-row input{flex:1;min-width:0;min-height:48px;font-size:18px}   /* ≥16px: iOS không tự phóng to */
-.plane-input-row .btn-sm{flex:none;min-width:48px;padding:0}
+/* ô gõ tàng hình (Bắn máy bay, Pháp sư): chỉ để iOS bật bàn phím ảo — display:none/visibility:hidden thì không focus được.
+   Nằm trong field (fixed) ở top:0 → focus không làm trang cuộn; ≥16px: iOS không tự phóng to */
+/* .plane-field input.*: phải mạnh hơn input[type=text]/input:focus chung (width 100%, min-height 48px, box-shadow) */
+.plane-field input.game-type-sink,.plane-field input.game-type-sink:focus{position:absolute;top:0;left:0;width:1px;height:1px;min-height:0;
+  margin:0;padding:0;border:0;opacity:0;font-size:16px;color:transparent;caret-color:transparent;background:transparent;box-shadow:none;
+  transition:none;pointer-events:none}
+#planePause,#bossPause{min-width:44px;padding:0}
 
 /* ---- Chém chữ: khung phủ toàn màn như Bắn máy bay, nền gỗ tối; lớp phủ + nút cấp dùng lại .plane-overlay/.plane-diff ---- */
 .fruit-game{position:fixed;inset:0;z-index:55;display:flex;flex-direction:column;
@@ -318,19 +320,18 @@ html.game-lock .tabbar{display:none}
   touch-action:none;overscroll-behavior:contain}
 .boss-game .game-head{margin-bottom:6px;padding-bottom:6px;flex:none;border-bottom-color:rgba(255,255,255,.08)}
 .boss-game .game-head .mono,.boss-game .btn-ghost{color:#d9ccf5}
-.boss-game .plane-input-row input,.boss-game .plane-input-row button{background:#1a1238;color:#f3e9ff;border-color:#3a2d6b;box-shadow:none}
-.boss-game .plane-input-row input:focus{border-color:#c9a2ff;box-shadow:0 0 0 3px rgba(201,162,255,.2)}
 .boss-field{background:#120b2e}
 .boss-overlay{background:rgba(12,8,32,.72)}
 .boss-overlay .ready-num{color:#e8c46a;font-size:96px}
-.boss-prompt{flex:none;display:grid;grid-template-columns:auto 1fr;align-items:center;gap:2px 10px;margin-bottom:8px;padding:8px 12px;
+.boss-prompt{flex:none;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:2px 10px;margin-bottom:8px;padding:8px 12px;
   border-radius:var(--r-sm);background:#1a1238;border:1px solid #3a2d6b;overflow-wrap:anywhere}
 .boss-prompt[data-tier="2"]{border-color:#9b7be8;box-shadow:0 0 0 1px rgba(155,123,232,.35)}
 .boss-prompt[data-tier="3"]{border-color:#e8c46a;box-shadow:0 0 12px rgba(232,196,106,.45),inset 0 0 10px rgba(232,196,106,.15)}
 .boss-tier{grid-row:span 2;font-size:15px;letter-spacing:1px;color:#b9a6ea}
 .boss-prompt[data-tier="3"] .boss-tier{color:#ffd76a;text-shadow:0 0 8px rgba(255,215,106,.8)}
-.boss-prompt-text{font-size:19px;line-height:1.3}
-.boss-letters{font-size:17px;letter-spacing:3px;color:#8f82b8;white-space:pre-wrap}
+.boss-prompt-text{grid-column:2;font-size:19px;line-height:1.3}
+.boss-prompt #bossSkip{grid-column:3;grid-row:1 / span 2;background:#231a4a;color:#f3e9ff;border-color:#3a2d6b;box-shadow:none}
+.boss-letters{grid-column:2;font-size:17px;letter-spacing:3px;color:#8f82b8;white-space:pre-wrap}
 .boss-letters b{color:#ffe9a8;font-weight:700}
 .boss-hint{font-style:normal;color:#bff7df;opacity:.7}
 .boss-reveal{color:#ff9a9a;letter-spacing:2px}
@@ -349,6 +350,8 @@ html.game-lock .tabbar{display:none}
 .boss-ult{background:linear-gradient(180deg,#4a2c7a,#2a1550);color:#ffe9a8;border-color:#e8c46a;
   box-shadow:0 0 8px rgba(232,196,106,.35)}
 .boss-ult:active{transform:scale(.96)}
+/* tuyệt kỹ nổi góc dưới-phải trận (sát bàn phím, dễ bấm ngón cái); lớp phủ z 2 che khi tạm dừng */
+.boss-ult-float{position:absolute;right:10px;bottom:10px;z-index:1;min-height:48px}
 @media (prefers-reduced-motion: no-preference){.boss-ult:not([hidden]){animation:boss-ult-pulse 1.2s ease-in-out infinite}}
 @keyframes boss-ult-pulse{50%{box-shadow:0 0 16px rgba(232,196,106,.75)}}
 /* ---- Pháp sư: sảnh đầy đủ, cây nguyên tố, màn lần đầu, kết trận ---- */
@@ -378,6 +381,28 @@ html.game-lock .tabbar{display:none}
 .boss-journal-entry{display:flex;gap:10px;align-items:flex-start;padding:6px 0;border-top:1px solid var(--rule)}
 .boss-journal-entry:first-of-type{border-top:none}
 .boss-tree-icon{width:24px;height:24px;image-rendering:pixelated;vertical-align:middle;margin-right:6px}
+/* ---- Sổ chiêu (35 chiêu tự phát) ---- */
+.boss-skill-list{display:flex;flex-direction:column;gap:8px;margin:10px 0}
+.boss-skill-row{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--rule);border-radius:var(--r-sm);background:var(--card)}
+.boss-skill-row[data-locked="true"]{opacity:.5}
+.boss-skill-icon{width:24px;height:24px;flex:none;image-rendering:pixelated}
+.boss-skill-info{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}
+.boss-skill-lv{flex:none}
+/* ---- Tiến hoá (30 dạng) ---- */
+.boss-evo-badge{color:var(--accent);font-weight:700;font-size:.8em}
+.boss-evo-badge-result{margin:0}
+.boss-evo-row{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0;justify-content:center}
+.boss-evo-tree{display:flex;flex-direction:column;gap:4px}
+.boss-evo-branch{border-top:1px solid var(--rule);padding-top:8px}
+.boss-evo-node{display:flex;flex-direction:column;align-items:center;gap:4px;width:104px;padding:8px;border:1px solid var(--rule);border-radius:var(--r-sm);background:var(--card);font:inherit}
+.boss-evo-node[data-state="active"]{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-wash)}
+.boss-evo-node[data-state="locked"]{opacity:.45}
+.boss-evo-icon{width:38px;height:38px;image-rendering:pixelated;border-radius:var(--r-sm);background:#150c30}
+/* Khối chỉ số + 2 chiêu nâng cấp dưới mỗi nút dạng (evolution-ui.js:bossEvoNodeDetailHtml) — width khớp
+   .boss-evo-node (104px) để cây 1→2→4 dạng không vỡ cột ở khung hẹp ~360px; chữ nhỏ + wrap tự do. */
+.boss-evo-node-wrap{width:104px;display:flex;flex-direction:column;align-items:stretch;gap:2px}
+.boss-evo-stat,.boss-evo-skill{margin:0;font-size:10px;line-height:1.25;text-align:center;overflow-wrap:anywhere}
+.boss-evo-skill b{color:var(--ink)}
 /* màn kết thúc: cặp từ hay nhầm */
 .game-confusions ul{list-style:none;margin:4px 0 12px;padding:0}
 .game-confusions li{margin:2px 0}

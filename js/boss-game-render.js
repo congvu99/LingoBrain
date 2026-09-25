@@ -11,7 +11,8 @@
 const BOSS_HEART = '❤️', BOSS_HEART_EMPTY = '🖤';
 
 /* Vị trí pháp sư và quái theo cỡ khung; ghi vào fx.layout để hiệu ứng dùng chung toạ độ. Góc Pokémon cố định:
-   pháp sư quay lưng dưới-trái, quái quay mặt trên-phải. k = hệ số phóng nguyên, s = chiều cao hiển thị (px).
+   pháp sư quay lưng dưới-trái, quái quay mặt trên-phải. k = hệ số phóng nguyên (chung với tile nền, xem
+   bossWorldScale), s = chiều cao hiển thị (px).
    fh lấy từ chính sprite quái (16 quái thường, 40–82 trùm có sheet riêng, tổng khung với Oblivion ghép mảnh)
    để trùm to hơn quái thường theo đúng tỉ lệ ảnh gốc, không bị kéo méo. */
 function layoutBoss(fx, w, h, ui) {
@@ -23,13 +24,13 @@ function layoutBoss(fx, w, h, ui) {
   const fhMax = isOblivion ? fh : Math.max(fh,
     (mon && BOSS_SPRITES[mon.spriteHit] && BOSS_SPRITES[mon.spriteHit].fh) || 0,
     (mon && BOSS_SPRITES[mon.spriteAttack] && BOSS_SPRITES[mon.spriteAttack].fh) || 0);
-  const monY = Math.round(h * 0.52);
-  let kq = pixelScale(Math.min(h, w) * (mon && mon.hpMul >= 2 ? 0.45 : 0.3), fh);
-  // pixelScale làm tròn lên có thể quá cỡ ở khung nhỏ (đặc biệt Oblivion ghép mảnh cao hơn hẳn 1 sprite đơn cùng
-  // fh) → hạ k tới khi khung sprite cao nhất vẫn vừa trên HUD, không để đỉnh đầu/khung Attack tràn lên trên.
+  const monY = Math.round(h * 0.52), k = bossWorldScale(h);
+  // Quái dùng chung k với nền/pháp sư (trùm to hơn nhờ fh gốc lớn hơn). Trùm cao (Oblivion ghép mảnh, sheet Attack)
+  // ở khung thấp → hạ k tới khi khung cao nhất vẫn vừa dưới HUD, chấp nhận lệch lưới 1 bậc thay vì tràn lên trên.
+  let kq = k;
   while (kq > 1 && fhMax * kq > monY - h * 0.14) kq--;
-  const km = pixelScale(Math.min(h * 0.3, w * 0.3), 16);
-  fx.layout.mage = { x: Math.round(w * 0.22), y: Math.round(h * 0.86), s: 16 * km, k: km };
+  fx.layout.k = k;
+  fx.layout.mage = { x: Math.round(w * 0.22), y: Math.round(h * 0.86), s: 16 * k, k };
   fx.layout.mon = { x: Math.round(w * 0.7), y: monY, s: fh * kq, k: kq,
     sprite: mon && mon.sprite, spriteHit: mon && mon.spriteHit, spriteAttack: mon && mon.spriteAttack };
 }
@@ -72,7 +73,7 @@ function drawRuneCircle(ctx, st, fx) {
     const p = bossRuneAt(m, i, total), on = i < lit;
     ctx.globalAlpha = on ? 1 : 0.25;
     ctx.fillStyle = fx.typo > 0 && i === lit ? '#ff4d4d' : on ? '#ffe9a8' : '#8a7fb8';
-    bossPixelDot(ctx, p.x, p.y, on ? 8 : 5);
+    bossPixelDot(ctx, p.x, p.y, (m.k || 1) * (on ? 2 : 1.25));   // theo lưới pixel của pháp sư
   }
   ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
 }

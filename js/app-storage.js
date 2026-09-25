@@ -1,10 +1,13 @@
 /* Khoá localStorage, helper chung, trạng thái toàn cục của app.
    Nạp sau js/srs-scheduler.js (cần migrateV1) và js/boss-progress-sync-merge.js (cần cleanBoss). */
 
-const APP_VERSION = '2.21.1';
+const APP_VERSION = '2.24.1';
 const K_DECK = 'eng.deck.v1', K_SRS = 'eng.srs.v2', K_SRS_V1 = 'eng.srs.v1',
       K_CFG = 'eng.cfg.v1', K_PLAN = 'eng.plan.v1', K_DAY = 'eng.day.v1',
-      K_GAMEMISS = 'eng.gamemiss.v1', K_GAMESCORE = 'eng.gamescore.v1', K_BOSS = 'eng.boss.v1';
+      K_GAMEMISS = 'eng.gamemiss.v1', K_GAMESCORE = 'eng.gamescore.v1', K_BOSS = 'eng.boss.v1',
+      // Huy hiệu "Có thể tiến hoá!" đã xem: cờ LOCAL RIÊNG MÁY (không đồng bộ, không thuộc eng.boss.v1/schema
+      // sync) — chỉ tắt nhắc sau khi người chơi MỞ màn Tiến hoá 1 lần/mốc (8, 16), không đụng lựa chọn dạng.
+      K_BOSS_EVO_SEEN = 'eng.boss.evoseen.v1';
 
 function load(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
 // opts.stamp === false: lưu kỹ thuật, không đóng dấu sửa cho đồng bộ (xem js/cloud-sync-engine.js onLocalSave)
@@ -48,3 +51,12 @@ let session = { streak: {} };                 // learning steps trong phiên (kh
 let srs = load(K_SRS, null);
 if (!srs) { srs = migrateV1(load(K_SRS_V1, {})); save(K_SRS, srs); }
 function rec(id) { return srs[id] || blankRec(); }   // chỉ đọc
+
+// bossEvoMilestoneTier (js/boss-game-evolution.js, thuần) — mốc tiến hoá đã đạt theo cấp hiện tại, dùng để so
+// với "đã xem" ở dưới; gọi lúc chạy (không phải lúc nạp file) nên không cần evolution.js nạp trước file này.
+function bossEvoNoticeSeen(el) { return load(K_BOSS_EVO_SEEN, {})[el] || 0; }
+// Gọi khi mở màn Tiến hoá của hệ el — chốt mốc cao nhất đã xem, huy hiệu tắt tới mốc kế (không đụng eng.boss.v1).
+function bossMarkEvoNoticeSeen(el, level) {
+  const v = load(K_BOSS_EVO_SEEN, {}), tier = bossEvoMilestoneTier(level);
+  if (tier > (v[el] || 0)) { v[el] = tier; save(K_BOSS_EVO_SEEN, v, { stamp: false }); }
+}

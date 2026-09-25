@@ -70,8 +70,10 @@ function bossArenaPatch(ctx, cx, cy, rx, ry, unit, color) {
   }
 }
 
-/* Hệ số phóng tile: nền "xa" nên thưa pixel hơn nhân vật (~9 hàng tile trên chiều cao khung) */
-function bossArenaScale(h) { return pixelScale(h / 9, 16); }
+/* Hệ số pixel chung cho cả cảnh (tile + pháp sư + quái): ~14 hàng tile trên chiều cao khung, kẹp 2..6 (pháp sư
+   ≥ 32px). Mọi lớp cùng một lưới pixel → nhân vật như đứng trong thế giới pixel, không "dán" lên nền cận cảnh. */
+const BOSS_WORLD_ROWS = 14;
+function bossWorldScale(h) { return Math.min(6, Math.max(2, Math.round(h / BOSS_WORLD_ROWS / 16))); }
 
 /* → canvas offscreen (cỡ thật = w×h×dpr) hoặc null nếu vùng chưa có sân / tile chưa nạp */
 function buildBossArena(regionId, w, h, dpr, layout) {
@@ -81,7 +83,7 @@ function buildBossArena(regionId, w, h, dpr, layout) {
   off.width = Math.max(1, Math.round(w * dpr)); off.height = Math.max(1, Math.round(h * dpr));
   const ctx = off.getContext('2d');
   ctx.scale(dpr, dpr); ctx.imageSmoothingEnabled = false;
-  const k = bossArenaScale(h), T = 16 * k, hz = Math.round(h * BOSS_ARENA_HORIZON);
+  const k = (layout && layout.k) || bossWorldScale(h), T = 16 * k, hz = Math.round(h * BOSS_ARENA_HORIZON);
   A.sky.forEach((c, i) => {   // dải trời phẳng, mỗi dải cao bằng nhau tới chân trời
     const y0 = Math.round(hz * i / A.sky.length), y1 = Math.round(hz * (i + 1) / A.sky.length);
     ctx.fillStyle = c; ctx.fillRect(0, y0, w, y1 - y0);

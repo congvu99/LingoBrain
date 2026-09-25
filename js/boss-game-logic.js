@@ -2,7 +2,7 @@
    Thời gian: `now` = ms thật (performance.now); đồng hồ trùm và DoT chạy theo thời gian game (thật × timeScale).
    Khoá (lockUntil: chờ phép chạm, lộ đáp án, cắt cảnh tuyệt kỹ): đồng hồ + DoT dừng, phím bị bỏ, đề kế hiện sau khoá.
    Chuỗi niệm (st.chain): stepBattle/typeKey rẽ sang boss-game-combo-chain.js — đồng hồ + DoT đứng, KHÔNG lockUntil.
-   Cần nạp trước: plane-game-text.js, word-games.js (addMiss), boss-game-spell-math/elements/threat-gauge/combo-chain.js. */
+   Cần nạp trước: plane-game-text.js, word-games.js (addMiss), boss-game-spell-math/elements/threat-gauge/combo-chain/skill-pick.js. */
 
 function createBattle(o) {
   const T = BOSS_TUNING, mods = o.mods || modifiersFor({}, 'fire'), now = o.now || 0;
@@ -12,15 +12,19 @@ function createBattle(o) {
     hpMax, hp: Math.max(1, hpMax - (o.carryDmg || 0)), hearts: o.hearts, heartsMax: o.hearts, threat: 0, threatSec,
     timeScale: 1, combo: 0, ult: 0, chain: null, group: null, targets: [], tier: 1, typed: '', typos: 0, forgiven: false,
     readyAt: now, pausedMs: 0, pausedAt: 0, lastGoodKeyAt: -Infinity, slowUsedMs: 0,
-    armedAt: 0, lockUntil: 0, lockNext: false, ultEnd: false, pendingImpacts: [], shield: mods.shield, frozenUntil: 0, frozen: false,
-    burn: null, boost: null, wonAt: 0, dealt: 0, log: [], miss: [], events: []
+    armedAt: 0, lockUntil: 0, lockNext: false, ultEnd: false, pendingImpacts: [],
+    shield: Math.min(T.shieldCap, mods.shield || 0), frozenUntil: 0, frozen: false,
+    burn: null, boost: null, wonAt: 0, dealt: 0, log: [], miss: [], events: [],
+    // chiêu tự phát (js/boss-game-skill-pick.js): level mở theo cấp; skillTable = bảng slot→skill của
+    // ĐÚNG hệ đang chơi (mặc định BOSS_SKILLS[el] nếu undefined) — o.skills (dạng BOSS_SKILLS cả 5 hệ) cho phép
+    // tiến hoá truyền bảng khác mà không đổi chữ ký hàm này; afterHit = cờ "vừa bị đánh trúng" (slot counter).
+    level: o.level || 1, skillTable: (o.skills && o.skills[mods.element]) || undefined, afterHit: false
   };
   bossNextPrompt(st, now);
   return st;
 }
 
 const bossLocked = (st, now) => now < st.lockUntil;
-
 /* Hết khoá → báo kết thúc tuyệt kỹ, sang đề kế (hoặc gõ lại đề cũ) */
 function bossEndLock(st, now) {
   st.lockUntil = 0;
@@ -87,17 +91,22 @@ function castComplete(st, now, at) {
   const speed = speedMult(ms, letters, m.speedLoosen);
   const crit = !!m.fastCrit && speed >= 2, combo = bossComboMul(st);
   let dmg = spellDamage({ tier: st.tier, speed, weakHit: st.monster.weak === m.element, mods: m, crit, combo }), hits = 1;
+  // Chiêu tự phát (js/boss-game-skill-pick.js:bossResolveSkillCast) — chọn + áp hiệu ứng lên dmg/hits,
+  // KHÔNG đổi công thức nhân sát thương cơ bản ở trên (giữ nguyên hợp đồng combo ×1.5 hiện có).
+  const r = bossResolveSkillCast(st, dmg, crit, letters, speed);
+  dmg = r.dmg; hits = r.hits;
   if (st.boost) {
     if (st.boost.id === 'meteor') dmg *= 3; else { dmg *= 2; hits = 2; }
     if (--st.boost.left <= 0) st.boost = null;
   }
+  dmg = Math.round(dmg);
   const impactAt = now + T.impactMs[st.tier];
-  st.pendingImpacts.push({ at: impactAt, dmg, tier: st.tier });
+  st.pendingImpacts.push({ at: impactAt, dmg, tier: st.tier, skill: r.skillId, burn: r.burn, freeze: r.freeze });
   st.log.push({ ids: st.group.ids, word: st.typed, ok: true, ms, tier: st.tier, dmg });
-  bossEmit(st, 'cast', { element: m.element, tier: st.tier, dmg, speed, crit, hits, impactAt, word: st.group.answers[st.targets.indexOf(st.typed)] });
+  bossEmit(st, 'cast', { element: m.element, tier: st.tier, dmg, speed, crit, hits, impactAt, word: st.group.answers[st.targets.indexOf(st.typed)], skill: r.skillId, skillName: r.skillName });
   if (crit) bossEmit(st, 'fastCrit', {});
   bossComboOnCast(st, speed);
-  bossThreatDrainOnCast(st, speed);   // áp lúc niệm xong, không đợi impact
+  bossThreatDrainOnCast(st, speed, r.threatDrainMul);   // áp lúc niệm xong, không đợi impact
   bossLockFor(st, impactAt + T.afterImpactMs[st.tier], true);   // khoá = chạm + đuôi cố định (đỉnh VFX nổ); đề kế chờ hết đuôi mới hiện
 }
 
@@ -143,20 +152,11 @@ function resumeBattle(st, now) {
 }
 
 function bossApplyImpacts(st, now) {
-  const m = st.mods;
   st.pendingImpacts = st.pendingImpacts.filter(p => {
     if (p.at > now) return true;
-    const real = Math.min(st.hp, p.dmg);
-    st.hp -= real; st.dealt += real;
-    bossEmit(st, 'impact', { dmg: p.dmg, tier: p.tier, hp: st.hp });
-    if (m.burn) st.burn = { dps: m.burn.dps, left: m.burn.sec, acc: 0, sum: 0 };
-    if (m.freezeChance && st.rand() < m.freezeChance) {
-      st.frozenUntil = Math.max(st.frozenUntil, now + m.freezeSec * 1000); st.frozen = true;
-      bossEmit(st, 'freeze', { until: st.frozenUntil });
-    }
+    bossApplyHit(st, now, p.dmg, p.tier, { skill: p.skill, burn: p.burn, freeze: p.freeze, displayDmg: p.dmg });
     return false;
   });
-  if (st.hp <= 0 && !st.wonAt) { st.hp = 0; st.wonAt = now + BOSS_TUNING.endDelayMs; st.burn = null; }
 }
 
 const BOSS_MAX_STEP_MS = 250;   // khung hình treo lâu không được trừ cả đống đồng hồ một lần
@@ -185,7 +185,7 @@ function stepBattle(st, dtMs, now) {
     bossEmit(st, 'bossAttack', {});
     const hadShield = st.shield > 0, lost = bossThreatAttack(st) === 'lost';
     bossEmit(st, hadShield ? 'shieldBlock' : 'hurt', hadShield ? {} : { hearts: st.hearts });
-    if (!hadShield) bossComboBreak(st);   // khiên chặn KHÔNG reset combo (quyết định người dùng)
+    if (!hadShield) { bossComboBreak(st); st.afterHit = true; }   // counter chỉ kích khi MẤT TIM, không khi khiên chặn
     if (lost) { st.phase = 'lost'; bossEmit(st, 'lost', {}); return; }
   }
   if (st.burn) {   // thiêu đốt theo thời gian game

@@ -11,10 +11,12 @@
     for (let i = Math.floor(r() * 5); i > 0; i--) wins[d()] = Math.floor(r() * 29);
     const alloc = {};
     BOSS_ELEMENTS.forEach(e => { if (r() < 0.5) alloc[e] = Math.floor(r() * 4); });
+    const evo = {};
+    BOSS_ELEMENTS.forEach(e => { evo[e] = { v: r() < 0.4 ? '' : pick(BOSS_EVO_FORMS[e]), ts: Math.floor(r() * 5) }; });
     return {
       v: 1, xp: Math.floor(r() * 3000), wins, day: r() < 0.3 ? null : { date: d(), beat: Math.floor(r() * 5), dmg: Math.floor(r() * 400) },
       alloc, gender: { v: pick(['m', 'f']), ts: Math.floor(r() * 5) }, element: { v: pick(BOSS_ELEMENTS), ts: Math.floor(r() * 5) },
-      buffDate: r() < 0.5 ? '' : d()
+      buffDate: r() < 0.5 ? '' : d(), evo
     };
   }
 
@@ -101,6 +103,56 @@
       t0 = Date.now(); const c = cleanBoss({ wins: w }, NOW), ms = Date.now() - t0;
       assert.ok(ms <= 3 * base + 50, 'mất ' + ms + 'ms, liệt kê ' + base + 'ms');
       assert.ok(Object.keys(c.wins).length <= 400 && Object.keys(c.wins).length > 0);
+    });
+  });
+
+  describe('boss sync — evo (tiến hoá)', () => {
+    it('payload cũ không evo → clean ra evo rỗng (dạng gốc mọi hệ)', () => {
+      const c = cleanBoss({ xp: 1 }, NOW);
+      BOSS_ELEMENTS.forEach(el => assert.deepEqual(c.evo[el], { v: '', ts: 0 }));
+    });
+    it('merge payload cũ (không evo) với payload có evo → giữ evo', () => {
+      const withEvo = { evo: { fire: { v: 'fire-a', ts: 5 } } };
+      const m = mergeBoss({ v: 1 }, withEvo);
+      assert.equal(m.evo.fire.v, 'fire-a');
+      assert.equal(mergeBoss(withEvo, { v: 1 }).evo.fire.v, 'fire-a');
+    });
+    it('clean loại formId lạ / sai tiền tố hệ / __proto__; ts tương lai bị kẹp', () => {
+      const c = cleanBoss({
+        evo: {
+          fire: { v: 'ice-a', ts: 5 },         // sai hệ (id của hệ khác) → loại
+          ice: { v: '__proto__', ts: 5 },      // rác → loại
+          storm: { v: 'storm-a1', ts: 1e300 }, // hợp lệ nhưng ts tương lai → kẹp về now
+          earth: { v: 'earth-b2', ts: 3 }      // hợp lệ, giữ nguyên
+        }
+      }, NOW);
+      assert.equal(c.evo.fire.v, ''); assert.equal(c.evo.ice.v, '');
+      assert.equal(c.evo.storm.v, 'storm-a1'); assert.equal(c.evo.storm.ts, NOW);
+      assert.deepEqual(c.evo.earth, { v: 'earth-b2', ts: 3 });
+      assert.equal(c.evo.wind.v, '');
+    });
+    it('rác nhiều dạng ở evo không ném, luôn ra id hợp lệ (thuộc BOSS_EVO_FORMS[el] hoặc rỗng)', () => {
+      const junk = [null, 'x', 7, [], {}, { fire: '__proto__' },
+        JSON.parse('{"__proto__":{"v":"fire-a","ts":5},"fire":{"v":"ice-a","ts":1}}')];
+      junk.forEach(ev => {
+        const c = cleanBoss({ evo: ev }, NOW);
+        BOSS_ELEMENTS.forEach(el => {
+          assert.equal(typeof c.evo[el].v, 'string');
+          assert.ok(c.evo[el].v === '' || BOSS_EVO_FORMS[el].indexOf(c.evo[el].v) >= 0);
+        });
+      });
+    });
+    it('merge: LWW theo ts riêng từng hệ (độc lập nhau)', () => {
+      const m = mergeBoss(
+        { evo: { fire: { v: 'fire-a', ts: 1 }, ice: { v: 'ice-b', ts: 9 } } },
+        { evo: { fire: { v: 'fire-b', ts: 5 }, ice: { v: 'ice-a', ts: 2 } } });
+      assert.equal(m.evo.fire.v, 'fire-b');   // ts 5 > 1
+      assert.equal(m.evo.ice.v, 'ice-b');     // ts 9 > 2
+    });
+    it('giao hoán, kết hợp, idempotent, merge(x, empty) ≡ x — cùng bộ test tổng quát phía trên đã phủ evo (randBoss)', () => {
+      const x = cleanBoss({ evo: { fire: { v: 'fire-a1', ts: 4 } } }, NOW);
+      assert.equal(canon(mergeBoss(x, emptyBoss())), canon(x));
+      assert.equal(canon(mergeBoss(mergeBoss(x, x), x)), canon(x));
     });
   });
 

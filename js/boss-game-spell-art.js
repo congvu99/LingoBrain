@@ -30,7 +30,8 @@ function bossBurst(fx, x, y, o, scale) {
   burst(fx.ps, x, y, (o.n || 8) * k, k === 1 ? o : Object.assign({}, o, { speed: o.speed * Math.sqrt(k), size: o.size * k }));
 }
 const bossRuneAt = (m, i, total) => {
-  const a = -Math.PI / 2 + i / Math.max(1, total) * Math.PI * 2, r = m.s * 0.55;
+  // bán kính tối thiểu theo số chữ: từ dài quanh pháp sư nhỏ (k=2) không để chấm đè nhau che mất nhân vật
+  const a = -Math.PI / 2 + i / Math.max(1, total) * Math.PI * 2, r = Math.max(m.s * 0.55, total * (m.k || 1) * 0.6);
   return { x: m.x + Math.cos(a) * r, y: m.y - m.s * 0.45 + Math.sin(a) * r * 0.9 };
 };
 
@@ -48,7 +49,7 @@ function bossFxEvent(fx, e, st) {
     p.cast.forEach(o => bossBurst(fx, tip.x, tip.y, o, scale));
     const dur = BOSS_TUNING.impactMs[e.tier] / 1000, id = ++fx.castN;
     for (let h = 0; h < (e.hits || 1); h++) {
-      fx.shots.push({ x0: tip.x, y0: tip.y, x1: q.x, y1: q.y - q.s * 0.45 + (h ? q.s * 0.15 : 0), t: -h * 0.08, dur, p, scale, id });
+      fx.shots.push({ x0: tip.x, y0: tip.y, x1: q.x, y1: q.y - q.s * 0.45 + (h ? q.s * 0.15 : 0), t: -h * 0.08, dur, p, scale, id, mageS: m.s });
     }
     fx.castPose = 0.4;
     if (e.crit) bossBurst(fx, tip.x, tip.y, BOSS_FX_COMMON.fastCrit);

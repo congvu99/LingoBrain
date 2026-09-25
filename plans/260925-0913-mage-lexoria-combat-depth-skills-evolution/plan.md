@@ -135,3 +135,14 @@ Tests Before (khoá hành vi cũ còn giữ) → Seams/tách module → Refactor
 2. `evolution-forms-proposal.md` — 30 dạng × 2 cây (8/16 cấp) + icon/color/stat
 
 Once approved → Phase 4 can begin. Phase 4 gate: resolve N4 (hit path routing) before implementation.
+
+### Session 2 — 2026-09-25 (cổng đầu phase 4/5)
+| Câu hỏi | Chốt |
+|---|---|
+| Bảng 35 chiêu + 30 dạng | Duyệt nguyên `reports/skill-roster-proposal.md`, `reports/evolution-forms-proposal.md` |
+| extraHits | 50% sát thương phép |
+| Trần khiên | `BOSS_TUNING.shieldCap: 2` (mọi nguồn cộng khiên) |
+| Thưởng tuyệt kỹ dạng cấp 16 | k +0.25; meteor/chain dùng `ceil(3×k)` để thưởng luôn có tác dụng |
+| Sprite gắn cờ | `fire-b` → ứng viên dự phòng (RedNinja3/CamouflageRed); `wind-b2` → ứng viên dự phòng trong bảng |
+| Mặc định theo đề xuất | burn: mạnh hơn thắng; counter không kích khi khiên chặn; dạng cấp 16 không cộng chỉ số cha; tên giữ như bảng |
+| Chạy | Song song: phase 4 (cây chính) ‖ phase 5 phần thuần (schema `evo`, dữ liệu dạng, logic thuần) trong worktree riêng → ghép phase 5 UI/sprite sau phase 4 |

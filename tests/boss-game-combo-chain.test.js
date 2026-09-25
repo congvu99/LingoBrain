@@ -26,6 +26,40 @@
     it('bossUltBoostCount: round(3×k), tối thiểu 1', () => {
       assert.equal(bossUltBoostCount(1), 3); assert.equal(bossUltBoostCount(1.5), 5); assert.equal(bossUltBoostCount(0.5), 2);
     });
+    it('bossUltBoostCount(k, boosted): boosted → ceil(3×k) thay vì round (dạng tiến hoá cấp 16); mặc định (không truyền) vẫn round như cũ', () => {
+      assert.equal(bossUltBoostCount(0.75, true), 3);    // ceil(2.25) = 3, round(2.25) sẽ là 2 — khác nhau rõ
+      assert.equal(bossUltBoostCount(0.75), 2);           // không truyền boosted → hành vi CŨ giữ nguyên
+      assert.equal(bossUltBoostCount(0.75, false), 2);
+      assert.equal(bossUltBoostCount(1, true), 3);        // k=1 (không có dạng bonus) không đổi hiệu lực tuyệt kỹ cũ
+    });
+  });
+
+  describe('evoUltBonus — cộng vào k chuỗi niệm, meteor/chain dùng ceil khi có bonus', () => {
+    it('không có st.evoUltBonus (mọi trận cũ/không tiến hoá) → k/boost giữ NGUYÊN như trận không có dạng tiến hoá', () => {
+      const st = mk({ alloc: { fire: 3 }, el: 'fire' }); st.ult = BOSS_TUNING.ultMax; useUltimate(st, 0);
+      type(st, st.chain.words[0].answers[0], 10);   // 1/3 từ → hits=1 → k=0.5 (không bonus)
+      run(st, 10, 10 + BOSS_TUNING.chainMs + 50);   // hết giờ (mới gõ 1/3 từ) → chainEnd theo timeout
+      const end = st.events.find(e => e.type === 'chainEnd');
+      assert.equal(end.k, 0.5);
+      assert.equal(st.boost.left, bossUltBoostCount(0.5));   // round(1.5) = 2, giống hệt hành vi cũ
+    });
+    it('có st.evoUltBonus (dạng cấp 16, +0.25) → k cộng thêm bonus, meteor/chain dùng ceil để bonus luôn đổi số phép', () => {
+      const st = mk({ alloc: { fire: 3 }, el: 'fire' }); st.ult = BOSS_TUNING.ultMax; st.evoUltBonus = 0.25; useUltimate(st, 0);
+      type(st, st.chain.words[0].answers[0], 10);   // hits=1 → k = 0.5+0.25 = 0.75
+      run(st, 10, 10 + BOSS_TUNING.chainMs + 50);
+      const end = st.events.find(e => e.type === 'chainEnd');
+      assert.near(end.k, 0.75, 1e-9);
+      assert.equal(st.boost.left, Math.ceil(3 * 0.75));   // 3, KHÁC round(2.25)=2 — bonus phải luôn có tác dụng
+    });
+    it('k=1 (2/3 từ, hiệu lực tuyệt kỹ cũ) VẪN giữ nguyên khi KHÔNG có dạng tiến hoá', () => {
+      const st = mk({ alloc: { fire: 3 }, el: 'fire' }); st.ult = BOSS_TUNING.ultMax; useUltimate(st, 0);
+      let t = 10;
+      st.chain.words.slice(0, 2).forEach(g => { type(st, g.answers[0], t); t += 200; });
+      run(st, t, st.chain ? t + BOSS_TUNING.chainMs + 50 : t);   // hết giờ với 2/3 từ (không gõ từ thứ 3) → chainEnd theo timeout
+      const end = st.events.find(e => e.type === 'chainEnd');
+      assert.equal(end.k, 1);
+      assert.equal(st.boost.left, 3);   // đúng bằng BOSS_BOOST_SPELLS cũ — không đổi khi không có bonus
+    });
   });
 
   describe('combo — cộng/giữ/reset', () => {

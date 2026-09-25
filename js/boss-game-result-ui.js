@@ -9,6 +9,7 @@ function bossUiEvents(ui) {
   st.events = [];
   for (const e of ev) {
     bossFxEvent(ui.fx, e, st);
+    bossSkillFxEvent(ui.fx, e);   // tên chiêu nổi + VFX phụ theo skill.fx (js/boss-game-skill-fx.js)
     if (e.type === 'next') { ui.reveal = ''; ui.hint = ''; renderBossPrompt(ui); bossSetCasting(false); }
     else if (e.type === 'hint') { ui.hint = e.letter; renderBossLetters(ui); }
     else if (e.type === 'key') renderBossLetters(ui);
@@ -149,6 +150,7 @@ function showBossResult(ui) {
     '<div class="bar-track" aria-label="kinh nghiệm"><div class="bar" id="bossResultBar" style="width:' + startPct + '%"></div></div>' +
     '<span class="mono small muted">Lv ' + lv1 + ' · ' + Math.floor(bossProg.xp - from1) + ' / ' + (to1 - from1) + ' XP</span>' +
     (leveledUp ? '<p class="ok"><b>LÊN CẤP ' + lv1 + '!</b> Có thêm 1 điểm cho cây nguyên tố.</p>' : '') +
+    (leveledUp && bossEvoMilestoneReached(lv0, lv1) ? '<p class="ok boss-evo-badge-result">🧬 <b>Có thể tiến hoá!</b> Vào sảnh → Tiến hoá để chọn dạng mới.</p>' : '') +
     '<p class="small muted">' + esc(note) + '</p>' + storyOutro +
     (words.length ? '<p class="small">' + words.length + ' từ vừa sai sẽ được ôn trước ở phiên tới:</p><p class="serif">' + words.map(esc).join(' · ') + '</p>'
       : '<p class="small ok">Không sai từ nào.</p>') +

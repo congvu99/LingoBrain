@@ -12,8 +12,9 @@ function bossThreatFill(st, dt) { st.threat += dt * bossThreatRate(st); }
 /* Cộng dồn khi gõ sai / bỏ / hỏng phép; không kẹp trần ở đây — đầy ≥ 1 do stepBattle phát hiện ở bước kế */
 function bossThreatAdd(st, amt) { st.threat = Math.max(0, st.threat + amt); }
 
-/* Niệm đúng: giảm theo tốc độ gõ (speed 1..2), kẹp ≥ 0. Áp lúc niệm xong (castComplete), không đợi phép chạm. */
-function bossThreatDrainOnCast(st, speed) { st.threat = Math.max(0, st.threat - BOSS_TUNING.threatDrain * speed); }
+/* Niệm đúng: giảm theo tốc độ gõ (speed 1..2), kẹp ≥ 0. Áp lúc niệm xong (castComplete), không đợi phép chạm.
+   mul: hệ số chiêu tự phát (skill.effect.threatDrainMul) — mặc định 1 (không đổi hành vi cũ). */
+function bossThreatDrainOnCast(st, speed, mul) { st.threat = Math.max(0, st.threat - BOSS_TUNING.threatDrain * speed * (mul || 1)); }
 
 /* Đầy → quái đánh: reset thanh, khiên chặn (ưu tiên) hoặc mất tim; trả về 'lost' khi hết tim, '' khi còn sống.
    Không tự emit event (bossEmit định nghĩa ở boss-game-logic.js, nạp SAU module này) — caller lo phần đó. */

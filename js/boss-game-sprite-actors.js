@@ -11,7 +11,7 @@ function createBossActors() {
   return { mon: { lunge: 0, recoil: 0, flash: 0, dead: false, pieces: [], hitAnimT: 999 }, mage: { recoil: 0, flash: 0, cast: 0 } };
 }
 
-const bossMageSprite = gender => (gender === 'm' ? 'mageM' : 'mageF');
+const bossMageSprite = (gender, form) => (form || (gender === 'm' ? 'mageM' : 'mageF'));
 
 /* Điểm phép phóng ra: phía trên vai phải pháp sư (quay lưng, nhìn về quái) */
 function bossMageCastPoint(m) { return { x: m.x + m.s * 0.18, y: m.y - m.s * 0.78 }; }
@@ -165,7 +165,7 @@ function drawBossMonsterSprite(ctx, fx, st, t) {
 
 /* Pháp sư quay lưng: đứng nhún 1px, niệm = nhún nhanh hơn, ra đòn = khung Attack + nhích về phía quái, trúng đòn = nháy đỏ + lùi */
 function drawBossMageSprite(ctx, fx, st, gender, t) {
-  const m = fx.layout.mage, A = fx.actor.mage, name = bossMageSprite(gender);
+  const m = fx.layout.mage, A = fx.actor.mage, name = bossMageSprite(gender, st.mageSprite);
   if (!bossSpriteReady(name)) return false;
   const chant = st.typed.length > 0, bob = fx.reduced ? 0 : Math.floor(t * (chant ? 6 : 2)) % 2 * m.k;
   let x = m.x, y = m.y - bob;
@@ -181,7 +181,11 @@ function drawBossMageSprite(ctx, fx, st, gender, t) {
    16 khiến spiritProj to gấp đôi, iceSpikeProj nhỏ hơn ý muốn (review #3). */
 function drawBossShotSprite(ctx, s, x, y, k) {
   const def = BOSS_SPRITES[s.sprite], dx = s.x1 - s.x0, dy = (s.y1 - s.y0) - Math.cos(k * Math.PI) * Math.PI * 30;
-  const scale = Math.max(1, Math.round(pixelScale(s.p.projectile.size * 4, bossVfxFh(s.sprite)) * s.scale));   // bậc 1/2/3 ≈ 32/48/64px
+  // Cỡ theo chiều cao pháp sư (cùng lưới pixel với cảnh): size preset 8/12/16+ ≈ 1×/1.25×/1.5× pháp sư, không vượt 1.5×
+  // Chặn sau làm tròn theo cạnh DÀI của khung (đạn xoay theo hướng bay, vd iceSpikeProj 18×10 nằm ngang).
+  const mageS = s.mageS || 32, target = Math.min(1.5, 0.5 + s.p.projectile.size / 16) * mageS;
+  const cap = Math.max(1, Math.floor(1.5 * mageS / Math.max((def && def.fw) || 0, bossVfxFh(s.sprite))));
+  const scale = Math.min(cap, Math.max(1, Math.round(pixelScale(target, bossVfxFh(s.sprite)) * s.scale)));
   const opt = { center: true };
   if (def && def.rotOffset != null) opt.rot = Math.atan2(dy, dx) + def.rotOffset;
   return drawSprite(ctx, s.sprite, 'idle', s.t, x, y, scale, opt);

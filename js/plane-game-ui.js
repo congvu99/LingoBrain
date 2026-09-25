@@ -11,17 +11,17 @@ let planeUi = null;  // null | { seq, raf, countdown, last, time, started, pause
 
 function startPlaneGame() {
   game.stop = stopPlaneLoop;
-  $('#app').innerHTML = '<div class="plane-game" id="planeGame">' + gameHeadHtml('') +
+  $('#app').innerHTML = '<div class="plane-game" id="planeGame">' +
+    gameHeadHtml('', '<button class="btn-sm btn-ghost" id="planePause" aria-label="tạm dừng">⏸</button>') +
     '<div class="plane-field" id="planeField"><canvas id="planeCanvas" aria-label="màn chơi bắn máy bay"></canvas>' +
+      // ô gõ tàng hình: chỉ làm mồi bàn phím ảo; chữ đang gõ đã vẽ trên canvas
+      '<input id="planeInput" class="game-type-sink" type="text" autocapitalize="off" autocorrect="off" autocomplete="off" ' +
+      'spellcheck="false" enterkeyhint="next" aria-label="gõ từ tiếng Anh">' +
       '<div class="plane-overlay" id="planeOverlay"><p id="planeMsg">Mục tiêu mang <b>nghĩa tiếng Việt</b>. Gõ từ tiếng Anh: ' +
       'muốn hạ mục tiêu nào thì gõ từ của nó, mỗi chữ đúng là 1 phát đạn.<br>Enter xoá chữ đang gõ. Để mục tiêu chạm tàu là mất 1 ❤️.<br>' +
       '<small>Tắt bộ gõ tiếng Việt (Unikey/Telex) trước khi chơi.</small></p>' +
       '<div class="plane-diff" id="planeDiff" role="radiogroup" aria-label="cấp độ"></div>' +
-      '<button class="btn-primary" id="planeGo">Bắt đầu</button></div></div>' +
-    '<div class="plane-input-row">' +
-      '<input id="planeInput" type="text" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" ' +
-      'enterkeyhint="next" aria-label="gõ từ tiếng Anh" placeholder="gõ từng chữ cái để bắn…">' +
-      '<button class="btn-sm" id="planePause" aria-label="tạm dừng">⏸</button></div></div>';
+      '<button class="btn-primary" id="planeGo">Bắt đầu</button></div></div></div>';
   bindGameQuit();
   const canvas = $('#planeCanvas');
   const ui = planeUi = { seq: game.seq, raf: 0, countdown: 0, last: 0, time: 0, started: false, paused: false, ending: false,

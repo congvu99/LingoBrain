@@ -25,29 +25,35 @@ function startBossBattle(opts) {
   if (!groups.length) return toast('❌ Chưa đủ từ đã học');   // kiểm trước: sảnh đang mở vẫn giữ nguyên
   if (game && game.stop) { const s = game.stop; game.stop = null; s(); flushMiss(); }   // trận/sảnh cũ: dọn + chốt từ sai trước khi thay game
   game = { id: 'boss', seq: ++gameSeq, miss: [], over: false, stop: stopBossBattle };
-  const mods = modifiersFor(bossProg.alloc, bossProg.element.v), picked = bossPickMonster(opts.beat, bossProg.wins);
+  const level = levelFromXp(bossProg.xp);
+  const { mods, form, formData } = bossBattleMods(bossProg.alloc, bossProg.element.v, bossProg.evo, level);   // dạng tiến hoá đang dùng
+  const picked = bossPickMonster(opts.beat, bossProg.wins);
   const mon = Object.assign({}, picked.monster, { hp: bossMonsterHp(picked.monster) }), region = picked.region;
   // buff Ôn từ: chốt cả ngày ngay khi bắt đầu trận (đánh lại/luyện phép không qua hub vẫn chốt được)
   const buff = reviewBuff(bossProg, srs, Date.now(), opts.date);
   if (buff && bossProg.buffDate !== opts.date) { bossProg.buffDate = opts.date; saveBoss(); }
-  $('#app').innerHTML = '<div class="boss-game" id="bossGame">' + gameHeadHtml('') +
+  $('#app').innerHTML = '<div class="boss-game" id="bossGame">' +
+    gameHeadHtml('', '<button class="btn-sm btn-ghost" id="bossPause" aria-label="tạm dừng">⏸</button>') +
     '<div class="boss-prompt" id="bossPrompt" data-tier="1" aria-live="polite"><span class="boss-tier" id="bossTier"></span>' +
-      '<span class="boss-prompt-text serif" id="bossPromptText"></span><span class="boss-letters mono" id="bossLetters"></span></div>' +
+      '<span class="boss-prompt-text serif" id="bossPromptText"></span><span class="boss-letters mono" id="bossLetters"></span>' +
+      '<button class="btn-sm" id="bossSkip" aria-label="bỏ từ này">Bỏ</button></div>' +
     '<div class="plane-field boss-field" id="bossField"><canvas id="bossCanvas" aria-label="trận đấu pháp sư"></canvas>' +
+      // ô gõ tàng hình: chỉ làm mồi bàn phím ảo; chữ đang gõ hiện ở #bossLetters
+      '<input id="bossInput" class="game-type-sink" type="text" autocapitalize="off" autocorrect="off" autocomplete="off" ' +
+      'spellcheck="false" enterkeyhint="go" aria-label="gõ từ tiếng Anh để niệm chú">' +
+      '<button class="btn-sm boss-ult boss-ult-float" id="bossUlt" aria-label="dùng tuyệt kỹ (Shift+Enter)" hidden>✨ Tuyệt kỹ</button>' +
       '<div class="plane-overlay boss-overlay" id="bossOverlay"><p id="bossMsg"></p>' +
-      '<button class="btn-primary" id="bossGo" hidden>Chơi tiếp</button></div></div>' +
-    '<div class="plane-input-row">' +
-      '<input id="bossInput" type="text" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" ' +
-      'enterkeyhint="go" aria-label="gõ từ tiếng Anh để niệm chú" placeholder="gõ từ tiếng Anh để niệm chú…">' +
-      '<button class="btn-sm boss-ult" id="bossUlt" aria-label="dùng tuyệt kỹ (Shift+Enter)" hidden>✨ Tuyệt kỹ</button>' +
-      '<button class="btn-sm" id="bossSkip" aria-label="bỏ từ này">Bỏ</button>' +
-      '<button class="btn-sm" id="bossPause" aria-label="tạm dừng">⏸</button></div></div>';
+      '<button class="btn-primary" id="bossGo" hidden>Chơi tiếp</button></div></div></div>';
   bindGameQuit();
   const canvas = $('#bossCanvas'), now = performance.now();
   const ui = bossUi = { seq: game.seq, opts, xpAtStart: bossProg.xp, buff, raf: 0, last: 0, time: 0, started: false, paused: false,
     ending: false, countdown: 0, canvas, ctx: canvas.getContext('2d'), fx: createBossFx(), input: $('#bossInput'), field: $('#bossField'),
     off: [], monsterName: mon.name, monster: mon, region, gender: bossProg.gender.v, fps: 60, frames: 0, fpsAt: now, quality: 1, showFps: BOSS_SHOW_FPS,
-    st: createBattle({ monster: mon, groups, tiers, mods, hearts: 3 + mods.maxHeartsAdd + (buff ? 1 : 0), difficulty: opts.difficulty, carryDmg: opts.carryDmg, now }) };
+    st: createBattle({ monster: mon, groups, tiers, mods, hearts: 3 + mods.maxHeartsAdd + (buff ? 1 : 0), difficulty: opts.difficulty,
+      carryDmg: opts.carryDmg, now, level,   // chiêu tự phát mở dần theo cấp
+      skills: { [mods.element]: bossSkillsFor(mods.element, formData, BOSS_SKILLS[mods.element]) } }) };   // chiêu ghi đè theo dạng tiến hoá
+  ui.st.evoUltBonus = bossEvoUltBonus(formData);      // dạng cấp 16 (+0.25) cộng vào k chuỗi niệm (boss-game-combo-chain.js)
+  ui.st.mageSprite = bossFormSprite(mods.element, form); ui.st.mageFace = bossFormFace(mods.element, form);   // '' → rơi về sprite/faceset giới tính (dạng gốc)
   pauseBattle(ui.st, now);                           // đồng hồ trùm chỉ chạy sau đếm ngược
   loadBossSprites();                                 // đếm ngược 3-2-1 che thời gian nạp; lỗi nạp → bỏ qua vẽ quái/pháp sư lượt đó (ảnh đã precache SW, hiếm khi xảy ra)
   document.documentElement.classList.add('game-lock');

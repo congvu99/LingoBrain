@@ -115,11 +115,12 @@ function markRight(useCombo) {
   game.score += useCombo ? comboMult(game.streak) : 1;
 }
 
-function gameHeadHtml(progress) {
+/* extraHtml: nút riêng của game (vd ⏸) đặt cuối header — HTML tin cậy, không escape */
+function gameHeadHtml(progress, extraHtml = '') {
   return '<div class="game-head">' +
     '<button class="btn-sm btn-ghost" id="gQuit" aria-label="thoát game">←</button>' +
     '<b class="serif">' + esc(GAME_LABEL[game.id]) + '</b><span class="spacer"></span>' +
-    '<span class="mono small">' + esc(progress) + '</span></div>';
+    '<span class="mono small">' + esc(progress) + '</span>' + extraHtml + '</div>';
 }
 function bindGameQuit() { $('#gQuit').onclick = quitGame; }
 

@@ -22,8 +22,25 @@
   }
   const isBeat = v => typeof v === 'number' && v >= 0 && v <= BOSS_ENDLESS && Math.round(v) === v;
 
+  /* Tiến hoá: formId = '<hệ>-<a|b>[1|2]'; '' = dạng gốc. Danh sách ID ĐẶT Ở ĐÂY vì server dùng chung
+     (require trực tiếp file này) — chỉ id, không tên/sprite/chỉ số (ở js/boss-game-evolution-forms.js, phía client).
+     HỢP ĐỒNG CHỈ TIẾN: id đã phát hành KHÔNG được đổi tên/xoá khỏi mảng dưới — chỉ được thêm id mới (vd 'fire-a3').
+     Thêm id mới: phải deploy server nhận id đó TRƯỚC — server cũ không biết id lạ, tự rơi về '' (thắng theo LWW nếu ts mới hơn). */
+  const BOSS_EVO_FORMS = {
+    fire: ['fire-a', 'fire-b', 'fire-a1', 'fire-a2', 'fire-b1', 'fire-b2'],
+    ice: ['ice-a', 'ice-b', 'ice-a1', 'ice-a2', 'ice-b1', 'ice-b2'],
+    storm: ['storm-a', 'storm-b', 'storm-a1', 'storm-a2', 'storm-b1', 'storm-b2'],
+    earth: ['earth-a', 'earth-b', 'earth-a1', 'earth-a2', 'earth-b1', 'earth-b2'],
+    wind: ['wind-a', 'wind-b', 'wind-a1', 'wind-a2', 'wind-b1', 'wind-b2']
+  };
+  function emptyEvo() {
+    const evo = {};
+    BOSS_ELEMENTS.forEach(el => { evo[el] = { v: '', ts: 0 }; });
+    return evo;
+  }
+
   function emptyBoss() {
-    return { v: 1, xp: 0, wins: {}, day: null, alloc: {}, gender: { v: 'f', ts: 0 }, element: { v: 'fire', ts: 0 }, buffDate: '' };
+    return { v: 1, xp: 0, wins: {}, day: null, alloc: {}, gender: { v: 'f', ts: 0 }, element: { v: 'fire', ts: 0 }, buffDate: '', evo: emptyEvo() };
   }
   // giữ WINS_KEEP ngày mới nhất (key YYYY-MM-DD so chuỗi = so ngày)
   function capWins(w) {
@@ -54,6 +71,9 @@
     out.gender = cleanPick(x.gender, now, ['m', 'f'], 'f');
     out.element = cleanPick(x.element, now, BOSS_ELEMENTS, 'fire');
     out.buffDate = okDate(x.buffDate, now) ? x.buffDate : '';
+    const evoIn = isObj(x.evo) ? x.evo : {};
+    out.evo = {};
+    BOSS_ELEMENTS.forEach(el => { out.evo[el] = cleanPick(evoIn[el], now, BOSS_EVO_FORMS[el], ''); });
     return out;
   }
 
@@ -91,15 +111,17 @@
       if (v >= 0) alloc[el] = v;
     });
     const buff = [a.buffDate, b.buffDate].filter(d => typeof d === 'string' && DATE.test(d)).sort().pop() || '';
+    const ae = coerce(a.evo), be = coerce(b.evo), evo = {};
+    BOSS_ELEMENTS.forEach(el => { evo[el] = mergePick(ae[el], be[el], BOSS_EVO_FORMS[el], ''); });
     return {
       v: 1, xp: Math.max(num(a.xp, 0, 0, 1e9), num(b.xp, 0, 0, 1e9)), wins: mergeWins(a.wins, b.wins),
       day: mergeDay(a.day, b.day), alloc,
       gender: mergePick(a.gender, b.gender, ['m', 'f'], 'f'), element: mergePick(a.element, b.element, BOSS_ELEMENTS, 'fire'),
-      buffDate: buff
+      buffDate: buff, evo
     };
   }
 
-  const api = { BOSS_ELEMENTS, BOSS_BEATS, BOSS_ENDLESS, emptyBoss, cleanBoss, mergeBoss };
+  const api = { BOSS_ELEMENTS, BOSS_BEATS, BOSS_ENDLESS, BOSS_EVO_FORMS, emptyBoss, cleanBoss, mergeBoss };
   Object.assign(root, api);
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);

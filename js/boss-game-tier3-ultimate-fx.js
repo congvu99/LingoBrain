@@ -21,8 +21,9 @@ function bossFxUltimateEvent(fx, e, st) {
   if (!fx.reduced) fx.shake = Math.max(fx.shake, u.shake);
   if (!fx.reduced) { fx.flash = Math.max(fx.flash, u.flash); fx.flashColor = u.color; }   // giảm chuyển động: bỏ loé toàn màn
   const q = fx.layout.mon, m = fx.layout.mage;
-  // meteor/chain: số quả/đòn theo hệ số chuỗi niệm (bossUltBoostCount), thay preset.hits cố định cũ
-  const hits = (e.id === 'meteor' || e.id === 'chain') && typeof bossUltBoostCount === 'function' ? bossUltBoostCount(e.k || 1) : u.hits;
+  // meteor/chain: số quả/đòn theo hệ số chuỗi niệm (bossUltBoostCount), thay preset.hits cố định cũ; e.boosted
+  // (dạng tiến hoá cấp 16 cộng thêm k) đổi công thức làm tròn sang ceil để luôn có tác dụng, xem bossUltBoostCount
+  const hits = (e.id === 'meteor' || e.id === 'chain') && typeof bossUltBoostCount === 'function' ? bossUltBoostCount(e.k || 1, e.boosted) : u.hits;
   if (e.id === 'meteor') {   // Fireball ×hits rơi chéo (vx/vy thật) + Explosion lớn lúc chạm
     const dur = 0.5;
     for (let i = 0; i < hits; i++) {
@@ -106,7 +107,9 @@ function drawBossUltimateCutscene(ctx, fx, ui, now) {
   const w = ui.w, h = ui.h, k = Math.min(1, (u.max - u.life) / 0.3), fade = Math.min(1, u.life / 0.3);
   const inOut = Math.min(k, fade);
   ctx.globalAlpha = 0.55 * inOut; ctx.fillStyle = '#050212'; ctx.fillRect(0, 0, w, h); ctx.globalAlpha = 1;
-  const slide = fx.reduced ? 0 : (1 - k) * -w * 0.3, faceName = ui.gender === 'm' ? 'mageMFace' : 'mageFFace';
+  // Chân dung cắt cảnh: dùng faceset dạng tiến hoá đang dùng nếu có (ui.st.mageFace, đặt ở boss-game-ui.js), rơi
+  // về faceset gốc theo giới tính khi ở dạng gốc (mageFace rỗng/không có)
+  const slide = fx.reduced ? 0 : (1 - k) * -w * 0.3, faceName = (ui.st && ui.st.mageFace) || (ui.gender === 'm' ? 'mageMFace' : 'mageFFace');
   const fs = pixelScale(Math.min(h, w) * 0.24, 38);
   drawSprite(ctx, faceName, 'idle', 0, w * 0.16 + slide, h * 0.86, fs, { center: true, alpha: inOut });
   ctx.globalAlpha = inOut; ctx.textAlign = 'center'; ctx.fillStyle = u.color;

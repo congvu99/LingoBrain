@@ -71,23 +71,19 @@ function bossChainKey(st, ch, now) {
    dùng lại spellDamage với speed cố định 1, vẫn qua khắc hệ + o.combo như phép thường (nhất quán công thức sát
    thương, không cộng thêm luật riêng). Quái chết giữa chuỗi → thắng ngay theo luồng wonAt như phép thường, xoá
    st.chain và KHÔNG áp tuyệt kỹ.
-   Emit CẢ 'impact' cùng shape với impact phép thường ({dmg, tier, hp}) — để bossFxEvent/bossActorEvent
-   (spell-art.js/sprite-actors.js) chạy y hệt phép thường: rung/nháy trắng/VFX theo hệ + tan pixel NGAY khi hạ gục.
-   fx.shots rỗng lúc chuỗi (khoá đảm bảo mọi đòn phép trước đó đã chạm) → impact tự rơi về preset hệ đang
-   dùng, đúng như spell-art.js đã viết sẵn cho trường hợp "không có quả phép đang bay". 'chainHit' GIỮ LẠI chỉ để
-   UI tiến độ chuỗi (progress dots/DOM) — không còn mang dmg/tier. */
+   Đi qua bossApplyHit (js/boss-game-skill-pick.js) CÙNG đường với impact phép thường — để thụ động
+   lúc trúng đòn (thiêu đốt/đóng băng nội tại) cũng áp cho đòn chuỗi, nhất quán với phép thường; KHÔNG chọn chiêu
+   tự phát cho đòn chuỗi (quyết định người dùng: chuỗi niệm không kích chiêu, chỉ nội tại) — bossApplyHit tự lo
+   phần emit 'impact' cùng shape phép thường ({dmg, tier, hp}) để bossFxEvent/bossActorEvent chạy y hệt.
+   fx.shots rỗng lúc chuỗi (khoá đảm bảo mọi đòn phép trước đó đã chạm) → impact tự rơi về preset hệ đang dùng.
+   'chainHit' GIỮ LẠI chỉ để UI tiến độ chuỗi (progress dots/DOM) — không còn mang dmg/tier. */
 function bossChainHit(st, now) {
   const c = st.chain, g = c.words[c.i], word = g.answers[0];
   const dmg = spellDamage({ tier: c.tier, speed: 1, weakHit: st.monster.weak === st.mods.element, mods: st.mods, combo: bossComboMul(st) });
-  const real = Math.min(st.hp, dmg);
-  st.hp -= real; st.dealt += real;
   c.hits++; c.i++; c.typed = '';
   bossEmit(st, 'chainHit', { hits: c.hits, word, prompt: g.prompt });
-  bossEmit(st, 'impact', { dmg: real, tier: c.tier, hp: st.hp });
-  if (st.hp <= 0 && !st.wonAt) {
-    st.hp = 0; st.wonAt = now + BOSS_TUNING.endDelayMs; st.burn = null; st.chain = null;
-    return;
-  }
+  bossApplyHit(st, now, dmg, c.tier, {});
+  if (st.hp <= 0) { st.chain = null; return; }   // wonAt đã đặt trong bossApplyHit; chỉ cần xoá chain, KHÔNG áp tuyệt kỹ
   if (c.i >= c.words.length) bossEndChain(st, now);
 }
 
@@ -97,35 +93,43 @@ function bossStepChain(st, now) {
   if (st.chain && now >= st.chain.until) bossEndChain(st, now);
 }
 
+/* evoUltBonus (0 hoặc 0.25 — chỉ dạng tiến hoá cấp 16, xem bossEvoUltBonus/js/boss-game-evolution.js) cộng THẲNG
+   vào k trước khi tính số phép cường hoá; k=1 (2 từ, hiệu lực tuyệt kỹ cũ) + 0.25 = 1.25 vẫn round(3×1.25)=4 KHÔNG
+   đổi ở round thường — vì vậy meteor/chain đổi sang ceil(3×k) KHI có bonus (quyết định người dùng: "thưởng phải
+   luôn có tác dụng"), các tuyệt kỹ khác (iceAge tuyến tính, revive/tornado mốc k≥1.5) giữ nguyên, không cần đổi. */
 function bossEndChain(st, now) {
-  const c = st.chain, k = bossChainFactor(c.hits), id = st.mods.ultimate;
+  const c = st.chain, bonus = st.evoUltBonus || 0, k = bossChainFactor(c.hits) + bonus, id = st.mods.ultimate;
   st.chain = null;
   bossEmit(st, 'chainEnd', { hits: c.hits, k });
-  bossApplyUltimate(st, id, k, now);
+  bossApplyUltimate(st, id, k, now, bonus > 0);
 }
 
 /* 0–1 từ trúng → 0.5 (yếu hơn cũ); 2 → 1 (đúng hiệu lực tuyệt kỹ cũ); 3 → 1.5 ("HOÀN HẢO") */
 function bossChainFactor(hits) { return hits >= 3 ? 1.5 : hits === 2 ? 1 : 0.5; }
 
 /* Số phép cường hoá (meteor/chain) theo hệ số — dùng chung cho hiệu lực trận VÀ số VFX phóng ra
-   (js/boss-game-tier3-ultimate-fx.js); k=1 → 3 phép, đúng bằng BOSS_BOOST_SPELLS cũ. */
-function bossUltBoostCount(k) { return Math.max(1, Math.round(BOSS_BOOST_SPELLS * k)); }
+   (js/boss-game-tier3-ultimate-fx.js); k=1 → 3 phép, đúng bằng BOSS_BOOST_SPELLS cũ. boosted (mặc định
+   false — mọi lời gọi cũ giữ nguyên round) → ceil thay vì round, để evoUltBonus luôn đổi số phép cường hoá. */
+function bossUltBoostCount(k, boosted) {
+  return Math.max(1, boosted ? Math.ceil(BOSS_BOOST_SPELLS * k) : Math.round(BOSS_BOOST_SPELLS * k));
+}
 
 /* Áp hiệu lực tuyệt kỹ theo hệ số k rồi mở cắt cảnh ultimateMs (như useUltimate cũ) — k=1 tái tạo NGUYÊN VẸN
-   hiệu lực tuyệt kỹ cũ (rageMax 8 từ trước đây), k=1.5 mạnh hơn ("HOÀN HẢO"), k=0.5 yếu hơn. */
-function bossApplyUltimate(st, id, k, now) {
+   hiệu lực tuyệt kỹ cũ (rageMax 8 từ trước đây), k=1.5 mạnh hơn ("HOÀN HẢO"), k=0.5 yếu hơn.
+   boosted chỉ đổi công thức làm tròn số phép cường hoá meteor/chain, không đổi mốc k≥1.5 của revive/tornado. */
+function bossApplyUltimate(st, id, k, now, boosted) {
   const T = BOSS_TUNING, end = now + T.ultimateMs;
-  if (id === 'meteor' || id === 'chain') st.boost = { id, left: bossUltBoostCount(k) };
+  if (id === 'meteor' || id === 'chain') st.boost = { id, left: bossUltBoostCount(k, boosted) };
   else if (id === 'iceAge') { st.frozenUntil = Math.max(st.frozenUntil, end + BOSS_ICE_AGE_MS * k); st.frozen = true; }
   else if (id === 'revive') {
     st.hearts = Math.min(st.heartsMax, st.hearts + Math.ceil((st.heartsMax - st.hearts) * k));
-    if (k >= 1.5) st.shield = (st.shield || 0) + 1;
+    if (k >= 1.5) st.shield = Math.min(T.shieldCap, (st.shield || 0) + 1);
   } else if (id === 'tornado') {
     st.threat = 0;
-    if (k >= 1.5) st.shield = (st.shield || 0) + 1;
+    if (k >= 1.5) st.shield = Math.min(T.shieldCap, (st.shield || 0) + 1);
   }
   st.typed = ''; st.armedAt = 0; st.ultEnd = true;
-  bossEmit(st, 'ultimate', { id, until: end, k });
+  bossEmit(st, 'ultimate', { id, until: end, k, boosted });
   bossLockFor(st, end, false);
 }
 
