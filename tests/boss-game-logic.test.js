@@ -49,10 +49,10 @@
       ['x', 'y', 'z'].forEach((c, i) => typeKey(st, c, i));
       assert.includes(types(st), 'typoForgiven'); assert.equal(st.typos, 2);
     });
-    it('giveUp → lộ đáp án, miss, thanh tuyệt kỹ −2, combo về 0', () => {
+    it('giveUp → lộ đáp án, miss, thanh tuyệt kỹ không đổi, combo về 0', () => {
       const st = mk(); st.ult = 5; st.combo = 3;
       giveUp(st, 0);
-      assert.includes(types(st), 'giveup'); assert.equal(st.ult, 3); assert.equal(st.combo, 0); assert.deepEqual(st.miss, ['cat']);
+      assert.includes(types(st), 'giveup'); assert.equal(st.ult, 5); assert.equal(st.combo, 0); assert.deepEqual(st.miss, ['cat']);
     });
   });
 
@@ -111,7 +111,7 @@
       assert.equal(ca.dmg, cb.dmg); assert.equal(b.pausedMs, 60000);
     });
     it('thanh tấn công KHÔNG tăng trong chuỗi niệm tuyệt kỹ (gần đầy + 1 ❤️ → không mất ❤️)', () => {
-      const st = mk({ alloc: { ice: 3 }, el: 'ice' });
+      const st = mk({ alloc: {}, el: 'ice' });
       st.threat = 0.92; st.hearts = 1; st.ult = BOSS_TUNING.ultMax;
       assert.ok(useUltimate(st, 0));
       run(st, 0, BOSS_TUNING.chainMs - 100); assert.equal(st.hearts, 1); assert.equal(st.phase, 'play'); assert.near(st.threat, 0.92);
@@ -175,20 +175,22 @@
       type(st, 'cat', 0);
       run(st, 0, 4000); assert.near(250 - 23 - st.hp, 15, 0.01, 'impact 20×1,15 (bậc 1 Lửa) + thiêu 15'); assert.includes(types(st), 'burnTick');
     });
-    /* Pool trận này chỉ 3 đề (cat/dog/sun) → trừ đề đang hiện, chuỗi niệm luôn còn ĐÚNG 2 từ; gõ hết cả 2 →
-       kết chuỗi ngay với hits=2 → k=1 (bossChainFactor) → bossApplyUltimate tái tạo NGUYÊN VẸN hiệu lực tuyệt kỹ
-       CŨ (trước phase 3: nộ 8 từ áp thẳng, không qua chuỗi). Chi tiết hệ số 0.5/1.5 + timeout/pool lớn hơn xem
+    /* Pool trận này chỉ 3 đề (cat/dog/sun) → trừ đề đang hiện, chuỗi niệm luôn còn ĐÚNG chainWords=2 từ; gõ đúng
+       1/2 từ rồi hết giờ → hits=1 → k=1 (bossChainFactor) → bossApplyUltimate tái tạo NGUYÊN VẸN hiệu lực tuyệt
+       kỹ CŨ (trước phase 3: nộ 8 từ áp thẳng, không qua chuỗi). Chi tiết hệ số 0.5/1.5 + pool lớn hơn xem
        tests/boss-game-combo-chain.test.js — file này chỉ khoá lại đúng hiệu lực cũ qua k=1. */
     function ultOld(st, now) {
       assert.ok(useUltimate(st, now));
-      assert.equal(st.chain.words.length, 2, 'pool 3 đề, trừ đề đang hiện còn đúng 2 từ');
-      let t = now + 10;
-      st.chain.words.forEach(g => { type(st, g.answers[0], t); t += 200; });
-      assert.equal(st.chain, null, 'gõ hết 2/2 từ → chuỗi kết ngay, không cần chờ hết giờ');
-      return t;
+      assert.equal(st.chain.words.length, 2, 'pool 3 đề, trừ đề đang hiện còn đúng chainWords=2 từ');
+      const start = now + 10;
+      type(st, st.chain.words[0].answers[0], start);   // đúng 1/2 từ → hits=1 → k=1 khi hết giờ
+      const until = st.chain.until;
+      run(st, start, until + 50);
+      assert.equal(st.chain, null, 'hết chainMs → chuỗi kết theo timeout với 1/2 từ');
+      return until + 50;
     }
     it('Thanh tuyệt kỹ +1/+2 mỗi phép (tốc độ ≥1,5 gõ đúng thì +2); đầy → ultFull; k=1 tái tạo hiệu lực Lửa ×3 cho 3 phép kế', () => {
-      const st = mk({ alloc: { fire: 3 }, el: 'fire' });
+      const st = mk({ alloc: {}, el: 'fire' });
       st.ult = BOSS_TUNING.ultMax - 2;
       type(st, 'cat', 0); assert.equal(st.ult, BOSS_TUNING.ultMax); assert.includes(types(st), 'ultFull');
       run(st, 0, 650);   // qua khoá niệm bậc 1 → đã sang đề "dog"
@@ -202,14 +204,14 @@
       assert.equal(st.boost.left, 2);
     });
     it('Kỷ băng hà (k=1): dừng thanh tấn công đúng BOSS_ICE_AGE_MS SAU cắt cảnh, như cũ', () => {
-      const st = mk({ alloc: { ice: 3 }, el: 'ice' }); st.ult = BOSS_TUNING.ultMax;
+      const st = mk({ alloc: {}, el: 'ice' }); st.ult = BOSS_TUNING.ultMax;
       const c = st.threat, t = ultOld(st, 0);
       const end = st.events.find(e => e.type === 'ultimate').until;
       run(st, t, end + BOSS_ICE_AGE_MS - 100); assert.near(st.threat, c, 1e-9);
       run(st, end + BOSS_ICE_AGE_MS - 100, end + BOSS_ICE_AGE_MS + 500); assert.ok(st.threat > c); assert.includes(types(st), 'unfreeze');
     });
     it('Xích sét (k=1): 3 phép kế đánh 2 lần, đúng hiệu lực cũ', () => {
-      const st = mk({ alloc: { storm: 3 }, el: 'storm' }); st.ult = BOSS_TUNING.ultMax;
+      const st = mk({ alloc: {}, el: 'storm' }); st.ult = BOSS_TUNING.ultMax;
       const t = ultOld(st, 0);
       run(st, t, t + BOSS_TUNING.ultimateMs + 50);
       type(st, st.group.answers[0], t + BOSS_TUNING.ultimateMs + 50);
@@ -217,13 +219,13 @@
       assert.equal(c.hits, 2); assert.equal(st.boost.left, 2);
     });
     it('Hồi sinh (k=1): hồi đầy ❤️, không cộng thêm khiên — đúng hiệu lực cũ', () => {
-      const st = mk({ alloc: { earth: 3 }, el: 'earth' }); st.hearts = 1; st.ult = BOSS_TUNING.ultMax;
+      const st = mk({ alloc: {}, el: 'earth' }); st.hearts = 1; st.ult = BOSS_TUNING.ultMax;
       const shieldBefore = st.shield;   // earth bậc 2 đã cho khiên nội tại sẵn — tuyệt kỹ k=1 KHÔNG cộng thêm
       ultOld(st, 0);
       assert.equal(st.hearts, st.heartsMax); assert.equal(st.hearts, 3); assert.equal(st.shield, shieldBefore);
     });
     it('Lốc xoáy (k=1): xả thanh tấn công về 0, không khiên — đúng hiệu lực cũ', () => {
-      const st = mk({ alloc: { wind: 3 }, el: 'wind' }); st.threat = 0.7; st.ult = BOSS_TUNING.ultMax;
+      const st = mk({ alloc: {}, el: 'wind' }); st.threat = 0.7; st.ult = BOSS_TUNING.ultMax;
       ultOld(st, 0);
       assert.equal(st.threat, 0); assert.equal(st.shield, 0);
     });
@@ -245,7 +247,7 @@
     it('khung hình treo lâu (dt 30s) chỉ tăng tối đa 250ms thanh tấn công', () => {
       const st = mk(); stepBattle(st, 30000, 30000); assert.near(st.threat, 0.25 / st.threatSec, 1e-9);
     });
-    it('tuyệt kỹ khi Nộ chưa đầy → không dùng được', () => assert.equal(useUltimate(mk({ alloc: { fire: 3 }, el: 'fire' }), 0), false));
+    it('tuyệt kỹ khi thanh tuyệt kỹ chưa đầy → không dùng được', () => assert.equal(useUltimate(mk({ alloc: {}, el: 'fire' }), 0), false));
   });
 
   describe('boss logic — nhịp niệm (khoá = chạm + đuôi cố định afterImpactMs)', () => {

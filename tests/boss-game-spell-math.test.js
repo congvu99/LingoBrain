@@ -65,9 +65,9 @@
   });
 
   describe('boss elements', () => {
-    it('chưa cộng điểm → modifiers trung tính, không tuyệt kỹ', () => {
+    it('chưa cộng điểm → modifiers trung tính, nhưng tuyệt kỹ đã có sẵn theo trường phái (mở sớm)', () => {
       const m = modifiersFor({}, 'fire');
-      assert.equal(m.dmgMul, 1); assert.equal(m.ultimate, null); assert.equal(m.element, 'fire');
+      assert.equal(m.dmgMul, 1); assert.equal(m.ultimate, 'meteor'); assert.equal(m.element, 'fire');
     });
     it('từng nhánh bậc 1–2', () => {
       assert.near(modifiersFor({ fire: 1 }, 'ice').dmgMul, 1.15);
@@ -78,10 +78,18 @@
       assert.equal(modifiersFor({ earth: 1 }, 'fire').maxHeartsAdd, 1); assert.equal(modifiersFor({ earth: 2 }, 'fire').shield, 1);
       assert.equal(modifiersFor({ wind: 1 }, 'fire').hintFirst, true); assert.equal(modifiersFor({ wind: 2 }, 'fire').typoForgive, 1);
     });
-    it('tuyệt kỹ chỉ khi nhánh của trường phái đạt bậc 3', () => {
-      assert.equal(modifiersFor({ ice: 3 }, 'fire').ultimate, null);
+    it('tuyệt kỹ luôn có sẵn theo trường phái đang chọn, không cần đạt bậc nào trong nhánh đó (mở sớm)', () => {
+      assert.equal(modifiersFor({ ice: 3 }, 'fire').ultimate, 'meteor');   // trường phái fire dù chưa cộng điểm fire
       assert.equal(modifiersFor({ ice: 3 }, 'ice').ultimate, 'iceAge');
-      BOSS_ELEMENTS.forEach(e => { const a = {}; a[e] = 3; assert.equal(modifiersFor(a, e).ultimate, BOSS_ULTIMATES[e]); });
+      BOSS_ELEMENTS.forEach(e => { assert.equal(modifiersFor({}, e).ultimate, BOSS_ULTIMATES[e]); });
+    });
+    it('m.ultBonus: 0 khi trường phái đang chọn chưa đạt bậc 3, +rank3UltBonus (0.25) khi đạt bậc 3 nhánh ĐÓ', () => {
+      assert.equal(modifiersFor({}, 'fire').ultBonus, 0);
+      assert.equal(modifiersFor({ fire: 2 }, 'fire').ultBonus, 0);
+      assert.equal(modifiersFor({ fire: 3 }, 'fire').ultBonus, BOSS_TUNING.rank3UltBonus);
+      assert.equal(modifiersFor({ fire: 3 }, 'fire').ultBonus, 0.25);
+      // bậc 3 ở nhánh KHÁC trường phái đang chọn → không cộng (chỉ tính nhánh của activeEl)
+      assert.equal(modifiersFor({ ice: 3 }, 'fire').ultBonus, 0);
     });
     it('trường phái lạ → hệ đầu tiên', () => assert.equal(modifiersFor({}, 'hack').element, 'fire'));
     it('pointsLeft kẹp ≥ 0', () => {

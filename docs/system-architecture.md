@@ -44,16 +44,23 @@ js/boss-game-skill-pick.js      Pháp sư: chọn chiêu theo slot/cấp/điều
 js/boss-game-skill-fx.js        Pháp sư: tên chiêu nổi + VFX phụ theo BOSS_SKILL_FX lúc cast/impact
 js/boss-game-skill-sprites.js   Pháp sư: 13 sheet FX chiêu tự phát, gộp vào BOSS_SPRITES (Object.assign, sau atlas) — cũng gộp BOSS_EVO_SPRITES ở đây   [thuần, dữ liệu]
 js/boss-game-threat-gauge.js    Pháp sư: thanh tấn công trùm (đầy theo giờ, niệm đúng giảm, gõ sai/bỏ tăng, đầy → đánh)   [thuần]
-js/boss-game-combo-chain.js     Pháp sư: combo (nhân sát thương), thanh tuyệt kỹ 10 nấc, chuỗi niệm 3 từ + áp hiệu lực tuyệt kỹ theo hệ số (evoUltBonus cộng vào k, meteor/chain dùng ceil khi có bonus)   [thuần]
+js/boss-game-combo-chain.js     Pháp sư: combo (nhân sát thương), thanh tuyệt kỹ 4 nấc (ultMax) + ultCooldownMs 6s sau mỗi tuyệt kỹ (không nạp từ cast lẫn ultAdd, xem boss-game-skill-pick.js), chuỗi niệm luôn đủ chainWords từ (lặp lại khi pool nhỏ) + áp hiệu lực tuyệt kỹ theo hệ số k (evoUltBonus + mods.ultBonus/bậc 3 cộng dồn vào k, meteor/chain dùng ceil khi có bonus, tornado/revive đổi tuyến tính theo k>1); "perfect"/HOÀN HẢO tính theo hits (gõ trọn hết từ), KHÔNG theo k   [thuần]
 js/boss-game-logic.js           Pháp sư: máy trạng thái 1 trận (thanh tấn công, chậm thời gian, khoá cắt cảnh, gõ/typo, combo/chuỗi niệm rẽ sang boss-game-combo-chain.js, DoT, freeze, events[])   [thuần]
 js/boss-game-progress.js        Pháp sư: đường cấp, trận hôm nay/beat kế, ghi tiến trình idempotent, chuỗi ngày, buff Ôn từ, đoạn truyện   [thuần]
-js/boss-game-spell-presets.js   Pháp sư: dữ liệu hiệu ứng phép theo hệ × bậc + tuyệt kỹ + fallback bậc thiếu
-js/boss-game-story.js           Pháp sư: dữ liệu vùng, quái, 28 đoạn truyện
+js/boss-game-spell-presets.js   Pháp sư: dữ liệu hiệu ứng phép theo hệ × bậc + tuyệt kỹ (BOSS_ULTIMATE_PRESETS: sprite/bigSprite + overlay/rain/ground/anchor phase 3) + fallback bậc thiếu
+js/boss-game-story.js           Pháp sư: dữ liệu vùng, 12 quái (BOSS_MONSTERS), 28 đoạn truyện
+js/boss-game-skill-motion.js    Pháp sư: 6 kiểu quỹ đạo đạn (BOSS_MOTIONS: arc/straight/sky/ground/fan/spin), bossShotPos/bossShotDir/drawBossShotSprite, bossSkillVisualFor (tra + gộp bản tiến hoá)   [thuần: tính toán; drawBossShotSprite đụng canvas]
+js/boss-game-skill-visuals.js   Pháp sư: DỮ LIỆU hình riêng 30 chiêu đặc biệt (BOSS_SKILL_VISUALS[skillId]: proj/motion/cast/impact/scale) + BOSS_EVO_SKILL_VISUALS (bản nâng cấp khi chiêu bị dạng tiến hoá ghi đè slot)   [thuần, dữ liệu]
+js/boss-game-extra-sprites.js   Pháp sư: DỮ LIỆU sheet FX/tile mới (BOSS_EXTRA_SPRITES) — đạn/slash/particle/ambient/tile mới, gộp vào BOSS_SPRITES bằng Object.assign ở cuối file (nạp SAU sprite-atlas.js)   [thuần, dữ liệu]
 js/boss-game-spell-art.js       Pháp sư: fx trận — hạt, quả phép bay đúng mốc va chạm, sóng xung kích, số sát thương, preset + fallback bậc
 js/boss-game-sprite-atlas.js    Pháp sư: atlas sprite Ninja Adventure (BOSS_SPRITES, spriteFrame/drawSprite/loadBossSprites) — nhân vật/quái/trùm/VFX/tile, tất cả ảnh trận đều qua đây   [phần thuần: BOSS_SPRITES, spriteFrame, pixelScale]
+js/boss-game-ultimate-overlay-fx.js  Pháp sư: lớp phủ tuyệt kỹ thêm (Fog/Raylight phủ + hạt rơi + vòng dưới chân quái) đọc overlay/rain/ground/anchor của BOSS_ULTIMATE_PRESETS, vẽ trong drawBossPassiveFx (tier3-ultimate-fx.js), tắt khi reduced-motion   [phần thuần: alpha/vị trí hạt]
 js/boss-game-dragon-composite.js  Pháp sư: ghép trùm cuối Oblivion từ 5 mảnh rời (đầu/2 cánh/thân) — gói không có sheet rồng nguyên khối
-js/boss-game-arena.js           Pháp sư: dựng sân đấu 4 vùng từ tileset (offscreen theo cỡ/dpr), thay nền vẽ tay cũ
+js/boss-game-arena.js           Pháp sư: dựng sân đấu 4 vùng từ tileset (offscreen theo cỡ/dpr), bossArenaFor(monster, region) resolve sân riêng theo quái (BOSS_MONSTER_ARENAS đè lên BOSS_ARENAS[region])
+js/boss-game-arena-layouts.js   Pháp sư: DỮ LIỆU sân riêng 12 quái (BOSS_MONSTER_ARENAS[id]: base + override sky/grass/details/far/patchColor + anim[] tile cố định + ambient{kind,density} + light tuỳ chọn)   [thuần, dữ liệu]
+js/boss-game-arena-ambient.js   Pháp sư: vẽ 2 lớp môi trường động mỗi khung — 'back' (tile hoạt hình cố định, không tắt khi reduced-motion) và 'front' (hạt thời tiết bay, tắt hẳn khi reduced-motion, trần BOSS_AMBIENT_MAX)   [phần thuần trừ drawBossAmbient]
 js/boss-game-sprite-actors.js   Pháp sư: diễn viên sprite (nhún/lao/giật lùi/nháy trắng/tan pixel), vẽ pháp sư + quái mỗi khung, VFX di chuyển (fx.sprites)
+js/boss-game-monster-attack-fx.js  Pháp sư: VFX riêng từng quái lúc ra đòn trúng pháp sư (BOSS_MONSTER_ATTACK_FX[id]: impact[]/at/scale), spawn lúc event 'hurt'/'shieldBlock', lớp CỘNG THÊM cạnh lunge có sẵn   [thuần]
 js/boss-game-portrait-ui.js     Pháp sư: vòng lặp chân dung idle nhỏ (sảnh + màn chọn lần đầu), ngừng vẽ khi ẩn tab, tự dừng khi rời sảnh (canvas bị gỡ)
 js/boss-game-tier3-ultimate-fx.js  Pháp sư: trận đồ (magic circle sprite), 5 cắt cảnh tuyệt kỹ (Faceset), hiệu ứng nội tại (phủ băng, khiên, bỏng, buff Ôn từ)
 js/boss-game-render.js          Pháp sư: ghép khung hình cảnh trận từ state + hiệu ứng (toàn sprite, không còn vẽ tay)
@@ -216,6 +223,53 @@ cây kỹ năng) đều dùng sprite từ gói **Ninja Adventure**, không còn 
    `boss-game-skill-sprites.js` (nạp SAU atlas, SAU cả `boss-game-evolution-sprites.js`), không sửa atlas.
    `bossMageSprite(gender, form)`: `form` = khoá sprite đã tra sẵn (`bossFormSprite(el, formId)`,
    `js/boss-game-evolution.js`) — rỗng thì rơi về sprite theo giới tính (dạng gốc).
+
+## Hình riêng theo chiêu, sân theo quái (plan 260925-1445)
+
+30 chiêu đặc biệt (5 hệ × 6 slot) + 5 tuyệt kỹ + 12 quái đều có hình/quỹ đạo/sân riêng thay vì dùng chung theo hệ.
+
+**Luồng cast → visuals → motion:**
+1. `bossSkillPick`/combo-chain phát `e.skill` (id chiêu) trên event cast/impact (`js/boss-game-logic.js`).
+2. `bossSkillVisualFor(skillId, evolved)` (`js/boss-game-skill-motion.js`) tra `BOSS_SKILL_VISUALS[skillId]`
+   (`js/boss-game-skill-visuals.js`); thiếu id (basic) hoặc chưa nạp dữ liệu → trả `null`, rơi về preset hệ×bậc cũ
+   (`BOSS_SPELL_PRESETS`, `js/boss-game-spell-presets.js`).
+3. `boss-game-spell-art.js` gán `motion`/`sprite`/`scale` lên `fx.shots` lúc 'cast'; `bossShotPos(s, k)`/
+   `bossShotDir(s, k)` (`js/boss-game-skill-motion.js`) tính vị trí/hướng theo 1 trong 6 `BOSS_MOTIONS` — bất biến
+   `bossShotPos(s, 1)` LUÔN = điểm chạm quái (`x1,y1`), mọi kiểu quỹ đạo.
+4. Lúc 'impact', `impact[]` của visual thay lớp VFX preset hệ×bậc (nhiều khoá = nhiều lớp vẽ lệch nhẹ).
+
+**Cờ `evolved`:** khi dạng tiến hoá đang active ghi đè slot đó (`bossSkillEvolved`, `js/boss-game-skill-pick.js`),
+cast/impact mang thêm `evolved: true`. `bossSkillVisualFor(id, true)` đọc `BOSS_EVO_SKILL_VISUALS[id]`
+(`js/boss-game-skill-visuals.js`) — 1 bản nâng cấp mỗi chiêu (KHÔNG theo từng formId riêng): `{extends:true, scale,
+addImpact}` kế thừa bản gốc (nhân scale, nối thêm addImpact) hoặc schema đầy đủ thay hẳn. Không có mục evo cho id
+đó → rơi về bản gốc, không lỗi. 5 tuyệt kỹ đọc thêm `overlay/rain/ground/anchor` trên `BOSS_ULTIMATE_PRESETS`
+qua `js/boss-game-ultimate-overlay-fx.js` (vẽ trong `drawBossPassiveFx`, dưới HUD, tắt khi reduced-motion).
+
+**Sân riêng theo quái:** `bossArenaFor(monster, region)` (`js/boss-game-arena.js`) gộp nông
+`BOSS_MONSTER_ARENAS[monster.id]` (`js/boss-game-arena-layouts.js`) lên `BOSS_ARENAS[region.id]` — field thiếu ở
+override kế thừa vùng, field có ghi đè hẳn. Không có override cho quái → fallback nguyên sân vùng.
+
+**Lớp ambient (`js/boss-game-arena-ambient.js`), 2 lớp vẽ MỖI KHUNG** (khác nền tĩnh dựng offscreen 1 lần):
+- `back` = tile hoạt hình vị trí cố định (`BOSS_MONSTER_ARENAS[id].anim`: hoa/cờ/cối xay/thác) — sau nền, trước
+  nhân vật, KHÔNG tắt khi reduced-motion (chuyển động nhỏ tại chỗ).
+- `front` = hạt thời tiết bay theo `ambient.kind`/`density` — sau nhân vật, trước HUD, trần `BOSS_AMBIENT_MAX`,
+  TẮT HẲN khi `prefers-reduced-motion`, `quality<1` vẽ nửa số hạt.
+
+**Đòn quái (`js/boss-game-monster-attack-fx.js`):** `BOSS_MONSTER_ATTACK_FX[monsterId]` spawn VFX (`impact[]` tại
+`at: 'mage'|'mageFeet'`) lúc event `'hurt'`/`'shieldBlock'` — lớp CỘNG THÊM cạnh lunge có sẵn (`bossActorEvent`),
+không thay anim Attack của quái có sheet thật.
+
+**Thêm hình cho chiêu mới:** thêm entry `BOSS_SKILL_VISUALS[skillId]` (proj/motion/cast/impact/scale, mọi khoá
+sprite phải có trong `BOSS_SPRITES`/`BOSS_EXTRA_SPRITES`, `motion` ∈ `BOSS_MOTIONS`); nếu chiêu bị dạng tiến hoá
+ghi đè slot, thêm `BOSS_EVO_SKILL_VISUALS[skillId]`. Giữ luật: trong cùng hệ không trùng `(proj, motion,
+impact[0])`, mỗi khoá sprite ≤2 lần — có test `tests/boss-game-skill-visuals.test.js`.
+
+**Thêm sân cho quái mới:** thêm entry `BOSS_MONSTER_ARENAS[monsterId]` (`base` = vùng kế thừa + override field cần
+đổi + `anim[]`/`ambient{kind,density}`/`light` tuỳ chọn); mọi khoá tile/anim phải có trong `BOSS_SPRITES` — có test
+`tests/boss-game-arena.test.js`. Thêm VFX đòn: entry `BOSS_MONSTER_ATTACK_FX[monsterId]` — có test
+`tests/boss-game-monster-attack-fx.test.js`.
+
+Ảnh mới đều precache trong `sw.js` ASSETS (bắt buộc — xem mục "Sprite Pháp Sư Lexoria" điểm 6 phía trên).
 
 ## Thuật toán ôn (js/srs-scheduler.js)
 

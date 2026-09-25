@@ -1,12 +1,16 @@
 /* Game Pháp Sư Lexoria — cây 5 nguyên tố, thuần. Cần boss-progress-sync-merge.js (BOSS_ELEMENTS) nạp trước.
-   Nội tại bậc 1–2 của MỌI nhánh đã cộng điểm đều bật; trường phái (activeEl) chỉ quyết định màu phép,
-   khắc hệ và tuyệt kỹ (khi nhánh đó đạt bậc 3). */
+   Nội tại bậc 1–2 của MỌI nhánh đã cộng điểm đều bật; trường phái (activeEl) chỉ quyết định màu phép, khắc hệ và
+   tuyệt kỹ — tuyệt kỹ CÓ SẴN ngay khi chọn trường phái, không cần cộng điểm nhánh đó (mở sớm, xem BOSS_ULTIMATES).
+   Bậc 3 của nhánh trường phái đang chọn không cộng modifier như bậc 1–2 (ELEMENT_RANKS chỉ có bậc 1–2) — thay vào
+   đó cộng m.ultBonus = BOSS_TUNING.rank3UltBonus (+0.25 vào hệ số k chuỗi niệm, xem bossEndChain ở
+   js/boss-game-combo-chain.js), cộng dồn với evoUltBonus (dạng tiến hoá cấp 16) qua cùng một đường bonus. */
 
 const BOSS_ULTIMATES = { fire: 'meteor', ice: 'iceAge', storm: 'chain', earth: 'revive', wind: 'tornado' };
 const BOSS_BOOST_SPELLS = 3;          // Mưa sao băng / Xích sét cường hoá 3 phép kế
 const BOSS_ICE_AGE_MS = 8000;         // Kỷ băng hà dừng đồng hồ trùm (thời gian thật)
 
-/* Bảng brainstorm §3.3: mỗi bậc là phần cộng vào modifiers; bậc 3 = tuyệt kỹ (trong BOSS_ULTIMATES) */
+/* Bảng brainstorm §3.3: mỗi bậc là phần cộng vào modifiers. Chỉ có bậc 1–2 — tuyệt kỹ (BOSS_ULTIMATES) giờ
+   gắn thẳng theo trường phái đang chọn (modifiersFor), không còn nằm ở bậc 3 nữa. */
 const ELEMENT_RANKS = {
   fire:  { 1: { dmgMul: 0.15 }, 2: { burn: { dps: 5, sec: 3 } } },
   ice:   { 1: { clockAdd: 1.5 }, 2: { freezeChance: 0.25, freezeSec: 3 } },
@@ -22,7 +26,7 @@ function modifiersFor(alloc, activeEl) {
   const el = BOSS_ELEMENTS.indexOf(activeEl) >= 0 ? activeEl : BOSS_ELEMENTS[0];
   const m = {
     element: el, dmgMul: 1, burn: null, clockAdd: 0, freezeChance: 0, freezeSec: 0, speedLoosen: 0, fastCrit: false,
-    maxHeartsAdd: 0, shield: 0, hintFirst: false, typoForgive: 0, ultimate: null
+    maxHeartsAdd: 0, shield: 0, hintFirst: false, typoForgive: 0, ultimate: null, ultBonus: 0
   };
   BOSS_ELEMENTS.forEach(e => {
     const r = rankOf(alloc, e);
@@ -35,7 +39,8 @@ function modifiersFor(alloc, activeEl) {
       }
     }
   });
-  if (rankOf(alloc, el) >= 3) m.ultimate = BOSS_ULTIMATES[el];
+  m.ultimate = BOSS_ULTIMATES[el];   // mở sớm: tuyệt kỹ luôn có ngay theo trường phái đang chọn, không cần bậc
+  if (rankOf(alloc, el) >= 3) m.ultBonus = BOSS_TUNING.rank3UltBonus;   // bậc 3 = tuyệt kỹ mạnh hơn, không phải mở khoá nữa
   return m;
 }
 

@@ -1,6 +1,6 @@
 /* Service worker: cache-first cho toàn bộ file tĩnh. Đổi CACHE mỗi lần deploy để người dùng nhận bản mới.
    MP3 trong audio/ nằm ở cache riêng AUDIO_CACHE, cache dần khi phát, không xoá khi lên version. */
-const CACHE = 'lingobrain-v2.24.2';
+const CACHE = 'lingobrain-v2.24.3';
 const AUDIO_CACHE = 'lingobrain-audio';
 const ASSETS = [
   './',

@@ -1,14 +1,23 @@
 /* Game Pháp Sư Lexoria — cây nguyên tố (DOM): 5 cột × 3 bậc + chọn trường phái. Điểm chỉ tăng, không có
    reset (mergeBoss gộp alloc theo max từng nhánh — xem boss-progress-sync-merge.js). Nội tại bậc 1–2 của MỌI
-   nhánh đã cộng đều bật; trường phái chỉ quyết định màu phép, khắc hệ và tuyệt kỹ (bậc 3). Cần js/boss-game-elements.js,
-   js/boss-progress-sync-merge.js (BOSS_ELEMENTS), js/boss-game-hub-ui.js (bossTodayOpts) + boss-game-story-journal-ui.js (bossPickMonster) nạp trước. */
+   nhánh đã cộng đều bật; trường phái chỉ quyết định màu phép, khắc hệ và tuyệt kỹ — tuyệt kỹ có sẵn ngay khi chọn
+   trường phái (mở sớm), bậc 3 của nhánh trường phái đang dùng cộng thêm BOSS_TUNING.rank3UltBonus vào hệ số tuyệt
+   kỹ (m.ultBonus, xem js/boss-game-elements.js). Cần js/boss-game-elements.js (nạp SAU boss-game-spell-math.js —
+   cần BOSS_TUNING), js/boss-progress-sync-merge.js (BOSS_ELEMENTS), js/boss-game-hub-ui.js (bossTodayOpts)
+   + boss-game-story-journal-ui.js (bossPickMonster) nạp trước. */
 
+/* Chỉ số 2 (bậc 3) không cộng modifier như bậc 1–2 — nếu đang là trường phái active thì cộng thêm rank3UltBonus vào
+   hệ số tuyệt kỹ; nếu KHÔNG phải trường phái active thì bậc 3 không có tác dụng gì (ultBonus chỉ tính trên el đang
+   chọn) nên dòng chữ để trung lập, không hứa hẹn quá mức. KHÔNG hardcode số % ở đây (review M3: hiệu lực thật đổi
+   theo tuyệt kỹ — vd meteor/chain làm tròn lên nên % thật khác +25% danh nghĩa) — chỉ nêu đúng con số hệ số lấy
+   thẳng từ BOSS_TUNING, khỏi lệch khi cân bằng lại số liệu. */
+const BOSS_RANK3_TXT = 'Tuyệt kỹ mạnh hơn (+' + BOSS_TUNING.rank3UltBonus + ' hệ số) nếu đang dùng trường phái này: ';
 const BOSS_RANK_DESC = {
-  fire: ['+15% sát thương mọi phép', 'Trùm bị đốt thêm sát thương theo thời gian', 'Tuyệt kỹ: Mưa sao băng'],
-  ice: ['+1,5 giây cho đồng hồ trùm', '25% cơ hội đóng băng trùm khi trúng', 'Tuyệt kỹ: Kỷ băng hà'],
-  storm: ['Nới lỏng mốc tốc độ gõ', 'Gõ siêu nhanh = chí mạng', 'Tuyệt kỹ: Xích sét'],
-  earth: ['+1 ❤️ trái tim', '+1 khiên chặn một đòn của trùm', 'Tuyệt kỹ: Hồi sinh đầy máu'],
-  wind: ['Gợi ý chữ cái đầu mỗi đề', 'Tha một lỗi gõ mỗi từ', 'Tuyệt kỹ: Lốc xoáy dừng đồng hồ']
+  fire: ['+15% sát thương mọi phép', 'Trùm bị đốt thêm sát thương theo thời gian', BOSS_RANK3_TXT + 'Mưa sao băng'],
+  ice: ['+1,5 giây cho đồng hồ trùm', '25% cơ hội đóng băng trùm khi trúng', BOSS_RANK3_TXT + 'Kỷ băng hà'],
+  storm: ['Nới lỏng mốc tốc độ gõ', 'Gõ siêu nhanh = chí mạng', BOSS_RANK3_TXT + 'Xích sét'],
+  earth: ['+1 ❤️ trái tim', '+1 khiên chặn một đòn của trùm', BOSS_RANK3_TXT + 'Hồi sinh đầy máu'],
+  wind: ['Gợi ý chữ cái đầu mỗi đề', 'Tha một lỗi gõ mỗi từ', BOSS_RANK3_TXT + 'Lốc xoáy dừng đồng hồ']
 };
 
 function renderSkillTree() {

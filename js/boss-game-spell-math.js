@@ -10,10 +10,18 @@ const BOSS_TUNING = {
   speed: { baseMs: 1500, perLetterMs: 350 },
   clock: { easy: 12, normal: 10, hard: 8 },   // giây để thanh tấn công đầy (hub hiện "10s"); tên giữ nguyên, xem boss-game-threat-gauge.js
   threatDrain: 0.35, threatTypo: 0.1, threatMiss: 0.25,   // thanh tấn công (0..1): niệm đúng giảm, gõ sai/bỏ tăng
-  ultMax: 10,                         // thanh tuyệt kỹ (thay Nộ 8 từ cũ) — xem js/boss-game-combo-chain.js
+  ultMax: 4,                          // thanh tuyệt kỹ (nạp nhanh hơn 10 cũ → dùng được nhiều lần/trận) — xem js/boss-game-combo-chain.js
+  ultCooldownMs: 6000,                // sau khi tuyệt kỹ kết thúc (cắt cảnh xong) — 6s KHÔNG được cộng thanh tuyệt kỹ từ bất kỳ nguồn nào
+                                       // (cast thường lẫn ultAdd chiêu tự phát) — cân bằng Gió/ultAdd dồn tuyệt kỹ quá nhanh, xem bossComboOnCast
   shieldCap: 2,                       // trần khiên — áp cho MỌI nguồn cộng khiên (nội tại/chiêu/tuyệt kỹ)
   comboStep: 0.05, comboCap: 1.5,     // combo: sát thương ×min(comboCap, 1 + comboStep×combo)
-  chainMs: 9000,                      // chuỗi niệm (thời gian thật) sau khi kích hoạt tuyệt kỹ
+  chainMs: 12000,                     // chuỗi niệm (thời gian thật) sau khi kích hoạt tuyệt kỹ
+  chainWords: 2,                      // số từ trong chuỗi niệm (dễ hơn 3 cũ)
+  chainFactor: [0.5, 1, 1.5],         // hệ số k theo số từ trúng: 0 → 0.5, 1 → 1 (bình thường), 2 (= chainWords) → 1.5 ("HOÀN HẢO")
+  rank3UltBonus: 0.25,                // đạt bậc 3 nhánh trường phái đang chọn → +0.25 vào k chuỗi niệm (js/boss-game-elements.js:modifiersFor → m.ultBonus),
+                                       // cộng dồn với evoUltBonus (dạng cấp 16) — cùng 1 đường bonus ở bossEndChain (boss-game-combo-chain.js)
+  tornadoFreezeSecPerK: 4,            // Lốc xoáy: k>1 → đóng băng thêm tornadoFreezeSecPerK×(k−1) giây (dùng chung cơ chế đóng băng Băng bậc 2)
+  reviveShieldK1: 1.25, reviveShieldK2: 1.75,   // Hồi sinh: k≥reviveShieldK1 → +1 khiên, k≥reviveShieldK2 → +2 khiên (kẹp shieldCap)
   impactMs: [0, 250, 450, 800],       // trễ từ lúc niệm xong tới lúc phép chạm, theo bậc
   afterImpactMs: [0, 350, 450, 600],  // đuôi cố định sau va chạm (đỉnh VFX nổ) trước khi hiện đề kế; đuôi sprite được chạy tiếp dưới đề mới
   endDelayMs: 900,                    // hp ≤ 0 tại impact → màn thắng sau chừng này
