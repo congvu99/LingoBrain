@@ -160,16 +160,28 @@ function s5(w) {
     '<div class="row"><button id="b-say">🔊 Đọc câu</button><span class="spacer"></span>' +
     '<button class="btn-ghost" id="b-skip">Bỏ qua</button><button class="btn-primary" id="b-done">Lưu & tiếp →</button></div>';
   const ta = $('#own');
+  let leaving = false;   // chặn bấm đúp / Ctrl+Enter liên tục sau khi đã lưu
   $('#b-say').onclick = () => speak(ta.value || w.word);
   $('#b-skip').onclick = () => nextCard(true);
   $('#b-done').onclick = () => {
+    if (leaving) return;
     const t = ta.value.trim();
     if (!t) { nextCard(true); return; }
     if (t.toLowerCase().indexOf(w.word.toLowerCase().split(' ')[0]) < 0) { $('#ownMsg').innerHTML = '<span class="bad">Câu chưa chứa từ này. Sửa lại nhé.</span>'; return; }
     const rw = srs[w.id] || (srs[w.id] = blankRec());
     rw.sentences = (rw.sentences || []).concat(t).slice(-5);
     rw.mt = Date.now();   // dấu sửa cho đồng bộ: thiếu thì câu của từ chưa chấm bị lọc sau lần xoá/khôi phục
-    save(K_SRS, srs); speak(t); nextCard();
+    save(K_SRS, srs);
+    leaving = true;
+    const btn = $('#b-done');
+    ['#b-done', '#b-skip', '#b-say'].forEach(id => $(id).disabled = true);
+    btn.textContent = '🔊 Đang đọc…';
+    // trần chờ đọc (onend của Chrome có lúc không bắn); rate .92 + độ trễ giọng Natural online → ~100ms/ký tự
+    const cap = Math.min(15000, 1500 + 100 * t.length);
+    // Chỉ chuyển khi vẫn đúng màn này: rời tab / bấm từ ở thống kê / bước 5 được vẽ lại (nút cũ rời DOM) → thôi,
+    // nếu không thẻ mới tự đọc đè audio ở tab khác hoặc cắt câu vừa lưu lần nữa
+    const go = () => { if (btn.isConnected && tab === 'game' && !game && cur === w && step === 5) nextCard(); };
+    Promise.race([speak(t), new Promise(r => setTimeout(r, cap))]).then(go, go);
   };
   ta.onkeydown = e => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) $('#b-done').click(); };
 }

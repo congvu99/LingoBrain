@@ -15,6 +15,7 @@ if ('speechSynthesis' in window) { pickVoice(); speechSynthesis.onvoiceschanged 
 let audioMap = null;                       // text chuẩn hoá → tên file trong audio/
 const player = typeof Audio !== 'undefined' ? new Audio() : null;
 let playToken = 0, blobUrl = null;
+let pendingDone = null;                    // resolve của lượt speak() trước, chưa xong thì bị lượt mới "đè" gọi luôn
 // Phải khớp normalize() trong tools/generate_edge_tts_audio.py
 function audioKey(t) { return String(t || '').replace(/\s+/g, ' ').trim(); }
 fetchFirstOk(audioSources(), u => fetch(u), isAudioIndexJson).then(src => { audioMap = src ? cleanAudioItems(src.data.items) : null; });
@@ -33,27 +34,44 @@ function hasVoice(text) {
   if (text && audioMap && audioMap[audioKey(text)]) return true;
   return 'speechSynthesis' in window && (!!voice || speechSynthesis.getVoices().length === 0);
 }
-function speakSystem(text, rate) {
-  if (!('speechSynthesis' in window)) return;
+function speakSystem(text, rate, done) {
+  if (!('speechSynthesis' in window)) { done && done(); return; }
   const u = new SpeechSynthesisUtterance(text);
   u.lang = 'en-US'; u.rate = rate || .92; if (voice) u.voice = voice;
+  u.onend = u.onerror = () => done && done();
   speechSynthesis.speak(u);
 }
+// trả Promise resolve khi đọc xong / lỗi / bị lượt mới thay
 function speak(text, rate) {
-  if (!text) return;
-  const token = ++playToken;               // lần gọi mới hơn thắng, lần cũ đang tải thì bỏ
-  if ('speechSynthesis' in window) speechSynthesis.cancel();
-  if (player) player.pause();
-  const file = audioMap && audioMap[audioKey(text)];
-  if (!file || !player) return speakSystem(text, rate);
-  unlockAudio();                           // speak() thường chạy ngay trong click → tận dụng cử chỉ trước khi fetch
-  // Tải thành blob (qua service worker cache) thay vì gán thẳng URL: Safari gửi Range request, cache trả 200 đủ file sẽ không phát
-  fetch('audio/' + file).then(r => { if (!r.ok) throw new Error(r.status); return r.blob(); }).then(b => {
-    if (token !== playToken) return;
-    if (blobUrl) URL.revokeObjectURL(blobUrl);
-    blobUrl = URL.createObjectURL(b);
-    player.src = blobUrl;
-    player.defaultPlaybackRate = player.playbackRate = rate || 1;   // nạp src sẽ reset playbackRate về default
-    return player.play();
-  }).catch(() => { if (token === playToken) speakSystem(text, rate); });
+  if (!text) return Promise.resolve();
+  return new Promise(resolve => {
+    if (pendingDone) pendingDone();        // lượt cũ chưa xong bị thay → resolve luôn, không treo
+    pendingDone = resolve;
+    const done = () => { if (pendingDone === resolve) pendingDone = null; resolve(); };
+    const token = ++playToken;             // lần gọi mới hơn thắng, lần cũ đang tải thì bỏ
+    if ('speechSynthesis' in window) speechSynthesis.cancel();
+    if (player) player.pause();
+    const file = audioMap && audioMap[audioKey(text)];
+    if (!file || !player) { speakSystem(text, rate, done); return; }
+    unlockAudio();                         // speak() thường chạy ngay trong click → tận dụng cử chỉ trước khi fetch
+    // MP3 lỗi (onerror và play() reject có thể cùng bắn) → rơi sang giọng hệ thống đúng 1 lần;
+    // gỡ handler của player để mẫu im lặng của unlockAudio không bắn onended báo xong nhầm
+    let fell = false;
+    const fallback = () => {
+      if (fell || token !== playToken) return;
+      fell = true; player.onended = player.onerror = null;
+      speakSystem(text, rate, done);
+    };
+    // Tải thành blob (qua service worker cache) thay vì gán thẳng URL: Safari gửi Range request, cache trả 200 đủ file sẽ không phát
+    fetch('audio/' + file).then(r => { if (!r.ok) throw new Error(r.status); return r.blob(); }).then(b => {
+      if (token !== playToken) return;     // lượt mới đã chạy → done() của nó lo, không gọi lại ở đây
+      if (blobUrl) URL.revokeObjectURL(blobUrl);
+      blobUrl = URL.createObjectURL(b);
+      player.src = blobUrl;
+      player.defaultPlaybackRate = player.playbackRate = rate || 1;   // nạp src sẽ reset playbackRate về default
+      player.onended = () => { if (token === playToken) done(); };
+      player.onerror = fallback;
+      return player.play();
+    }).catch(fallback);
+  });
 }
