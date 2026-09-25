@@ -49,10 +49,10 @@
       ['x', 'y', 'z'].forEach((c, i) => typeKey(st, c, i));
       assert.includes(types(st), 'typoForgiven'); assert.equal(st.typos, 2);
     });
-    it('giveUp → lộ đáp án, miss, Nộ −2', () => {
-      const st = mk(); st.rage = 5;
+    it('giveUp → lộ đáp án, miss, thanh tuyệt kỹ −2, combo về 0', () => {
+      const st = mk(); st.ult = 5; st.combo = 3;
       giveUp(st, 0);
-      assert.includes(types(st), 'giveup'); assert.equal(st.rage, 3); assert.deepEqual(st.miss, ['cat']);
+      assert.includes(types(st), 'giveup'); assert.equal(st.ult, 3); assert.equal(st.combo, 0); assert.deepEqual(st.miss, ['cat']);
     });
   });
 
@@ -90,17 +90,17 @@
   });
 
   describe('boss logic — khoá, tạm dừng, tốc độ', () => {
-    it('phím trong khoá bị bỏ; đề kế readyAt = lúc hết khoá', () => {
+    it('phím trong khoá bị bỏ; đề kế readyAt = lúc hết khoá (chạm + đuôi cố định)', () => {
       const st = mk();
       type(st, 'cat', 0);
       typeKey(st, 'd', 100); assert.equal(st.typed, 'cat');
-      run(st, 20, 400);
-      assert.equal(st.group.ids[0], 'dog'); assert.ok(st.readyAt >= 270 && st.readyAt < 270 + 16, 'readyAt ' + st.readyAt + ' (niệm xong lúc 20 + trễ 250, bước 16ms đầu sau khoá)');
+      run(st, 20, 650);
+      assert.equal(st.group.ids[0], 'dog'); assert.ok(st.readyAt >= 620 && st.readyAt < 620 + 16, 'readyAt ' + st.readyAt + ' (niệm xong lúc 20, chạm 270 + đuôi 350 = 620, bước 16ms đầu sau khoá)');
     });
     it('phím tới đúng lúc hết khoá (trước stepBattle kế) → tính cho đề MỚI', () => {
       const st = mk();
-      type(st, 'cat', 0);                  // khoá tới 270
-      typeKey(st, 'd', 275);
+      type(st, 'cat', 0);                  // khoá tới 620 (chạm 270 + đuôi bậc 1: 350)
+      typeKey(st, 'd', 625);
       assert.equal(st.group.ids[0], 'dog'); assert.equal(st.typed, 'd'); assert.equal(st.typos, 0); assert.equal(st.hp, 230);
     });
     it('tạm dừng không tính vào tốc độ', () => {
@@ -110,14 +110,13 @@
       const ca = a.events.find(e => e.type === 'cast'), cb = b.events.find(e => e.type === 'cast');
       assert.equal(ca.dmg, cb.dmg); assert.equal(b.pausedMs, 60000);
     });
-    it('đồng hồ KHÔNG chạy trong khoá tuyệt kỹ (0,8s đồng hồ + 1 ❤️ → không mất ❤️)', () => {
+    it('thanh tấn công KHÔNG tăng trong chuỗi niệm tuyệt kỹ (gần đầy + 1 ❤️ → không mất ❤️)', () => {
       const st = mk({ alloc: { ice: 3 }, el: 'ice' });
-      st.clock = 0.8; st.hearts = 1; st.rage = BOSS_TUNING.rageMax;
+      st.threat = 0.92; st.hearts = 1; st.ult = BOSS_TUNING.ultMax;
       assert.ok(useUltimate(st, 0));
-      run(st, 0, 1490); assert.equal(st.hearts, 1); assert.equal(st.phase, 'play'); assert.near(st.clock, 0.8);
-      assert.includes(types(st), 'ultimate');
+      run(st, 0, BOSS_TUNING.chainMs - 100); assert.equal(st.hearts, 1); assert.equal(st.phase, 'play'); assert.near(st.threat, 0.92);
     });
-    it('đồng hồ chạy hết → trùm đánh, mất ❤️; hết ❤️ → thua', () => {
+    it('thanh tấn công đầy → trùm đánh, mất ❤️; hết ❤️ → thua', () => {
       const st = mk({ hearts: 1 });
       run(st, 0, 10100);
       assert.includes(types(st), 'hurt'); assert.equal(st.phase, 'lost');
@@ -153,43 +152,81 @@
     });
     it('Băng bậc 2 đóng băng 3s thật (rand cố định)', () => {
       const st = mk({ alloc: { ice: 2 }, rand: () => 0.1 });
-      const clockMax = st.clockMax;
       type(st, 'cat', 0);
       run(st, 0, 300); assert.includes(types(st), 'freeze');
-      run(st, 300, 3000); assert.near(st.clock, clockMax, 1e-9);
-      run(st, 3000, 3600); assert.includes(types(st), 'unfreeze'); assert.ok(st.clock < clockMax);
+      const frozenThreat = st.threat;
+      run(st, 300, 3000); assert.near(st.threat, frozenThreat, 1e-9);
+      run(st, 3000, 3600); assert.includes(types(st), 'unfreeze'); assert.ok(st.threat > frozenThreat);
+    });
+    it('đóng băng: quái KHÔNG tấn công dù thanh đã đầy (do typo/giveup dồn) — chỉ đánh sau khi hết băng', () => {
+      const st = mk({ alloc: { ice: 2 }, rand: () => 0.1 });
+      type(st, 'cat', 0);
+      run(st, 0, 300); assert.includes(types(st), 'freeze');
+      st.threat = 1;   // mô phỏng typo/giveup dồn thanh đầy trong lúc đang đóng băng
+      run(st, 300, 3000);
+      assert.ok(!types(st).includes('bossAttack'), 'thanh đầy nhưng còn đóng băng → không được đánh');
+      assert.equal(st.hearts, 3, 'chưa mất tim nào trong lúc đóng băng');
+      run(st, 3000, 3700);
+      assert.includes(types(st), 'unfreeze');
+      assert.includes(types(st), 'bossAttack', 'hết băng → đánh ngay ở lượt kế, không chờ đầy lại từ đầu');
     });
     it('Lửa bậc 2 thiêu đốt 5/s × 3s sau impact', () => {
       const st = mk({ alloc: { fire: 2 } });
       type(st, 'cat', 0);
       run(st, 0, 4000); assert.near(250 - 23 - st.hp, 15, 0.01, 'impact 20×1,15 (bậc 1 Lửa) + thiêu 15'); assert.includes(types(st), 'burnTick');
     });
-    it('Nộ +1 mỗi phép; đầy → rageFull; tuyệt kỹ Lửa ×3 cho 3 phép kế', () => {
+    /* Pool trận này chỉ 3 đề (cat/dog/sun) → trừ đề đang hiện, chuỗi niệm luôn còn ĐÚNG 2 từ; gõ hết cả 2 →
+       kết chuỗi ngay với hits=2 → k=1 (bossChainFactor) → bossApplyUltimate tái tạo NGUYÊN VẸN hiệu lực tuyệt kỹ
+       CŨ (trước phase 3: nộ 8 từ áp thẳng, không qua chuỗi). Chi tiết hệ số 0.5/1.5 + timeout/pool lớn hơn xem
+       tests/boss-game-combo-chain.test.js — file này chỉ khoá lại đúng hiệu lực cũ qua k=1. */
+    function ultOld(st, now) {
+      assert.ok(useUltimate(st, now));
+      assert.equal(st.chain.words.length, 2, 'pool 3 đề, trừ đề đang hiện còn đúng 2 từ');
+      let t = now + 10;
+      st.chain.words.forEach(g => { type(st, g.answers[0], t); t += 200; });
+      assert.equal(st.chain, null, 'gõ hết 2/2 từ → chuỗi kết ngay, không cần chờ hết giờ');
+      return t;
+    }
+    it('Thanh tuyệt kỹ +1/+2 mỗi phép (tốc độ ≥1,5 gõ đúng thì +2); đầy → ultFull; k=1 tái tạo hiệu lực Lửa ×3 cho 3 phép kế', () => {
       const st = mk({ alloc: { fire: 3 }, el: 'fire' });
-      st.rage = BOSS_TUNING.rageMax - 1;
-      type(st, 'cat', 0); assert.includes(types(st), 'rageFull');
-      run(st, 0, 400);
-      assert.ok(useUltimate(st, 400)); run(st, 400, 2000);
+      st.ult = BOSS_TUNING.ultMax - 2;
+      type(st, 'cat', 0); assert.equal(st.ult, BOSS_TUNING.ultMax); assert.includes(types(st), 'ultFull');
+      run(st, 0, 650);   // qua khoá niệm bậc 1 → đã sang đề "dog"
+      const t = ultOld(st, 650);
+      run(st, t, t + BOSS_TUNING.ultimateMs + 50);
       assert.includes(types(st), 'ultimateEnd');
-      type(st, 'dog', 2000);
-      const casts = st.events.filter(e => e.type === 'cast');
-      assert.equal(casts[1].dmg, 3 * spellDamage({ tier: 2, speed: 2, weakHit: true, mods: st.mods }));
+      st.combo = 0;   // cô lập phép thử: chỉ xét hệ số ×3 của tuyệt kỹ, không cộng dồn combo từ phép "cat" trước đó
+      type(st, 'dog', t + BOSS_TUNING.ultimateMs + 50);
+      const casts = st.events.filter(e => e.type === 'cast'), last = casts[casts.length - 1];
+      assert.equal(last.dmg, 3 * spellDamage({ tier: 2, speed: 2, weakHit: true, mods: st.mods }));
       assert.equal(st.boost.left, 2);
     });
-    const ult = (el, setup) => { const a = {}; a[el] = 3; const st = mk({ alloc: a, el }); st.rage = BOSS_TUNING.rageMax; if (setup) setup(st); assert.ok(useUltimate(st, 0)); return st; };
-    it('Kỷ băng hà: dừng đồng hồ 8s thật SAU cắt cảnh', () => {
-      const st = ult('ice'), c = st.clock;
-      run(st, 0, 1500 + 7900); assert.near(st.clock, c, 1e-9);
-      run(st, 9400, 10000); assert.ok(st.clock < c); assert.includes(types(st), 'unfreeze');
+    it('Kỷ băng hà (k=1): dừng thanh tấn công đúng BOSS_ICE_AGE_MS SAU cắt cảnh, như cũ', () => {
+      const st = mk({ alloc: { ice: 3 }, el: 'ice' }); st.ult = BOSS_TUNING.ultMax;
+      const c = st.threat, t = ultOld(st, 0);
+      const end = st.events.find(e => e.type === 'ultimate').until;
+      run(st, t, end + BOSS_ICE_AGE_MS - 100); assert.near(st.threat, c, 1e-9);
+      run(st, end + BOSS_ICE_AGE_MS - 100, end + BOSS_ICE_AGE_MS + 500); assert.ok(st.threat > c); assert.includes(types(st), 'unfreeze');
     });
-    it('Xích sét: 3 phép kế đánh 2 lần', () => {
-      const st = ult('storm'); run(st, 0, 1600);
-      type(st, 'cat', 1600);
-      const c = st.events.find(e => e.type === 'cast');
-      assert.equal(c.hits, 2); assert.equal(c.dmg, 2 * spellDamage({ tier: 1, speed: 2, mods: st.mods, crit: true }), 'Sét bậc 2: gõ tốc độ max → chí mạng'); assert.equal(st.boost.left, 2);
+    it('Xích sét (k=1): 3 phép kế đánh 2 lần, đúng hiệu lực cũ', () => {
+      const st = mk({ alloc: { storm: 3 }, el: 'storm' }); st.ult = BOSS_TUNING.ultMax;
+      const t = ultOld(st, 0);
+      run(st, t, t + BOSS_TUNING.ultimateMs + 50);
+      type(st, st.group.answers[0], t + BOSS_TUNING.ultimateMs + 50);
+      const c = st.events.filter(e => e.type === 'cast').pop();
+      assert.equal(c.hits, 2); assert.equal(st.boost.left, 2);
     });
-    it('Hồi sinh: hồi đầy ❤️', () => { const st = ult('earth', s => { s.hearts = 1; }); assert.equal(st.hearts, st.heartsMax); assert.equal(st.hearts, 3); });
-    it('Lốc xoáy: nạp lại đồng hồ trùm', () => { const st = ult('wind', s => { s.clock = 0.5; }); assert.equal(st.clock, st.clockMax); });
+    it('Hồi sinh (k=1): hồi đầy ❤️, không cộng thêm khiên — đúng hiệu lực cũ', () => {
+      const st = mk({ alloc: { earth: 3 }, el: 'earth' }); st.hearts = 1; st.ult = BOSS_TUNING.ultMax;
+      const shieldBefore = st.shield;   // earth bậc 2 đã cho khiên nội tại sẵn — tuyệt kỹ k=1 KHÔNG cộng thêm
+      ultOld(st, 0);
+      assert.equal(st.hearts, st.heartsMax); assert.equal(st.hearts, 3); assert.equal(st.shield, shieldBefore);
+    });
+    it('Lốc xoáy (k=1): xả thanh tấn công về 0, không khiên — đúng hiệu lực cũ', () => {
+      const st = mk({ alloc: { wind: 3 }, el: 'wind' }); st.threat = 0.7; st.ult = BOSS_TUNING.ultMax;
+      ultOld(st, 0);
+      assert.equal(st.threat, 0); assert.equal(st.shield, 0);
+    });
     it('tạm dừng trong khoá + còn phép chưa chạm: mọi mốc dời đúng khoảng dừng', () => {
       const st = mk();
       type(st, 'cat', 0);                 // impactAt = 270
@@ -205,9 +242,63 @@
       run(st, 61000, 63200); assert.ok(!types(st).includes('unfreeze'));
       run(st, 63200, 63400); assert.includes(types(st), 'unfreeze');
     });
-    it('khung hình treo lâu (dt 30s) chỉ trừ tối đa 250ms đồng hồ', () => {
-      const st = mk(), c = st.clock; stepBattle(st, 30000, 30000); assert.near(c - st.clock, 0.25, 1e-9);
+    it('khung hình treo lâu (dt 30s) chỉ tăng tối đa 250ms thanh tấn công', () => {
+      const st = mk(); stepBattle(st, 30000, 30000); assert.near(st.threat, 0.25 / st.threatSec, 1e-9);
     });
     it('tuyệt kỹ khi Nộ chưa đầy → không dùng được', () => assert.equal(useUltimate(mk({ alloc: { fire: 3 }, el: 'fire' }), 0), false));
+  });
+
+  describe('boss logic — nhịp niệm (khoá = chạm + đuôi cố định afterImpactMs)', () => {
+    const mkOne = (tier, word, extra) => mk(Object.assign({ groups: [G('w', word)], tiers: new Map([['w', tier]]) }, extra));
+    [1, 2, 3].forEach(tier => {
+      it('bậc ' + tier + ': không có next trước chạm + đuôi; có next ngay sau mốc', () => {
+        const st = mkOne(tier, 'ab');
+        st.events = [];   // bỏ 'next' đầu trận (đề đầu tiên, không liên quan khoá đang xét)
+        type(st, 'ab', 0);   // niệm xong tại t=10
+        const lockUntil = 10 + BOSS_TUNING.impactMs[tier] + BOSS_TUNING.afterImpactMs[tier];
+        run(st, 10, lockUntil - 20);
+        assert.ok(!types(st).includes('next'), 'chưa hết đuôi khoá bậc ' + tier + ' đã hiện next');
+        run(st, lockUntil - 20, lockUntil + 20);
+        assert.includes(types(st), 'next');
+      });
+    });
+    it('thanh tấn công không đổi trong khoá niệm (bậc 3, đuôi dài nhất 600ms)', () => {
+      const st = mkOne(3, 'ab');
+      type(st, 'ab', 0);
+      const before = st.threat;
+      const lockUntil = 10 + BOSS_TUNING.impactMs[3] + BOSS_TUNING.afterImpactMs[3];
+      run(st, 10, lockUntil - 20);
+      assert.near(st.threat, before, 1e-9);
+    });
+    it('phím gõ trong khoá không tạo typo/key (không mất chữ oan)', () => {
+      const st = mkOne(2, 'ab');
+      type(st, 'ab', 0);
+      st.events = [];   // chỉ xét sự kiện phát sinh SAU cast, trong lúc khoá
+      typeKey(st, 'z', 20);
+      assert.deepEqual(types(st), []);
+      assert.equal(st.typos, 0);
+    });
+    it('wonAt = chạm + endDelay, không cộng thêm đuôi khoá (phép kết liễu không bị trễ)', () => {
+      const st = mkOne(3, 'ab', { carryDmg: 249 });   // hp=1, chiêu bậc 3 chắc chắn đủ kết liễu
+      type(st, 'ab', 0);
+      run(st, 10, 10 + BOSS_TUNING.impactMs[3] + 20);
+      assert.near(st.wonAt, 10 + BOSS_TUNING.impactMs[3] + BOSS_TUNING.endDelayMs, 1e-9);
+    });
+    it('mô phỏng ~40 phép: tổng thời gian thêm do đuôi khoá ≤ 25s', () => {
+      const tiers = new Array(12).fill(3).concat(new Array(16).fill(2), new Array(12).fill(1));   // đúng tỉ lệ tierShare 30/40/30
+      const groups = tiers.map((t, i) => G('w' + i, 'ab'));
+      const tiersMap = new Map(tiers.map((t, i) => ['w' + i, t]));
+      const st = mk({ groups, tiers: tiersMap });
+      let now = 0, added = 0;
+      tiers.forEach(() => {
+        type(st, 'ab', now); now += 10;   // niệm ngay ở tốc độ tối đa
+        const t = st.tier;
+        added += BOSS_TUNING.afterImpactMs[t];
+        const lockUntil = now + BOSS_TUNING.impactMs[t] + BOSS_TUNING.afterImpactMs[t];
+        run(st, now, lockUntil + 20);
+        now = lockUntil + 20;
+      });
+      assert.ok(added <= 25000, 'tổng thời gian thêm ' + added + 'ms (>25000ms) qua ' + tiers.length + ' phép');
+    });
   });
 })();

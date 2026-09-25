@@ -1,6 +1,6 @@
 # System Architecture — LingoBrain v2
 
-Cập nhật 2026-09-24. Web tĩnh + API Node.js. Dữ liệu người dùng trong `localStorage` (+ IndexedDB cho ghi âm) + PostgreSQL (tài khoản, tiến độ đồng bộ, bộ từ).
+Cập nhật 2026-09-25. Web tĩnh + API Node.js. Dữ liệu người dùng trong `localStorage` (+ IndexedDB cho ghi âm) + PostgreSQL (tài khoản, tiến độ đồng bộ, bộ từ).
 
 ## File
 
@@ -36,7 +36,9 @@ js/game-viewport-fit.js  DÙNG CHUNG (Bắn máy bay + Pháp sư): co khung theo
 js/boss-progress-sync-merge.js  Pháp Sư Lexoria: BOSS_ELEMENTS, emptyBoss/cleanBoss/mergeBoss cho `eng.boss.v1`, dùng chung server   [thuần, nạp TRƯỚC sync-merge.js + app-storage.js]
 js/boss-game-spell-math.js      Pháp sư: BOSS_TUNING, độ khó từ, bậc chiêu tương đối trong pool, hệ số tốc độ/sát thương, pool nhóm đồng nghĩa   [thuần]
 js/boss-game-elements.js        Pháp sư: bảng cây 5 nguyên tố → modifier, điểm còn lại, điều kiện lên bậc   [thuần]
-js/boss-game-logic.js           Pháp sư: máy trạng thái 1 trận (đồng hồ, chậm thời gian, khoá cắt cảnh, gõ/typo, Nộ, DoT, freeze, events[])   [thuần]
+js/boss-game-threat-gauge.js    Pháp sư: thanh tấn công trùm (đầy theo giờ, niệm đúng giảm, gõ sai/bỏ tăng, đầy → đánh)   [thuần]
+js/boss-game-combo-chain.js     Pháp sư: combo (nhân sát thương), thanh tuyệt kỹ 10 nấc, chuỗi niệm 3 từ + áp hiệu lực tuyệt kỹ theo hệ số   [thuần]
+js/boss-game-logic.js           Pháp sư: máy trạng thái 1 trận (thanh tấn công, chậm thời gian, khoá cắt cảnh, gõ/typo, combo/chuỗi niệm rẽ sang boss-game-combo-chain.js, DoT, freeze, events[])   [thuần]
 js/boss-game-progress.js        Pháp sư: đường cấp, trận hôm nay/beat kế, ghi tiến trình idempotent, chuỗi ngày, buff Ôn từ, đoạn truyện   [thuần]
 js/boss-game-spell-presets.js   Pháp sư: dữ liệu hiệu ứng phép theo hệ × bậc + tuyệt kỹ + fallback bậc thiếu
 js/boss-game-story.js           Pháp sư: dữ liệu vùng, quái, 28 đoạn truyện

@@ -117,8 +117,9 @@ Chip riêng (khác 5 game "Chơi nhanh" ở trên) trong hàng game, mở khi c�
 
 - Đề hiện `emoji + nghĩa Việt`; **gõ đúng từ tiếng Anh = niệm chú**. Gõ càng nhanh, sát thương phép càng cao; đang gõ đúng thì thời gian trận chậm hẳn lại (buông tay hoặc gõ sai >1,5 giây thì trở lại bình thường).
 - Bậc chiêu (1–3 sao) không tính theo ngưỡng tuyệt đối, mà xếp hạng **tương đối trong chính bộ từ người chơi đang có**: 30% từ khó nhất luôn ra chiêu bậc 3, 40% giữa ra bậc 2, còn lại bậc 1 — người mới học vẫn thấy đủ 3 bậc chiêu ngay từ đầu.
-- Trùm đánh liên tục theo một đồng hồ chạy — hết giờ trước khi hạ trùm thì mất 1 tim; hạ trùm trước khi hết tim thì thắng.
-- Lên cấp có điểm để đổ vào cây kỹ năng 5 nguyên tố (Lửa · Băng · Sét · Đất · Gió); đủ điểm mở tuyệt kỹ (Shift+Enter khi đủ Nộ) và các hiệu ứng nội tại của nhánh.
+- Thanh tấn công của trùm (vẽ dưới chân quái) đầy dần theo giờ; niệm đúng làm thanh giảm (gõ càng nhanh giảm càng nhiều), gõ sai/bỏ làm thanh tăng. Đầy → trùm đánh (đóng băng thì hoãn tới khi hết băng), khiên chặn hoặc mất 1 tim; hạ trùm trước khi hết tim thì thắng.
+- Niệm đúng liên tiếp không lỗi gõ cộng **combo** (hiện "COMBO ×n" khi ≥2, nhân thêm sát thương, tối đa ×1.5); bị đánh trúng / bỏ từ / hỏng phép làm mất combo (khiên chặn thì giữ nguyên).
+- Lên cấp có điểm để đổ vào cây kỹ năng 5 nguyên tố (Lửa · Băng · Sét · Đất · Gió); đủ điểm mở **tuyệt kỹ** và các hiệu ứng nội tại của nhánh. Mỗi phép niệm đúng đầy dần **thanh tuyệt kỹ** (10 nấc); đầy thì bấm nút ✨ hoặc Shift+Enter để vào **chuỗi niệm**: gõ liền 3 từ mới trong 9 giây, mỗi từ gõ trọn là 1 đòn sát thương và tính vào hiệu lực tuyệt kỹ cuối chuỗi (gõ đủ cả 3 từ = hiệu lực mạnh nhất, "HOÀN HẢO"; gõ thiếu hoặc hết giờ vẫn ra tuyệt kỹ nhưng yếu hơn).
 - Chỉ chơi được **1 trận cốt truyện mỗi ngày**; chơi thêm thì vào chế độ Luyện phép (không cộng tiến trình truyện, vẫn cộng XP).
 - Buff "Ôn từ": ôn xong hết thẻ đến hạn trong ngày (không tính từ mới) sẽ được cộng thêm hiệu quả cho trận hôm đó.
 - **Không đụng lịch SM-2**: giống các game khác, trả lời sai chỉ đẩy từ đó vào `gameMiss` để lên đầu phiên ôn kế tiếp — Pháp Sư Lexoria không tự ghi điểm, không đổi `ef`/`ivl`/`due`.

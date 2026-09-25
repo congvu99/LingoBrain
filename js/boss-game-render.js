@@ -52,12 +52,16 @@ function drawBossRegion(ctx, ui, w, h) {
   if (fx.bg) ctx.drawImage(fx.bg, 0, 0, w, h);
 }
 
-/* Đồng hồ nạp đòn của trùm thành thanh mảnh ngay dưới thanh HP; còn < 25% → nhấp nháy đỏ; đang đóng băng → xanh băng */
-function drawBossClockBar(ctx, st, x, y, bw, now) {
-  const k = Math.max(0, st.clock / st.clockMax), danger = k < 0.25 && !st.frozen;
+/* Thanh tấn công của trùm (st.threat, 0..1), vẽ ngay dưới chân sprite quái (fx.layout.mon):
+   > 0,75 → nhấp nháy đỏ; > 0,9 → rung nhẹ (tắt khi ui.fx.reduced); đang đóng băng → tô xanh băng, không rung. */
+function drawBossThreatBar(ctx, st, fx, now) {
+  const q = fx.layout.mon, bw = Math.max(46, Math.round(q.s * 0.85)), k = Math.max(0, Math.min(1, st.threat));
+  const danger = k > 0.75 && !st.frozen, shake = k > 0.9 && !st.frozen && !fx.reduced;
+  const jx = shake ? (Math.random() - 0.5) * 2 : 0, jy = shake ? (Math.random() - 0.5) * 2 : 0;
+  const x = Math.round(q.x - bw / 2 + jx), y = Math.round(q.y + Math.max(4, q.k * 2) + jy);
   ctx.fillStyle = 'rgba(0,0,0,.45)'; ctx.fillRect(x, y, bw, 5);
   ctx.fillStyle = st.frozen ? '#9fe8ff' : danger ? (Math.floor(now / 160) % 2 ? '#ff3b3b' : '#ff9a9a') : '#f5c25b';
-  ctx.fillRect(x, y, Math.round(bw * (1 - k)), 5);   // phần đã nạp
+  ctx.fillRect(x, y, Math.round(bw * k), 5);
 }
 
 function drawRuneCircle(ctx, st, fx) {
@@ -75,28 +79,49 @@ function drawRuneCircle(ctx, st, fx) {
 
 function drawBossHud(ctx, st, ui, now) {
   const w = ui.w, pad = 10, bw = Math.min(220, w * 0.48), k = st.hp / st.hpMax;
-  ctx.fillStyle = 'rgba(20,12,30,.55)';   // trời sân tile sáng: nền tối sau HUD cho chữ/ô Nộ đọc được
-  ctx.fillRect(pad - 4, pad - 4, BOSS_TUNING.rageMax * 13 + 6, 40); ctx.fillRect(w - pad - bw - 4, pad - 4, bw + 8, 44);
+  const comboOn = st.combo >= 2, ultW = BOSS_TUNING.ultMax * 13 + 6 + (comboOn ? 70 : 0);
+  ctx.fillStyle = 'rgba(20,12,30,.55)';   // trời sân tile sáng: nền tối sau HUD cho chữ/ô tuyệt kỹ đọc được
+  ctx.fillRect(pad - 4, pad - 4, ultW, 40); ctx.fillRect(w - pad - bw - 4, pad - 4, bw + 8, 34);
   ctx.font = '700 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
   ctx.textAlign = 'right'; ctx.fillStyle = '#f3e9ff'; ctx.fillText(ui.monsterName, w - pad, pad + 12);
   ctx.fillStyle = 'rgba(0,0,0,.45)'; ctx.fillRect(w - pad - bw, pad + 18, bw, 10);
   ctx.fillStyle = k > 0.3 ? '#e04f6f' : '#ff2d2d'; ctx.fillRect(w - pad - bw, pad + 18, bw * k, 10);
   ctx.fillStyle = '#fff'; ctx.font = '600 10px ui-monospace,Menlo,Consolas,monospace';
   ctx.fillText(Math.ceil(st.hp) + '/' + st.hpMax, w - pad - 3, pad + 27);
-  drawBossClockBar(ctx, st, w - pad - bw, pad + 31, bw, now);
   ctx.textAlign = 'left'; ctx.font = '16px -apple-system,"Segoe UI Emoji",sans-serif';
   ctx.fillText(BOSS_HEART.repeat(Math.max(0, st.hearts)) + BOSS_HEART_EMPTY.repeat(Math.max(0, st.heartsMax - st.hearts)) +
     (st.shield ? ' 🛡️' : ''), pad, pad + 16);
-  const rageFull = st.rage >= BOSS_TUNING.rageMax, glow = rageFull ? 0.5 + 0.5 * Math.sin(now / 130) : 0;
-  for (let i = 0; i < BOSS_TUNING.rageMax; i++) {   // Nộ: 8 ô — đầy thì rung nhẹ + sáng nhấp nháy
-    ctx.fillStyle = i < st.rage ? (rageFull ? (glow > 0.5 ? '#fff6c2' : '#ffd23f') : '#ff8a3c') : 'rgba(255,255,255,.15)';
-    const jitter = rageFull && !ui.fx.reduced ? Math.sin(now / 45 + i) * 1.2 : 0;
+  const ultFull = st.ult >= BOSS_TUNING.ultMax, glow = ultFull ? 0.5 + 0.5 * Math.sin(now / 130) : 0;
+  for (let i = 0; i < BOSS_TUNING.ultMax; i++) {   // thanh tuyệt kỹ: 10 ô — đầy thì rung nhẹ + sáng nhấp nháy
+    ctx.fillStyle = i < st.ult ? (ultFull ? (glow > 0.5 ? '#fff6c2' : '#ffd23f') : '#ff8a3c') : 'rgba(255,255,255,.15)';
+    const jitter = ultFull && !ui.fx.reduced ? Math.sin(now / 45 + i) * 1.2 : 0;
     ctx.fillRect(pad + i * 13, pad + 24 + jitter, 10, 6);
+  }
+  if (comboOn) {   // "COMBO ×n" ngay cạnh thanh tuyệt kỹ, ẩn khi combo < 2
+    ctx.textAlign = 'left'; ctx.fillStyle = '#ffd23f'; ctx.font = '700 12px ui-monospace,Menlo,Consolas,monospace';
+    ctx.fillText('COMBO ×' + st.combo, pad + BOSS_TUNING.ultMax * 13 + 10, pad + 30);
   }
   if (ui.showFps) {
     ctx.fillStyle = '#9f9'; ctx.font = '11px ui-monospace,monospace';
     ctx.fillText(Math.round(ui.fps) + ' fps · ' + ui.fx.ps.n + ' hạt · q ' + ui.quality, pad, ui.h - 8);
   }
+}
+
+/* Chế độ chuỗi niệm: thanh thời gian 9s (đếm ngược) + 3 chấm tiến độ + đề đang chờ gõ, giữa màn phía trên.
+   x/y/bw tính ở bossChainHudLayout (boss-game-combo-chain.js, thuần) — đặt HẲN dưới khối HUD trên cùng (ô tuyệt
+   kỹ/tim/tên quái) để không đè nhau ở khung hẹp ~360px. */
+function drawBossChainHud(ctx, st, ui, now) {
+  const c = st.chain, w = ui.w, L = bossChainHudLayout(w), bw = L.bw, x = L.x, y = L.y;
+  const remain = Math.max(0, Math.min(1, (c.until - now) / BOSS_TUNING.chainMs));
+  ctx.fillStyle = 'rgba(0,0,0,.5)'; ctx.fillRect(x, y, bw, 8);
+  ctx.fillStyle = '#b06bff'; ctx.fillRect(x, y, bw * remain, 8);
+  const dot = 10, gap = 8, total = dot * 3 + gap * 2, dx = w / 2 - total / 2;
+  for (let i = 0; i < 3; i++) {
+    ctx.fillStyle = i < c.hits ? '#ffd23f' : 'rgba(255,255,255,.25)';
+    ctx.beginPath(); ctx.arc(dx + i * (dot + gap) + dot / 2, y + 20, dot / 2, 0, 6.283); ctx.fill();
+  }
+  ctx.textAlign = 'center'; ctx.fillStyle = '#f3e9ff'; ctx.font = '700 13px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
+  ctx.fillText('CHUỖI NIỆM · ' + (c.words[c.i] ? c.words[c.i].prompt : ''), w / 2, y - 6);
 }
 
 /* ui = {w, h, time (giây game), gender, monsterName, fps, showFps, quality, fx}; now = ms thật */
@@ -112,6 +137,7 @@ function drawBossScene(ctx, st, ui, now) {
   ctx.save(); if (lift) ctx.translate(0, -lift);
   drawBossMonsterSprite(ctx, fx, st, ui.time);   // sprite chưa nạp → tự bỏ qua, không văng lỗi
   ctx.restore();
+  if (st.phase === 'play') drawBossThreatBar(ctx, st, fx, now);   // ẩn sau khi thắng/thua, khỏi đè lên khung kết trận
   drawBossMageSprite(ctx, fx, st, ui.gender, ui.time);   // sprite chưa nạp → tự bỏ qua, không văng lỗi
   drawRuneCircle(ctx, st, fx);
   drawBossSpriteFx(ctx, fx);
@@ -126,5 +152,6 @@ function drawBossScene(ctx, st, ui, now) {
   }
   if (fx.flash > 0) { ctx.globalAlpha = Math.min(0.6, fx.flash); ctx.fillStyle = fx.flashColor; ctx.fillRect(0, 0, w, h); ctx.globalAlpha = 1; }
   drawBossHud(ctx, st, ui, now);
+  if (st.chain) drawBossChainHud(ctx, st, ui, now);
   if (typeof drawBossUltimateCutscene === 'function') drawBossUltimateCutscene(ctx, fx, ui, now);   // cắt cảnh tuyệt kỹ, phủ cả HUD
 }

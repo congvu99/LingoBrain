@@ -8,9 +8,13 @@ const BOSS_TUNING = {
   tierBase: [0, 10, 20, 40],          // sát thương gốc theo bậc ✦ / ✦✦ / ✦✦✦
   tierShare: [0.3, 0.4],              // 30% từ khó nhất trong pool → ✦✦✦, 40% kế → ✦✦, còn lại ✦
   speed: { baseMs: 1500, perLetterMs: 350 },
-  clock: { easy: 12, normal: 10, hard: 8 },   // giây giữa hai đòn của trùm
-  rageMax: 8,
+  clock: { easy: 12, normal: 10, hard: 8 },   // giây để thanh tấn công đầy (hub hiện "10s"); tên giữ nguyên, xem boss-game-threat-gauge.js
+  threatDrain: 0.35, threatTypo: 0.1, threatMiss: 0.25,   // thanh tấn công (0..1): niệm đúng giảm, gõ sai/bỏ tăng
+  ultMax: 10,                         // thanh tuyệt kỹ (thay Nộ 8 từ cũ) — xem js/boss-game-combo-chain.js
+  comboStep: 0.05, comboCap: 1.5,     // combo: sát thương ×min(comboCap, 1 + comboStep×combo)
+  chainMs: 9000,                      // chuỗi niệm (thời gian thật) sau khi kích hoạt tuyệt kỹ
   impactMs: [0, 250, 450, 800],       // trễ từ lúc niệm xong tới lúc phép chạm, theo bậc
+  afterImpactMs: [0, 350, 450, 600],  // đuôi cố định sau va chạm (đỉnh VFX nổ) trước khi hiện đề kế; đuôi sprite được chạy tiếp dưới đề mới
   endDelayMs: 900,                    // hp ≤ 0 tại impact → màn thắng sau chừng này
   revealMs: 1200,                     // lộ đáp án (bỏ / hỏng phép) trước khi sang đề kế
   prefixWaitMs: 400,                  // gõ xong đáp án ngắn mà còn đáp án dài hơn (south/southern) → chờ chừng này rồi mới niệm
@@ -48,11 +52,11 @@ function speedMult(ms, letters, loosen) {
   return 2 - (ms - mark / 2) / (mark / 2);
 }
 
-/* Sát thương một phép = gốc(bậc) × tốc độ × khắc hệ × nội tại (Lửa) × chí mạng (Sét) */
+/* Sát thương một phép = gốc(bậc) × tốc độ × khắc hệ × nội tại (Lửa) × chí mạng (Sét) × combo */
 function spellDamage(o) {
   const mods = o.mods || {};
   return Math.round(BOSS_TUNING.tierBase[o.tier] * (o.speed || 1) * (o.weakHit ? BOSS_TUNING.weakMul : 1) *
-    (mods.dmgMul || 1) * (o.crit ? BOSS_TUNING.critMul : 1));
+    (mods.dmgMul || 1) * (o.crit ? BOSS_TUNING.critMul : 1) * (o.combo || 1));
 }
 
 /* Khoá đề = đúng cái người chơi nhìn thấy (emoji + vế nghĩa hiển thị) → hai từ cùng đề gộp chung, gõ từ nào cũng đúng */

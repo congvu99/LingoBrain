@@ -16,14 +16,17 @@ function bossFxSpawnCircle(fx, x, y, r, color, life) {
 function bossFxUltimateEvent(fx, e, st) {
   if (e.type === 'ultimateEnd') { fx.ultimate = null; return; }
   const u = BOSS_ULTIMATE_PRESETS[e.id] || BOSS_ULTIMATE_PRESETS.meteor, ultS = BOSS_TUNING.ultimateMs / 1000;
-  fx.ultimate = { id: e.id, name: u.name, color: u.color, life: ultS, max: ultS };
+  const perfect = e.k >= 1.5;
+  fx.ultimate = { id: e.id, name: u.name, color: u.color, life: ultS, max: ultS, perfect };
   if (!fx.reduced) fx.shake = Math.max(fx.shake, u.shake);
   if (!fx.reduced) { fx.flash = Math.max(fx.flash, u.flash); fx.flashColor = u.color; }   // giảm chuyển động: bỏ loé toàn màn
   const q = fx.layout.mon, m = fx.layout.mage;
+  // meteor/chain: số quả/đòn theo hệ số chuỗi niệm (bossUltBoostCount), thay preset.hits cố định cũ
+  const hits = (e.id === 'meteor' || e.id === 'chain') && typeof bossUltBoostCount === 'function' ? bossUltBoostCount(e.k || 1) : u.hits;
   if (e.id === 'meteor') {   // Fireball ×hits rơi chéo (vx/vy thật) + Explosion lớn lúc chạm
     const dur = 0.5;
-    for (let i = 0; i < u.hits; i++) {
-      const ex = q.x + (i - (u.hits - 1) / 2) * q.s * 0.16, ey = q.y - q.s * 0.45;
+    for (let i = 0; i < hits; i++) {
+      const ex = q.x + (i - (hits - 1) / 2) * q.s * 0.16, ey = q.y - q.s * 0.45;
       if (fx.reduced) {   // không rơi — chỉ nổ tại chỗ, lệch nhẹ độ trễ
         bossSpawnSprite(fx, u.bigSprite, ex, ey, bossVfxScale(u.bigSprite, q.s), { delay: i * 0.1 });
       } else {
@@ -33,8 +36,8 @@ function bossFxUltimateEvent(fx, e, st) {
       }
     }
   } else if (e.id === 'chain') {   // Thiên Lôi nhảy hits lần quanh quái
-    for (let i = 0; i < u.hits; i++) {
-      bossSpawnSprite(fx, u.sprite, q.x + (i - (u.hits - 1) / 2) * q.s * 0.32, q.y - q.s * 0.45, bossVfxScale(u.sprite, q.s, 1.15), { delay: i * 0.15 });
+    for (let i = 0; i < hits; i++) {
+      bossSpawnSprite(fx, u.sprite, q.x + (i - (hits - 1) / 2) * q.s * 0.32, q.y - q.s * 0.45, bossVfxScale(u.sprite, q.s, 1.15), { delay: i * 0.15 });
     }
   } else if (e.id === 'revive') {
     bossSpawnSprite(fx, u.sprite, m.x, m.y - m.s * 0.6, bossVfxScale(u.sprite, m.s, 1.15), { life: Math.min(0.9, ultS) });
@@ -110,6 +113,10 @@ function drawBossUltimateCutscene(ctx, fx, ui, now) {
   ctx.font = '800 34px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
   ctx.lineWidth = 5; ctx.strokeStyle = 'rgba(0,0,0,.7)'; ctx.strokeText(u.name, w / 2, h * 0.42);
   ctx.fillText(u.name, w / 2, h * 0.42);
+  if (u.perfect) {   // chuỗi niệm gõ trọn 3 từ (k = 1.5)
+    ctx.font = '800 16px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
+    ctx.strokeText('HOÀN HẢO', w / 2, h * 0.42 + 24); ctx.fillText('HOÀN HẢO', w / 2, h * 0.42 + 24);
+  }
   if (u.id === 'iceAge' && !fx.reduced) {   // sương phủ toàn màn — bỏ hẳn khi giảm chuyển động
     ctx.fillStyle = 'rgba(210,245,255,.25)'; ctx.fillRect(0, 0, w, h);
     ctx.strokeStyle = 'rgba(255,255,255,.6)'; ctx.lineWidth = 2;

@@ -19,6 +19,8 @@ const PURE_MODULES = [
   'js/boss-game-spell-presets.js',    // dữ liệu preset — cần cho test trần hạt bằng preset thật
   'js/boss-game-spell-math.js',       // cần plane-game-text.js + word-games.js
   'js/boss-game-elements.js',
+  'js/boss-game-threat-gauge.js',     // thanh tấn công trùm (thuần) — nạp trước boss-game-logic.js
+  'js/boss-game-combo-chain.js',      // combo + thanh tuyệt kỹ + chuỗi niệm (thuần) — nạp trước boss-game-logic.js
   'js/boss-game-logic.js',
   'js/boss-game-progress.js',
   'js/boss-game-story.js',        // dữ liệu thuần: BOSS_REGIONS, BOSS_MONSTERS, BOSS_STORY

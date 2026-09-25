@@ -1,15 +1,16 @@
 /* Game Pháp Sư Lexoria — máy trạng thái trận, thuần. Chỗ DUY NHẤT quyết định thời điểm: render/UI chỉ vẽ theo st.events.
    Thời gian: `now` = ms thật (performance.now); đồng hồ trùm và DoT chạy theo thời gian game (thật × timeScale).
    Khoá (lockUntil: chờ phép chạm, lộ đáp án, cắt cảnh tuyệt kỹ): đồng hồ + DoT dừng, phím bị bỏ, đề kế hiện sau khoá.
-   Cần plane-game-text.js, word-games.js (addMiss), boss-game-spell-math.js, boss-game-elements.js nạp trước. */
+   Chuỗi niệm (st.chain): stepBattle/typeKey rẽ sang boss-game-combo-chain.js — đồng hồ + DoT đứng, KHÔNG lockUntil.
+   Cần nạp trước: plane-game-text.js, word-games.js (addMiss), boss-game-spell-math/elements/threat-gauge/combo-chain.js. */
 
 function createBattle(o) {
   const T = BOSS_TUNING, mods = o.mods || modifiersFor({}, 'fire'), now = o.now || 0;
-  const hpMax = o.monster.hp, clockMax = (T.clock[o.difficulty] || T.clock.normal) + mods.clockAdd;
+  const hpMax = o.monster.hp, threatSec = (T.clock[o.difficulty] || T.clock.normal) + mods.clockAdd;
   const st = {
     phase: 'play', monster: o.monster, groups: o.groups, gi: -1, tiers: o.tiers || new Map(), mods, rand: o.rand || Math.random,
-    hpMax, hp: Math.max(1, hpMax - (o.carryDmg || 0)), hearts: o.hearts, heartsMax: o.hearts, clock: clockMax, clockMax,
-    timeScale: 1, rage: 0, group: null, targets: [], tier: 1, typed: '', typos: 0, forgiven: false,
+    hpMax, hp: Math.max(1, hpMax - (o.carryDmg || 0)), hearts: o.hearts, heartsMax: o.hearts, threat: 0, threatSec,
+    timeScale: 1, combo: 0, ult: 0, chain: null, group: null, targets: [], tier: 1, typed: '', typos: 0, forgiven: false,
     readyAt: now, pausedMs: 0, pausedAt: 0, lastGoodKeyAt: -Infinity, slowUsedMs: 0,
     armedAt: 0, lockUntil: 0, lockNext: false, ultEnd: false, pendingImpacts: [], shield: mods.shield, frozenUntil: 0, frozen: false,
     burn: null, boost: null, wonAt: 0, dealt: 0, log: [], miss: [], events: []
@@ -26,8 +27,7 @@ function bossEndLock(st, now) {
   if (st.ultEnd) { st.ultEnd = false; bossEmit(st, 'ultimateEnd', {}); }
   if (st.lockNext) { st.lockNext = false; bossNextPrompt(st, now); } else { st.typed = ''; st.readyAt = now; st.armedAt = 0; }
 }
-/* Thao tác người chơi được không: bắt kịp va chạm + hết khoá NGAY lúc phím tới (không chờ stepBattle kế),
-   để phím đầu của đề mới không bị so với đề cũ */
+/* Thao tác người chơi được không: bắt kịp va chạm + hết khoá NGAY lúc phím tới, để phím đầu đề mới không so với đề cũ */
 function bossCanAct(st, now) {
   if (st.phase !== 'play' || st.pausedAt) return false;
   bossApplyImpacts(st, now);
@@ -51,6 +51,7 @@ function bossLockFor(st, until, next) { st.lockUntil = Math.max(st.lockUntil, un
 function bossAddMisses(st) { st.group.ids.forEach(id => { st.miss = addMiss(st.miss, id); }); }
 
 function typeKey(st, ch, now) {
+  if (st.chain) return bossChainKey(st, ch, now);
   if (!bossCanAct(st, now)) return;
   ch = normalizeTyped(ch);
   if (ch.length !== 1 || isFixedTyped(ch)) return;
@@ -68,11 +69,12 @@ function typeKey(st, ch, now) {
   if (st.armedAt) { castComplete(st, now, st.armedAt); return; }   // phím không đi tiếp → niệm đáp án ngắn, nuốt phím
   if (st.mods.typoForgive && !st.forgiven) { st.forgiven = true; bossEmit(st, 'typoForgiven', {}); return; }
   st.typos++;
-  bossEmit(st, 'typo', { typos: st.typos });
+  bossEmit(st, 'typo', { typos: st.typos }); bossThreatAdd(st, BOSS_TUNING.threatTypo);
   if (st.typos >= 3) {
     bossAddMisses(st);
     st.log.push({ ids: st.group.ids, word: st.group.answers[0], ok: false });
-    bossEmit(st, 'fizzle', { answer: st.group.answers[0] });
+    bossEmit(st, 'fizzle', { answer: st.group.answers[0] }); bossThreatAdd(st, BOSS_TUNING.threatMiss);
+    bossComboBreak(st);
     bossLockFor(st, now + BOSS_TUNING.revealMs, true);
   }
 }
@@ -83,8 +85,8 @@ function castComplete(st, now, at) {
   const ms = Math.max(0, (at || now) - st.readyAt);
   st.armedAt = 0;
   const speed = speedMult(ms, letters, m.speedLoosen);
-  const crit = !!m.fastCrit && speed >= 2;
-  let dmg = spellDamage({ tier: st.tier, speed, weakHit: st.monster.weak === m.element, mods: m, crit }), hits = 1;
+  const crit = !!m.fastCrit && speed >= 2, combo = bossComboMul(st);
+  let dmg = spellDamage({ tier: st.tier, speed, weakHit: st.monster.weak === m.element, mods: m, crit, combo }), hits = 1;
   if (st.boost) {
     if (st.boost.id === 'meteor') dmg *= 3; else { dmg *= 2; hits = 2; }
     if (--st.boost.left <= 0) st.boost = null;
@@ -94,12 +96,14 @@ function castComplete(st, now, at) {
   st.log.push({ ids: st.group.ids, word: st.typed, ok: true, ms, tier: st.tier, dmg });
   bossEmit(st, 'cast', { element: m.element, tier: st.tier, dmg, speed, crit, hits, impactAt, word: st.group.answers[st.targets.indexOf(st.typed)] });
   if (crit) bossEmit(st, 'fastCrit', {});
-  if (st.rage < T.rageMax && ++st.rage === T.rageMax && m.ultimate) bossEmit(st, 'rageFull', {});
-  bossLockFor(st, impactAt, true);
+  bossComboOnCast(st, speed);
+  bossThreatDrainOnCast(st, speed);   // áp lúc niệm xong, không đợi impact
+  bossLockFor(st, impactAt + T.afterImpactMs[st.tier], true);   // khoá = chạm + đuôi cố định (đỉnh VFX nổ); đề kế chờ hết đuôi mới hiện
 }
 
 /* Enter: đang chờ đáp án ngắn → niệm luôn; chưa gõ gì → Bỏ. Trả về đã làm gì để UI biết. */
 function submitTyped(st, now) {
+  if (st.chain) return '';
   if (!bossCanAct(st, now)) return '';
   if (st.armedAt) { castComplete(st, now, st.armedAt); return 'cast'; }
   if (!st.typed) { giveUp(st, now); return 'giveup'; }
@@ -107,27 +111,22 @@ function submitTyped(st, now) {
 }
 
 function giveUp(st, now) {
+  if (st.chain) return;   // bỏ trong chuỗi niệm: bỏ qua
   if (!bossCanAct(st, now)) return;
   if (st.armedAt) { castComplete(st, now, st.armedAt); return; }   // đã gõ trọn đáp án ngắn → niệm, không tính miss oan
   bossAddMisses(st);
   st.log.push({ ids: st.group.ids, word: st.group.answers[0], ok: false });
-  st.rage = Math.max(0, st.rage - 2);
-  bossEmit(st, 'giveup', { answer: st.group.answers[0] });
+  st.ult = Math.max(0, st.ult - 2);
+  bossComboBreak(st);
+  bossEmit(st, 'giveup', { answer: st.group.answers[0] }); bossThreatAdd(st, BOSS_TUNING.threatMiss);
   bossLockFor(st, now + BOSS_TUNING.revealMs, true);
 }
 
-function useUltimate(st, now) {
+function useUltimate(st, now) {   // mở chuỗi niệm 3 từ; combo-chain.js áp hiệu lực theo hệ số khi chuỗi kết thúc
   const T = BOSS_TUNING, id = st.mods.ultimate;
-  if (!id || st.rage < T.rageMax || !bossCanAct(st, now)) return false;
-  st.rage = 0;
-  const end = now + T.ultimateMs;
-  if (id === 'meteor' || id === 'chain') st.boost = { id, left: BOSS_BOOST_SPELLS };
-  else if (id === 'iceAge') { st.frozenUntil = Math.max(st.frozenUntil, end + BOSS_ICE_AGE_MS); st.frozen = true; }
-  else if (id === 'revive') st.hearts = st.heartsMax;
-  else if (id === 'tornado') st.clock = st.clockMax;
-  st.typed = ''; st.armedAt = 0; st.ultEnd = true;
-  bossEmit(st, 'ultimate', { id, until: end });
-  bossLockFor(st, end, false);
+  if (!id || st.chain || st.ult < T.ultMax || !bossCanAct(st, now)) return false;
+  st.ult = 0;
+  bossStartChain(st, now);
   return true;
 }
 
@@ -139,6 +138,7 @@ function resumeBattle(st, now) {
   st.pausedAt = 0; st.pausedMs += d;
   st.readyAt += d; st.lastGoodKeyAt += d;
   ['armedAt', 'lockUntil', 'frozenUntil', 'wonAt'].forEach(k => { if (st[k]) st[k] += d; });   // 0 = chưa đặt, giữ nguyên
+  if (st.chain) st.chain.until += d;
   st.pendingImpacts.forEach(p => { p.at += d; });
 }
 
@@ -159,13 +159,14 @@ function bossApplyImpacts(st, now) {
   if (st.hp <= 0 && !st.wonAt) { st.hp = 0; st.wonAt = now + BOSS_TUNING.endDelayMs; st.burn = null; }
 }
 
-const BOSS_MAX_STEP_MS = 250;   // khung hình bị treo lâu (tab nền chưa kịp pause) không được trừ cả đống đồng hồ một lần
+const BOSS_MAX_STEP_MS = 250;   // khung hình treo lâu không được trừ cả đống đồng hồ một lần
 function stepBattle(st, dtMs, now) {
   const T = BOSS_TUNING;
   if (st.phase !== 'play' || st.pausedAt) return;
   dtMs = Math.min(Math.max(0, dtMs), BOSS_MAX_STEP_MS);
   bossApplyImpacts(st, now);
   if (st.wonAt) { if (now >= st.wonAt) { st.phase = 'won'; bossEmit(st, 'won', {}); } return; }
+  if (st.chain) return bossStepChain(st, now);   // chuỗi niệm: đồng hồ trùm + DoT đứng, không fill/burn bên dưới
   if (bossLocked(st, now)) return;
   if (st.lockUntil) bossEndLock(st, now);
   if (st.armedAt && now - st.armedAt >= T.prefixWaitMs) { castComplete(st, now, st.armedAt); return; }
@@ -177,15 +178,15 @@ function stepBattle(st, dtMs, now) {
   st.timeScale += (target - st.timeScale) * Math.min(1, 8 * dtMs / 1000);
   if (Math.abs(st.timeScale - target) < 0.01) st.timeScale = target;
   const dt = dtMs / 1000 * st.timeScale;
-  // đồng hồ trùm (đóng băng tính thời gian thật)
+  // thanh tấn công của trùm (đóng băng tính thời gian thật) — đầy ≥ 1 → quái đánh, xem boss-game-threat-gauge.js
   if (st.frozen && now >= st.frozenUntil) { st.frozen = false; bossEmit(st, 'unfreeze', {}); }
-  if (!st.frozen) st.clock -= dt;
-  if (st.clock <= 0) {
-    st.clock = st.clockMax;
+  if (!st.frozen) bossThreatFill(st, dt);
+  if (!st.frozen && st.threat >= 1) {   // đóng băng: thanh có thể đã đầy do typo/giveup trước đó nhưng KHÔNG đánh cho tới khi hết băng
     bossEmit(st, 'bossAttack', {});
-    if (st.shield > 0) { st.shield--; bossEmit(st, 'shieldBlock', {}); }
-    else { st.hearts--; bossEmit(st, 'hurt', { hearts: st.hearts }); }
-    if (st.hearts <= 0) { st.phase = 'lost'; bossEmit(st, 'lost', {}); return; }
+    const hadShield = st.shield > 0, lost = bossThreatAttack(st) === 'lost';
+    bossEmit(st, hadShield ? 'shieldBlock' : 'hurt', hadShield ? {} : { hearts: st.hearts });
+    if (!hadShield) bossComboBreak(st);   // khiên chặn KHÔNG reset combo (quyết định người dùng)
+    if (lost) { st.phase = 'lost'; bossEmit(st, 'lost', {}); return; }
   }
   if (st.burn) {   // thiêu đốt theo thời gian game
     const g = Math.min(st.burn.left, dt), dmg = Math.min(st.hp, st.burn.dps * g);

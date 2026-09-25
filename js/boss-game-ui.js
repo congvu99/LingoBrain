@@ -134,8 +134,8 @@ function bossFrame(t) {
   stepBossFx(ui.fx, dtGame, dtMs / 1000);
   bossMeasureFps(ui, t);
   drawBossScene(ui.ctx, st, ui, t);
-  const ultBtn = $('#bossUlt');   // hiện khi Nộ đầy và trường phái có tuyệt kỹ (bậc 3 nhánh trường phái)
-  if (ultBtn) ultBtn.hidden = !(st.mods.ultimate && st.rage >= BOSS_TUNING.rageMax);
+  const ultBtn = $('#bossUlt');   // hiện khi thanh tuyệt kỹ đầy và trường phái có tuyệt kỹ (bậc 3 nhánh trường phái)
+  if (ultBtn) ultBtn.hidden = !(st.mods.ultimate && st.ult >= BOSS_TUNING.ultMax);
   if (st.phase !== 'play' && !ui.ending) {
     ui.ending = true;
     setTimeout(() => { if (game && game.seq === ui.seq && bossUi === ui) showBossResult(ui); }, BOSS_END_DELAY);

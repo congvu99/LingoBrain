@@ -335,6 +335,10 @@ html.game-lock .tabbar{display:none}
 .boss-hint{font-style:normal;color:#bff7df;opacity:.7}
 .boss-reveal{color:#ff9a9a;letter-spacing:2px}
 .boss-prompt.typo{animation:boss-shake 280ms}
+.boss-prompt.is-casting{position:relative;opacity:.55}
+.boss-prompt.is-casting>*{visibility:hidden}
+.boss-prompt.is-casting::after{content:"✦ đang niệm…";position:absolute;inset:0;display:flex;align-items:center;
+  padding:0 12px;font-size:15px;color:#b9a6ea;visibility:visible}
 @keyframes boss-shake{25%{transform:translateX(-5px)}50%{transform:translateX(4px)}75%{transform:translateX(-2px)}}
 .boss-hub{display:flex;flex-direction:column;gap:14px}
 .boss-hub-level,.boss-hub-today{display:flex;flex-direction:column;gap:6px}

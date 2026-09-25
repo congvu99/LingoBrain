@@ -150,7 +150,7 @@ function drawBossMonsterSprite(ctx, fx, st, t) {
   const calm = fx.reduced;   // giảm chuyển động: bỏ lao/giật/rung, vẫn giữ nháy màu
   if (A.lunge > 0 && !calm) { const k = Math.sin((1 - A.lunge / BOSS_LUNGE_S) * Math.PI) * 0.35; x += (m.x - q.x) * k; y += (m.y - q.y) * k; }
   if (A.recoil > 0 && !calm) { const k = Math.ceil(A.recoil / BOSS_RECOIL_S * 3) * q.k; x += k; y -= k / 2; }
-  const angry = !st.frozen && st.clock / st.clockMax < 0.12;   // đòn sắp tới: rung nhẹ + nhún nhanh
+  const angry = !st.frozen && st.threat > 0.88;   // đòn sắp tới (thanh tấn công gần đầy): rung nhẹ + nhún nhanh
   if (angry && !calm) x += (Math.floor(t * 20) % 2 ? 1 : -1) * q.k;
   bossPixelShadow(ctx, x, q.y, q.s * 0.36, q.k);
   const variant = bossMonSpriteVariant(q, A, angry), usingHit = variant === q.spriteHit;

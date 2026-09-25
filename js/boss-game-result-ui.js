@@ -9,13 +9,34 @@ function bossUiEvents(ui) {
   st.events = [];
   for (const e of ev) {
     bossFxEvent(ui.fx, e, st);
-    if (e.type === 'next') { ui.reveal = ''; ui.hint = ''; renderBossPrompt(ui); }
+    if (e.type === 'next') { ui.reveal = ''; ui.hint = ''; renderBossPrompt(ui); bossSetCasting(false); }
     else if (e.type === 'hint') { ui.hint = e.letter; renderBossLetters(ui); }
     else if (e.type === 'key') renderBossLetters(ui);
     else if (e.type === 'typo') bossPromptShake();
-    else if (e.type === 'cast') { renderBossLetters(ui); if (e.word) speak(e.word); }
+    else if (e.type === 'cast') { renderBossLetters(ui); if (e.word) speak(e.word); bossSetCasting(true); }
     else if (e.type === 'giveup' || e.type === 'fizzle') { ui.reveal = e.answer; renderBossLetters(ui); }
+    // chuỗi niệm: thẻ đề #bossPrompt đổi sang hiện từ chuỗi + tiến độ gõ + rung khi sai. Sát thương/FX
+    // va chạm của chainHit đi qua event 'impact' THẬT (bossChainHit emit cùng lúc, xem boss-game-combo-chain.js) —
+    // bossFxEvent ở đầu vòng lặp này đã lo phần đó (burst/rung/loé + bossActorEvent: nháy trắng/giật lùi/tan xác
+    // khi hạ gục), không cần gọi riêng nữa.
+    else if (e.type === 'chainStart') renderBossChainPrompt(ui);
+    else if (e.type === 'chainKey') renderBossChainPrompt(ui);
+    else if (e.type === 'chainTypo') { bossPromptShake(); renderBossChainPrompt(ui); }
+    // Hiện TRỌN từ vừa gõ xong (không phải từ kế đang chờ) — dùng thẳng e.word/e.prompt thay vì gọi lại
+    // renderBossChainPrompt(ui) (đọc c.words[c.i] đã trỏ sang từ KẾ, hoặc rỗng nếu vừa xong từ cuối/hạ gục
+    // → thẻ đề sẽ kẹt thiếu 1 chữ cuối).
+    else if (e.type === 'chainHit') { if (e.word) speak(e.word); renderBossChainCompletedWord(ui, e); }
+    else if (e.type === 'ultimate') bossSetCasting(true);   // che ô đề (cả cắt cảnh sau chuỗi)
+    // hết khoá tuyệt kỹ: bỏ che + LUÔN vẽ lại đề bình thường đang có (chuỗi niệm không gọi 'next' — không đề mới,
+    // chỉ tiếp tục đề trước khi bấm tuyệt kỹ) — thiếu nhánh này thẻ đề kẹt "✦ đang niệm…" mãi
+    else if (e.type === 'ultimateEnd') { bossSetCasting(false); renderBossPrompt(ui); }
   }
+}
+
+/* Trong khoá niệm (chạm + đuôi cố định): ô đề mờ + "✦ đang niệm…" thay vì chữ, bỏ khi 'next' hiện đề kế */
+function bossSetCasting(on) {
+  const box = $('#bossPrompt');
+  if (box) box.classList.toggle('is-casting', on);
 }
 
 function renderBossPrompt(ui) {
@@ -40,6 +61,32 @@ function renderBossLetters(ui) {
   if (!st.typed && ui.hint) rest = '<i class="boss-hint">' + esc(ui.hint) + '</i>' + esc(rest.slice(1));
   else rest = esc(rest);
   el.innerHTML = '<b>' + esc(text.slice(0, pos)) + '</b>' + rest;
+}
+
+/* Thẻ đề trong lúc chuỗi niệm: cùng #bossPrompt/#bossTier/#bossPromptText/#bossLetters với đề thường, chỉ đổi
+   nguồn dữ liệu sang st.chain (từ đang chờ gõ + tiến độ typed riêng của chuỗi), không tạo DOM mới. */
+function renderBossChainPrompt(ui) {
+  const st = ui.st, c = st.chain, box = $('#bossPrompt');
+  if (!box || !c) return;
+  const g = c.words[c.i];
+  if (!g) return;
+  const tier = Math.max(1, Math.min(3, c.tier));
+  box.setAttribute('data-tier', String(tier));
+  $('#bossTier').textContent = '✦'.repeat(tier);
+  $('#bossTier').title = ['', 'Chú nhỏ', 'Chú lớn', 'Đại chú'][tier];
+  $('#bossPromptText').textContent = 'CHUỖI NIỆM · ' + g.prompt;
+  const text = g.answers[0], pos = progressFor(text, c.typed.length);
+  const rest = text.slice(pos).replace(/[^ \-'.]/g, '_');
+  $('#bossLetters').innerHTML = '<b>' + esc(text.slice(0, pos)) + '</b>' + esc(rest);
+}
+
+/* Đúng lúc chainHit: hiện TRỌN từ vừa gõ xong (không gạch chân dở) — dùng e.word/e.prompt từ chính event, không
+   đọc st.chain (đã sang từ kế hoặc null nếu vừa xong từ cuối/hạ gục) → không kẹt thiếu chữ cuối. */
+function renderBossChainCompletedWord(ui, e) {
+  const box = $('#bossPrompt');
+  if (!box) return;
+  $('#bossPromptText').textContent = 'CHUỖI NIỆM · ' + e.prompt;
+  $('#bossLetters').innerHTML = '<b>' + esc(e.word) + '</b>';
 }
 
 function bossPromptShake() {
