@@ -128,37 +128,58 @@
     });
   });
 
-  describe('BOSS_EVO — skillOverrides không bao giờ yếu hơn chiêu gốc (per-primitive)', () => {
-    // Chỉ so các primitive CÙNG khoá tồn tại ở CẢ HAI bên: thiết kế cho phép ghi đè thay hẳn 1 primitive bằng
-    // primitive khác mạnh hơn (vd đổi threatDrainMul lấy extraHits) — đó không phải hồi quy. Hồi quy thật là khi
-    // override GIỮ LẠI cùng khoá với gốc nhưng trị số/độ mạnh thấp hơn (dps×sec với burn, sec với freeze, số với
-    // còn lại) — đã sửa ice-b combo3, ice-b1 counter, earth-b1 combo6/counter, wind-b1 combo6 theo luật này.
-    function weaker(baseEff, upEff) {
-      return Object.keys(baseEff).some(k => {
-        if (!(k in upEff)) return false;   // override chọn thay hẳn primitive khác — không tính là yếu hơn ở đây
-        if (k === 'freeze') return upEff.freeze.sec < baseEff.freeze.sec;
-        if (k === 'burn') return upEff.burn.dps * upEff.burn.sec < baseEff.burn.dps * baseEff.burn.sec;
-        if (k === 'crit') return false;   // boolean, không có "yếu hơn" khi cả 2 đều true
-        return upEff[k] < baseEff[k];
+  describe('BOSS_EVO — skillOverrides = FULL base effect + ít nhất 1 primitive tăng thật (quyết định user "strict")', () => {
+    // Luật chặt: TOÀN BỘ primitive của gốc phải còn trong override, KHÔNG khoá nào thấp hơn (freeze theo sec,
+    // burn theo dps×sec, còn lại theo số, crit boolean giữ true) — không cho phép "thay hẳn primitive khác" như
+    // bản nới trước; VÀ phải có ít nhất 1 primitive THẬT SỰ mạnh hơn gốc: hoặc 1 khoá chung có trị số cao hơn,
+    // hoặc 1 khoá HOÀN TOÀN MỚI (không có ở gốc) — nếu không thì override chỉ đổi tên, không phải nâng cấp thật.
+    function coversBase(baseEff, upEff) {
+      return Object.keys(baseEff).every(k => {
+        if (!(k in upEff)) return false;
+        if (k === 'freeze') return upEff.freeze.sec >= baseEff.freeze.sec;
+        if (k === 'burn') return upEff.burn.dps * upEff.burn.sec >= baseEff.burn.dps * baseEff.burn.sec;
+        if (k === 'crit') return true;   // đã qua "in" ở trên (gốc true thì override cũng phải true)
+        return upEff[k] >= baseEff[k];
       });
     }
-    it('mọi override (60 mục, 30 dạng × 2 chiêu nâng cấp) không yếu hơn gốc ở primitive dùng chung', () => {
+    function hasRealIncrease(baseEff, upEff) {
+      return Object.keys(upEff).some(k => {
+        if (!(k in baseEff)) return true;   // primitive hoàn toàn mới = nâng cấp thật
+        if (k === 'freeze') return upEff.freeze.sec > baseEff.freeze.sec;
+        if (k === 'burn') return upEff.burn.dps * upEff.burn.sec > baseEff.burn.dps * baseEff.burn.sec;
+        if (k === 'crit') return false;   // boolean, không có "tăng" khi cả 2 đều true
+        return upEff[k] > baseEff[k];
+      });
+    }
+    it('mọi override (60 mục, 30 dạng × 2 chiêu nâng cấp) giữ ĐỦ effect gốc + tăng thật ít nhất 1 primitive', () => {
       BOSS_ELEMENTS.forEach(el => {
         Object.keys(BOSS_EVO[el]).forEach(formId => {
           const overrides = BOSS_EVO[el][formId].skillOverrides;
           Object.keys(overrides).forEach(slot => {
             const base = BOSS_SKILLS[el][slot].effect, up = overrides[slot].effect;
-            assert.ok(!weaker(base, up), el + '/' + formId + '/' + slot + ': ' + JSON.stringify(up) + ' yếu hơn gốc ' + JSON.stringify(base));
+            assert.ok(coversBase(base, up), el + '/' + formId + '/' + slot + ': ' + JSON.stringify(up) + ' thiếu/thấp hơn 1 primitive của gốc ' + JSON.stringify(base));
+            assert.ok(hasRealIncrease(base, up), el + '/' + formId + '/' + slot + ': ' + JSON.stringify(up) + ' không tăng primitive nào so gốc ' + JSON.stringify(base) + ' (chỉ đổi tên)');
           });
         });
       });
     });
-    it('5 override từng yếu hơn/bằng gốc giờ giữ ĐỦ mọi primitive gốc, không bớt cái nào', () => {
-      assert.deepEqual(BOSS_EVO.ice['ice-b'].skillOverrides.combo3.effect, { freeze: { sec: 1.5 }, dmgMul: 1.2 });
-      assert.ok(BOSS_EVO.ice['ice-b1'].skillOverrides.counter.effect.freeze.sec >= 3);
+    it('7 override từng bớt 1 primitive gốc giờ giữ ĐỦ, không bớt cái nào', () => {
+      assert.deepEqual(BOSS_EVO.ice['ice-b'].skillOverrides.combo6.effect, { shield: 1, freeze: { sec: 2.5 }, threatDrainMul: 1.5 });
+      assert.deepEqual(BOSS_EVO.ice['ice-b1'].skillOverrides.combo6.effect, { shield: 1, freeze: { sec: 3 } });
+      assert.deepEqual(BOSS_EVO.storm['storm-b2'].skillOverrides.combo3.effect, { crit: true, ultAdd: 1 });
+      assert.deepEqual(BOSS_EVO.earth['earth-a1'].skillOverrides.combo6.effect, { heal: 1, dmgMul: 1.3, extraHits: 2 });
+      assert.deepEqual(BOSS_EVO.earth['earth-b'].skillOverrides.combo6.effect, { heal: 1, dmgMul: 1.3, shield: 1 });
+      assert.deepEqual(BOSS_EVO.earth['earth-b'].skillOverrides.combo3.effect, { dmgMul: 1.5, threatDrainMul: 1.5 });
+      assert.deepEqual(BOSS_EVO.wind['wind-b'].skillOverrides.combo3.effect, { ultAdd: 1, threatDrainMul: 1.5 });
+    });
+    it('3 override từng CHỈ đổi tên (bằng hệt gốc) giờ có nâng cấp thật', () => {
+      assert.deepEqual(BOSS_EVO.ice['ice-b'].skillOverrides.combo3.effect, { freeze: { sec: 1.5 }, dmgMul: 1.25 });
+      assert.deepEqual(BOSS_EVO.earth['earth-b1'].skillOverrides.combo6.effect, { heal: 1, dmgMul: 1.35 });
+      assert.deepEqual(BOSS_EVO.wind['wind-b1'].skillOverrides.combo6.effect, { ultAdd: 2, dmgMul: 1.45 });
+    });
+    it('ice-b1 counter / earth-b1 counter (đã sửa lượt trước) vẫn giữ nguyên, không bị lượt "strict" này đụng lại', () => {
+      assert.ok(BOSS_EVO.ice['ice-b1'].skillOverrides.counter.effect.freeze.sec >= 3.5);
       assert.equal(BOSS_EVO.ice['ice-b1'].skillOverrides.counter.effect.dmgMul, 1.4);
-      assert.deepEqual(BOSS_EVO.earth['earth-b1'].skillOverrides.combo6.effect, { heal: 1, dmgMul: 1.3 });
-      assert.deepEqual(BOSS_EVO.wind['wind-b1'].skillOverrides.combo6.effect, { ultAdd: 2, dmgMul: 1.4 });
       const kimCang = BOSS_EVO.earth['earth-b1'].skillOverrides.counter.effect;
       assert.equal(kimCang.shield, 1);
       assert.ok(kimCang.heal >= 1, 'Kim cang phải mạnh hơn gốc (shield 1 trơn), không chỉ hoà');

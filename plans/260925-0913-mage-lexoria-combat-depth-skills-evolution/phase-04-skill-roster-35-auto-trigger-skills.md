@@ -1,7 +1,7 @@
 ---
 phase: 4
 title: "Skill roster 35 auto-trigger skills"
-status: pending
+status: completed
 priority: P2
 dependencies: [3]
 ---

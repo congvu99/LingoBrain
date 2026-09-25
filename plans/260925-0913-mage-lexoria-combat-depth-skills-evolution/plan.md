@@ -1,7 +1,7 @@
 ---
 title: "Mage Lexoria combat depth: threat gauge, combo ultimate, skill roster, evolution"
 description: "Thay đồng hồ trùm bằng thanh tấn công, chờ phép xong mới hiện từ, combo + tuyệt kỹ chuỗi niệm, 7 chiêu tự phát/hệ, tiến hoá 2 mốc cây 2→4."
-status: in-progress
+status: completed
 priority: P2
 branch: "main"
 tags: [frontend, game, tdd]
@@ -36,8 +36,8 @@ Tests Before (khoá hành vi cũ còn giữ) → Seams/tách module → Refactor
 | 1 | [Threat gauge replaces boss clock](./phase-01-threat-gauge-replaces-boss-clock.md) | Completed (v2.19.0) |
 | 2 | [Cast pacing hold next word](./phase-02-cast-pacing-hold-next-word.md) | Completed (v2.20.0) |
 | 3 | [Combo and chain-cast ultimate](./phase-03-combo-and-chain-cast-ultimate.md) | Completed (v2.21.0 → v2.21.1 fixes) |
-| 4 | [Skill roster 35 auto-trigger skills](./phase-04-skill-roster-35-auto-trigger-skills.md) | Pending (awaiting user approval) |
-| 5 | [Evolution forms and evo sync schema](./phase-05-evolution-forms-and-evo-sync-schema.md) | Pending (awaiting user approval) |
+| 4 | [Skill roster 35 auto-trigger skills](./phase-04-skill-roster-35-auto-trigger-skills.md) | Completed (v2.22.0 → fixes) |
+| 5 | [Evolution forms and evo sync schema](./phase-05-evolution-forms-and-evo-sync-schema.md) | Completed (v2.23.0 → v2.24.2 fixes) |
 
 **Cổng duyệt:** hết phase 2 → **user chơi thử trên máy thật (SKIPPED per session decision)**.
 Đầu phase 4 và 5: user duyệt bảng tên/hiệu ứng chiêu (skill-roster-proposal.md) và bảng dạng tiến hoá (evolution-forms-proposal.md) trước khi code nội dung.
@@ -146,3 +146,9 @@ Once approved → Phase 4 can begin. Phase 4 gate: resolve N4 (hit path routing)
 | Sprite gắn cờ | `fire-b` → ứng viên dự phòng (RedNinja3/CamouflageRed); `wind-b2` → ứng viên dự phòng trong bảng |
 | Mặc định theo đề xuất | burn: mạnh hơn thắng; counter không kích khi khiên chặn; dạng cấp 16 không cộng chỉ số cha; tên giữ như bảng |
 | Chạy | Song song: phase 4 (cây chính) ‖ phase 5 phần thuần (schema `evo`, dữ liệu dạng, logic thuần) trong worktree riêng → ghép phase 5 UI/sprite sau phase 4 |
+
+### Session 3 — 2026-09-25 (phase 4/5 xong)
+- Phase 4 ‖ phase 5 lõi (worktree) → tích hợp phase 5 → review 2 vòng. Sửa: combo3/6 kích lại sau typo; đốt mạnh bị nội tại đè; mặt dạng + số phép ở cắt cảnh; Sổ chiêu/màn Tiến hoá theo dạng thực; huy hiệu tắt sau khi mở màn (cờ local); tên chiêu nâng cấp ở float text; CSS cây tiến hoá.
+- Quyết định: override = đủ hiệu ứng gốc + ≥1 chỉ số tăng (áp cả 60, test audit chặt); HP quái + dạng tấn công cấp 16 nhanh hơn gốc 21–33% → quyết sau chơi thử.
+- Code phase 4/5 được commit chung trong `8727b66` (commit ngoài phiên, gộp cả 2 plan khác); phần override chặt commit riêng.
+- Còn mở: chơi thử máy thật (cân bằng HP, `afterImpactMs`, chuỗi 9s iPhone, FPS ≥50); tint `solid` FX chiêu chưa có tác dụng; `boss-game-sprite-actors.js` 203 dòng (do plan camera sân đấu); chuỗi niệm: tiến độ từ nhiều đáp án, HUD đè đầu quái ở 360px, bộ từ <3 nhóm.

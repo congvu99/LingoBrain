@@ -1,7 +1,7 @@
 ---
 phase: 5
 title: "Evolution forms and evo sync schema"
-status: pending
+status: completed
 priority: P2
 dependencies: [4]
 ---

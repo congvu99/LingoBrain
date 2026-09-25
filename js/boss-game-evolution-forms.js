@@ -57,7 +57,7 @@ const BOSS_EVO = {
       name: 'Đấu Sĩ Hoả Khiên', parent: 'fire-b', level: 16, sprite: 'evoFireB1', face: 'evoFireB1Face',
       mods: { shield: 1 },
       skillOverrides: {
-        counter: { name: 'Khiên phản hoả', effect: { threatDrainMul: 2, shield: 1 } },
+        counter: { name: 'Khiên phản hoả', effect: { threatDrainMul: 2, dmgMul: 1.1, shield: 1 } },
         combo6: { name: 'Hoả thuẫn', effect: { burn: { dps: 10, sec: 3 }, shield: 1 } }
       },
       ultBonus: 0.25
@@ -77,8 +77,8 @@ const BOSS_EVO = {
       name: 'Thuỷ Nhẫn', parent: '', level: 8, sprite: 'evoIceA', face: 'evoIceAFace',
       mods: { speedLoosen: 0.1 },
       skillOverrides: {
-        fast: { name: 'Băng tiễn nhanh', effect: { crit: true, extraHits: 1 } },
-        long: { name: 'Băng thương', effect: { dmgMul: 2.0 } }
+        fast: { name: 'Băng tiễn nhanh', effect: { crit: true, extraHits: 1, dmgMul: 1.2, freeze: { sec: 2 } } },
+        long: { name: 'Băng thương', effect: { dmgMul: 2.0, freeze: { sec: 2 } } }
       },
       ultBonus: 0
     },
@@ -86,8 +86,8 @@ const BOSS_EVO = {
       name: 'Ảnh Băng', parent: 'ice-a', level: 16, sprite: 'evoIceA1', face: 'evoIceA1Face',
       mods: { dmgMul: 0.12 },
       skillOverrides: {
-        combo3: { name: 'Băng ảnh phân thân', effect: { extraHits: 2 } },
-        execute: { name: 'Băng phong tuyệt sát', effect: { dmgMul: 1.9 } }
+        combo3: { name: 'Băng ảnh phân thân', effect: { extraHits: 2, freeze: { sec: 1.5 }, dmgMul: 1.2 } },
+        execute: { name: 'Băng phong tuyệt sát', effect: { dmgMul: 1.9, freeze: { sec: 1 } } }
       },
       ultBonus: 0.25
     },
@@ -96,7 +96,7 @@ const BOSS_EVO = {
       mods: { speedLoosen: 0.15 },
       skillOverrides: {
         // freeze giữ ≥ gốc (sec 2) — thêm crit làm sát thương tăng thay cho dmgMul gốc (đổi primitive, không bớt freeze).
-        fast: { name: 'Sương kiếm', effect: { crit: true, freeze: { sec: 2 } } },
+        fast: { name: 'Sương kiếm', effect: { crit: true, dmgMul: 1.2, freeze: { sec: 2 } } },
         long: { name: 'Hàn băng trảm', effect: { dmgMul: 2.0, freeze: { sec: 2 } } }
       },
       ultBonus: 0.25
@@ -130,7 +130,7 @@ const BOSS_EVO = {
       name: 'Hộ Vệ Băng', parent: 'ice-b', level: 16, sprite: 'evoIceB2', face: 'evoIceB2Face',
       mods: { shield: 1 },
       skillOverrides: {
-        counter: { name: 'Băng giáp', effect: { shield: 1 } },
+        counter: { name: 'Băng giáp', effect: { shield: 1, freeze: { sec: 3 }, dmgMul: 1.4 } },
         combo6: { name: 'Thành băng', effect: { shield: 1, freeze: { sec: 2 } } }
       },
       ultBonus: 0.25
@@ -141,7 +141,7 @@ const BOSS_EVO = {
       name: 'Lôi Nhẫn', parent: '', level: 8, sprite: 'evoStormA', face: 'evoStormAFace',
       mods: { speedLoosen: 0.1 },
       skillOverrides: {
-        fast: { name: 'Lôi ảnh', effect: { crit: true, extraHits: 1 } },
+        fast: { name: 'Lôi ảnh', effect: { crit: true, extraHits: 1, dmgMul: 1.1 } },
         combo3: { name: 'Song lôi', effect: { extraHits: 1, crit: true } }
       },
       ultBonus: 0
@@ -150,7 +150,7 @@ const BOSS_EVO = {
       name: 'Tia Chớp Vàng', parent: 'storm-a', level: 16, sprite: 'evoStormA1', face: 'evoStormA1Face',
       mods: { speedLoosen: 0.2 },
       skillOverrides: {
-        fast: { name: 'Thiểm điện', effect: { crit: true, extraHits: 2 } },
+        fast: { name: 'Thiểm điện', effect: { crit: true, extraHits: 2, dmgMul: 1.1 } },
         execute: { name: 'Lôi phạt', effect: { dmgMul: 1.5, crit: true } }
       },
       ultBonus: 0.25
@@ -168,8 +168,8 @@ const BOSS_EVO = {
       name: 'Người Máy Tích Điện', parent: '', level: 8, sprite: 'evoStormB', face: 'evoStormBFace',
       mods: { clockAdd: 0.75 },
       skillOverrides: {
-        combo6: { name: 'Tụ điện', effect: { shield: 1, ultAdd: 1 } },
-        long: { name: 'Xả điện', effect: { dmgMul: 1.8, threatDrainMul: 1.5 } }
+        combo6: { name: 'Tụ điện', effect: { shield: 1, ultAdd: 1, extraHits: 2 } },
+        long: { name: 'Xả điện', effect: { dmgMul: 1.8, threatDrainMul: 1.5, crit: true } }
       },
       ultBonus: 0
     },
@@ -177,8 +177,8 @@ const BOSS_EVO = {
       name: 'Hiệp Sĩ Sấm', parent: 'storm-b', level: 16, sprite: 'evoStormB1', face: 'evoStormB1Face',
       mods: { shield: 1 },
       skillOverrides: {
-        counter: { name: 'Lôi phản', effect: { crit: true, shield: 1 } },
-        combo6: { name: 'Tụ điện', effect: { shield: 1, ultAdd: 1 } }
+        counter: { name: 'Lôi phản', effect: { crit: true, shield: 1, extraHits: 1 } },
+        combo6: { name: 'Tụ điện', effect: { shield: 1, ultAdd: 1, extraHits: 2 } }
       },
       ultBonus: 0.25
     },
@@ -186,8 +186,9 @@ const BOSS_EVO = {
       name: 'Tượng Lôi Thần', parent: 'storm-b', level: 16, sprite: 'evoStormB2', face: 'evoStormB2Face',
       mods: { maxHeartsAdd: 1 },
       skillOverrides: {
-        counter: { name: 'Thần lôi trấn', effect: { threatDrainMul: 2.5 } },
-        combo3: { name: 'Nạp lôi', effect: { ultAdd: 1 } }
+        counter: { name: 'Thần lôi trấn', effect: { threatDrainMul: 2.5, crit: true, extraHits: 1 } },
+        // Nạp lôi: gốc combo3 = {crit true} — giữ nguyên crit gốc, cộng thêm ultAdd (không bớt crit của gốc).
+        combo3: { name: 'Nạp lôi', effect: { crit: true, ultAdd: 1 } }
       },
       ultBonus: 0.25
     }
@@ -207,7 +208,8 @@ const BOSS_EVO = {
       mods: { dmgMul: 0.12 },
       skillOverrides: {
         long: { name: 'Sơn băng', effect: { dmgMul: 2.2 } },
-        combo6: { name: 'Loạn thạch', effect: { extraHits: 2 } }
+        // Loạn thạch: gốc combo6 = {heal1, dmgMul1.3} — giữ nguyên cả hai, cộng thêm extraHits (không bớt gốc).
+        combo6: { name: 'Loạn thạch', effect: { heal: 1, dmgMul: 1.3, extraHits: 2 } }
       },
       ultBonus: 0.25
     },
@@ -224,8 +226,10 @@ const BOSS_EVO = {
       name: 'Thầy Cúng', parent: '', level: 8, sprite: 'evoEarthB', face: 'evoEarthBFace',
       mods: { clockAdd: 0.75 },
       skillOverrides: {
-        combo6: { name: 'Bùa đá', effect: { shield: 1 } },
-        combo3: { name: 'Rễ trói', effect: { threatDrainMul: 1.5 } }
+        // Bùa đá: gốc combo6 = {heal1, dmgMul1.3} — giữ nguyên cả hai, cộng thêm shield (không bớt gốc).
+        combo6: { name: 'Bùa đá', effect: { heal: 1, dmgMul: 1.3, shield: 1 } },
+        // Rễ trói: gốc combo3 = {dmgMul1.5} — giữ nguyên dmgMul gốc, cộng thêm threatDrainMul (không bớt gốc).
+        combo3: { name: 'Rễ trói', effect: { dmgMul: 1.5, threatDrainMul: 1.5 } }
       },
       ultBonus: 0
     },
@@ -233,8 +237,9 @@ const BOSS_EVO = {
       name: 'Sư Đá', parent: 'earth-b', level: 16, sprite: 'evoEarthB1', face: 'evoEarthB1Face',
       mods: { maxHeartsAdd: 1 },
       skillOverrides: {
-        // Hồi xuân: gốc combo6 = {heal1, dmgMul1.3} — phải giữ cả hai, không bớt dmgMul của gốc.
-        combo6: { name: 'Hồi xuân', effect: { heal: 1, dmgMul: 1.3 } },
+        // Hồi xuân: gốc combo6 = {heal1, dmgMul1.3} — giữ nguyên heal gốc, nhích dmgMul lên chút để có nâng cấp
+        // thật (không chỉ đổi tên), không bớt/hạ primitive nào của gốc.
+        combo6: { name: 'Hồi xuân', effect: { heal: 1, dmgMul: 1.35 } },
         // Kim cang: gốc counter = {shield1}; cộng thêm heal 1 để thật sự mạnh hơn gốc (không chỉ hoà) — đúng
         // chủ đề Sư Đá: đã có combo6 heal, counter Kim cang thêm giáp+hồi.
         counter: { name: 'Kim cang', effect: { shield: 1, heal: 1 } }
@@ -256,8 +261,8 @@ const BOSS_EVO = {
       name: 'Phong Nhẫn', parent: '', level: 8, sprite: 'evoWindA', face: 'evoWindAFace',
       mods: { speedLoosen: 0.1 },
       skillOverrides: {
-        combo3: { name: 'Phong nhận', effect: { extraHits: 2 } },
-        fast: { name: 'Tật phong', effect: { extraHits: 2 } }
+        combo3: { name: 'Phong nhận', effect: { extraHits: 2, ultAdd: 1, threatDrainMul: 1.3 } },
+        fast: { name: 'Tật phong', effect: { extraHits: 2, threatDrainMul: 1.4 } }
       },
       ultBonus: 0
     },
@@ -265,8 +270,8 @@ const BOSS_EVO = {
       name: 'Thiên Cẩu', parent: 'wind-a', level: 16, sprite: 'evoWindA1', face: 'evoWindA1Face',
       mods: { dmgMul: 0.12 },
       skillOverrides: {
-        combo6: { name: 'Thiên cẩu vũ', effect: { extraHits: 4 } },
-        fast: { name: 'Cuồng phong', effect: { extraHits: 2, crit: true } }
+        combo6: { name: 'Thiên cẩu vũ', effect: { extraHits: 4, ultAdd: 2, dmgMul: 1.4 } },
+        fast: { name: 'Cuồng phong', effect: { extraHits: 2, crit: true, threatDrainMul: 1.4 } }
       },
       ultBonus: 0.25
     },
@@ -274,8 +279,8 @@ const BOSS_EVO = {
       name: 'Ếch Phong', parent: 'wind-a', level: 16, sprite: 'evoWindA2', face: 'evoWindA2Face',
       mods: { speedLoosen: 0.2 },
       skillOverrides: {
-        combo3: { name: 'Nhảy gió', effect: { extraHits: 2, ultAdd: 1 } },
-        long: { name: 'Lốc xoáy dài', effect: { extraHits: 2, dmgMul: 1.4 } }
+        combo3: { name: 'Nhảy gió', effect: { extraHits: 2, ultAdd: 1, threatDrainMul: 1.3 } },
+        long: { name: 'Lốc xoáy dài', effect: { extraHits: 2, dmgMul: 1.4, threatDrainMul: 1.5 } }
       },
       ultBonus: 0.25
     },
@@ -283,8 +288,10 @@ const BOSS_EVO = {
       name: 'Phong Sư', parent: '', level: 8, sprite: 'evoWindB', face: 'evoWindBFace',
       mods: { clockAdd: 0.75 },
       skillOverrides: {
-        combo3: { name: 'Gió lặng', effect: { threatDrainMul: 1.5 } },
-        combo6: { name: 'Thổi tan', effect: { threatDrainMul: 2, ultAdd: 2 } }
+        // Gió lặng: gốc combo3 = {ultAdd1, threatDrainMul1.3} — giữ nguyên ultAdd gốc, cộng thêm threatDrainMul
+        // cao hơn (không bớt ultAdd của gốc).
+        combo3: { name: 'Gió lặng', effect: { ultAdd: 1, threatDrainMul: 1.5 } },
+        combo6: { name: 'Thổi tan', effect: { threatDrainMul: 2, ultAdd: 2, dmgMul: 1.4 } }
       },
       ultBonus: 0
     },
@@ -292,9 +299,10 @@ const BOSS_EVO = {
       name: 'Lão Sư Gió', parent: 'wind-b', level: 16, sprite: 'evoWindB1', face: 'evoWindB1Face',
       mods: { clockAdd: 1.25 },
       skillOverrides: {
-        counter: { name: 'Hoá giải', effect: { threatDrainMul: 3 } },
-        // Tụ khí: gốc combo6 = {ultAdd2, dmgMul1.4} — phải giữ cả hai, không bớt dmgMul của gốc.
-        combo6: { name: 'Tụ khí', effect: { ultAdd: 2, dmgMul: 1.4 } }
+        counter: { name: 'Hoá giải', effect: { threatDrainMul: 3, ultAdd: 1 } },
+        // Tụ khí: gốc combo6 = {ultAdd2, dmgMul1.4} — giữ nguyên ultAdd gốc, nhích dmgMul lên chút để có nâng
+        // cấp thật (không chỉ đổi tên), không bớt/hạ primitive nào của gốc.
+        combo6: { name: 'Tụ khí', effect: { ultAdd: 2, dmgMul: 1.45 } }
       },
       ultBonus: 0.25
     },
@@ -302,7 +310,7 @@ const BOSS_EVO = {
       name: 'Phù Thuỷ Mây Mù', parent: 'wind-b', level: 16, sprite: 'evoWindB2', face: 'evoWindB2Face',
       mods: { shield: 1 },
       skillOverrides: {
-        combo6: { name: 'Màn mây', effect: { shield: 1, threatDrainMul: 2 } },
+        combo6: { name: 'Màn mây', effect: { shield: 1, threatDrainMul: 2, ultAdd: 2, dmgMul: 1.4 } },
         counter: { name: 'Mây phản', effect: { ultAdd: 1, threatDrainMul: 2 } }
       },
       ultBonus: 0.25

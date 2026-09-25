@@ -82,3 +82,37 @@ L3 (solid tint), L5, L6, L7, L9, L10, cân bằng HP.
 ## Unresolved Questions
 1. Không câu hỏi chặn — mọi quyết định trong 8 mục đều có hướng dẫn rõ từ user. Riêng mục "phiên bản" tôi tự quyết bump tiếp (2.24.1) thay vì hạ về 2.23.1 vì trên đĩa đã cao hơn do phiên khác — nếu user muốn số khác xin chỉnh lại.
 2. M3: tôi phát hiện thêm 4 override có primitive dùng chung bị hạ số ngoài 5 cái review nêu (ice-a2 fast/long, earth-a2 combo3, wind-a2 long) và đã bump lên bằng gốc để giữ bất biến "không khoá chung nào yếu hơn gốc" — đây là quyết định kỹ thuật để test audit pass toàn bộ 60, không thay đổi tên/chủ đề dạng nào.
+
+## Re-review follow-up (2026-09-25, theo mục "Re-review" trong code-reviewer-260925-1132)
+
+### R1 — skillName thật sự nối vào float text (trước đó BÁO SAI đã làm, thực tế 0 occurrence)
+Xác nhận lỗi bằng grep trước khi sửa: `grep -rn skillName js/*.js` → 0 kết quả. Đã nối thật:
+- `js/boss-game-skill-pick.js:bossResolveSkillCast` trả thêm `skillName: skill.fx ? skill.name : null` (tên ĐÃ merge qua `st.skillTable`/`bossSkillsFor` nếu có dạng tiến hoá).
+- `js/boss-game-logic.js:106` (dòng emit `cast` có sẵn, không thêm dòng — file vẫn 200 dòng) gắn `skillName: r.skillName`.
+- `js/boss-game-skill-fx.js:bossSkillFxCastEvent` dùng `e.skillName || d.text` thay vì luôn `d.text` (BOSS_SKILL_FX theo id gốc).
+Bằng chứng sau sửa: `grep -rn skillName js/*.js tests/*.js` → 6 vị trí nguồn + test (liệt kê ở trên qua tool call, gồm skill-pick.js, logic.js, skill-fx.js). Test mới (`tests/boss-game-skill-pick.test.js`, describe `skillName`): 4 case — dạng fire-a combo3 trả "Tam hoả" khác tên gốc "Song hoả"; không có dạng → tên gốc; basic → null; **tích hợp trận thật** (gõ 3 từ qua `createBattle`/`typeKey` thật, không mock) → event `cast` cuối cùng mang `skillName: "Tam hoả"`.
+
+### R2 — luật "strict": override = FULL base + ít nhất 1 primitive tăng thật
+Áp theo quyết định user "strict" (không phải bản nới trước cho phép thay hẳn primitive). Sửa 10 mục nêu trong yêu cầu (7 bớt primitive gốc + 3 chỉ đổi tên), rồi viết lại test audit theo đúng luật strict và chạy — phát hiện thêm **23 mục khác** cũng vi phạm (bản thiết kế cũ cho phép "thay hẳn primitive" nên nhiều override hợp lệ dưới luật cũ nhưng KHÔNG hợp lệ dưới luật strict mới). Vì yêu cầu là "cập nhật audit test để ENFORCE" luật này — nếu chỉ vá 10 mục thì audit test sẽ fail ở 23 mục còn lại — đã sửa toàn bộ 33 mục (10 + 23) theo cùng nguyên tắc: cộng lại NGUYÊN VẸN primitive gốc bị thiếu (giữ số gốc, không đổi), giữ nguyên phần primitive đã thêm trước đó làm phần "tăng thật". Không đổi tên chiêu, không đổi mods/level/sprite — chỉ effect. Xác nhận bằng script quét độc lập (không dùng lại code test): 0 vi phạm trên cả 60 mục.
+Test `tests/boss-game-evolution.test.js` viết lại describe `BOSS_EVO — skillOverrides = FULL base effect + ít nhất 1 primitive tăng thật`: 1 test quét toàn bộ 60 + 3 test khẳng định giá trị cụ thể của 7+3 mục nêu trong yêu cầu + 1 test giữ nguyên 2 mục counter đã sửa lượt trước (ice-b1, earth-b1).
+**Không đổi cân bằng ngoài phạm vi merge**: mọi giá trị base cộng lại dùng ĐÚNG số gốc (không tự ý tăng thêm ngoài mức tối thiểu để qua "tăng thật"), phần "tăng thật" của các mục vốn dĩ đã có sẵn primitive mới (không cần thêm gì) — chỉ 3 mục "chỉ đổi tên" (ice-b combo3, earth-b1 combo6, wind-b1 combo6) mới cần nhích 1 số nhỏ (dmgMul +0.05) để có nâng cấp thật, đúng như yêu cầu "giữ nhỏ, không nới khoảng cách cân bằng".
+
+### R4 — CSS cho `.boss-evo-node-wrap`/`.boss-evo-stat`/`.boss-evo-skill`
+Thêm vào `css/paper-theme.css` (sau `.boss-evo-icon`): `.boss-evo-node-wrap{width:104px}` khớp đúng width `.boss-evo-node` sẵn có (104px) để khối chỉ số + 2 chiêu nâng cấp không kéo rộng flex item, chữ 10px + `overflow-wrap:anywhere` để không tràn ở khung 360px.
+
+### Đã xoá "(review #6)"
+`js/boss-game-evolution-ui.js` dòng gọi `bossMarkEvoNoticeSeen` — bỏ hậu tố `(review #6)`, giữ nguyên phần mô tả hành vi. Grep xác nhận lại theo đúng pattern report gốc: `grep -rnE "[Pp]hase ?[0-9]|\bN[0-9]\b|review [HMLN][0-9]|\([HMLN][0-9]\)" js/boss-* js/boss-progress-sync-merge.js tests/boss-* sw.js tools/copy-boss-sprites.js css/paper-theme.css` → chỉ còn các dòng CŨ trước 44fd629 (arena.js:8, render.js:2, spell-art.js:48, spell-presets.js nhiều dòng, sprite-actors.js:5,22,136, sprite-atlas.js:55,60, story.js:11, tier3-fx.js:15, boss-game-logic.test.js:180, sprite-actors.test.js:2, copy-boss-sprites.js:24,48,63,67,80) — khớp đúng danh sách loại trừ, không đụng.
+
+### Version
+Không bump lại — `APP_VERSION` (js/app-storage.js) và `CACHE` (sw.js) vẫn giữ `2.24.1` như trên đĩa.
+
+### Tests
+`node tests/run-tests.js` → **629 passed, 0 failed** (tăng từ 623 do thêm test R1 + viết lại describe R2).
+
+### Lưu ý môi trường
+Giữa lúc làm việc, một commit ngoài phiên này (`8727b66 cập nhật góc nhìn`) đã gộp phần lớn thay đổi trước đó của tôi (R1, R4, xoá "(review #6)") vào HEAD — không phải tôi chủ động commit (tool `git status` xác nhận chỉ còn 2 file chưa staged: `js/boss-game-evolution-forms.js` + `tests/boss-game-evolution.test.js`, đúng phần R2 làm SAU thời điểm commit đó). Không có hành động git nào được tôi thực hiện.
+
+### Status/Summary/Concerns (follow-up)
+Status: DONE
+Summary: R1 nối thật `skillName` (trước đó báo sai) + test tích hợp; R2 sửa toàn bộ 60 override theo luật strict (10 mục yêu cầu + 23 mục phát hiện thêm khi enforce test) — 0 vi phạm; R4 thêm CSS node-wrap/stat/skill (width khớp node 104px); xoá "(review #6)" còn sót; grep ID xác nhận sạch. `node tests/run-tests.js` → 629/0. Không bump version.
+Concerns/Blockers: (a) R2 mở rộng phạm vi từ 10 → 33 mục vì audit test strict áp cho toàn bộ 60 mục, không chỉ 10 mục nêu — nếu ý định thực sự là CHỈ 10 mục cần strict còn lại giữ luật cũ (cho phép thay hẳn primitive), cần tách 2 loại luật trong test, xin xác nhận. (b) Không phải tôi chủ động thực hiện git commit — một commit đã xảy ra ngoài phiên trong lúc tôi làm việc, ghi nhận ở trên để tránh hiểu lầm.
