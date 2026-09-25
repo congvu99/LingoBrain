@@ -37,20 +37,34 @@ function layoutBoss(fx, w, h, ui) {
 
 function slowAmount(st) { return Math.max(0, Math.min(1, (1 - st.timeScale) / (1 - BOSS_TUNING.slowScale))); }
 
-/* Nền vùng: build offscreen 1 lần khi đổi cỡ/DPR/vùng, sau đó chỉ drawImage lại mỗi khung hình (rẻ).
-   Tile chưa nạp xong ảnh → phẳng 1 màu (dải trời cuối cùng của vùng) để không vẽ hỏng/ném lỗi. */
+/* Nền vùng: build offscreen 1 lần khi đổi cỡ/DPR/quái (khoá cache theo monster.id — mỗi quái có thể có sân riêng,
+   xem bossArenaFor/BOSS_MONSTER_ARENAS), sau đó chỉ drawImage lại mỗi khung hình (rẻ). Cùng lúc dựng lại lớp
+   ambient (tile hoạt hình + hạt thời tiết, boss-game-arena-ambient.js) — vị trí hạt phụ thuộc w/h nên phải theo
+   cùng nhịp rebuild. Tile chưa nạp xong ảnh → phẳng 1 màu (dải trời cuối cùng của sân) để không vẽ hỏng/ném lỗi. */
 function drawBossRegion(ctx, ui, w, h) {
-  const fx = ui.fx, region = ui.region, A = region && BOSS_ARENAS[region.id];
-  if (!A || !BOSS_ARENA_SPRITES.every(bossSpriteReady)) {
-    ctx.fillStyle = (A && A.sky[A.sky.length - 1]) || '#161022';
-    ctx.fillRect(0, 0, w, h);
-    return;
+  if (w <= 0 || h <= 0) return;   // review QA (tester 260925-1528): khung canvas 0×0 thoáng qua lúc resize/tab ẩn
+  // → drawImage ném InvalidStateError hàng chục nghìn lần; bỏ qua thẳng, khung sau sẽ vẽ lại bình thường.
+  const fx = ui.fx, arena = bossArenaFor(ui.monster, ui.region), key = ui.monster && ui.monster.id;
+  if (!arena) { ctx.fillStyle = '#161022'; ctx.fillRect(0, 0, w, h); return; }
+  // review H1: chỉ build lại (và dựng lại ambient) khi TOÀN BỘ tile của sân đã nạp xong ảnh — tránh rebuild
+  // (~40 hạt ambient mới) mỗi khung lúc ảnh chưa sẵn sàng (lần đầu vào trận / ảnh lỗi mạng), giữ hành vi cũ:
+  // tile chưa xong → tạm phẳng 1 màu, KHÔNG dựng ambient, thử lại khung sau cho tới khi xong.
+  const ready = bossArenaTileNames(arena).every(bossSpriteReady);
+  if (ready && (!fx.bg || fx.bgW !== w || fx.bgH !== h || fx.bgDpr !== ui.dpr || fx.bgKey !== key)) {
+    fx.bg = buildBossArena(arena, w, h, ui.dpr || 1, fx.layout);
+    fx.bgW = w; fx.bgH = h; fx.bgDpr = ui.dpr; fx.bgKey = key;
+    fx.ambient = createBossAmbient(arena, w, h, fx.layout, fx.reduced);
   }
-  if (!fx.bg || fx.bgW !== w || fx.bgH !== h || fx.bgDpr !== ui.dpr || fx.bgRegion !== region.id) {
-    fx.bg = buildBossArena(region.id, w, h, ui.dpr || 1, fx.layout);
-    fx.bgW = w; fx.bgH = h; fx.bgDpr = ui.dpr; fx.bgRegion = region.id;
-  }
-  if (fx.bg) ctx.drawImage(fx.bg, 0, 0, w, h);
+  if (fx.bg && fx.bg.width > 0 && fx.bg.height > 0) ctx.drawImage(fx.bg, 0, 0, w, h);
+  else { ctx.fillStyle = arena.sky[arena.sky.length - 1]; ctx.fillRect(0, 0, w, h); }
+}
+
+/* Bước vật lý ambient theo thời gian thật (không theo timeScale — trôi đều lúc trùm bị chậm thời gian);
+   fx.ambT = mốc lần vẽ trước, dt kẹp bởi stepBossAmbient nên không cần chặn ở đây. */
+function stepBossRegionAmbient(fx, now) {
+  if (!fx.ambient) return;
+  stepBossAmbient(fx.ambient, fx.ambT ? (now - fx.ambT) / 1000 : 0);
+  fx.ambT = now;
 }
 
 /* Thanh tấn công của trùm (st.threat, 0..1), vẽ ngay dưới chân sprite quái (fx.layout.mon):
@@ -134,6 +148,8 @@ function drawBossScene(ctx, st, ui, now) {
   const z = 1 + 0.06 * k, zx = m.x, zy = m.y - m.s * 0.5;
   if (z !== 1) { ctx.translate(zx, zy); ctx.scale(z, z); ctx.translate(-zx, -zy); }
   drawBossRegion(ctx, ui, w, h);
+  stepBossRegionAmbient(fx, now);
+  drawBossAmbient(ctx, fx.ambient, ui.time, 'back');   // tile hoạt hình cố định (hoa/cờ/cối xay/thác) — sau nền, trước nhân vật
   if (typeof drawBossGroundFx === 'function') drawBossGroundFx(ctx, fx);   // trận đồ — lớp mặt đất, vẽ trước pháp sư (review #7)
   const lift = typeof bossMonsterLiftPx === 'function' ? bossMonsterLiftPx(fx) : 0;
   ctx.save(); if (lift) ctx.translate(0, -lift);
@@ -141,6 +157,9 @@ function drawBossScene(ctx, st, ui, now) {
   ctx.restore();
   if (st.phase === 'play') drawBossThreatBar(ctx, st, fx, now);   // ẩn sau khi thắng/thua, khỏi đè lên khung kết trận
   drawBossMageSprite(ctx, fx, st, ui.gender, ui.time);   // sprite chưa nạp → tự bỏ qua, không văng lỗi
+  // hạt thời tiết bay — sau nhân vật, TRƯỚC rune/VFX chiêu/số dame (review QA tester 260925-1528: trước đây vẽ
+  // sau cùng nên đè lên tên chiêu + số dame + VFX va chạm lúc mật độ cao, vd oblivion 0.9)
+  drawBossAmbient(ctx, fx.ambient, ui.time, 'front', ui.quality);
   drawRuneCircle(ctx, st, fx);
   drawBossSpriteFx(ctx, fx);
   drawBossFx(ctx, fx, ui.quality);

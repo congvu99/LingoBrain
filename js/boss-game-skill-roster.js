@@ -77,40 +77,39 @@ const BOSS_SKILLS = {
 /* FX theo skill.fx (đọc ở js/boss-game-skill-fx.js, gọi từ boss-game-result-ui.js/bossUiEvents):
      text: tên chiêu nổi lên cạnh pháp sư lúc 'cast'; color: màu chữ nổi + tia loé nhẹ lúc niệm
      castBurst: {kind,speed,life,size,colors,n} burst tại đầu trượng lúc niệm (dùng lại js/game-particles.js)
-     impactSprite: {name, solid?} — 1 VFX sprite phụ lúc 'impact' (khoá BOSS_SPRITES/BOSS_SKILL_SPRITES), chồng
-       lên VFX hệ×bậc bình thường (đã vẽ bởi bossActorEvent) để tạo nét riêng cho chiêu mà không cần code hiệu ứng
-       riêng từng chiêu — solid = tô một màu (opt.solid, giữ khung hình nhưng đổi màu, tái dùng sprite có sẵn) */
+   VFX va chạm riêng từng chiêu (đạn/impact sprite thật) nay ở js/boss-game-skill-visuals.js (BOSS_SKILL_VISUALS,
+   đọc bởi bossActorEvent) — đã bỏ trường impactSprite/solid cũ ở đây (phase 2, plan 260925-1445) vì trùng việc. */
 const BOSS_SKILL_FX = {
-  'fire-combo3': { text: 'Song hoả', color: '#ff9a3c', castBurst: { kind: 'spark', speed: 260, life: 0.3, size: 2, colors: ['#ffd27a', '#ff5a1f'], n: 16 }, impactSprite: { name: 'fireball' } },
-  'fire-long': { text: 'Hoả trụ', color: '#ff5a1f', castBurst: { kind: 'spark', speed: 300, life: 0.35, size: 2.4, colors: ['#ff2d2d', '#ffb347'], n: 20 }, impactSprite: { name: 'explosion' } },
-  'fire-fast': { text: 'Tia lửa', color: '#ffcf6a', castBurst: { kind: 'spark', speed: 320, life: 0.22, size: 1.8, colors: ['#ffffff', '#ff9a3c'], n: 14 }, impactSprite: { name: 'sparkMagic', solid: '#ff9a3c' } },
-  'fire-combo6': { text: 'Vòng lửa', color: '#ff5a1f', castBurst: { kind: 'orb', speed: 90, life: 0.5, size: 4, colors: ['#ff5a1f', '#ffcf6a'], n: 10 }, impactSprite: { name: 'magicCircle', solid: '#ff5a1f' } },
-  'fire-execute': { text: 'Thiêu rụi', color: '#ff2d2d', castBurst: { kind: 'smoke', speed: 60, life: 0.7, size: 14, colors: ['#3a1810'], n: 8 }, impactSprite: { name: 'explosion' } },
-  'fire-counter': { text: 'Phản hoả', color: '#ff7a2f', castBurst: { kind: 'spark', speed: 200, life: 0.4, size: 2, colors: ['#ff7a2f'], n: 12 }, impactSprite: { name: 'auraSprite', solid: '#ff7a2f' } },
-  'ice-combo3': { text: 'Sương giá', color: '#bff4ff', castBurst: { kind: 'shard', speed: 140, life: 0.4, size: 5, colors: ['#e6fbff'], n: 12 }, impactSprite: { name: 'smokeCircular', solid: '#bff4ff' } },
-  'ice-long': { text: 'Cột băng', color: '#7fe3ff', castBurst: { kind: 'shard', speed: 160, life: 0.5, size: 6, colors: ['#7fe3ff'], n: 16 }, impactSprite: { name: 'icePillar' } },
-  'ice-fast': { text: 'Mũi băng', color: '#7fe3ff', castBurst: { kind: 'spark', speed: 300, life: 0.2, size: 1.8, colors: ['#ffffff', '#7fe3ff'], n: 12 }, impactSprite: { name: 'cutX', solid: '#7fe3ff' } },
-  'ice-combo6': { text: 'Giáp băng', color: '#bff4ff', castBurst: { kind: 'shard', speed: 100, life: 0.6, size: 5, colors: ['#e6fbff', '#bff4ff'], n: 10 }, impactSprite: { name: 'shieldSprite' } },
-  'ice-execute': { text: 'Băng phong', color: '#4fd3ff', castBurst: { kind: 'shard', speed: 180, life: 0.5, size: 6, colors: ['#4fd3ff'], n: 14 }, impactSprite: { name: 'waterPillar', solid: '#bff4ff' } },
-  'ice-counter': { text: 'Hàn triều', color: '#7fe3ff', castBurst: { kind: 'shard', speed: 160, life: 0.5, size: 6, colors: ['#7fe3ff'], n: 14 }, impactSprite: { name: 'water', solid: null } },
-  'storm-combo3': { text: 'Tia chớp', color: '#fff7b0', castBurst: { kind: 'spark', speed: 340, life: 0.2, size: 1.8, colors: ['#ffffff', '#fff7b0'], n: 18 }, impactSprite: { name: 'sparkMagic', solid: '#fff7b0' } },
-  'storm-long': { text: 'Lôi trụ', color: '#fff7b0', castBurst: { kind: 'spark', speed: 360, life: 0.24, size: 2, colors: ['#ffffff'], n: 22 }, impactSprite: { name: 'circleSpark' } },
-  'storm-fast': { text: 'Lôi bộ', color: '#ffe45c', castBurst: { kind: 'spark', speed: 300, life: 0.2, size: 1.6, colors: ['#ffe45c'], n: 14 }, impactSprite: { name: 'cutX', solid: '#ffe45c' } },
-  'storm-combo6': { text: 'Xích lôi', color: '#e0c2ff', castBurst: { kind: 'orb', speed: 100, life: 0.5, size: 5, colors: ['#e0c2ff'], n: 10 }, impactSprite: { name: 'bigEnergyBall' } },
-  'storm-execute': { text: 'Lôi phạt', color: '#fff7b0', castBurst: { kind: 'spark', speed: 380, life: 0.24, size: 2, colors: ['#ffffff', '#fff7b0'], n: 24 }, impactSprite: { name: 'slashCurved', solid: '#fff7b0' } },
-  'storm-counter': { text: 'Phản lôi', color: '#e0c2ff', castBurst: { kind: 'spark', speed: 240, life: 0.3, size: 2, colors: ['#e0c2ff'], n: 14 }, impactSprite: { name: 'auraSprite', solid: '#e0c2ff' } },
-  'earth-combo3': { text: 'Đá vụn', color: '#c9a36b', castBurst: { kind: 'shard', speed: 120, life: 0.5, size: 6, colors: ['#8a6a48'], n: 12 }, impactSprite: { name: 'rockB', solid: null } },
-  'earth-long': { text: 'Gai đá', color: '#8a5a2a', castBurst: { kind: 'shard', speed: 130, life: 0.55, size: 6, colors: ['#8a5a2a'], n: 14 }, impactSprite: { name: 'rockSpike' } },
-  'earth-fast': { text: 'Quyền đá', color: '#c9a36b', castBurst: { kind: 'shard', speed: 200, life: 0.3, size: 5, colors: ['#c9a36b'], n: 10 }, impactSprite: { name: 'claw', solid: '#c9a36b' } },
-  'earth-combo6': { text: 'Mạch sống', color: '#9bd46a', castBurst: { kind: 'orb', speed: 80, life: 0.6, size: 4, colors: ['#9bd46a', '#fff4c2'], n: 12 }, impactSprite: { name: 'plant', solid: null } },
-  'earth-execute': { text: 'Địa chấn', color: '#8a5a2a', castBurst: { kind: 'smoke', speed: 70, life: 0.8, size: 16, colors: ['#4a3a2a'], n: 10 }, impactSprite: { name: 'rockSpike' } },
-  'earth-counter': { text: 'Giáp đá', color: '#c9a36b', castBurst: { kind: 'shard', speed: 100, life: 0.5, size: 5, colors: ['#c9a36b'], n: 10 }, impactSprite: { name: 'shieldYellow', solid: null } },
-  'wind-combo3': { text: 'Gió lùa', color: '#bff7df', castBurst: { kind: 'orb', speed: 120, life: 0.5, size: 3.5, colors: ['#bff7df'], n: 12 }, impactSprite: { name: 'windLeaf' } },
-  'wind-long': { text: 'Lốc cuốn', color: '#bff7df', castBurst: { kind: 'orb', speed: 140, life: 0.55, size: 4, colors: ['#ffffff', '#bff7df'], n: 16 }, impactSprite: { name: 'slashCircular', solid: '#bff7df' } },
-  'wind-fast': { text: 'Phong tốc', color: '#effff7', castBurst: { kind: 'orb', speed: 160, life: 0.4, size: 3, colors: ['#effff7'], n: 12 }, impactSprite: { name: 'spiritDouble' } },
-  'wind-combo6': { text: 'Cuồng phong', color: '#3fe8b0', castBurst: { kind: 'orb', speed: 130, life: 0.55, size: 4, colors: ['#3fe8b0'], n: 14 }, impactSprite: { name: 'slashCircular', solid: null } },
-  'wind-execute': { text: 'Phong trảm', color: '#7fe8bd', castBurst: { kind: 'spark', speed: 260, life: 0.3, size: 2, colors: ['#7fe8bd'], n: 12 }, impactSprite: { name: 'slashCurved', solid: '#7fe8bd' } },
-  'wind-counter': { text: 'Phản phong', color: '#7fe8bd', castBurst: { kind: 'orb', speed: 100, life: 0.5, size: 3.5, colors: ['#7fe8bd'], n: 10 }, impactSprite: { name: 'spiritDouble' } }
+  'fire-combo3': { text: 'Song hoả', color: '#ff9a3c', castBurst: { kind: 'spark', speed: 260, life: 0.3, size: 2, colors: ['#ffd27a', '#ff5a1f'], n: 16 } },
+  'fire-long': { text: 'Hoả trụ', color: '#ff5a1f', castBurst: { kind: 'spark', speed: 300, life: 0.35, size: 2.4, colors: ['#ff2d2d', '#ffb347'], n: 20 } },
+  'fire-fast': { text: 'Tia lửa', color: '#ffcf6a', castBurst: { kind: 'spark', speed: 320, life: 0.22, size: 1.8, colors: ['#ffffff', '#ff9a3c'], n: 14 } },
+  'fire-combo6': { text: 'Vòng lửa', color: '#ff5a1f', castBurst: { kind: 'orb', speed: 90, life: 0.5, size: 4, colors: ['#ff5a1f', '#ffcf6a'], n: 10 } },
+  'fire-execute': { text: 'Thiêu rụi', color: '#ff2d2d', castBurst: { kind: 'smoke', speed: 60, life: 0.7, size: 14, colors: ['#3a1810'], n: 8 } },
+  'fire-counter': { text: 'Phản hoả', color: '#ff7a2f', castBurst: { kind: 'spark', speed: 200, life: 0.4, size: 2, colors: ['#ff7a2f'], n: 12 } },
+  'ice-combo3': { text: 'Sương giá', color: '#bff4ff', castBurst: { kind: 'shard', speed: 140, life: 0.4, size: 5, colors: ['#e6fbff'], n: 12 } },
+  'ice-long': { text: 'Cột băng', color: '#7fe3ff', castBurst: { kind: 'shard', speed: 160, life: 0.5, size: 6, colors: ['#7fe3ff'], n: 16 } },
+  'ice-fast': { text: 'Mũi băng', color: '#7fe3ff', castBurst: { kind: 'spark', speed: 300, life: 0.2, size: 1.8, colors: ['#ffffff', '#7fe3ff'], n: 12 } },
+  'ice-combo6': { text: 'Giáp băng', color: '#bff4ff', castBurst: { kind: 'shard', speed: 100, life: 0.6, size: 5, colors: ['#e6fbff', '#bff4ff'], n: 10 } },
+  'ice-execute': { text: 'Băng phong', color: '#4fd3ff', castBurst: { kind: 'shard', speed: 180, life: 0.5, size: 6, colors: ['#4fd3ff'], n: 14 } },
+  'ice-counter': { text: 'Hàn triều', color: '#7fe3ff', castBurst: { kind: 'shard', speed: 160, life: 0.5, size: 6, colors: ['#7fe3ff'], n: 14 } },
+  'storm-combo3': { text: 'Tia chớp', color: '#fff7b0', castBurst: { kind: 'spark', speed: 340, life: 0.2, size: 1.8, colors: ['#ffffff', '#fff7b0'], n: 18 } },
+  'storm-long': { text: 'Lôi trụ', color: '#fff7b0', castBurst: { kind: 'spark', speed: 360, life: 0.24, size: 2, colors: ['#ffffff'], n: 22 } },
+  'storm-fast': { text: 'Lôi bộ', color: '#ffe45c', castBurst: { kind: 'spark', speed: 300, life: 0.2, size: 1.6, colors: ['#ffe45c'], n: 14 } },
+  'storm-combo6': { text: 'Xích lôi', color: '#e0c2ff', castBurst: { kind: 'orb', speed: 100, life: 0.5, size: 5, colors: ['#e0c2ff'], n: 10 } },
+  'storm-execute': { text: 'Lôi phạt', color: '#fff7b0', castBurst: { kind: 'spark', speed: 380, life: 0.24, size: 2, colors: ['#ffffff', '#fff7b0'], n: 24 } },
+  'storm-counter': { text: 'Phản lôi', color: '#e0c2ff', castBurst: { kind: 'spark', speed: 240, life: 0.3, size: 2, colors: ['#e0c2ff'], n: 14 } },
+  'earth-combo3': { text: 'Đá vụn', color: '#c9a36b', castBurst: { kind: 'shard', speed: 120, life: 0.5, size: 6, colors: ['#8a6a48'], n: 12 } },
+  'earth-long': { text: 'Gai đá', color: '#8a5a2a', castBurst: { kind: 'shard', speed: 130, life: 0.55, size: 6, colors: ['#8a5a2a'], n: 14 } },
+  'earth-fast': { text: 'Quyền đá', color: '#c9a36b', castBurst: { kind: 'shard', speed: 200, life: 0.3, size: 5, colors: ['#c9a36b'], n: 10 } },
+  'earth-combo6': { text: 'Mạch sống', color: '#9bd46a', castBurst: { kind: 'orb', speed: 80, life: 0.6, size: 4, colors: ['#9bd46a', '#fff4c2'], n: 12 } },
+  'earth-execute': { text: 'Địa chấn', color: '#8a5a2a', castBurst: { kind: 'smoke', speed: 70, life: 0.8, size: 16, colors: ['#4a3a2a'], n: 10 } },
+  'earth-counter': { text: 'Giáp đá', color: '#c9a36b', castBurst: { kind: 'shard', speed: 100, life: 0.5, size: 5, colors: ['#c9a36b'], n: 10 } },
+  'wind-combo3': { text: 'Gió lùa', color: '#bff7df', castBurst: { kind: 'orb', speed: 120, life: 0.5, size: 3.5, colors: ['#bff7df'], n: 12 } },
+  'wind-long': { text: 'Lốc cuốn', color: '#bff7df', castBurst: { kind: 'orb', speed: 140, life: 0.55, size: 4, colors: ['#ffffff', '#bff7df'], n: 16 } },
+  'wind-fast': { text: 'Phong tốc', color: '#effff7', castBurst: { kind: 'orb', speed: 160, life: 0.4, size: 3, colors: ['#effff7'], n: 12 } },
+  'wind-combo6': { text: 'Cuồng phong', color: '#3fe8b0', castBurst: { kind: 'orb', speed: 130, life: 0.55, size: 4, colors: ['#3fe8b0'], n: 14 } },
+  'wind-execute': { text: 'Phong trảm', color: '#7fe8bd', castBurst: { kind: 'spark', speed: 260, life: 0.3, size: 2, colors: ['#7fe8bd'], n: 12 } },
+  'wind-counter': { text: 'Phản phong', color: '#7fe8bd', castBurst: { kind: 'orb', speed: 100, life: 0.5, size: 3.5, colors: ['#7fe8bd'], n: 10 } }
 };
 
 if (typeof module !== 'undefined') module.exports = { BOSS_SKILL_UNLOCK_LEVEL, BOSS_SKILL_PRIORITY, BOSS_SKILL_SLOTS, BOSS_SKILLS, BOSS_SKILL_FX };

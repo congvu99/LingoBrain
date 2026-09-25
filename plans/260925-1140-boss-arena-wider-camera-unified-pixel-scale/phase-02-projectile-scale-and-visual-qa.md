@@ -1,7 +1,7 @@
 ---
 phase: 2
 title: Projectile scale and visual QA
-status: in-progress
+status: completed
 priority: P2
 dependencies:
   - 1

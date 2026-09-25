@@ -1,6 +1,6 @@
 /* Service worker: cache-first cho toàn bộ file tĩnh. Đổi CACHE mỗi lần deploy để người dùng nhận bản mới.
    MP3 trong audio/ nằm ở cache riêng AUDIO_CACHE, cache dần khi phát, không xoá khi lên version. */
-const CACHE = 'lingobrain-v2.24.3';
+const CACHE = 'lingobrain-v2.24.4';
 const AUDIO_CACHE = 'lingobrain-audio';
 const ASSETS = [
   './',
@@ -55,14 +55,21 @@ const ASSETS = [
   './js/boss-game-progress.js',
   './js/boss-game-story.js',
   './js/boss-game-spell-presets.js',
+  './js/boss-game-skill-motion.js',
+  './js/boss-game-skill-visuals.js',
   './js/boss-game-spell-art.js',
   './js/boss-game-tier3-ultimate-fx.js',
+  './js/boss-game-ultimate-overlay-fx.js',
   './js/boss-game-sprite-atlas.js',
   './js/boss-game-skill-sprites.js',
+  './js/boss-game-extra-sprites.js',
   './js/boss-game-dragon-composite.js',
   './js/boss-game-arena.js',
+  './js/boss-game-arena-layouts.js',
+  './js/boss-game-arena-ambient.js',
   './js/boss-game-sprite-actors.js',
   './js/boss-game-skill-fx.js',
+  './js/boss-game-monster-attack-fx.js',
   './js/boss-game-portrait-ui.js',
   './js/boss-game-render.js',
   './js/boss-game-result-ui.js',
@@ -191,7 +198,23 @@ const ASSETS = [
   './img/boss/actor/evo-wind-a2.png', './img/boss/actor/evo-wind-a2-face.png',
   './img/boss/actor/evo-wind-b.png', './img/boss/actor/evo-wind-b-face.png',
   './img/boss/actor/evo-wind-b1.png', './img/boss/actor/evo-wind-b1-face.png',
-  './img/boss/actor/evo-wind-b2.png', './img/boss/actor/evo-wind-b2-face.png'
+  './img/boss/actor/evo-wind-b2.png', './img/boss/actor/evo-wind-b2-face.png',
+  // Phase 6 (plan 260925-1445): BOSS_EXTRA_SPRITES (fx/tile mới — quỹ đạo, tiến hoá, tuyệt kỹ, ambient sân)
+  './img/boss/fx/plant-spike.png', './img/boss/fx/shuriken-magic.png', './img/boss/fx/big-shuriken.png',
+  './img/boss/fx/kunai.png', './img/boss/fx/slash-01.png', './img/boss/fx/slash-02.png', './img/boss/fx/slash-03.png',
+  './img/boss/fx/slash-arc.png', './img/boss/fx/slash-multi.png', './img/boss/fx/slash-circular-b.png',
+  './img/boss/fx/claw-double.png', './img/boss/fx/cut.png', './img/boss/fx/cut-double.png',
+  './img/boss/fx/slash-double-curved.png', './img/boss/fx/circle-white.png', './img/boss/fx/circle-spark2.png',
+  './img/boss/fx/spirit-blue.png', './img/boss/fx/ice-flake-b.png', './img/boss/fx/plant-b.png',
+  './img/boss/fx/particle-fire.png', './img/boss/fx/particle-rain.png', './img/boss/fx/particle-snow.png',
+  './img/boss/fx/particle-leaf-pink.png', './img/boss/fx/particle-rock-gray.png', './img/boss/fx/particle-clouds.png',
+  './img/boss/fx/fog.png', './img/boss/fx/raylight.png',
+  './img/boss/tile/field.png', './img/boss/tile/dungeon.png', './img/boss/tile/relief.png',
+  './img/boss/tile/desert.png', './img/boss/tile/towers.png', './img/boss/tile/water.png',
+  './img/boss/tile/floor-detail.png', './img/boss/tile/anim-flower.png', './img/boss/tile/anim-plant.png',
+  './img/boss/tile/anim-water-ripples.png', './img/boss/tile/anim-waterfall-top.png',
+  './img/boss/tile/anim-waterfall-middle.png', './img/boss/tile/anim-waterfall-bottom.png',
+  './img/boss/tile/anim-flag-red.png', './img/boss/tile/anim-flag-blue.png', './img/boss/tile/anim-mill.png'
 ];
 
 self.addEventListener('install', e => {

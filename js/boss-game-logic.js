@@ -101,9 +101,9 @@ function castComplete(st, now, at) {
   }
   dmg = Math.round(dmg);
   const impactAt = now + T.impactMs[st.tier];
-  st.pendingImpacts.push({ at: impactAt, dmg, tier: st.tier, skill: r.skillId, burn: r.burn, freeze: r.freeze });
+  st.pendingImpacts.push({ at: impactAt, dmg, tier: st.tier, skill: r.skillId, burn: r.burn, freeze: r.freeze, evolved: r.evolved });
   st.log.push({ ids: st.group.ids, word: st.typed, ok: true, ms, tier: st.tier, dmg });
-  bossEmit(st, 'cast', { element: m.element, tier: st.tier, dmg, speed, crit, hits, impactAt, word: st.group.answers[st.targets.indexOf(st.typed)], skill: r.skillId, skillName: r.skillName });
+  bossEmit(st, 'cast', { element: m.element, tier: st.tier, dmg, speed, crit, hits, impactAt, word: st.group.answers[st.targets.indexOf(st.typed)], skill: r.skillId, skillName: r.skillName, evolved: r.evolved });
   if (crit) bossEmit(st, 'fastCrit', {});
   bossComboOnCast(st, speed, now);
   bossThreatDrainOnCast(st, speed, r.threatDrainMul);   // áp lúc niệm xong, không đợi impact
@@ -154,7 +154,7 @@ function resumeBattle(st, now) {
 function bossApplyImpacts(st, now) {
   st.pendingImpacts = st.pendingImpacts.filter(p => {
     if (p.at > now) return true;
-    bossApplyHit(st, now, p.dmg, p.tier, { skill: p.skill, burn: p.burn, freeze: p.freeze, displayDmg: p.dmg });
+    bossApplyHit(st, now, p.dmg, p.tier, { skill: p.skill, burn: p.burn, freeze: p.freeze, displayDmg: p.dmg, evolved: p.evolved });
     return false;
   });
 }

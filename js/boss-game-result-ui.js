@@ -10,6 +10,7 @@ function bossUiEvents(ui) {
   for (const e of ev) {
     bossFxEvent(ui.fx, e, st);
     bossSkillFxEvent(ui.fx, e);   // tên chiêu nổi + VFX phụ theo skill.fx (js/boss-game-skill-fx.js)
+    bossMonsterAttackFxEvent(ui.fx, e, ui.monster && ui.monster.id);   // đòn quái VFX riêng (js/boss-game-monster-attack-fx.js)
     if (e.type === 'next') { ui.reveal = ''; ui.hint = ''; renderBossPrompt(ui); bossSetCasting(false); }
     else if (e.type === 'hint') { ui.hint = e.letter; renderBossLetters(ui); }
     else if (e.type === 'key') renderBossLetters(ui);

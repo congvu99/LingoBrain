@@ -16,17 +16,17 @@ const bossMageSprite = (gender, form) => (form || (gender === 'm' ? 'mageM' : 'm
 /* Điểm phép phóng ra: phía trên vai phải pháp sư (quay lưng, nhìn về quái) */
 function bossMageCastPoint(m) { return { x: m.x + m.s * 0.18, y: m.y - m.s * 0.78 }; }
 
-/* VFX sprite một lượt tại tâm (x, y); scale nguyên. opts: delay (giây trễ); vel {vx,vy px/s — VFX di chuyển vd
-   thiên thạch rơi; follow — mỗi khung tự cập nhật y theo bossMonsterLiftPx, VFX "bay theo" quái bị nâng, vd lốc
-   xoáy}; life (giây sống tối đa — BẮT BUỘC cho VFX di chuyển có anim lặp vô hạn như fireball, nếu không
-   spriteAnimDone không bao giờ true → rò rỉ fx.sprites mãi, xem review phase 4 #1; thiếu life → gỡ theo
-   spriteAnimDone như cũ); anim (khác 'idle', vd 'cycle' — bản lặp vô hạn dùng cùng life để VFX sống lâu hơn 1 lượt). */
+/* VFX sprite một lượt tại tâm (x, y); scale nguyên. opts: delay (giây trễ); vel {vx,vy px/s, follow — bay theo
+   bossMonsterLiftPx}; life (giây sống — thiếu life + anim KHÔNG loop:false → tự gán = đúng 1 chu kỳ (frames/fps),
+   review C1: trước đây các VFX này không bao giờ spriteAnimDone nên rò rỉ fx.sprites mãi; caller cần sống lâu
+   hơn 1 chu kỳ (tuyệt kỹ lặp, VFX di chuyển) vẫn truyền life tường minh, ưu tiên hơn mặc định); anim (khác 'idle'). */
 function bossSpawnSprite(fx, name, x, y, scale, opts) {
-  const o = opts || {}, vel = o.vel || {};
+  const o = opts || {}, vel = o.vel || {}, anim = o.anim || 'idle';
+  const a = BOSS_SPRITES[name] && BOSS_SPRITES[name].anims && (BOSS_SPRITES[name].anims[anim] || BOSS_SPRITES[name].anims.idle);
+  const life = o.life != null ? o.life : (a && a.loop !== false ? (a.frames || 1) / (a.fps || 12) : null);
   fx.sprites.push({
     name, x, y, baseY: y, scale: Math.max(1, Math.round(scale)), t: -(o.delay || 0),
-    vx: vel.vx || 0, vy: vel.vy || 0, follow: !!vel.follow,
-    life: o.life != null ? o.life : null, anim: o.anim || 'idle'
+    vx: vel.vx || 0, vy: vel.vy || 0, follow: !!vel.follow, life, anim
   });
 }
 
@@ -43,17 +43,26 @@ function bossVfxScale(name, targetS, mul) {
 function bossActorEvent(fx, e, st) {
   const A = fx.actor, L = fx.layout, q = L.mon;
   const el = e.element || st.mods.element, tier = e.tier || st.tier, mul = tier === 3 ? 2 : tier === 2 ? 1.5 : 1;
+  const vis = typeof bossSkillVisualFor === 'function' ? bossSkillVisualFor(e.skill, e.evolved) : null;
   if (e.type === 'cast') {
     A.mage.cast = BOSS_CAST_S;
-    const preset = bossSpellPreset(el, tier).p;
-    if (preset.sprite && preset.sprite.proj) fx.shots.forEach(s => { if (s.id === fx.castN) s.sprite = preset.sprite.proj; });
+    // chiêu có BOSS_SKILL_VISUALS đã tự gán s.sprite lúc push (boss-game-spell-art.js) — kể cả proj:null (cố ý
+    // không đạn riêng); chỉ basic (không có vis) mới rơi về đạn của preset hệ×bậc như trước.
+    if (!vis) {
+      const preset = bossSpellPreset(el, tier).p;
+      if (preset.sprite && preset.sprite.proj) fx.shots.forEach(s => { if (s.id === fx.castN) s.sprite = preset.sprite.proj; });
+    }
   } else if (e.type === 'impact') {
     A.mon.hitAnimT = 0;   // mốc bắt đầu hoạt ảnh Hit riêng (nếu quái có spriteHit) — xem drawBossMonsterSprite
     A.mon.flash = BOSS_FLASH_S; A.mon.recoil = BOSS_RECOIL_S;
-    const preset = bossSpellPreset(el, e.tier).p, cy = q.y - q.s * 0.45;
+    const cy = q.y - q.s * 0.45;
+    // chiêu có BOSS_SKILL_VISUALS: impact[] riêng thay preset hệ×bậc; basic vẫn dùng preset.sprite.impact như trước
+    // (nhánh sau chỉ evaluate khi KHÔNG có vis, tránh gọi bossSpellPreset thừa — review L3).
+    const list = vis ? vis.impact : ((bossSpellPreset(el, e.tier).p.sprite || {}).impact || []);
+    const vmul = vis ? mul * vis.scale : mul;
     // nhiều VFX cùng hệ (vd Explosion×2, Thunder×3, SmokeCircular×2) lệch nhẹ vị trí/độ trễ để không đè khít lên nhau
-    (preset.sprite && preset.sprite.impact || []).forEach((name, i) => {
-      bossSpawnSprite(fx, name, q.x + (i - 0.5) * q.s * 0.14, cy - i * q.s * 0.05, bossVfxScale(name, q.s, mul), { delay: i * 0.06 });
+    list.forEach((name, i) => {
+      bossSpawnSprite(fx, name, q.x + (i - 0.5) * q.s * 0.14, cy - i * q.s * 0.05, bossVfxScale(name, q.s, vmul), { delay: i * 0.06 });
     });
   } else if (e.type === 'hurt') {
     A.mon.lunge = BOSS_LUNGE_S;
@@ -176,20 +185,8 @@ function drawBossMageSprite(ctx, fx, st, gender, t) {
   return true;
 }
 
-/* Đạn sprite dọc đường cong của shot; xoay theo hướng bay CHỈ khi def có rotOffset (hình có "đầu" rõ, vd fireball
-   hướng lên/iceSpikeProj nằm ngang; xoáy gió spiritProj không xoay). Cỡ theo fh THẬT (bossVfxFh) — trước hardcode
-   16 khiến spiritProj to gấp đôi, iceSpikeProj nhỏ hơn ý muốn (review #3). */
-function drawBossShotSprite(ctx, s, x, y, k) {
-  const def = BOSS_SPRITES[s.sprite], dx = s.x1 - s.x0, dy = (s.y1 - s.y0) - Math.cos(k * Math.PI) * Math.PI * 30;
-  // Cỡ theo chiều cao pháp sư (cùng lưới pixel với cảnh): size preset 8/12/16+ ≈ 1×/1.25×/1.5× pháp sư, không vượt 1.5×
-  // Chặn sau làm tròn theo cạnh DÀI của khung (đạn xoay theo hướng bay, vd iceSpikeProj 18×10 nằm ngang).
-  const mageS = s.mageS || 32, target = Math.min(1.5, 0.5 + s.p.projectile.size / 16) * mageS;
-  const cap = Math.max(1, Math.floor(1.5 * mageS / Math.max((def && def.fw) || 0, bossVfxFh(s.sprite))));
-  const scale = Math.min(cap, Math.max(1, Math.round(pixelScale(target, bossVfxFh(s.sprite)) * s.scale)));
-  const opt = { center: true };
-  if (def && def.rotOffset != null) opt.rot = Math.atan2(dy, dx) + def.rotOffset;
-  return drawSprite(ctx, s.sprite, 'idle', s.t, x, y, scale, opt);
-}
+/* Đạn sprite dọc quỹ đạo shot: xem drawBossShotSprite (boss-game-skill-motion.js, nạp sau file này cũng
+   được — hàm chỉ gọi lúc vẽ, không đụng lúc nạp). */
 
 /* VFX một lượt/di chuyển (fx.sprites); có vx/vy + def.rotOffset (vd fireball thiên thạch) → xoay theo hướng bay
    thật (review #4: trước vẽ thẳng đứng, đuôi lửa đi trước thay vì đi sau). */

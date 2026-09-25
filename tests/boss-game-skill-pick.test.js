@@ -283,6 +283,46 @@
     });
   });
 
+  describe('evolved — bossResolveSkillCast báo đúng dạng tiến hoá đang active có ghi đè slot đó không (phase 3, hiển thị thuần)', () => {
+    it('skillTable của dạng fire-a: combo3 bị ghi đè → evolved=true', () => {
+      const skillTable = bossSkillsFor('fire', BOSS_EVO.fire['fire-a'], BOSS_SKILLS.fire);
+      const st = { typos: 0, combo: 2, mods: { element: 'fire' }, level: 10, skillTable, hp: 100, hpMax: 100, afterHit: false };
+      const r = bossResolveSkillCast(st, 10, false, 3, 1);
+      assert.equal(r.evolved, true);
+    });
+    it('skillTable của dạng fire-a: slot KHÔNG bị ghi đè (fast, dạng fire-a không đụng slot này) → evolved=false', () => {
+      const skillTable = bossSkillsFor('fire', BOSS_EVO.fire['fire-a'], BOSS_SKILLS.fire);
+      const st = { typos: 0, combo: 0, mods: { element: 'fire' }, level: 10, skillTable, hp: 100, hpMax: 100, afterHit: false };
+      const r = bossResolveSkillCast(st, 10, false, 1, 2);   // speed≥2 → fast, fire-a không override slot này
+      assert.equal(r.skillId, BOSS_SKILLS.fire.fast.fx);
+      assert.equal(r.evolved, false);
+    });
+    it('không có dạng tiến hoá (skillTable mặc định undefined) → evolved luôn false dù slot đó CÓ bị hệ khác ghi đè', () => {
+      const st = { typos: 0, combo: 2, mods: { element: 'fire' }, level: 10, skillTable: undefined, hp: 100, hpMax: 100, afterHit: false };
+      const r = bossResolveSkillCast(st, 10, false, 3, 1);
+      assert.equal(r.evolved, false);
+    });
+    it('basic (không chiêu đặc biệt) → evolved=false', () => {
+      const st = { typos: 0, combo: 0, mods: { element: 'fire' }, level: 1, skillTable: undefined, hp: 100, hpMax: 100, afterHit: false };
+      const r = bossResolveSkillCast(st, 10, false, 1, 1);
+      assert.equal(r.evolved, false);
+    });
+    it('tích hợp trận thật: pendingImpacts/event cast + impact đều mang evolved đúng, không đổi skillId/dmg', () => {
+      const skills = { fire: bossSkillsFor('fire', BOSS_EVO.fire['fire-a'], BOSS_SKILLS.fire) };
+      const st = mk({ el: 'fire', level: 10, skills });
+      type(st, 'cat', 0);
+      type(st, 'dog', 700);
+      type(st, 'sun', 1400, 900);   // combo 2→3 → combo3 (Tam hoả, fire-a ghi đè) — xem test skillName tương tự phía trên
+      const c = casts(st).pop();
+      assert.equal(c.skillName, 'Tam hoả'); assert.equal(c.evolved, true, 'event cast phải mang evolved');
+      // 'sun' gõ 3 chữ cách nhau 900ms bắt đầu từ 1400 → chữ cuối (cast thật) ở 1400+2×900=3200, impact +260 = 3460
+      run(st, 1400, 3600);
+      const impact = st.events.filter(e => e.type === 'impact').pop();
+      assert.ok(impact, 'phải có impact sau khi chờ đủ');
+      assert.equal(impact.evolved, true, 'event impact cũng phải mang evolved (gắn qua pendingImpacts)');
+    });
+  });
+
   describe('chain hits — KHÔNG kích chiêu tự phát, nhưng VẪN áp thụ động (đòn chuỗi đi qua CÙNG đường bossApplyHit)', () => {
     it('chuỗi niệm ở cấp cao (đủ mở mọi slot) vẫn không gắn skill vào impact của đòn chuỗi', () => {
       const st = mk({ alloc: { fire: 3 }, el: 'fire', level: 10 });

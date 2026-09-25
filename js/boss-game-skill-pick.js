@@ -58,7 +58,7 @@ function bossApplySkillEffect(st, skill, baseDmg, alreadyCrit, now) {
   if (eff.shield) st.shield = Math.min(T.shieldCap, (st.shield || 0) + eff.shield);
   if (eff.heal) st.hearts = Math.min(st.heartsMax, st.hearts + eff.heal);
   // ultAdd cũng bị chặn trong lúc hồi chiêu (st.ultCooldownUntil) — cùng luật với bossComboOnCast, không có
-  // đường tắt nào cộng thanh tuyệt kỹ được trong lúc hồi (Gió ultAdd dồn quá nhanh).
+  // đường tắt nào cộng thanh tuyệt kỹ được trong lúc hồi (quyết định người dùng: Gió ultAdd dồn quá nhanh).
   if (eff.ultAdd && !(st.ultCooldownUntil && now < st.ultCooldownUntil)) {
     const wasFull = st.ult >= T.ultMax;
     st.ult = Math.min(T.ultMax, st.ult + eff.ultAdd);
@@ -68,6 +68,16 @@ function bossApplySkillEffect(st, skill, baseDmg, alreadyCrit, now) {
     dmg: Math.round(dmg), hits, threatDrainMul: eff.threatDrainMul || 1,
     burn: eff.burn || null, freeze: eff.freeze || null
   };
+}
+
+/* Chiêu vừa chọn có bị dạng tiến hoá đang active GHI ĐÈ slot đó không (phase 3, hiển thị thuần — không đổi
+   formId/effect). table = st.skillTable (bảng do bossSkillsFor gộp, có thể undefined = dùng thẳng BOSS_SKILLS[el]).
+   Không override slot nào → bossSkillsFor giữ NGUYÊN tham chiếu skill gốc cho slot đó (xem js/boss-game-evolution.js),
+   nên chỉ cần so sánh identity: tìm slot của `skill` trong table rồi so table[slot] với BOSS_SKILLS[el][slot] gốc. */
+function bossSkillEvolved(el, table, skill) {
+  if (!skill || !table || typeof BOSS_SKILLS === 'undefined' || !BOSS_SKILLS[el]) return false;
+  for (const slot in table) { if (table[slot] === skill) return BOSS_SKILLS[el][slot] !== skill; }
+  return false;
 }
 
 /* Gọi từ boss-game-logic.js:castComplete — chọn chiêu (nếu có) + áp effect lên dmg đã tính bằng spellDamage,
@@ -83,13 +93,15 @@ function bossResolveSkillCast(st, dmg, crit, letters, speed, now) {
   const ctx = { combo: comboNow, letters, speed, hpRatio: st.hp / st.hpMax, afterHit: st.afterHit };
   const skill = bossPickSkill(ctx, st.mods.element, st.level, st.skillTable);
   st.afterHit = false;   // "cast đầu tiên sau khi bị đánh" tiêu thụ ngay ở lần niệm kế, dù slot nào được chọn
-  if (!skill) return { dmg, hits: 1, threatDrainMul: 1, skillId: null, skillName: null, burn: null, freeze: null };
+  if (!skill) return { dmg, hits: 1, threatDrainMul: 1, skillId: null, skillName: null, burn: null, freeze: null, evolved: false };
   const applied = bossApplySkillEffect(st, skill, dmg, crit, now);
   return {
     dmg: applied.dmg, hits: applied.hits, threatDrainMul: applied.threatDrainMul,
     // skillName = tên chiêu ĐÃ ghi đè theo dạng tiến hoá nếu có (st.skillTable, xem bossSkillsFor) — float text
     // (skill-fx.js) phải hiện đúng tên nâng cấp, không phải tên gốc cố định trong BOSS_SKILL_FX[skill.id].text.
-    skillId: skill.fx ? skill.id : null, skillName: skill.fx ? skill.name : null, burn: applied.burn, freeze: applied.freeze
+    skillId: skill.fx ? skill.id : null, skillName: skill.fx ? skill.name : null, burn: applied.burn, freeze: applied.freeze,
+    // evolved = hiển thị thuần cho VFX (js/boss-game-skill-visuals.js:BOSS_EVO_SKILL_VISUALS) — KHÔNG đổi skillId/effect
+    evolved: bossSkillEvolved(st.mods.element, st.skillTable, skill)
   };
 }
 
@@ -105,7 +117,7 @@ function bossApplyHit(st, now, dmg, tier, opt) {
   const o = opt || {}, m = st.mods;
   const real = Math.min(st.hp, dmg);
   st.hp -= real; st.dealt += real;
-  bossEmit(st, 'impact', { dmg: o.displayDmg != null ? o.displayDmg : dmg, tier, hp: st.hp, skill: o.skill || null });
+  bossEmit(st, 'impact', { dmg: o.displayDmg != null ? o.displayDmg : dmg, tier, hp: st.hp, skill: o.skill || null, evolved: !!o.evolved });
   // "đốt mạnh hơn thắng" phải so với đốt ĐANG CHÁY (thời gian còn lại), không chỉ đốt mới của lần chạm này — nếu
   // không, nội tại yếu hơn (refresh mỗi đòn) sẽ đè mất đốt mạnh hơn của chiêu tự phát đang chạy dở. Không có đốt
   // đang cháy (st.burn null) thì rơi về đúng hành vi cũ: so nội tại vs chiêu của ĐÚNG lần chạm này rồi refresh.
@@ -125,5 +137,5 @@ function bossApplyHit(st, now, dmg, tier, opt) {
 }
 
 if (typeof module !== 'undefined') module.exports = {
-  bossSkillSlotMatches, bossPickSkill, bossStrongerBurn, bossApplySkillEffect, bossResolveSkillCast, bossApplyHit
+  bossSkillSlotMatches, bossPickSkill, bossStrongerBurn, bossApplySkillEffect, bossSkillEvolved, bossResolveSkillCast, bossApplyHit
 };

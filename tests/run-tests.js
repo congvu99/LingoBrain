@@ -31,10 +31,20 @@ const PURE_MODULES = [
   'js/boss-game-story.js',        // dữ liệu thuần: BOSS_REGIONS, BOSS_MONSTERS, BOSS_STORY
   'js/boss-game-sprite-atlas.js', // phần thuần: BOSS_SPRITES, spriteFrame, pixelScale (phần DOM chỉ định nghĩa hàm)
   'js/boss-game-skill-sprites.js',   // gắn BOSS_SKILL_SPRITES vào BOSS_SPRITES (dữ liệu thuần) — nạp sau sprite-atlas.js
+  'js/boss-game-extra-sprites.js',   // gắn BOSS_EXTRA_SPRITES (fx/tile chưa dùng, plan 260925-1445 phase 1) — nạp sau skill-sprites.js
   'js/boss-game-dragon-composite.js',   // chỉ định nghĩa hàm/hằng số ở top-level, không đụng DOM khi nạp
   'js/boss-game-arena.js',        // BOSS_ARENAS (dữ liệu) + buildBossArena tự trả null khi không có document
-  'js/boss-game-sprite-actors.js'   // chỉ định nghĩa hàm ở top-level; hàm đụng DOM (ctx canvas) chỉ chạy khi gọi,
+  'js/boss-game-arena-layouts.js',   // BOSS_MONSTER_ARENAS (dữ liệu, plan 260925-1445 phase 5) — sân riêng 12 quái
+  'js/boss-game-arena-ambient.js',   // createBossAmbient/stepBossAmbient (thuần) + drawBossAmbient (đụng ctx, chỉ chạy khi gọi)
+  'js/boss-game-sprite-actors.js',  // chỉ định nghĩa hàm ở top-level; hàm đụng DOM (ctx canvas) chỉ chạy khi gọi,
   // test bossSpawnSprite/stepBossActors (thuần, không cần ctx) — xem tests/boss-game-sprite-actors.test.js
+  'js/boss-game-skill-motion.js',   // bossShotPos/bossShotDir (thuần) + drawBossShotSprite (đụng DOM, chỉ chạy khi gọi)
+  'js/boss-game-skill-visuals.js',   // BOSS_SKILL_VISUALS (dữ liệu thuần, 30 chiêu) — nạp sau skill-motion.js (dùng bởi bossSkillVisualFor)
+  'js/boss-game-ultimate-overlay-fx.js',   // lớp phủ tuyệt kỹ thêm (thuần: alpha/vị trí hạt) — cần BOSS_ULTIMATE_PRESETS/BOSS_SPRITES ở trên
+  'js/boss-game-monster-attack-fx.js',   // BOSS_MONSTER_ATTACK_FX + bossMonsterAttackFxEvent (thuần) — cần bossSpawnSprite/bossVfxScale ở trên
+  'js/boss-game-spell-art.js'   // createBossFx/bossFxEvent/stepBossFx (thuần, không đụng ctx) — nạp SAU sprite-actors.js
+  // (khác index.html, ở đó nạp trước nhưng chỉ gọi hàm bossSpawnSprite lúc runtime nên thứ tự không quan trọng)
+  // để test wiring vis.cast (review M1) dùng được bossSpawnSprite/bossVfxScale thật, xem tests/boss-game-spell-art.test.js
 ];
 // require/Buffer/process chỉ cho test Node-only (server/*); test dùng chung trình duyệt không được phụ thuộc chúng
 const ctx = vm.createContext({ console, Math, Date, JSON, Array, Object, String, Number, RegExp, Error, Promise, fs, path, ROOT: root, require, Buffer, process, setTimeout, clearTimeout, AbortController });

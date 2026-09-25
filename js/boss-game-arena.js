@@ -45,8 +45,28 @@ const BOSS_ARENAS = {
   }
 };
 
-const BOSS_ARENA_SPRITES = ['tileFloor', 'tileNature', 'tileHouse', 'tileVillage'];
 const BOSS_ARENA_HORIZON = 0.4;   // chân trời ở 40% chiều cao
+
+/* Gộp sân riêng theo quái (BOSS_MONSTER_ARENAS, boss-game-arena-layouts.js — nạp trước/sau file này đều được, chỉ
+   đọc lúc GỌI hàm) với sân vùng nền: `base` kế thừa mọi trường thiếu (Object.assign nông — field có ở override
+   thì đè hẳn, không gộp sâu mảng). Không có quái/không có override → trả thẳng BOSS_ARENAS[region.id] (giữ đúng
+   hành vi cũ trước phase 5). */
+function bossArenaFor(monster, region) {
+  const regionArena = region && BOSS_ARENAS[region.id];
+  const M = typeof BOSS_MONSTER_ARENAS !== 'undefined' && monster && BOSS_MONSTER_ARENAS[monster.id];
+  if (!M) return regionArena;
+  const base = (M.base && BOSS_ARENAS[M.base]) || regionArena;
+  return base ? Object.assign({}, base, M) : null;
+}
+
+/* Mọi khoá sprite mà một arena đã resolve thật sự cần (nền + hàng xa) — dùng để chờ nạp xong trước khi build,
+   thay danh sách cố định cũ (sân riêng theo quái có thể dùng tileset khác 4 vùng gốc). */
+function bossArenaTileNames(A) {
+  const names = new Set([A.grass[0]]);
+  (A.details || []).forEach(t => names.add(t[0]));
+  (A.far || []).forEach(t => names.add(t[0]));
+  return Array.from(names);
+}
 
 /* Số giả ngẫu nhiên tất định theo ô (cỏ lốm đốm không nhảy mỗi lần resize) */
 function bossArenaHash(x, y) { const n = Math.sin(x * 127.1 + y * 311.7) * 43758.5453; return n - Math.floor(n); }
@@ -75,10 +95,11 @@ function bossArenaPatch(ctx, cx, cy, rx, ry, unit, color) {
 const BOSS_WORLD_ROWS = 14;
 function bossWorldScale(h) { return Math.min(6, Math.max(2, Math.round(h / BOSS_WORLD_ROWS / 16))); }
 
-/* → canvas offscreen (cỡ thật = w×h×dpr) hoặc null nếu vùng chưa có sân / tile chưa nạp */
-function buildBossArena(regionId, w, h, dpr, layout) {
-  const A = BOSS_ARENAS[regionId];
-  if (!A || typeof document === 'undefined' || !BOSS_ARENA_SPRITES.every(bossSpriteReady)) return null;
+/* arena = sân đã resolve (bossArenaFor — object BOSS_ARENAS[id] hoặc gộp override theo quái, KHÔNG còn nhận
+   regionId dạng chuỗi). → canvas offscreen (cỡ thật = w×h×dpr) hoặc null nếu chưa có sân / tile chưa nạp xong. */
+function buildBossArena(arena, w, h, dpr, layout) {
+  const A = arena;
+  if (!A || typeof document === 'undefined' || !bossArenaTileNames(A).every(bossSpriteReady)) return null;
   const off = document.createElement('canvas');
   off.width = Math.max(1, Math.round(w * dpr)); off.height = Math.max(1, Math.round(h * dpr));
   const ctx = off.getContext('2d');

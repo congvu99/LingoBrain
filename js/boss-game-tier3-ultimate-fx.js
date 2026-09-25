@@ -16,8 +16,8 @@ function bossFxSpawnCircle(fx, x, y, r, color, life) {
 function bossFxUltimateEvent(fx, e, st) {
   if (e.type === 'ultimateEnd') { fx.ultimate = null; return; }
   const u = BOSS_ULTIMATE_PRESETS[e.id] || BOSS_ULTIMATE_PRESETS.meteor, ultS = BOSS_TUNING.ultimateMs / 1000;
-  // perfect = gõ trọn HẾT từ trong chuỗi (e.perfect, tính ở bossEndChain theo hits — KHÔNG theo k): bonus
-  // bậc 3/dạng tiến hoá có thể đẩy k qua 1.5 dù gõ thiếu từ, không được giả nhãn HOÀN HẢO
+  // perfect = gõ trọn HẾT từ trong chuỗi (e.perfect, tính ở bossEndChain theo hits — KHÔNG theo k, xem
+  // boss-game-combo-chain.js) — bonus rank3/evo có thể đẩy k qua 1.5 dù gõ thiếu từ, không được phép giả mạo nhãn
   fx.ultimate = { id: e.id, name: u.name, color: u.color, life: ultS, max: ultS, perfect: !!e.perfect };
   if (!fx.reduced) fx.shake = Math.max(fx.shake, u.shake);
   if (!fx.reduced) { fx.flash = Math.max(fx.flash, u.flash); fx.flashColor = u.color; }   // giảm chuyển động: bỏ loé toàn màn
@@ -63,6 +63,7 @@ function stepBossTier3Fx(fx, dtReal) {
   (fx.circles || []).forEach(c => { c.life -= dtReal; });
   fx.circles = (fx.circles || []).filter(c => c.life > 0);
   if (fx.ultimate) { fx.ultimate.life -= dtReal; if (fx.ultimate.life <= 0) fx.ultimate = null; }
+  if (typeof stepBossUltimateOverlayFx === 'function') stepBossUltimateOverlayFx(fx, dtReal);   // lớp phủ thêm (phase 3, js/boss-game-ultimate-overlay-fx.js)
 }
 
 /* Lớp mặt đất: trận đồ (sprite magicCircle lặp, tô màu hệ qua opt.solid, bóp dẹt scaleY phối cảnh giả 3D) — vẽ
@@ -97,6 +98,8 @@ function drawBossPassiveFx(ctx, fx, st, ui, now) {
   if (ui && ui.buff) {
     drawSprite(ctx, 'auraSprite', 'idle', t, m.x, m.y - m.s * 0.5, (bossVfxScale('auraSprite', m.s)), { center: true, alpha: 0.55 });
   }
+  // lớp phủ tuyệt kỹ thêm (Fog/Raylight/hạt rơi/vòng dưới quái) — vẽ CUỐI, vẫn trong khối rung/zoom nên dưới HUD
+  if (typeof drawBossUltimateOverlayFx === 'function') drawBossUltimateOverlayFx(ctx, fx, ui, now);
 }
 
 /* Vẽ sau ctx.restore() (không bị rung/zoom) — cắt cảnh phủ toàn màn. Chân dung = Faceset 38×38, đặt góc dưới-trái
@@ -117,7 +120,7 @@ function drawBossUltimateCutscene(ctx, fx, ui, now) {
   ctx.font = '800 34px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
   ctx.lineWidth = 5; ctx.strokeStyle = 'rgba(0,0,0,.7)'; ctx.strokeText(u.name, w / 2, h * 0.42);
   ctx.fillText(u.name, w / 2, h * 0.42);
-  if (u.perfect) {   // chuỗi niệm gõ trọn hết từ
+  if (u.perfect) {   // chuỗi niệm gõ trọn hết từ (k = 1.5)
     ctx.font = '800 16px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
     ctx.strokeText('HOÀN HẢO', w / 2, h * 0.42 + 24); ctx.fillText('HOÀN HẢO', w / 2, h * 0.42 + 24);
   }

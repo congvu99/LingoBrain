@@ -3,7 +3,7 @@ title: 'Boss arena wider camera: unified pixel scale'
 description: >-
   Một hệ số pixel chung (worldK) cho tile nền, pháp sư, quái và đạn phép → cảnh
   rộng hơn, lưới pixel đồng nhất
-status: in-progress
+status: completed
 priority: P2
 branch: main
 tags:
@@ -29,7 +29,7 @@ Nguồn: [brainstorm report](../reports/brainstorm-260925-1140-boss-arena-wider-
 | Phase | Name | Status |
 |-------|------|--------|
 | 1 | [Unified world pixel scale](./phase-01-unified-world-pixel-scale.md) | Completed |
-| 2 | [Projectile scale and visual QA](./phase-02-projectile-scale-and-visual-qa.md) | In Progress |
+| 2 | [Projectile scale and visual QA](./phase-02-projectile-scale-and-visual-qa.md) | Completed |
 
 ## Acceptance criteria
 - 1 pixel pháp sư = 1 pixel quái thường = 1 pixel tile nền (cùng `worldK`).

@@ -50,6 +50,19 @@
         assert.ok(sw.indexOf("'./" + src + "'") >= 0, 'sw.js ASSETS thiếu ' + src);
       });
     });
+    it('BOSS_EXTRA_SPRITES (fx/tile mới, plan 260925-1445 phase 1): mọi src tồn tại và fw×frames ≤ chiều rộng ảnh', () => {
+      if (typeof BOSS_EXTRA_SPRITES === 'undefined') return;
+      Object.keys(BOSS_EXTRA_SPRITES).forEach(k => {
+        const d = BOSS_EXTRA_SPRITES[k], full = path.join(ROOT, d.src);
+        assert.ok(fs.existsSync(full), k + ' thiếu file ' + d.src);
+        const b = fs.readFileSync(full), W = b.readUInt32BE(16), H = b.readUInt32BE(20);
+        Object.keys(d.anims).forEach(a => {
+          const frames = d.anims[a].frames || 1, col = d.anims[a].col || 0, row = d.anims[a].row || 0;
+          assert.ok((col + frames) * d.fw <= W, k + '.' + a + ' fw×(col+frames) ' + ((col + frames) * d.fw) + ' > chiều rộng ảnh ' + W);
+          assert.ok((row + 1) * d.fh <= H, k + '.' + a + ' fh×(row+1) > chiều cao ảnh ' + H);
+        });
+      });
+    });
     it('mọi khoá sprite trong preset phép (5 hệ × 3 bậc) + tuyệt kỹ đều tồn tại trong BOSS_SPRITES', () => {
       Object.keys(BOSS_SPELL_PRESETS).forEach(el => {
         [1, 2, 3].forEach(tier => {

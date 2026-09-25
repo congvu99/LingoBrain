@@ -1,7 +1,8 @@
 /* Game Pháp Sư Lexoria — hiệu ứng phép trên canvas: hạt (js/game-particles.js), quả phép bay, sóng xung kích,
    số sát thương, rung/loé. Chỉ phản ứng theo st.events của boss-game-logic.js (không tự quyết thời điểm).
    Quả phép bay đúng BOSS_TUNING.impactMs → chạm quái đúng lúc event 'impact'.
-   Cần game-particles.js, boss-game-spell-presets.js,
+   Cần game-particles.js, boss-game-spell-presets.js, boss-game-skill-motion.js (bossShotPos — quỹ đạo đạn,
+   6 kiểu, xem BOSS_MOTIONS),
    boss-game-sprite-actors.js (diễn viên/đạn sprite ở sân tile — hàm chỉ gọi lúc chạy, nạp sau file này cũng được).
    Trận đồ (magic circle sprite) + cắt cảnh tuyệt kỹ nằm ở js/boss-game-tier3-ultimate-fx.js (nạp sau file này)
    — gọi qua bossFxSpawnCircle/bossFxUltimateEvent/stepBossTier3Fx nếu có, để file này không vượt 200 dòng.
@@ -47,9 +48,21 @@ function bossFxEvent(fx, e, st) {
   } else if (e.type === 'cast') {
     const { p, scale } = bossSpellPreset(e.element, e.tier), tip = bossMageCastPoint(m);   // mọi vùng đều sân tile (phase 3)
     p.cast.forEach(o => bossBurst(fx, tip.x, tip.y, o, scale));
-    const dur = BOSS_TUNING.impactMs[e.tier] / 1000, id = ++fx.castN;
-    for (let h = 0; h < (e.hits || 1); h++) {
-      fx.shots.push({ x0: tip.x, y0: tip.y, x1: q.x, y1: q.y - q.s * 0.45 + (h ? q.s * 0.15 : 0), t: -h * 0.08, dur, p, scale, id, mageS: m.s });
+    const dur = BOSS_TUNING.impactMs[e.tier] / 1000, id = ++fx.castN, hits = e.hits || 1;
+    // chiêu có BOSS_SKILL_VISUALS (js/boss-game-skill-visuals.js) đổi quỹ đạo/đạn/số quả trang trí; basic (không
+    // có e.skill/dữ liệu riêng) giữ 'arc' như trước. 'shots' (nếu có) chỉ đổi số quả VẼ, không đổi sát thương thật.
+    const vis = typeof bossSkillVisualFor === 'function' ? bossSkillVisualFor(e.skill, e.evolved) : null;
+    // review M1: BOSS_SKILL_VISUALS[*].cast (chủ yếu chiêu 'ground', không đạn bay ra khỏi tay) — nổi cạnh pháp sư
+    // lúc niệm, đời sống 1 chu kỳ anim (bossSpawnSprite tự tính, xem review C1). Trước đây dữ liệu này chết, không ai đọc.
+    if (vis && vis.cast && vis.cast.length && typeof bossSpawnSprite === 'function' && typeof bossVfxScale === 'function') {
+      vis.cast.forEach((name, i) => bossSpawnSprite(fx, name, tip.x, tip.y, bossVfxScale(name, m.s, 1), { delay: i * 0.05 }));
+    }
+    const motion = (vis && vis.motion) || 'arc', n = (vis && vis.shots) || hits;
+    for (let h = 0; h < n; h++) {
+      fx.shots.push({
+        x0: tip.x, y0: tip.y, x1: q.x, y1: q.y - q.s * 0.45 + (h ? q.s * 0.15 : 0), t: -h * 0.08, dur, p, scale, id,
+        mageS: m.s, motion, sprite: vis ? vis.proj : undefined, h, hits: n, reduced: fx.reduced
+      });
     }
     fx.castPose = 0.4;
     if (e.crit) bossBurst(fx, tip.x, tip.y, BOSS_FX_COMMON.fastCrit);
@@ -105,7 +118,11 @@ function stepBossFx(fx, dtGame, dtReal) {
   for (const s of fx.shots) {
     s.t += dtReal;
     const k = Math.min(1, Math.max(0, s.t / s.dur)), tr = s.p.projectile.trail;
-    if (s.t > 0 && k < 1) bossBurst(fx, s.x0 + (s.x1 - s.x0) * k, s.y0 + (s.y1 - s.y0) * k - Math.sin(k * Math.PI) * 30, tr, s.scale);
+    // 'ground' ẩn tới impact (không đạn, không hạt vệt) — trồi VFX ở chân quái lúc chạm, xem bossActorEvent
+    if (s.t > 0 && k < 1 && s.motion !== 'ground') {
+      const pos = bossShotPos(s, k);
+      bossBurst(fx, pos.x, pos.y, tr, s.scale);
+    }
   }
   fx.rings = fx.rings.filter(r => { r.life -= dtGame; r.r += r.vr * dtGame; return r.life > 0; });
   fx.texts = fx.texts.filter(t => { t.life -= dtGame; t.y -= 42 * dtGame; return t.life > 0; });
@@ -137,8 +154,10 @@ function drawBossFx(ctx, fx, quality) {
   });
   for (const s of fx.shots) {
     if (s.t <= 0) continue;
+    if (s.motion === 'ground') continue;   // không vẽ đạn LÚC NÀO cả (chỉ VFX trồi lúc impact) — review M3: điều kiện
+    // `s.t < s.dur` cũ có thể sai lệch 1 khung (stepBossFx chạy sau bossUiEvents) khiến quả cầu mặc định loé ra
     const k = Math.min(1, s.t / s.dur), pr = s.p.projectile, r = pr.size * s.scale;
-    const x = s.x0 + (s.x1 - s.x0) * k, y = s.y0 + (s.y1 - s.y0) * k - Math.sin(k * Math.PI) * 30;
+    const pos = bossShotPos(s, k), x = pos.x, y = pos.y;
     ctx.globalAlpha = 1;
     if (s.sprite) {   // đạn sprite (Lửa) không quầng gradient; ảnh chưa nạp → rơi xuống quả cầu cũ
       ctx.globalCompositeOperation = 'source-over';
