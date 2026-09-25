@@ -19,13 +19,13 @@ function bossMageCastPoint(m) { return { x: m.x + m.s * 0.18, y: m.y - m.s * 0.7
 /* VFX sprite một lượt tại tâm (x, y); scale nguyên. opts: delay (giây trễ); vel {vx,vy px/s, follow — bay theo
    bossMonsterLiftPx}; life (giây sống — thiếu life + anim KHÔNG loop:false → tự gán = đúng 1 chu kỳ (frames/fps),
    review C1: trước đây các VFX này không bao giờ spriteAnimDone nên rò rỉ fx.sprites mãi; caller cần sống lâu
-   hơn 1 chu kỳ (tuyệt kỹ lặp, VFX di chuyển) vẫn truyền life tường minh, ưu tiên hơn mặc định); anim (khác 'idle'). */
+   hơn 1 chu kỳ (tuyệt kỹ lặp, VFX di chuyển) vẫn truyền life tường minh, ưu tiên hơn mặc định); anim (khác 'idle'); rate (tốc độ anim, <1 chậm). */
 function bossSpawnSprite(fx, name, x, y, scale, opts) {
   const o = opts || {}, vel = o.vel || {}, anim = o.anim || 'idle';
   const a = BOSS_SPRITES[name] && BOSS_SPRITES[name].anims && (BOSS_SPRITES[name].anims[anim] || BOSS_SPRITES[name].anims.idle);
   const life = o.life != null ? o.life : (a && a.loop !== false ? (a.frames || 1) / (a.fps || 12) : null);
   fx.sprites.push({
-    name, x, y, baseY: y, scale: Math.max(1, Math.round(scale)), t: -(o.delay || 0),
+    name, x, y, baseY: y, scale: Math.max(1, Math.round(scale)), t: -(o.delay || 0) * (o.rate || 1), rate: o.rate || 1,
     vx: vel.vx || 0, vy: vel.vy || 0, follow: !!vel.follow, life, anim
   });
 }
@@ -111,7 +111,7 @@ function stepBossActors(fx, dtReal) {
     return p.life > 0;
   });
   fx.sprites = fx.sprites.filter(s => {
-    s.t += dtReal;
+    s.t += dtReal * s.rate;   // rate<1 = anim chậm (tuyệt kỹ); t, delay, life đều tính theo thời gian anim
     if (s.t > 0 && (s.vx || s.vy)) { s.x += s.vx * dtReal; s.y += s.vy * dtReal; s.baseY = s.y; }   // thiên thạch rơi
     if (s.follow && typeof bossMonsterLiftPx === 'function') s.y = s.baseY - bossMonsterLiftPx(fx);   // bay theo quái bị nâng
     return s.life != null ? s.t < s.life : !spriteAnimDone(BOSS_SPRITES[s.name], s.anim, s.t);   // life ưu tiên hơn spriteAnimDone (xem bossSpawnSprite)

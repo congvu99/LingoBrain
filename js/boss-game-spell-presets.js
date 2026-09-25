@@ -219,11 +219,12 @@ const BOSS_FX_COMMON = {
    Phase 3 (plan 260925-1445) thêm lớp hình phụ, vẽ bởi js/boss-game-ultimate-overlay-fx.js suốt fx.ultimate.life:
      overlay: khoá sprite phủ lớn (fog/raylight) — mặc định neo giữa màn, anchor:'mage' neo trên đầu pháp sư.
      rain: khoá sprite hạt rơi lặp quanh quái (particleFire/particleSnow/particleLeafPink…).
-     ground: khoá sprite lặp SÁT MẶT ĐẤT dưới quái (circleSpark2 — Xích Sét nối chuỗi tia dưới chân quái). */
+     ground: khoá sprite lặp SÁT MẶT ĐẤT dưới quái (circleSpark2 — Xích Sét nối chuỗi tia dưới chân quái).
+     swirl: (tornado) khoá xoáy chém cuộn quanh quái nhiều lượt; halo: (revive) vòng sáng lặp quanh pháp sư. */
 const BOSS_ULTIMATE_PRESETS = {
   meteor: { name: 'Mưa Sao Băng', color: '#ff5a1f', shake: 16, flash: 0.5, hits: 4, sprite: 'fireball', bigSprite: 'explosion', rain: 'particleFire' },
   iceAge: { name: 'Kỷ Băng Hà', color: '#4fd3ff', shake: 4, flash: 0.3, hits: 0, sprite: 'icePillar', overlay: 'fog', rain: 'particleSnow' },
   chain: { name: 'Xích Sét', color: '#b06bff', shake: 12, flash: 0.5, hits: 3, sprite: 'thunder', ground: 'circleSpark2' },
-  revive: { name: 'Hồi Sinh', color: '#ffe08a', shake: 0, flash: 0.35, hits: 0, sprite: 'boost', overlay: 'raylight', anchor: 'mage' },
-  tornado: { name: 'Lốc Xoáy', color: '#3fe8b0', shake: 10, flash: 0.2, hits: 0, sprite: 'smokeCircular', rain: 'particleLeafPink' }
+  revive: { name: 'Hồi Sinh', color: '#ffe08a', shake: 0, flash: 0.35, hits: 0, sprite: 'boost', halo: 'circleWhite', overlay: 'raylight', anchor: 'mage' },
+  tornado: { name: 'Lốc Xoáy', color: '#3fe8b0', shake: 10, flash: 0.2, hits: 0, sprite: 'smokeCircular', swirl: 'slashCircular', rain: 'particleLeafPink' }
 };

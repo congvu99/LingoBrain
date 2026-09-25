@@ -47,7 +47,7 @@ function bossFxEvent(fx, e, st) {
     bossBurst(fx, m.x, m.y - m.s * 0.5, BOSS_FX_COMMON.typo);
   } else if (e.type === 'cast') {
     const { p, scale } = bossSpellPreset(e.element, e.tier), tip = bossMageCastPoint(m);   // mọi vùng đều sân tile (phase 3)
-    p.cast.forEach(o => bossBurst(fx, tip.x, tip.y, o, scale));
+    p.cast.filter(o => o.kind !== 'smoke').forEach(o => bossBurst(fx, tip.x, tip.y, o, scale));   // khói = ô vuông tối che pháp sư
     const dur = BOSS_TUNING.impactMs[e.tier] / 1000, id = ++fx.castN, hits = e.hits || 1;
     // chiêu có BOSS_SKILL_VISUALS (js/boss-game-skill-visuals.js) đổi quỹ đạo/đạn/số quả trang trí; basic (không
     // có e.skill/dữ liệu riêng) giữ 'arc' như trước. 'shots' (nếu có) chỉ đổi số quả VẼ, không đổi sát thương thật.
@@ -75,9 +75,9 @@ function bossFxEvent(fx, e, st) {
     const x = q.x, y = q.y - q.s * 0.45;
     // Chiêu có hình riêng: sprite VFX (bossActorEvent) là lớp chính, nhưng drawBossFx vẽ hạt SAU sprite → khói
     // (ô vuông tối 70–115px) + mảnh vỡ + ~70 tia lửa của preset hệ×bậc che kín hình (vd Hoả trụ chỉ thấy khói).
-    // + orb (cầu sáng cộng màu, hệ Sét thành khối trắng) → chỉ giữ tia sáng (1/3 số hạt) và chớp nhẹ; basic giữ nguyên preset như trước.
+    // + orb (cầu sáng cộng màu, hệ Sét thành khối trắng) → chỉ giữ tia sáng (1/3 số hạt) và chớp nhẹ; basic chỉ bỏ khói (ô vuông tối che quái, cả khi chuỗi niệm tuyệt kỹ).
     const vis = typeof bossSkillVisualFor === 'function' ? bossSkillVisualFor(e.skill, e.evolved) : null;
-    const bursts = vis ? p.impact.filter(o => o.kind === 'spark').map(o => Object.assign({}, o, { n: Math.ceil(o.n / 3) })) : p.impact;
+    const bursts = vis ? p.impact.filter(o => o.kind === 'spark').map(o => Object.assign({}, o, { n: Math.ceil(o.n / 3) })) : p.impact.filter(o => o.kind !== 'smoke');
     bursts.forEach(o => bossBurst(fx, x, y, o, scale));
     fx.rings.push({ x, y, r: q.s * 0.15, vr: 380 * scale, life: 0.45, max: 0.45, color: p.ring });
     if (!fx.reduced) fx.shake = Math.max(fx.shake, p.shake * scale);

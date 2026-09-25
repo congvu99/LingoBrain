@@ -236,7 +236,15 @@ cây kỹ năng) đều dùng sprite từ gói **Ninja Adventure**, không còn 
 3. `boss-game-spell-art.js` gán `motion`/`sprite`/`scale` lên `fx.shots` lúc 'cast'; `bossShotPos(s, k)`/
    `bossShotDir(s, k)` (`js/boss-game-skill-motion.js`) tính vị trí/hướng theo 1 trong 6 `BOSS_MOTIONS` — bất biến
    `bossShotPos(s, 1)` LUÔN = điểm chạm quái (`x1,y1`), mọi kiểu quỹ đạo.
-4. Lúc 'impact', `impact[]` của visual thay lớp VFX preset hệ×bậc (nhiều khoá = nhiều lớp vẽ lệch nhẹ).
+4. Lúc 'impact', `impact[]` của visual thay lớp VFX preset hệ×bậc; vị trí/cỡ do `bossImpactSpawns`
+   (`js/boss-game-skill-motion.js`): hình chính ≥ 1.1× quái × `scale`, `pillar: n` xếp chồng thành cột. Chiêu có
+   visual chỉ giữ 1/3 tia lửa preset (bỏ khói/mảnh/cầu sáng — hạt vẽ SAU sprite nên từng che kín hình); mọi phép
+   bỏ hạt `smoke` lúc niệm/chạm (ô vuông tối).
+
+**Nhịp tuyệt kỹ** (`js/boss-game-tier3-ultimate-fx.js`, `BOSS_TUNING.ultimateMs` = 2.8s): 0–0.6s
+(`BOSS_ULT_INTRO_S`) chỉ tên chiêu trên nền tối; sau đó nền nhạt dần, tên thu lên dải trên, chân dung mờ đi, VFX
+chạy chậm (`bossSpawnSprite` opt `rate` = 0.55) và to ~1.8× quái (`bossUltVfxScale`). Khoảng cách giữa các quả/tia
+(meteor/chain, số lượng theo k) tự nén để lượt cuối xong trước khi cắt cảnh hết (có test).
 
 **Cờ `evolved`:** khi dạng tiến hoá đang active ghi đè slot đó (`bossSkillEvolved`, `js/boss-game-skill-pick.js`),
 cast/impact mang thêm `evolved: true`. `bossSkillVisualFor(id, true)` đọc `BOSS_EVO_SKILL_VISUALS[id]`

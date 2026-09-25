@@ -104,7 +104,7 @@ function bossSkillVisualFor(skillId, evolved) {
 /* Vị trí + cỡ từng VFX va chạm tại quái q (tâm cy). Basic (vis null): y như cũ — lệch nhẹ ngang/dọc, cỡ theo
    bossVfxScale. Chiêu có hình riêng: hình CHÍNH (impact[0]) cao ≥ 1.1× quái × vis.scale (trước ~0.5–0.8× quái,
    chìm dưới hạt preset); `pillar: n` = lặp hình chính n lần xếp chồng từ chân quái lên thành cột (Hoả trụ, sét
-   giáng — bộ Ninja Adventure không có sheet cột lửa). Cần bossVfxScale/bossVfxFh/pixelScale (sprite-actors/atlas). */
+   giáng — bộ Ninja Adventure không có sheet cột lửa; đỉnh không vượt mép trên canvas với trùm to). Cần bossVfxScale/bossVfxFh/pixelScale (sprite-actors/atlas). */
 function bossImpactSpawns(list, q, cy, vis, vmul) {
   const out = list.map((name, i) => ({
     name, x: q.x + (i - 0.5) * q.s * 0.14, y: cy - i * q.s * 0.05, delay: i * 0.06,
@@ -113,7 +113,7 @@ function bossImpactSpawns(list, q, cy, vis, vmul) {
   const n = vis && out.length ? (vis.pillar || 1) : 1;
   if (n > 1) {
     const top = out[0], h = bossVfxFh(top.name) * top.scale;
-    out.splice(0, 1, ...Array.from({ length: n }, (_, j) => Object.assign({}, top, { x: q.x, y: q.y - h * (0.5 + j * 0.8), delay: j * 0.05 })));
+    out.splice(0, 1, ...Array.from({ length: n }, (_, j) => Object.assign({}, top, { x: q.x, y: Math.max(h * 0.5, q.y - h * (0.5 + j * 0.8)), delay: j * 0.05 })));
   }
   return out;
 }

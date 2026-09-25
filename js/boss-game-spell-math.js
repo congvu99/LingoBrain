@@ -27,7 +27,7 @@ const BOSS_TUNING = {
   endDelayMs: 900,                    // hp ≤ 0 tại impact → màn thắng sau chừng này
   revealMs: 1200,                     // lộ đáp án (bỏ / hỏng phép) trước khi sang đề kế
   prefixWaitMs: 400,                  // gõ xong đáp án ngắn mà còn đáp án dài hơn (south/southern) → chờ chừng này rồi mới niệm
-  ultimateMs: 1500,                   // cắt cảnh tuyệt kỹ (thời gian thật, đồng hồ trùm dừng)
+  ultimateMs: 2800,                   // cắt cảnh tuyệt kỹ (thời gian thật, đồng hồ trùm dừng) — 0.6s tên chiêu + ~2s VFX chậm cho kịp nhìn
   slowScale: 0.35, slowIdleMs: 1500, slowCapPerLetterMs: 1200,
   weakMul: 1.5, critMul: 1.5,
   xpPerDmg: 0.1, xpStoryWin: 100, buffXpMul: 1.5   // ~200 XP/trận truyện → đủ 15 điểm cây (cấp 16) sau vài tuần chơi đều

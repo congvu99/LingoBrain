@@ -44,5 +44,17 @@
       assert.ok(Number.isInteger(boom) && boom >= 1);
       assert.ok(leaf * BOSS_SPRITES.windLeaf.fh <= boom * BOSS_SPRITES.explosion.fh, 'windLeaf phải nhỏ hơn hẳn explosion cùng chiều cao quái');
     });
+    it('rate<1: delay tính theo giây thật, anim một lượt kéo dài đúng 1/rate lần', () => {
+      const fx = fakeFx();
+      bossSpawnSprite(fx, 'explosion', 0, 0, 1, { delay: 0.5, rate: 0.5 });   // explosion ≈ 0.5s → chậm còn ≈ 1s
+      stepBossActors(fx, 0.45);
+      assert.ok(fx.sprites[0].t < 0, 'chưa qua delay 0.5s thật');
+      stepBossActors(fx, 0.1);
+      assert.ok(fx.sprites[0].t > 0, 'đã qua delay');
+      for (let i = 0; i < 9; i++) stepBossActors(fx, 0.1);   // +0.9s thật sau delay: vẫn còn (cần ~1s)
+      assert.equal(fx.sprites.length, 1);
+      for (let i = 0; i < 3; i++) stepBossActors(fx, 0.1);
+      assert.equal(fx.sprites.length, 0);
+    });
   });
 })();

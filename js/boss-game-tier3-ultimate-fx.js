@@ -25,30 +25,57 @@ function bossFxUltimateEvent(fx, e, st) {
   // meteor/chain: số quả/đòn theo hệ số chuỗi niệm (bossUltBoostCount), thay preset.hits cố định cũ; e.boosted
   // (dạng tiến hoá cấp 16 cộng thêm k) đổi công thức làm tròn sang ceil để luôn có tác dụng, xem bossUltBoostCount
   const hits = (e.id === 'meteor' || e.id === 'chain') && typeof bossUltBoostCount === 'function' ? bossUltBoostCount(e.k || 1, e.boosted) : u.hits;
-  if (e.id === 'meteor') {   // Fireball ×hits rơi chéo (vx/vy thật) + Explosion lớn lúc chạm
-    const dur = 0.5;
+  // Nhịp cắt cảnh: 0..T0 chỉ tên chiêu trên nền tối (drawBossUltimateCutscene), VFX chạy SAU đó, anim chậm
+  // (rate) và to ~1.8× quái — trước đây VFX ×1 (~16×28px) nổ cùng lúc với tên dưới lớp tối 55% nên không thấy gì.
+  const T0 = BOSS_ULT_INTRO_S, rate = fx.reduced ? 1 : BOSS_ULT_ANIM_RATE, big = (name, s) => bossUltVfxScale(name, s || q.s);
+  // khoảng cách giữa n lượt VFX (anim `name`, thêm `pre` giây trước đó) — ≤ cap nhưng nén lại để lượt CUỐI xong trước
+  // khi cắt cảnh hết (k cao → 5–6 quả/tia; trước đây rải cố định nên nổ đè lên từ gõ tiếp theo sau cắt cảnh)
+  const gap = (name, n, cap, pre) => n > 1 ? Math.min(cap, Math.max(0.05, (ultS - 0.1 - T0 - (pre || 0) - bossSpriteAnimSec(name) / rate) / (n - 1))) : 0;
+  if (e.id === 'meteor') {   // Fireball ×hits rơi chéo (vx/vy thật) + Explosion lớn lúc chạm, rải đều qua cắt cảnh
+    const dur = 0.45, g = gap(u.bigSprite, hits, 0.35, dur);
     for (let i = 0; i < hits; i++) {
-      const ex = q.x + (i - (hits - 1) / 2) * q.s * 0.16, ey = q.y - q.s * 0.45;
+      const ex = q.x + (i - (hits - 1) / 2) * q.s * 0.3, ey = q.y - q.s * 0.45, delay = T0 + i * g;
       if (fx.reduced) {   // không rơi — chỉ nổ tại chỗ, lệch nhẹ độ trễ
-        bossSpawnSprite(fx, u.bigSprite, ex, ey, bossVfxScale(u.bigSprite, q.s), { delay: i * 0.1 });
+        bossSpawnSprite(fx, u.bigSprite, ex, ey, big(u.bigSprite), { delay });
       } else {
-        const sx = ex - q.s * 0.3, sy = q.y - q.s * 2.4, delay = i * 0.12;
-        bossSpawnSprite(fx, u.sprite, sx, sy, bossVfxScale(u.sprite, q.s, 1.15), { delay, vel: { vx: (ex - sx) / dur, vy: (ey - sy) / dur }, life: dur });
-        bossSpawnSprite(fx, u.bigSprite, ex, ey, bossVfxScale(u.bigSprite, q.s, 1.15), { delay: delay + dur });
+        const sx = ex - q.s * 0.5, sy = q.y - q.s * 3;
+        bossSpawnSprite(fx, u.sprite, sx, sy, big(u.sprite), { delay, vel: { vx: (ex - sx) / dur, vy: (ey - sy) / dur }, life: dur });
+        bossSpawnSprite(fx, u.bigSprite, ex, ey, big(u.bigSprite), { delay: delay + dur, rate });
       }
     }
-  } else if (e.id === 'chain') {   // Thiên Lôi nhảy hits lần quanh quái
+  } else if (e.id === 'chain') {   // Thiên Lôi giáng hits lần nối nhau quanh quái, mỗi tia cách nhau rõ ràng
+    const g = gap(u.sprite, hits, 0.4);
     for (let i = 0; i < hits; i++) {
-      bossSpawnSprite(fx, u.sprite, q.x + (i - (hits - 1) / 2) * q.s * 0.32, q.y - q.s * 0.45, bossVfxScale(u.sprite, q.s, 1.15), { delay: i * 0.15 });
+      bossSpawnSprite(fx, u.sprite, q.x + (i - (hits - 1) / 2) * q.s * 0.4, q.y - q.s * 0.7, big(u.sprite), { delay: T0 + i * g, rate });
     }
   } else if (e.id === 'revive') {
-    bossSpawnSprite(fx, u.sprite, m.x, m.y - m.s * 0.6, bossVfxScale(u.sprite, m.s, 1.15), { life: Math.min(0.9, ultS) });
-    bossBurst(fx, m.x, m.y - m.s * 0.5, { kind: 'orb', speed: 120, life: 1.2, size: 4, colors: ['#fff4c2', '#ffe08a'], drag: 1.2, g: -60, n: 26 });
+    // boost là anim một lượt (~0.6s) → bùng 3 lần nối nhau + vòng sáng (u.halo) quanh pháp sư suốt cắt cảnh
+    for (let i = 0, g = gap(u.sprite, 3, 0.6); i < 3; i++) bossSpawnSprite(fx, u.sprite, m.x, m.y - m.s * 0.6, big(u.sprite, m.s), { delay: T0 + i * g, rate });
+    if (u.halo) bossSpawnSprite(fx, u.halo, m.x, m.y - m.s * 0.55, big(u.halo, m.s), { delay: T0, life: ultS - T0 - 0.2 });
+    bossBurst(fx, m.x, m.y - m.s * 0.5, { kind: 'orb', speed: 120, life: 1.6, size: 4, colors: ['#fff4c2', '#ffe08a'], drag: 1.2, g: -60, n: 26 });
   } else if (e.id === 'tornado') {   // lốc lớn dưới quái, sống suốt ultimateMs + tự "bay theo" quái bị nâng (bossMonsterLiftPx)
-    bossSpawnSprite(fx, u.sprite, q.x, q.y - q.s * 0.45, bossVfxScale(u.sprite, q.s), { vel: { follow: true }, life: ultS, anim: 'cycle' });
-  } else {   // iceAge: cột băng dưới quái, giữ khung cuối lâu hơn anim tự nhiên cho đỡ hụt (review #5)
-    bossSpawnSprite(fx, u.sprite, q.x, q.y - q.s * 0.45, bossVfxScale(u.sprite, q.s, 1.15), { life: Math.min(1.1, ultS) });
+    bossSpawnSprite(fx, u.sprite, q.x, q.y - q.s * 0.45, big(u.sprite), { vel: { follow: true }, life: ultS, anim: 'cycle' });
+    // khói lốc mờ, đứng riêng khó thấy → thêm xoáy chém (u.swirl) cuộn quanh quái suốt cắt cảnh
+    for (let i = 0; u.swirl && i < 4; i++) {
+      bossSpawnSprite(fx, u.swirl, q.x + (i % 2 ? 1 : -1) * q.s * 0.12, q.y - q.s * (0.35 + i * 0.12), big(u.swirl), { delay: T0 + i * 0.45, rate, vel: { follow: true } });
+    }
+  } else {   // iceAge: cột băng dưới quái, chậm, giữ khung cuối tới gần hết cắt cảnh (review #5)
+    bossSpawnSprite(fx, u.sprite, q.x, q.y - q.s * 0.5, big(u.sprite), { delay: T0, rate, life: (ultS - T0 - 0.2) * rate });
   }
+}
+
+const BOSS_ULT_INTRO_S = 0.6, BOSS_ULT_ANIM_RATE = 0.55;   // giây hiện tên trước VFX; tốc độ anim VFX tuyệt kỹ
+
+/* Thời lượng 1 lượt anim idle (giây, tốc độ gốc) — thiếu dữ liệu → 0.5s */
+function bossSpriteAnimSec(name) {
+  const a = BOSS_SPRITES[name] && BOSS_SPRITES[name].anims && BOSS_SPRITES[name].anims.idle;
+  return a ? (a.frames || 1) / (a.fps || 12) : 0.5;
+}
+
+/* Cỡ VFX tuyệt kỹ ~1.8× cạnh quái (hoặc pháp sư) theo cạnh DÀI của khung (smokeCircular 30×14 nằm ngang) */
+function bossUltVfxScale(name, s) {
+  const def = BOSS_SPRITES[name];
+  return pixelScale(s * 1.8, Math.max((def && def.fw) || 32, bossVfxFh(name)));
 }
 
 /* Lốc xoáy tuyệt kỹ nâng quái lên rồi quật xuống — chỉ dịch điểm vẽ, không đổi state trận */
@@ -110,22 +137,27 @@ function drawBossUltimateCutscene(ctx, fx, ui, now) {
   if (!u) return;
   const w = ui.w, h = ui.h, k = Math.min(1, (u.max - u.life) / 0.3), fade = Math.min(1, u.life / 0.3);
   const inOut = Math.min(k, fade);
-  ctx.globalAlpha = 0.55 * inOut; ctx.fillStyle = '#050212'; ctx.fillRect(0, 0, w, h); ctx.globalAlpha = 1;
+  // sau phần giới thiệu (BOSS_ULT_INTRO_S): nền tối nhạt 0.55 → 0.12 và tên thu nhỏ lên trên để lộ VFX ở quái
+  const out = Math.min(1, Math.max(0, (u.max - u.life - BOSS_ULT_INTRO_S) / 0.3));
+  ctx.globalAlpha = (0.55 - 0.43 * out) * inOut; ctx.fillStyle = '#050212'; ctx.fillRect(0, 0, w, h); ctx.globalAlpha = 1;
   // Chân dung cắt cảnh: dùng faceset dạng tiến hoá đang dùng nếu có (ui.st.mageFace, đặt ở boss-game-ui.js), rơi
   // về faceset gốc theo giới tính khi ở dạng gốc (mageFace rỗng/không có)
   const slide = fx.reduced ? 0 : (1 - k) * -w * 0.3, faceName = (ui.st && ui.st.mageFace) || (ui.gender === 'm' ? 'mageMFace' : 'mageFFace');
   const fs = pixelScale(Math.min(h, w) * 0.24, 38);
-  drawSprite(ctx, faceName, 'idle', 0, w * 0.16 + slide, h * 0.86, fs, { center: true, alpha: inOut });
+  drawSprite(ctx, faceName, 'idle', 0, w * 0.16 + slide, h * 0.86, fs, { center: true, alpha: inOut * (1 - out) });   // mờ sau giới thiệu: che pháp sư (Hồi Sinh vẽ ở đó)
+  // tên: giữa màn → dải trên, 34px → 22px; không lên cao hơn đáy HUD trên cùng (màn thấp ~340px)
+  const fz = Math.round(34 - 12 * out), hudB = typeof BOSS_TOP_HUD_BOTTOM === 'number' ? BOSS_TOP_HUD_BOTTOM : 46;
+  const ty = Math.max(hudB + fz + 4, h * (0.42 - 0.26 * out));
   ctx.globalAlpha = inOut; ctx.textAlign = 'center'; ctx.fillStyle = u.color;
-  ctx.font = '800 34px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
-  ctx.lineWidth = 5; ctx.strokeStyle = 'rgba(0,0,0,.7)'; ctx.strokeText(u.name, w / 2, h * 0.42);
-  ctx.fillText(u.name, w / 2, h * 0.42);
+  ctx.font = '800 ' + fz + 'px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
+  ctx.lineWidth = 5; ctx.strokeStyle = 'rgba(0,0,0,.7)'; ctx.strokeText(u.name, w / 2, ty);
+  ctx.fillText(u.name, w / 2, ty);
   if (u.perfect) {   // chuỗi niệm gõ trọn hết từ (k = 1.5)
     ctx.font = '800 16px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
-    ctx.strokeText('HOÀN HẢO', w / 2, h * 0.42 + 24); ctx.fillText('HOÀN HẢO', w / 2, h * 0.42 + 24);
+    ctx.strokeText('HOÀN HẢO', w / 2, ty + fz * 0.7); ctx.fillText('HOÀN HẢO', w / 2, ty + fz * 0.7);
   }
   if (u.id === 'iceAge' && !fx.reduced) {   // sương phủ toàn màn — bỏ hẳn khi giảm chuyển động
-    ctx.fillStyle = 'rgba(210,245,255,.25)'; ctx.fillRect(0, 0, w, h);
+    ctx.fillStyle = 'rgba(210,245,255,' + (0.25 - 0.15 * out) + ')'; ctx.fillRect(0, 0, w, h);   // nhạt đi khi VFX chạy
     ctx.strokeStyle = 'rgba(255,255,255,.6)'; ctx.lineWidth = 2;
     ctx.beginPath(); ctx.moveTo(w * 0.5, h * 0.3); ctx.lineTo(w * 0.46, h * 0.5); ctx.lineTo(w * 0.53, h * 0.62); ctx.stroke();
   }

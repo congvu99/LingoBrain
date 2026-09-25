@@ -42,9 +42,10 @@ const PURE_MODULES = [
   'js/boss-game-skill-visuals.js',   // BOSS_SKILL_VISUALS (dữ liệu thuần, 30 chiêu) — nạp sau skill-motion.js (dùng bởi bossSkillVisualFor)
   'js/boss-game-ultimate-overlay-fx.js',   // lớp phủ tuyệt kỹ thêm (thuần: alpha/vị trí hạt) — cần BOSS_ULTIMATE_PRESETS/BOSS_SPRITES ở trên
   'js/boss-game-monster-attack-fx.js',   // BOSS_MONSTER_ATTACK_FX + bossMonsterAttackFxEvent (thuần) — cần bossSpawnSprite/bossVfxScale ở trên
-  'js/boss-game-spell-art.js'   // createBossFx/bossFxEvent/stepBossFx (thuần, không đụng ctx) — nạp SAU sprite-actors.js
+  'js/boss-game-spell-art.js',   // createBossFx/bossFxEvent/stepBossFx (thuần, không đụng ctx) — nạp SAU sprite-actors.js
   // (khác index.html, ở đó nạp trước nhưng chỉ gọi hàm bossSpawnSprite lúc runtime nên thứ tự không quan trọng)
   // để test wiring vis.cast (review M1) dùng được bossSpawnSprite/bossVfxScale thật, xem tests/boss-game-spell-art.test.js
+  'js/boss-game-tier3-ultimate-fx.js'   // bossFxUltimateEvent (thuần — test nhịp VFX tuyệt kỹ nằm gọn trong cắt cảnh)
 ];
 // require/Buffer/process chỉ cho test Node-only (server/*); test dùng chung trình duyệt không được phụ thuộc chúng
 const ctx = vm.createContext({ console, Math, Date, JSON, Array, Object, String, Number, RegExp, Error, Promise, fs, path, ROOT: root, require, Buffer, process, setTimeout, clearTimeout, AbortController });
