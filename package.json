@@ -12,6 +12,7 @@
     "node": ">=18"
   },
   "dependencies": {
+    "msedge-tts": "2.0.8",
     "pg": "^8.23.0"
   }
 }

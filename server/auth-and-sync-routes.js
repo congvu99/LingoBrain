@@ -15,14 +15,16 @@ const SESSION_DAYS = 180;
 
 function httpError(status, error) { const e = new Error(error); e.status = status; e.body = { error }; return e; }
 
-function createApi({ pool, isReady, trustHops, log }) {
+function createApi({ pool, isReady, trustHops, log, tts }) {
   const apiIp = createRateLimiter({ limit: 120, windowMs: 60000, maxKeys: 10000 });         // mọi request /api/* (token rác cũng tốn 1 query)
   const perIp = createRateLimiter({ limit: 20, windowMs: 60000, maxKeys: 10000 });          // mọi request auth
   const registers = createRateLimiter({ limit: 5, windowMs: 3600000, maxKeys: 10000 });     // đăng ký thành công / IP / giờ
   const loginFails = createRateLimiter({ limit: 5, windowMs: 900000, maxKeys: 10000 });     // sai mật khẩu / username / 15 phút
   const syncs = createRateLimiter({ limit: 30, windowMs: 60000, maxKeys: 10000 });          // sync / user / phút
   const scryptSlots = createSemaphore(2, 20);                                               // scrypt tốn CPU + 16MB RAM
-  setInterval(() => { const n = Date.now(); [apiIp, perIp, registers, loginFails, syncs].forEach(l => l.sweep(n)); }, 60000).unref();
+  // tts tuỳ chọn: thiếu → GET /api/tts luôn trả 501 (test cũ gọi createApi không có tts vẫn chạy được)
+  const ttsLimiters = tts ? tts.limiters : [];
+  setInterval(() => { const n = Date.now(); [apiIp, perIp, registers, loginFails, syncs, ...ttsLimiters].forEach(l => l.sweep(n)); }, 60000).unref();
 
   async function issueSession(db, userId) {
     const token = cred.newToken();
@@ -104,14 +106,16 @@ function createApi({ pool, isReady, trustHops, log }) {
   }
 
   const deck = createDeckRoutes({ pool });
+  const ttsGet = tts ? (req => tts.tts(req, ipOf(req))) : (() => [501, { error: 'TTS đang tắt' }, { 'Cache-Control': 'no-store' }]);
   const ROUTES = { 'POST /api/register': register, 'POST /api/login': login, 'POST /api/logout': logout, 'PUT /api/sync': sync,
-    'GET /api/words': deck.words, 'GET /api/audio-index': deck.audioIndex };
-  const PATHS = ['/api/register', '/api/login', '/api/logout', '/api/sync', '/api/words', '/api/audio-index'];
+    'GET /api/words': deck.words, 'GET /api/audio-index': deck.audioIndex, 'GET /api/tts': ttsGet };
+  const PATHS = ['/api/register', '/api/login', '/api/logout', '/api/sync', '/api/words', '/api/audio-index', '/api/tts'];
 
   async function handleApi(req, res, https) {
-    // body chuỗi = JSON dựng sẵn (bộ từ); extra ghi đè header mặc định (ETag, Cache-Control)
+    // body chuỗi/Buffer = sẵn dựng (bộ từ / MP3 TTS); extra ghi đè header mặc định (ETag, Cache-Control, Content-Type)
     const send = (status, body, extra) => {
       if (res.headersSent) return;
+      if (Buffer.isBuffer(body)) { res.writeHead(status, Object.assign(securityHeaders(https), extra)); res.end(body); return; }
       res.writeHead(status, Object.assign({ 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' }, securityHeaders(https), extra));
       res.end(body == null ? '' : typeof body === 'string' ? body : JSON.stringify(body));
     };

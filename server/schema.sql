@@ -27,3 +27,9 @@ CREATE TABLE IF NOT EXISTS audio_clips (
 CREATE TABLE IF NOT EXISTS deck_meta (
   id int PRIMARY KEY DEFAULT 1 CHECK (id = 1), deck text NOT NULL, updated text NOT NULL DEFAULT '',
   voice text NOT NULL DEFAULT '', content_hash text NOT NULL, seeded_at timestamptz DEFAULT now());
+
+-- Cache MP3 câu tự gõ qua /api/tts, key = sha256(giọng + '\n' + câu). Không lưu nguyên văn câu (chỉ hash).
+CREATE TABLE IF NOT EXISTS tts_clips (
+  key text PRIMARY KEY CHECK (key ~ '^[0-9a-f]{64}$'), voice text NOT NULL,
+  mp3 bytea NOT NULL CHECK (octet_length(mp3) BETWEEN 1024 AND 307200), created_at timestamptz NOT NULL DEFAULT now());
+CREATE INDEX IF NOT EXISTS tts_clips_created_at ON tts_clips (created_at);
