@@ -20,7 +20,7 @@ function showTab(t) {
   $('#hSub').textContent = t === 'game' ? deck.words.length + ' từ' : '';
   $('#appScroll').scrollTo(0, 0);        // document bị khoá cuộn, nội dung cuộn trong #appScroll
   if (t === 'plan') renderPlan();
-  if (t === 'game') render();
+  if (t === 'game') renderQuiet();       // vào tab không tự đọc thẻ, chờ người dùng bấm nghe
   if (t === 'manage') { renderList(); renderPlanEdit(); }
   const main = $('main'); if (main) main.focus({ preventScroll: true });
 }

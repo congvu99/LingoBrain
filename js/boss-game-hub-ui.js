@@ -20,10 +20,27 @@ function bossBattleTitle(o) {
   return 'Chương ' + (Math.floor(o.beat / BOSS_BEATS_PER_CHAPTER) + 1) + ' · Trận ' + (o.beat % BOSS_BEATS_PER_CHAPTER + 1);
 }
 
-function openBossHub() {
+function openBossHub() { bossOpenHubScreen(startBossHub); }
+
+/* Mở một màn thuộc sảnh (sảnh, cây nguyên tố, tiến hoá…) với `game` sảnh hợp lệ — cần khi đi thẳng từ màn kết trận
+   (ở đó game.stop = null) để thoát/vào trận vẫn dọn vòng lặp chân dung qua stopBossHub. */
+function bossOpenHubScreen(render) {
   game = { id: 'boss', seq: ++gameSeq, miss: [], over: false, stop: stopBossHub };
   syncGameChrome();
-  startBossHub();
+  render();
+}
+
+/* Thanh "Chiến đấu" dính đáy dùng chung cho sảnh + màn phụ (cây nguyên tố, tiến hoá, sổ chiêu): chọn xong vào trận
+   ngay, không phải quay về sảnh cuộn xuống đáy. Độ khó chỉ hiển thị — đổi ở sảnh. */
+function bossBattleBarHtml() {
+  const diff = bossDifficulty(cfg.bossLevel), o = bossTodayOpts(diff), d = BOSS_DIFFS.find(x => x.id === diff);
+  const label = o.kind === 'story' ? '⚔ Chiến đấu' : o.kind === 'practice' ? 'Luyện phép' : 'Bắt đầu';
+  return '<div class="boss-battle-bar"><span class="mono small muted">' + esc(d.label) + ' · ' + BOSS_TUNING.clock[diff] + 's</span>' +
+    '<button class="btn-primary" id="bossStart">' + label + '</button></div>';
+}
+
+function bossBindBattleBar() {
+  $('#bossStart').onclick = () => startBossBattle(bossTodayOpts(cfg.bossLevel));   // cử chỉ thật → focus ô gõ được trên iOS
 }
 
 function startBossHub() {
@@ -52,9 +69,10 @@ function renderBossHub(buff) {
     '<div class="plane-diff boss-diff" id="bossDiff" role="radiogroup" aria-label="cấp độ">' +
       BOSS_DIFFS.map(d => '<button role="radio" data-diff="' + d.id + '" aria-checked="' + (d.id === diff) + '">' + d.label +
         '<b class="mono">' + BOSS_TUNING.clock[d.id] + 's</b></button>').join('') + '</div>' +
-    '<p class="small muted">Đề là <b>nghĩa tiếng Việt</b>. Gõ đúng từ tiếng Anh = niệm chú; từ càng khó chiêu càng lớn, gõ càng nhanh càng đau. ' +
+    '<details class="boss-howto"><summary>Cách chơi</summary>' +
+      '<p class="small muted">Đề là <b>nghĩa tiếng Việt</b>. Gõ đúng từ tiếng Anh = niệm chú; từ càng khó chiêu càng lớn, gõ càng nhanh càng đau. ' +
       'Đang gõ thì thời gian chậm lại. Trùm đánh theo vòng đồng hồ. Enter khi chưa gõ = Bỏ, Esc = tạm dừng. ' +
-      '<small>Tắt bộ gõ tiếng Việt trước khi chơi.</small></p>' +
+      '<small>Tắt bộ gõ tiếng Việt trước khi chơi.</small></p></details>' +
     bossJournalHtml(bossProg.wins) +
     '<div class="row boss-hub-nav"><button class="btn-ghost" id="bossTreeBtn">🌳 Cây nguyên tố</button>' +
       '<button class="btn-ghost" id="bossSkillBookBtn">📖 Sổ chiêu</button>' +
@@ -63,7 +81,7 @@ function renderBossHub(buff) {
           bossEvoMilestoneTier(lv) > bossEvoNoticeSeen(bossProg.element.v)
           ? ' <span class="boss-evo-badge">Có thể tiến hoá!</span>' : '') + '</button>' +
       '<button class="btn-ghost" id="bossJournalBtn">📔 Nhật ký</button></div>' +
-    '<div class="row"><button class="btn-primary" id="bossStart">' + (o.kind === 'story' ? 'Chiến đấu' : 'Bắt đầu') + '</button></div></div>';
+    bossBattleBarHtml() + '</div>';
   bindGameQuit();
   bossBindWordTap($('.boss-hub'));
   bossDrawPortrait();
@@ -76,7 +94,7 @@ function renderBossHub(buff) {
   $('#bossSkillBookBtn').onclick = () => renderSkillBook();
   $('#bossEvoBtn').onclick = () => renderBossEvolution();
   $('#bossJournalBtn').onclick = () => renderJournal();
-  $('#bossStart').onclick = () => startBossBattle(bossTodayOpts(cfg.bossLevel));   // cử chỉ thật → focus ô gõ được trên iOS
+  bossBindBattleBar();
 }
 
 function bossBuffChipHtml(buff) {
@@ -104,5 +122,10 @@ function stopBossHub() {
 
 /* Gọi từ refreshAfterSync (js/cloud-sync-account-ui.js) sau khi áp dữ liệu đồng bộ; không đụng trận đang chạy */
 function refreshBossHub() {
-  if (game && game.id === 'boss' && game.stop === stopBossHub) startBossHub();
+  if (!game || game.id !== 'boss' || game.stop !== stopBossHub) return;
+  // vẽ lại ĐÚNG màn đang mở (màn phụ cũng dùng game sảnh) — không đá người dùng từ Tiến hoá/Cây/Sổ chiêu về sảnh
+  if ($('.boss-evo')) renderBossEvolution();
+  else if ($('.boss-tree')) renderSkillTree();
+  else if ($('.boss-skill-book')) renderSkillBook();
+  else startBossHub();
 }

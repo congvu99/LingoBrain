@@ -67,8 +67,9 @@ function renderBossEvolution() {
         '<div class="boss-evo-row">' + bossEvoNodeWrapHtml(el, pid, lv, activeV) + '</div>' +
         '<div class="boss-evo-row boss-evo-children">' + childrenOf(pid).map(cid => bossEvoNodeWrapHtml(el, cid, lv, activeV)).join('') + '</div>' +
       '</div>'
-    ).join('') + '</div></div>';
+    ).join('') + '</div>' + bossBattleBarHtml() + '</div>';
   $('#bossEvoBack').onclick = () => startBossHub();
+  bossBindBattleBar();
   $('.boss-evo').querySelectorAll('.boss-evo-node').forEach(b => { b.onclick = () => bossChooseEvo(el, b.dataset.form, lv); });
 }
 

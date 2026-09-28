@@ -137,6 +137,13 @@ function showBossResult(ui) {
   const startPct = Math.max(0, Math.min(100, leveledUp ? 0 : (ui.xpAtStart - from1) / (to1 - from1) * 100));
   const endPct = Math.max(0, Math.min(100, (bossProg.xp - from1) / (to1 - from1) * 100));
   const words = missed.map(id => (deck.words.find(w => w.id === id) || {}).word).filter(Boolean);
+  // Nâng cấp đang chờ → nút đi thẳng tới màn đó (đã có thanh "Chiến đấu"), đứng TRƯỚC Đánh lại/Luyện phép.
+  // Nút đầu = CTA chính; không có nâng cấp chờ thì Đánh lại/Luyện phép vẫn là CTA chính như cũ.
+  // cây đầy (15 điểm) mà cấp vẫn tăng → pointsLeft > 0 nhưng không còn gì để cộng: ẩn nút
+  const pts = BOSS_ELEMENTS.some(el => canRankUp(bossProg.alloc, el, lv1)) ? pointsLeft(lv1, bossProg.alloc) : 0;
+  const upgrades = (leveledUp && bossEvoMilestoneReached(lv0, lv1) ? [['bossGoEvo', '🧬 Tiến hoá ngay']] : [])
+    .concat(pts ? [['bossGoTree', '🌳 Cộng điểm (' + pts + ')']] : []);
+  const btn = (id, label, primary) => '<button class="' + (primary ? 'btn-primary' : 'btn-ghost') + '" id="' + id + '">' + esc(label) + '</button>';
   const note = dup ? 'Máy khác đã thắng trận này hôm nay — tính như Luyện phép.'
     : o.kind === 'practice' ? 'Luyện phép chỉ cộng XP.'
     : won ? 'Trận hôm nay đã xong — ngày mai có trận mới.'
@@ -150,16 +157,18 @@ function showBossResult(ui) {
     '<p class="small muted">Tổng sát thương: <b>' + Math.round(st.dealt) + '</b> · Đại chú đã niệm: <b>' + bossUltCastCount(st) + '</b></p>' +
     '<div class="bar-track" aria-label="kinh nghiệm"><div class="bar" id="bossResultBar" style="width:' + startPct + '%"></div></div>' +
     '<span class="mono small muted">Lv ' + lv1 + ' · ' + Math.floor(bossProg.xp - from1) + ' / ' + (to1 - from1) + ' XP</span>' +
-    (leveledUp ? '<p class="ok"><b>LÊN CẤP ' + lv1 + '!</b> Có thêm 1 điểm cho cây nguyên tố.</p>' : '') +
-    (leveledUp && bossEvoMilestoneReached(lv0, lv1) ? '<p class="ok boss-evo-badge-result">🧬 <b>Có thể tiến hoá!</b> Vào sảnh → Tiến hoá để chọn dạng mới.</p>' : '') +
+    (leveledUp ? '<p class="ok"><b>LÊN CẤP ' + lv1 + '!</b></p>' : '') +
     '<p class="small muted">' + esc(note) + '</p>' + storyOutro +
     (words.length ? '<p class="small">' + words.length + ' từ vừa sai sẽ được ôn trước ở phiên tới:</p><p class="serif">' + words.map(esc).join(' · ') + '</p>'
       : '<p class="small ok">Không sai từ nào.</p>') +
-    '<div class="row"><button class="btn-primary" id="bossAgain">' + (won ? 'Luyện phép' : 'Đánh lại') + '</button>' +
-    '<button class="btn-ghost" id="bossToHub">Về sảnh</button></div></div>';
+    '<div class="row">' + upgrades.map((u, i) => btn(u[0], u[1], i === 0)).join('') +
+      btn('bossAgain', won ? 'Luyện phép' : 'Đánh lại', !upgrades.length) + btn('bossToHub', 'Về sảnh', false) + '</div></div>';
   requestAnimationFrame(() => { const bar = $('#bossResultBar'); if (bar) bar.style.width = endPct + '%'; });
   bossBindWordTap($('.boss-result'));
   // "Đánh lại" / "Luyện phép" là cử chỉ thật → startBossBattle focus được ô gõ trên iOS
   $('#bossAgain').onclick = () => startBossBattle(bossTodayOpts(o.difficulty));
   $('#bossToHub').onclick = () => openBossHub();
+  const goEvo = $('#bossGoEvo'), goTree = $('#bossGoTree');
+  if (goEvo) goEvo.onclick = () => bossOpenHubScreen(renderBossEvolution);
+  if (goTree) goTree.onclick = () => bossOpenHubScreen(renderSkillTree);
 }

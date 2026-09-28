@@ -24,6 +24,11 @@ function nextCard(silent) {
 // mọi dạng kiểm tra gọi khi đã lộ đáp án → cho phép sang bước 4
 function finishTest() { revealed = true; }
 
+// Vào tab Ôn từ chỉ vẽ thẻ, không tự đọc (người dùng chưa bấm nghe); chuyển bước / sang thẻ sau vẫn tự đọc như cũ
+let muteAutoSpeak = false;
+function autoSpeak(text) { if (!muteAutoSpeak) speak(text); }
+function renderQuiet() { muteAutoSpeak = true; try { render(); } finally { muteAutoSpeak = false; } }
+
 function render() {
   // đang chơi: giấu mọi thứ quanh #app, nếu không người dùng bấm được vào chip/thống kê
   // và làm đổi hàng đợi ôn ngay giữa ván mà không thấy gì xảy ra
@@ -100,7 +105,7 @@ function s1(w) {
   $('#b-listen').onclick = () => speak(w.context || w.word);
   if (w.contextVi) $('#b-vi').onclick = () => { $('#viBox').hidden = false; $('#b-vi').hidden = true; };
   $('#b-next').onclick = () => { step = 2; render(); };
-  speak(w.context || w.word);
+  autoSpeak(w.context || w.word);
 }
 
 /* Bước 2 — mã hoá kép */
@@ -119,7 +124,7 @@ function s2(w) {
   $('#b-s').onclick = () => speak(w.context || w.word);
   $('#b-slow').onclick = () => speak(w.word, .6);
   $('#b-next').onclick = () => { step = 3; revealed = false; render(); };
-  speak(w.word);
+  autoSpeak(w.word);
 }
 
 /* Bước 4 — chấm độ nhớ → SM-2 */

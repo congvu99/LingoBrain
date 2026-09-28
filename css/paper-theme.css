@@ -359,6 +359,18 @@ html.game-lock .tabbar{display:none}
 .boss-hub-portrait canvas{flex:none;border-radius:var(--r-sm);background:#150c30}
 .boss-buff-chip{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0}
 .boss-hub-nav{gap:8px}
+/* thanh "Chiến đấu" dính đáy vùng cuộn (.app-scroll) ở sảnh + màn phụ; không margin âm vì padding .card đổi theo khung */
+.boss-battle-bar{position:sticky;bottom:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  margin-top:12px;padding:10px 0;background:var(--card);border-top:1px solid var(--rule-soft);
+  box-shadow:0 -10px 14px -12px rgba(0,0,0,.35)}
+/* sticky tính theo mép padding của vùng cuộn → bỏ padding-bottom 28px để thanh sát tab bar (không hở lộ nội dung phía sau);
+   scroll-padding để phần tử được focus không lọt dưới thanh */
+.app-scroll:has(.boss-battle-bar){padding-bottom:0;scroll-padding-bottom:84px}
+.boss-battle-bar>span{flex:none}
+.boss-battle-bar .btn-primary{flex:1;max-width:280px;min-height:48px}
+.boss-howto{padding-bottom:4px}
+.boss-howto summary{font:600 14px/1.4 var(--font-ui);min-height:44px;padding:8px 0}
+.boss-howto p{margin:0 0 8px}
 .boss-gender-pick button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-wash)}
 .boss-tree-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:12px;margin:10px 0}
 .boss-tree-col{display:flex;flex-direction:column;gap:6px;padding:10px;border:1px solid var(--rule);border-radius:var(--r-sm);background:var(--card)}
@@ -390,7 +402,6 @@ html.game-lock .tabbar{display:none}
 .boss-skill-lv{flex:none}
 /* ---- Tiến hoá (30 dạng) ---- */
 .boss-evo-badge{color:var(--accent);font-weight:700;font-size:.8em}
-.boss-evo-badge-result{margin:0}
 .boss-evo-row{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0;justify-content:center}
 .boss-evo-tree{display:flex;flex-direction:column;gap:4px}
 .boss-evo-branch{border-top:1px solid var(--rule);padding-top:8px}

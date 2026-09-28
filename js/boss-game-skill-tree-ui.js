@@ -27,8 +27,10 @@ function renderSkillTree() {
     '<div class="game-head"><button class="btn-sm btn-ghost" id="bossTreeBack" aria-label="về sảnh">←</button>' +
       '<b class="serif">Cây nguyên tố</b><span class="spacer"></span><span class="mono small">Điểm còn: ' + left + '</span></div>' +
     '<div class="boss-tree-grid">' + BOSS_ELEMENTS.map(el => bossTreeColHtml(el, lv)).join('') + '</div>' +
-    '<p class="small muted">Trùm hôm nay sợ hệ: <b>' + esc(ELEMENT_LABEL[mon.weak] || mon.weak) + '</b></p></div>';
+    '<p class="small muted">Trùm hôm nay sợ hệ: <b>' + esc(ELEMENT_LABEL[mon.weak] || mon.weak) + '</b></p>' +
+    bossBattleBarHtml() + '</div>';
   $('#bossTreeBack').onclick = () => startBossHub();
+  bossBindBattleBar();
   BOSS_ELEMENTS.forEach(el => {
     const col = document.querySelector('.boss-tree-col[data-el="' + el + '"]');
     if (!col) return;

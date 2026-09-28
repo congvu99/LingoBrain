@@ -42,6 +42,8 @@ function renderSkillBook() {
       '<b class="serif">📖 Sổ chiêu · ' + esc(ELEMENT_LABEL[el] || el) + '</b><span class="spacer"></span>' +
       '<span class="mono small">Cấp ' + lv + '</span></div>' +
     '<div class="boss-skill-list">' + BOSS_SKILL_SLOTS.map(slot => bossSkillRowHtml(el, slot, lv, skills)).join('') + '</div>' +
-    '<p class="small muted">Mỗi từ niệm chỉ ra tối đa 1 chiêu đặc biệt (ưu tiên: nguy cấp > phản đòn > combo lớn > từ dài > gõ nhanh > combo nhỏ > chiêu thường).</p></div>';
+    '<p class="small muted">Mỗi từ niệm chỉ ra tối đa 1 chiêu đặc biệt (ưu tiên: nguy cấp > phản đòn > combo lớn > từ dài > gõ nhanh > combo nhỏ > chiêu thường).</p>' +
+    bossBattleBarHtml() + '</div>';
   $('#bossSkillBookBack').onclick = () => startBossHub();
+  bossBindBattleBar();
 }

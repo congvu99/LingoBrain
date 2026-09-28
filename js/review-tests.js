@@ -47,7 +47,7 @@ function tDictation(w) {
     '<label class="f" for="ans">Bạn nghe được từ gì?</label>' + answerBox('gõ từ vừa nghe…');
   $('#b-w').onclick = () => speak(w.word); $('#b-s').onclick = () => speak(w.context || w.word); $('#b-slow').onclick = () => speak(w.word, .6);
   wireTyping(w, v => fuzzyMatch(v, w.word), '<div class="meaning">' + esc(w.meaning) + '</div>' + (w.context ? '<div class="sentence sm">' + esc(w.context) + '</div>' : ''));
-  setTimeout(() => speak(w.word), 150);
+  if (!muteAutoSpeak) setTimeout(() => speak(w.word), 150);   // cờ phải đọc ngay: tới lúc hẹn giờ bắn thì renderQuiet() đã tắt cờ
 }
 
 /* owncloze — điền vào câu do chính bạn viết ở bước 5 */
@@ -71,7 +71,7 @@ function tMcq(w) {
     '<div id="verdict" role="alert"></div>' +
     '<div class="row"><button class="btn-primary" id="b-check" hidden>Chấm độ nhớ →</button></div>';
   $('#b-w').onclick = () => speak(w.word);
-  speak(w.word);
+  autoSpeak(w.word);
   $('#body').querySelectorAll('.mcq button').forEach(b => b.onclick = () => {
     if (revealed) return;
     finishTest();
