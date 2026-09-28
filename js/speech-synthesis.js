@@ -21,12 +21,14 @@ let pendingDone = null;                    // resolve của lượt speak() trư
 function audioKey(t) { return String(t || '').replace(/\s+/g, ' ').trim(); }
 fetchFirstOk(audioSources(), u => fetch(u), isAudioIndexJson).then(src => { audioMap = src ? cleanAudioItems(src.data.items) : null; });
 // iOS chỉ cho thẻ Audio phát sau fetch bất đồng bộ nếu nó từng play() trong một cử chỉ thật (touchend/click/phím)
-// → phát 1 mẫu im lặng; gọi lại mỗi cử chỉ / mỗi speak() cho tới khi play() thành công
+// → phát 1 mẫu im lặng; gọi lại mỗi cử chỉ / mỗi speak() cho tới khi được phép phát.
+// AbortError = trình duyệt đã cho phát, chỉ bị speak() ngắt ngang (pause / đổi src) → cũng coi là đã mở khoá;
+// không thì mẫu im lặng luôn bị huỷ, mọi lần chạm sau lại tráo src giữa lúc play() đang chờ.
 let unlocked = false;
 function unlockAudio() {
   if (unlocked || !player || !player.paused) return;
   player.src = 'data:audio/wav;base64,UklGRiUAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQEAAACA';
-  player.play().then(() => { unlocked = true; }).catch(() => {});
+  player.play().then(() => { unlocked = true; }, e => { if (e && e.name === 'AbortError') unlocked = true; });
 }
 if (player) ['touchend', 'click', 'keydown'].forEach(ev => document.addEventListener(ev, unlockAudio, { capture: true, passive: true }));
 
@@ -89,11 +91,13 @@ function speak(text, rate) {
     unlockAudio();                         // speak() thường chạy ngay trong click → tận dụng cử chỉ trước khi fetch
     // Nguồn lỗi (onerror và play() reject có thể cùng bắn) → rơi sang giọng hệ thống đúng 1 lần;
     // gỡ handler của player để mẫu im lặng của unlockAudio không bắn onended báo xong nhầm
-    let fell = false, timer = null;
+    let fell = false, timer = null, started = false;
     const fallback = () => {
       if (fell || token !== playToken) return;   // lượt mới hơn tự lo phần của nó, ở đây không đọc đè
-      fell = true; player.onended = player.onerror = null;
+      fell = true; player.onended = player.onerror = player.onplaying = null;
       if (timer) clearTimeout(timer);
+      if (started) { done(); return; }           // MP3 đã phát (lỗi giữa chừng) → không đọc lại lần 2 bằng giọng hệ thống
+      player.pause();                            // chắc chắn MP3 không phát muộn sau khi giọng hệ thống đã đọc
       speakSystem(text, rate, done);
     };
     const opts = ac ? { signal: ac.signal } : {};
@@ -117,7 +121,10 @@ function speak(text, rate) {
       player.defaultPlaybackRate = player.playbackRate = rate || 1;   // nạp src sẽ reset playbackRate về default
       player.onended = () => { if (token === playToken) done(); };
       player.onerror = fallback;
-      return player.play();
+      player.onplaying = () => { started = true; };
+      // iOS Safari có lúc reject play() (AbortError) dù MP3 vẫn phát → còn đang phát thì để onended/onerror lo,
+      // không thì đọc thêm 1 lần bằng giọng hệ thống ngay sau MP3
+      return player.play().catch(e => { if (token === playToken && (started || !player.paused)) return; throw e; });
     }).catch(fallback);
   });
 }

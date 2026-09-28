@@ -19,8 +19,8 @@ describe('speech-synthesis (Node, /api/tts)', () => {
   }
 
   // dựng context riêng cho 1 test: audioItems giả lập MP3 dựng sẵn (audioMap), online, fetchImpl tự chọn hành vi
-  async function makeCtx({ audioItems = {}, online = true, fetchImpl } = {}) {
-    const state = { player: null, fetchCalls: [], utterances: [] };
+  async function makeCtx({ audioItems = {}, online = true, fetchImpl, playImpl } = {}) {
+    const state = { player: null, fetchCalls: [], utterances: [], srcSets: [] };
     const timers = makeTimers();
     const timeState = { t: 0 };
     const speechState = { last: null };
@@ -32,9 +32,11 @@ describe('speech-synthesis (Node, /api/tts)', () => {
       URL: { createObjectURL: () => 'blob:x', revokeObjectURL: () => {} },
       document: { addEventListener: () => {} },
       Audio: function Audio() {
+        let src = '';
         const a = {
-          paused: true, src: '', defaultPlaybackRate: 1, playbackRate: 1, onended: null, onerror: null,
-          play() { this.paused = false; return Promise.resolve(); }, pause() { this.paused = true; }
+          paused: true, defaultPlaybackRate: 1, playbackRate: 1, onended: null, onerror: null, onplaying: null,
+          get src() { return src; }, set src(v) { src = v; state.srcSets.push(v); },
+          play() { if (playImpl) return playImpl(this); this.paused = false; return Promise.resolve(); }, pause() { this.paused = true; }
         };
         state.player = a; return a;
       },
@@ -205,6 +207,48 @@ describe('speech-synthesis (Node, /api/tts)', () => {
       timers.fireLast();   // giả lập watchdog hết hạn
       await flush();
       assert.ok(resolved, 'watchdog tự done() khi utterance im lặng');
+    } },
+
+    { name: 'iOS: play() MP3 reject AbortError nhưng vẫn đang phát → không đọc thêm giọng hệ thống', fn: async () => {
+      const abort = () => Promise.reject(Object.assign(new Error('aborted'), { name: 'AbortError' }));
+      const playImpl = a => { a.paused = false; return abort(); };   // quirk WebKit: reject mà vẫn phát
+      const { ctx, state } = await makeCtx({ audioItems: { hello: 'abc123456789.mp3' }, fetchImpl: okBlob, playImpl });
+      const p = ctx.speak('hello');
+      await flush();
+      assert.equal(state.utterances.length, 0, 'MP3 vẫn phát → không rơi Web Speech');
+      state.player.onended();
+      await p;
+    } },
+
+    { name: 'play() MP3 bị chặn thật (NotAllowedError, vẫn paused) → rơi Web Speech đúng 1 lần', fn: async () => {
+      const playImpl = () => Promise.reject(Object.assign(new Error('blocked'), { name: 'NotAllowedError' }));
+      const { ctx, state } = await makeCtx({ audioItems: { hello: 'abc123456789.mp3' }, fetchImpl: okBlob, playImpl });
+      ctx.speak('hello'); await flush();
+      assert.equal(state.utterances.length, 1);
+    } },
+
+    { name: 'MP3 đã phát rồi lỗi giữa chừng → resolve, không đọc lại bằng giọng hệ thống', fn: async () => {
+      const { ctx, state } = await makeCtx({ audioItems: { hello: 'abc123456789.mp3' }, fetchImpl: okBlob });
+      const p = ctx.speak('hello'); await flush();
+      state.player.onplaying();
+      state.player.onerror();
+      await p;
+      assert.equal(state.utterances.length, 0);
+    } },
+
+    { name: 'mẫu mở khoá bị speak() ngắt (AbortError) vẫn tính là đã mở khoá → lượt sau không tráo src im lặng', fn: async () => {
+      const playImpl = a => {
+        if (String(a.src).startsWith('data:')) return Promise.reject(Object.assign(new Error('aborted'), { name: 'AbortError' }));
+        a.paused = false; return Promise.resolve();
+      };
+      const { ctx, state } = await makeCtx({ audioItems: { hello: 'abc123456789.mp3' }, fetchImpl: okBlob, playImpl });
+      const p1 = ctx.speak('hello'); await flush();
+      state.player.onended(); state.player.paused = true; await p1;
+      const silent = () => state.srcSets.filter(s => String(s).startsWith('data:')).length;
+      assert.equal(silent(), 1);
+      const p2 = ctx.speak('hello'); await flush();
+      assert.equal(silent(), 1, 'đã mở khoá → không phát mẫu im lặng nữa');
+      state.player.onended(); await p2;
     } },
 
     { name: 'Promise của speak() luôn resolve, kể cả fetch lỗi mạng bất kỳ', fn: async () => {
