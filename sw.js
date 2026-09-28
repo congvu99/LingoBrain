@@ -1,6 +1,6 @@
 /* Service worker: cache-first cho toàn bộ file tĩnh. Đổi CACHE mỗi lần deploy để người dùng nhận bản mới.
    MP3 trong audio/ nằm ở cache riêng AUDIO_CACHE, cache dần khi phát, không xoá khi lên version. */
-const CACHE = 'lingobrain-v2.24.8';
+const CACHE = 'lingobrain-v2.25.0';
 const AUDIO_CACHE = 'lingobrain-audio';
 const ASSETS = [
   './',
@@ -13,6 +13,7 @@ const ASSETS = [
   './words.json',
   './audio/index.json',
   './css/paper-theme.css',
+  './css/app-tabs-and-stage.css',
   './js/srs-scheduler.js',
   './js/boss-progress-sync-merge.js',
   './js/sync-merge.js',
@@ -21,6 +22,7 @@ const ASSETS = [
   './js/speech-synthesis.js',
   './js/recording-store.js',
   './js/daily-plan.js',
+  './js/home-today-screen.js',
   './js/review-mode-picker.js',
   './js/stats-dashboard.js',
   './js/word-import.js',

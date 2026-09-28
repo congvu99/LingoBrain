@@ -216,6 +216,20 @@ describe('wordRx — khớp từ trong câu', () => {
     assert.ok(hit('stubborn', 'He acted stubbornly.'));
     assert.ok(hit('reach', 'She reaches out.'));
   });
+  it('khớp biến thể chính tả ở đuôi (nhân đôi phụ âm, y→i, bỏ e) — không lộ đáp án', () => {
+    assert.ok(hit('big', "The lobster's claws are bigger than human hands."));
+    assert.ok(hit('stop', 'We stopped early.'));
+    assert.ok(hit('run', 'He is running.'));
+    assert.ok(hit('study', 'She studied hard.'));
+    assert.ok(hit('happy', 'He smiled happily.'));
+    assert.ok(hit('make', 'I am making tea.'));
+  });
+  it('biến thể không lan sang từ khác', () => {
+    assert.equal(hit('big', 'A bigot spoke.'), false);
+    assert.equal(hit('art', 'He started.'), false);
+    assert.equal(hit('see', 'I am seeing it.'), true);
+    assert.equal(hit('sea', 'Seasons change.'), false);
+  });
   it('khớp cụm nhiều từ', () => assert.ok(hit('take off', 'I will take off now.')));
   it('khớp từ có ký tự đặc biệt', () => {
     assert.ok(hit('AT&T', 'The AT&T store.'));

@@ -1,6 +1,6 @@
 # LingoBrain — thiết kế giao diện
 
-Cập nhật 2026-09-23. Ưu tiên iPhone, dễ đọc và dễ thao tác cho nhiều độ tuổi. Hướng mới: xanh ngọc đậm, nền trắng ấm, điểm nhấn đào và xanh lá nhạt. Thay thế phong cách giấy nâu trước đây theo yêu cầu người dùng.
+Cập nhật 2026-09-28 (bố cục 4 tab + lớp toàn màn; màu giữ nguyên từ 2026-09-23). Ưu tiên iPhone, dễ đọc và dễ thao tác cho nhiều độ tuổi. Hướng mới: xanh ngọc đậm, nền trắng ấm, điểm nhấn đào và xanh lá nhạt. Thay thế phong cách giấy nâu trước đây theo yêu cầu người dùng.
 
 ## Màu
 
@@ -18,7 +18,7 @@ Cập nhật 2026-09-23. Ưu tiên iPhone, dễ đọc và dễ thao tác cho nh
 | `--ok` | `#24734F` | `#A1DBAE` | Hoàn thành, trả lời đúng |
 | `--bad` | `#B13E3E` | `#FFADA4` | Trả lời sai, thao tác xoá |
 
-Thẻ chào dùng xanh đậm `#194F49`, chữ trắng và nút đào `#F7DFC8`. Sách minh hoạ bằng CSS, không cần tải ảnh hay font từ mạng. Chế độ tối tự theo hệ thống; hỗ trợ giảm chuyển động và tăng tương phản.
+Thẻ "Phiên hôm nay" dùng xanh đậm `--hero`, chữ trắng và nút đào `#F7DFC8` — đây là nút chính duy nhất của màn Hôm nay. Không còn hero minh hoạ. Chế độ tối tự theo hệ thống; hỗ trợ giảm chuyển động và tăng tương phản.
 
 ## Chữ và vùng chạm
 
@@ -31,12 +31,15 @@ Thẻ chào dùng xanh đậm `#194F49`, chữ trắng và nút đào `#F7DFC8`.
 ## Bố cục
 
 - iPhone: lề 18px (12px ở màn dưới 360px), nội dung một cột, thanh điều hướng dưới 76px cộng safe area. Giữ vùng an toàn cho notch và Home indicator.
-- Từ 800px: phần chào và tiến độ hai cột; lịch học hai cột. Chiều rộng nội dung tối đa 1060px, màn ôn từ và cài đặt tối đa 740px.
+- Từ 800px: mỗi tab tối đa 740px (≥1024px: 760px, lề trái cạnh sidebar); thói quen mở hết thì hai cột.
 - Thẻ bo 20–28px, nút 14px, bóng nhẹ. Không dùng hình nền nhiễu.
-- Ba tab: **Hôm nay**, **Ôn từ**, **Góc của bạn**. Tab đang chọn có nền nhấn dưới icon và chữ đậm.
-- Nút trong thẻ chào vào màn ôn từ; số liệu tiến độ và số từ lấy từ dữ liệu thật.
-- Thanh tiến độ lịch học dùng `.progwrap > .bar`; đồng hồ game dùng `.bar-track > .bar` để hai chiều cao không ghi đè nhau.
+- Bốn tab: **Hôm nay**, **Chơi**, **Tiến bộ**, **Tôi**. Tab đang chọn có nền nhấn dưới icon và chữ đậm. Chỉ tab Hôm nay có badge (= số thẻ phiên còn phát).
+- Đầu tab: 1 tiêu đề 26px + 1 dòng phụ (`.tab-head`). Không lặp brand/eyebrow/lời động viên.
+- Một con số = một định nghĩa: "việc hôm nay" luôn đếm từ hàng đợi thật (`queueBreakdown`). "Chưa học" chỉ xuất hiện ở Thư viện từ.
+- Phiên ôn và game chạy trong `#stage` (lớp toàn màn, ẩn tab bar): thanh trên ✕ + tiến độ phiên + n/N; nút hành động chính dính đáy vùng cuộn. Game có nút ← riêng thì thanh ✕ tự ẩn (`:has(#gQuit)`).
+- Nút chấm nhớ: chữ + lần ôn kế, không dùng emoji. Icon điều hướng/thẻ game là SVG nét 1.8.
+- Đồng hồ game dùng `.bar-track > .bar`; CSS 4 tab + stage ở `css/app-tabs-and-stage.css`.
 
 ## PWA
 
-Biểu tượng sách dùng `icon.svg`, bản PNG 192/512 và `apple-touch-icon.png` 180px. Tất cả nằm trong cache offline. `APP_VERSION` và tên cache service worker phải khớp; bản thiết kế này là 2.5.0. Tên `paper-theme.css` giữ nguyên để tương thích đường dẫn.
+Biểu tượng sách dùng `icon.svg`, bản PNG 192/512 và `apple-touch-icon.png` 180px. Tất cả nằm trong cache offline. `APP_VERSION` và tên cache service worker phải khớp; bản thiết kế này là 2.25.0. Tên `paper-theme.css` giữ nguyên để tương thích đường dẫn.

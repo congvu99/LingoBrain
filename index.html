@@ -15,6 +15,7 @@
 <link rel="icon" type="image/svg+xml" href="icon.svg">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="stylesheet" href="css/paper-theme.css">
+<link rel="stylesheet" href="css/app-tabs-and-stage.css">
 </head>
 <body>
 <a class="skip-link" href="#main">Đến nội dung chính</a>
@@ -30,100 +31,87 @@
 <div class="app-scroll" id="appScroll">
 <div class="wrap">
 
-<header class="site-header">
-  <a class="brand" href="./" aria-label="LingoBrain — Trang chủ">
-    <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M7 9c4-2 7-1 9 1v15c-2-2-5-3-9-1zm18 0c-4-2-7-1-9 1v15c2-2 5-3 9-1z"/><path d="M16 4v2m8-1-2 2M8 5l2 2"/></svg></span>
-    <span>Lingo<span class="brand-light">Brain</span><small>Mỗi ngày một chút, tiến xa hơn.</small></span>
-  </a>
-  <span class="header-note"><span></span>Góc học của bạn</span>
-</header>
-
 <main id="main" tabindex="-1">
-<div class="page-heading">
-  <div><p class="eyebrow" id="pageEyebrow">HÀNH TRÌNH MỖI NGÀY</p><h1 id="hTitle">Hôm nay, mình học nhé!</h1><p class="page-subtitle" id="pageSubtitle">Một chút tiếng Anh. Thêm một chút tự tin.</p></div>
-  <span class="count-pill" id="hSub" hidden></span>
-</div>
-
-<!-- ============ TAB 1: GIÁO ÁN ============ -->
-<section id="tab-plan" aria-labelledby="hTitle">
-  <div class="today-grid">
-    <div class="welcome-card">
-      <div class="welcome-copy">
-        <span class="welcome-label"><span aria-hidden="true">✦</span> CHẬM MÀ CHẮC, MỖI NGÀY</span>
-        <h2>Việc nhỏ hôm nay.<br><span>Tiến bộ ngày mai.</span></h2>
-        <p>Không cần hoàn hảo. Chỉ cần bạn<br class="wide-break"> dành một chút thời gian cho mình.</p>
-        <button class="welcome-button" id="btnTodayStart">Bắt đầu học <span aria-hidden="true">↗</span></button>
-      </div>
-      <div class="learning-art" aria-hidden="true">
-        <span class="art-orbit orbit-one"></span><span class="art-orbit orbit-two"></span>
-        <span class="art-spark spark-one">✦</span><span class="art-spark spark-two">✧</span>
-        <span class="art-bubble">Hello!</span>
-        <div class="art-book"><span class="book-line"></span><b>Aa<span>ENGLISH, EVERY DAY</span></b><i></i></div>
-        <span class="art-leaf leaf-one"></span><span class="art-leaf leaf-two"></span><span class="art-check">✓</span>
-      </div>
-    </div>
-    <div class="progwrap">
-      <div class="progtop"><span class="progress-icon" aria-hidden="true">✓</span><span>Những bước nhỏ của bạn</span><span class="streak-pill"><span aria-hidden="true">✦</span> <b id="pStreak">0</b> ngày liên tiếp</span></div>
-      <div class="progress-summary"><div><b id="pDone">0/7</b><span>hoạt động hoàn thành</span></div><strong id="pPercent">0%</strong></div>
-      <div class="bar" id="planProgress" role="progressbar" aria-label="Tiến độ học hôm nay" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="pBar"></i></div>
-      <p class="progress-note" id="pEncourage">Mỗi bước nhỏ đều đáng tự hào.</p>
-    </div>
+<!-- ============ HÔM NAY: phiên ôn là việc chính, thói quen (giáo án) gập lại ============ -->
+<section id="tab-plan" aria-labelledby="homeTitle">
+  <div class="tab-head">
+    <div><h1 id="homeTitle">Chào bạn</h1><p class="tab-sub" id="homeDate"></p></div>
+    <span class="streak" id="pStreak" hidden></span>
   </div>
-  <div class="section-heading"><div><p class="eyebrow">DÀNH THỜI GIAN CHO BẢN THÂN</p><h2>Lịch học của bạn</h2></div><span id="planDate" class="date-label"></span></div>
+  <div id="sessionCard"></div>
+  <div id="homeExtra"></div>
+  <div class="sec-h">
+    <h2>Thói quen <span class="sec-count" id="pDone">0/7</span></h2>
+    <button class="link-btn" id="btnHabits" aria-expanded="false" aria-controls="taskList">Xem tất cả</button>
+  </div>
   <div id="taskList"></div>
-  <div class="plan-footer"><span class="small muted">Cứ học theo nhịp của bạn.</span><button class="btn-ghost btn-sm" id="btnResetDay">Đặt lại hôm nay</button></div>
+  <div class="plan-footer" id="planFooter" hidden><span class="small muted">Việc làm ngoài app — tích khi xong.</span><button class="btn-ghost btn-sm" id="btnResetDay">Đặt lại hôm nay</button></div>
 </section>
 
-<!-- ============ TAB 2: ÔN TỪ ============ -->
-<section id="tab-game" aria-labelledby="hTitle" hidden>
-  <div class="stats" id="deckStats" aria-label="tóm tắt bộ từ">
-    <div class="stat"><b id="sDue">0</b><span>Đến hạn</span></div>
-    <div class="stat"><b id="sNew">0</b><span>Từ mới</span></div>
-    <div class="stat"><b id="sLearn">0</b><span>Đang nhớ</span></div>
-    <div class="stat"><b id="sMature">0</b><span>Đã thuộc</span></div>
-  </div>
-  <div class="game-chips" id="gameChips" aria-label="game từ vựng"></div>
-  <div id="app"></div>
+<!-- ============ CHƠI ============ -->
+<section id="tab-play" aria-labelledby="playTitle" hidden>
+  <div class="tab-head"><div><h1 id="playTitle">Chơi</h1><p class="tab-sub">Luyện thêm — không làm giãn lịch ôn</p></div></div>
+  <div id="gameChips"></div>
+</section>
+
+<!-- ============ TIẾN BỘ ============ -->
+<section id="tab-progress" aria-labelledby="progTitle" hidden>
+  <div class="tab-head"><div><h1 id="progTitle">Tiến bộ</h1><p class="tab-sub" id="progSub"></p></div></div>
   <div id="statsBox"></div>
-</section>
-
-<!-- ============ TAB 3: QUẢN LÝ ============ -->
-<section id="tab-manage" aria-labelledby="hTitle" hidden>
-  <details>
-    <summary>Cài đặt &amp; sao lưu</summary>
-    <div id="acct"></div>
-    <p class="group-label">Sao lưu</p>
-    <div class="row" style="margin-top:4px">
-      <button id="btnExportAll">Tải backup</button>
-      <input type="file" id="fileRestore" accept=".json" hidden>
-      <button id="btnRestore">Khôi phục</button>
-    </div>
-    <p class="small muted">Backup gồm tiến độ, giáo án, checkbox hôm nay, cài đặt. Bộ từ do ứng dụng cung cấp nên không nằm trong backup; bản ghi âm cũng không.</p>
-    <p class="group-label">Nhịp học</p>
-    <div class="grid2">
-      <div><label class="f" for="setNew">Từ mới mỗi ngày</label><input type="number" id="setNew" min="1" max="50" inputmode="numeric"></div>
-      <div><label class="f" for="setMax">Tối đa ôn mỗi phiên</label><input type="number" id="setMax" min="5" max="200" inputmode="numeric"></div>
-    </div>
-    <div class="row"><button class="btn-sm btn-ghost" id="btnResetProg">Xoá tiến độ học từ</button></div>
-  </details>
-
-  <details>
-    <summary>Bộ từ (<span id="cntWords">0</span>) &amp; lịch ôn</summary>
+  <details class="card lib" id="libBox">
+    <summary>Thư viện từ <span class="sec-count" id="libCount"></span></summary>
+    <p class="small muted">Tổng <span id="cntWords">0</span> mục trong bộ từ, xếp theo thứ tự học.</p>
     <div class="list" id="wordList"></div>
   </details>
+</section>
 
-  <details>
-    <summary>Sửa giáo án</summary>
+<!-- ============ TÔI ============ -->
+<section id="tab-manage" aria-labelledby="meTitle" hidden>
+  <div class="tab-head"><div><h1 id="meTitle">Tôi</h1><p class="tab-sub">Tài khoản, nhịp học và dữ liệu</p></div></div>
+  <div id="acct"></div>
+  <h2 class="group-h">Nhịp học</h2>
+  <div class="card">
+    <div class="grid2">
+      <div><label class="f" for="setNew">Từ mới mỗi ngày</label><input type="number" id="setNew" min="1" max="50" inputmode="numeric"></div>
+      <div><label class="f" for="setMax">Tối đa thẻ ôn / phiên</label><input type="number" id="setMax" min="5" max="200" inputmode="numeric"></div>
+    </div>
+  </div>
+  <details class="card">
+    <summary>Sửa thói quen</summary>
     <p class="small muted">Sửa giờ / việc / mô tả cho hợp ca làm của bạn.</p>
     <div id="planEdit"></div>
     <div class="row">
-      <button class="btn-primary" id="btnPlanSave">Lưu giáo án</button>
+      <button class="btn-primary" id="btnPlanSave">Lưu thói quen</button>
       <button class="btn-sm btn-ghost" id="btnPlanAdd">+ Thêm việc</button>
       <button class="btn-sm btn-ghost" id="btnPlanDefault">Về mặc định</button>
     </div>
   </details>
+  <h2 class="group-h">Sao lưu</h2>
+  <div class="card">
+    <div class="row" style="margin-top:0">
+      <button id="btnExportAll">Tải backup</button>
+      <input type="file" id="fileRestore" accept=".json" hidden>
+      <button id="btnRestore">Khôi phục</button>
+    </div>
+    <p class="small muted">Backup gồm tiến độ, thói quen, cài đặt, kỷ lục game và tiến trình Pháp sư. Bộ từ do ứng dụng cung cấp nên không nằm trong backup; bản ghi âm cũng không.</p>
+  </div>
+  <h2 class="group-h danger-h">Vùng nguy hiểm</h2>
+  <div class="card danger">
+    <p class="small muted" style="margin-top:0">Xoá lịch ôn của mọi từ. Bộ từ, kỷ lục game và tiến trình Pháp sư vẫn giữ.</p>
+    <button class="btn-danger" id="btnResetProg">Xoá tiến độ học từ</button>
+  </div>
 </section>
 </main>
+
+<!-- ============ LỚP TOÀN MÀN: phiên ôn / game — ẩn tab và thanh điều hướng ============ -->
+<section id="stage" aria-label="Phiên học" hidden>
+  <div class="stage-bar" id="stageBar">
+    <button class="icon-btn" id="stageClose" aria-label="Thoát phiên — tiến độ đã lưu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    <div class="stage-prog" id="stageProg" role="progressbar" aria-label="Tiến độ phiên" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0"><i id="stageFill"></i></div>
+    <span class="stage-count" id="stageCount"></span>
+  </div>
+  <div id="app"></div>
+</section>
 </div>
 </div>
 
@@ -133,11 +121,13 @@
     <span>Lingo<span class="brand-light">Brain</span><small>Mỗi ngày một chút.</small></span>
   </a>
   <button id="nav-plan" class="on" aria-current="page">
-    <span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="1"/><path d="M3 9h18M8 2v4M16 2v4"/></svg><span class="dot" id="dotPlan" hidden></span></span>Hôm nay</button>
-  <button id="nav-game" aria-current="false">
-    <span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h12l4 4v12H4z"/><path d="M8 12h8M8 16h5M16 4v4h4"/></svg><span class="dot" id="dotGame" hidden></span></span>Ôn từ</button>
+    <span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg><span class="dot" id="dotPlan" hidden></span></span>Hôm nay</button>
+  <button id="nav-play" aria-current="false">
+    <span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 11v3M5.5 12.5h3M15.5 12h.01M18 14h.01"/></svg></span>Chơi</button>
+  <button id="nav-progress" aria-current="false">
+    <span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span>Tiến bộ</button>
   <button id="nav-manage" aria-current="false">
-    <span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="7" cy="18" r="1.5"/></svg></span>Góc của bạn</button>
+    <span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg></span>Tôi</button>
   <p class="nav-foot"><span></span>Tiến độ lưu trên máy này</p>
 </nav>
 
@@ -149,6 +139,7 @@
 <script src="js/speech-synthesis.js"></script>
 <script src="js/recording-store.js"></script>
 <script src="js/daily-plan.js"></script>
+<script src="js/home-today-screen.js"></script>
 <script src="js/review-mode-picker.js"></script>
 <script src="js/stats-dashboard.js"></script>
 <script src="js/word-import.js"></script>

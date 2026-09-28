@@ -16,3 +16,16 @@ describe('computeStats', () => {
   it('heatmap 30 days, yesterday = 2', () => { assert.equal(s.heatmap.length, 30); assert.equal(s.heatmap[28].count, 2); assert.equal(s.heatmap[29].count, 0); });
   it('empty data', () => { const e = computeStats({ words: [] }, {}, T0); assert.equal(e.retention7.rate, null); assert.equal(e.total, 0); });
 });
+
+describe('gradesBetween', () => {
+  const from = new Date(2026, 8, 14).getTime(), to = from + DD;   // cả ngày hôm qua so với T0
+  it('đếm đúng lượt trong khoảng, tách nhớ / quên', () => {
+    const g = gradesBetween(srsS, from, to);
+    assert.equal(g.count, 2); assert.equal(g.pass, 2); assert.equal(g.fail, 0); assert.near(g.rate, 1);
+  });
+  it('khoảng không có lượt nào → rate null', () => {
+    const g = gradesBetween(srsS, T0, T0 + DD);
+    assert.equal(g.count, 0); assert.equal(g.rate, null);
+  });
+  it('bản ghi thiếu hist không lỗi', () => assert.equal(gradesBetween({ x: { state: 'new' } }, 0, T0).count, 0));
+});

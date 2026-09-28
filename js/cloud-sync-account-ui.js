@@ -105,7 +105,7 @@ function switchOwnerIfNew(username) { if (!syncMeta().owner) setSyncMeta({ owner
 /* ---- hook engine gọi sau khi áp dữ liệu từ server ---- */
 // lần mở app: dựng lại hàng đợi với dữ liệu mới nếu người dùng chưa vào ôn/chơi (giữ từ sai trong game lên đầu)
 function onInitialSyncApplied(miss) {
-  if (tab === 'game' || game) return;
+  if (stage || game) return;   // đang trong phiên ôn / game: không thay hàng đợi dưới chân người dùng
   queue = buildQueue(deck, srs, cfg, Date.now(), miss || []);
   cur = null;
 }
@@ -118,8 +118,10 @@ function refreshAfterSync() {
   const ae = document.activeElement;
   const typing = ae && /^(INPUT|TEXTAREA)$/.test(ae.tagName) && ae.type !== 'checkbox' && ae.closest && ae.closest('#tab-plan');
   const busyPlan = typing || (typeof mediaRec !== 'undefined' && mediaRec && mediaRec.state === 'recording');
-  if (tab === 'plan' && !busyPlan) renderPlan();
-  if (tab === 'manage') { renderList(); if (!planEditPending()) renderPlanEdit(); }
+  if (tab === 'plan' && !stage && !busyPlan) renderPlan();
+  if (tab === 'play' && !stage) renderGameChips();
+  if (tab === 'progress' && !stage) renderProgress();
+  if (tab === 'manage' && !planEditPending()) renderPlanEdit();
   updateDots();
   // refreshBossHub (boss-game-hub-ui.js) vẽ lại sảnh Pháp Sư Lexoria; không đụng nếu đang trong trận (hub tự biết khi nào nên vẽ lại)
   if (typeof refreshBossHub === 'function') refreshBossHub();

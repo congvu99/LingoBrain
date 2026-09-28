@@ -89,7 +89,7 @@ function renderBossHub(buff) {
     b.onclick = () => { cfg.bossLevel = bossDifficulty(b.dataset.diff); save(K_CFG, cfg); startBossHub(); };
   });
   const goReview = $('#bossBuffReview');
-  if (goReview) goReview.onclick = () => showTab('plan');
+  if (goReview) goReview.onclick = () => { closeGame(); openStage('review'); render(); };   // đổi lớp game → phiên ôn tại chỗ
   $('#bossTreeBtn').onclick = () => renderSkillTree();
   $('#bossSkillBookBtn').onclick = () => renderSkillBook();
   $('#bossEvoBtn').onclick = () => renderBossEvolution();

@@ -4,7 +4,7 @@ Web tĩnh, **ưu tiên mobile**, giao diện xanh ngọc thân thiện, ưu tiê
 
 ```
 eng/
-├── index.html        khung app (3 tab)
+├── index.html        khung app (4 tab + lớp toàn màn)
 ├── css/paper-theme.css
 ├── js/               15 module nhỏ (xem docs/system-architecture.md)
 ├── sw.js, manifest.json   PWA (cache /api/words, /api/audio-index)
@@ -15,7 +15,9 @@ eng/
 └── tests/            node tests/run-tests.js · tests/run-tests.html
 ```
 
-3 tab ở thanh dưới: **Giáo án** · **Ôn từ** · **Quản lý**. Số đỏ trên tab = việc còn lại / thẻ cần ôn.
+4 tab ở thanh dưới: **Hôm nay** · **Chơi** · **Tiến bộ** · **Tôi**. Số trên tab Hôm nay = số thẻ phiên ôn còn phát hôm nay (đúng bằng số trên nút Bắt đầu và thanh n/N trong phiên).
+
+Phiên ôn và mọi game chạy trong **lớp toàn màn** (ẩn tab + thanh điều hướng, có ✕ và tiến độ n/N). Nút/vuốt "quay lại" của hệ điều hành đóng lớp này, không rời app.
 
 ## Chạy thử
 
@@ -49,9 +51,13 @@ Trên điện thoại: mở link → **Thêm vào màn hình chính** (iOS: nút
 - Server tự nạp bộ từ từ `words.json` + `audio/index.json` nếu hash nội dung khác trong `deck_meta`; xem `node tools/seed-database.js --help` để tạo tài khoản chủ
 - Máy người dùng (cả điện thoại/PWA) **tự lên bản mới**: mở app hoặc quay lại app từ nền thì tự kiểm tra, tải xong tự tải lại trang (đang chơi dở / đang gõ thì chờ xong); bộ từ cập nhật tự động qua `/api/words`
 
-## Tab Giáo án
+## Tab Hôm nay
 
-7 việc theo giờ, mỗi việc 1 checkbox. Việc đúng khung giờ được đánh dấu **bây giờ**. Tự reset sang ngày mới. **Chuỗi ngày** chỉ tăng khi hôm trước tích đủ.
+**Phiên hôm nay** là việc chính: số thẻ · ước lượng phút · tách ôn lại / từ mới → nút **Bắt đầu** (đang dở thì **Tiếp tục · n/N**). Hết thẻ → "Xong rồi" + số lượt chấm, % nhớ, số thẻ ngày mai, **Học thêm n từ mới**, gợi ý 1 game.
+
+**Chuỗi ngày** tính một ngày khi hôm đó có chấm ít nhất 1 thẻ **hoặc** tích đủ thói quen; ngày hôm nay đã đủ thì hiện +1 ngay.
+
+**Thói quen** (giáo án cũ): 7 việc theo giờ, mỗi việc 1 checkbox, tự reset sang ngày mới. Mặc định gập, chỉ hiện **việc tiếp theo**; bấm **Xem tất cả** để mở hết. Sửa ở tab Tôi.
 
 | Giờ | Việc | Nút phụ |
 |---|---|---|
@@ -65,11 +71,11 @@ Trên điện thoại: mở link → **Thêm vào màn hình chính** (iOS: nút
 
 **Ghi âm**: gõ câu đang shadow → 🔊 nghe mẫu (MP3 Neural hoặc Web Speech) → ⏺ ghi → nghe lại A/B. Bản ghi lưu trên máy (IndexedDB), giữ 10 bản gần nhất mỗi việc, **không nằm trong backup**. iOS có thể xoá nếu 7 ngày không mở app.
 
-## Tab Ôn từ
+## Phiên ôn
 
-**Từ mới** đi 5 bước: 1 ngữ cảnh thật (nghĩa Việt giấu sau nút "Xem dịch") → 2 mã hoá kép (emoji, IPA, 🔊, mẹo nhớ) → 3 gõ lại từ → 4 chấm độ nhớ → 5 viết câu của mình.
+**Từ mới** đi 5 bước (có thanh 5 bước): 1 ngữ cảnh thật (nghĩa Việt giấu sau nút "Xem dịch") → 2 ghi nhớ (emoji, IPA, 🔊, mẹo nhớ) → 3 gõ lại từ → 4 chấm độ nhớ → 5 viết câu của mình.
 
-**Từ ôn lại** vào thẳng bước 3 với **dạng kiểm tra xoay theo độ chín**, không lặp cùng dạng 2 lần liền:
+**Từ ôn lại** vào thẳng bước 3 (không có thanh bước, nhãn là dạng kiểm tra) với **dạng kiểm tra xoay theo độ chín**, không lặp cùng dạng 2 lần liền:
 
 | Từ đang ở | Dạng kiểm tra |
 |---|---|
@@ -82,16 +88,20 @@ Chọn nghĩa cần ≥8 từ trong bộ; điền câu cần bạn đã lưu câ
 
 **Gõ từ** chấp nhận lệch 1 ký tự với từ ≥5 chữ (báo "≈ Gần đúng").
 
-**Chấm & lịch ôn (SM-2, thuật toán Anki):** 😵 Quên · 😓 Khó · 🙂 Nhớ · 😎 Dễ. Mỗi từ có hệ số dễ riêng: từ hay quên giãn chậm, từ dễ giãn nhanh (1 → 3 → ×2.5 → …).
+**Chấm & lịch ôn (SM-2, thuật toán Anki):** Quên · Khó · Nhớ · Dễ — mỗi nút ghi luôn lần ôn kế. Mỗi từ có hệ số dễ riêng: từ hay quên giãn chậm, từ dễ giãn nhanh (1 → 3 → ×2.5 → …).
 
-- **Từ mới / vừa quên** quay lại sau 4 thẻ trong cùng phiên; **đúng 2 lần liên tiếp** (hoặc 😎) mới ra lịch ngày. Đây là bước then chốt để nhớ lâu.
-- Thẻ quá hạn lâu nhất luôn được ôn trước. Mặc định 5 từ mới/ngày, tối đa 40 thẻ ôn/phiên (chỉnh trong Góc của bạn).
+- **Từ mới / vừa quên** quay lại sau 4 thẻ trong cùng phiên; **đúng 2 lần liên tiếp** (hoặc Dễ) mới ra lịch ngày. Đây là bước then chốt để nhớ lâu.
+- Thẻ quá hạn lâu nhất luôn được ôn trước. Mặc định 5 từ mới/ngày, tối đa 40 thẻ ôn/phiên (chỉnh ở tab Tôi).
 
-**Thống kê** dưới thẻ: tỉ lệ nhớ 7/30 ngày, lịch tải 7 ngày tới, heatmap 30 ngày, từ hay quên (bấm để ôn ngay).
+Hết phiên: % nhớ, số thẻ / từ mới / lần quên, các từ vừa quên (bấm để nghe), **Học thêm** / **Ôn thêm 10 thẻ**. ✕ giữa phiên không mất gì — mỗi thẻ đã chấm là đã lưu.
+
+## Tab Tiến bộ
+
+Đã học (= Đang nhớ + Đã thuộc, thuộc = khoảng cách ≥21 ngày), tỉ lệ nhớ 30 ngày, chuỗi ngày, lịch ôn 7 ngày tới, heatmap 30 ngày, từ hay quên (bấm để ôn ngay), **Thư viện từ** (chỉ vẽ khi mở).
 
 ## Game từ vựng
 
-Hàng **Chơi nhanh** ở đầu tab Ôn từ. Năm game ngắn, luyện những thứ mà 5 dạng kiểm tra ở trên không chạm tới:
+Tab **Chơi** (thẻ Pháp sư Lexoria + 5 thẻ "Chơi nhanh", mỗi thẻ ghi luyện gì · bao lâu · kỷ lục; còn thẻ cần ôn thì có dải nhắc "Ôn trước", không khoá). Năm game ngắn, luyện những thứ mà 5 dạng kiểm tra ở trên không chạm tới:
 
 | Game | Luyện gì | Thể thức | Mở khi |
 |---|---|---|---|
@@ -103,7 +113,7 @@ Hàng **Chơi nhanh** ở đầu tab Ôn từ. Năm game ngắn, luyện những
 
 **Chơi game không làm giãn lịch ôn.** Trả lời đúng không ghi gì vào SM-2; trả lời sai thì từ đó được đẩy lên đầu phiên ôn kế tiếp. Nói cách khác game chỉ rút ngắn lịch, không bao giờ kéo dài — đoán mò trong 4 đáp án sẽ không làm hỏng tiến độ.
 
-Chip bị xám nghĩa là chưa đủ điều kiện, chạm vào sẽ nói rõ còn thiếu gì. **Điền câu tốc độ** cần từ đã học có trường `context` (câu ví dụ) trong `words.json`.
+Thẻ bị mờ nghĩa là chưa đủ điều kiện — lý do ghi ngay trên thẻ. **Điền câu tốc độ** cần từ đã học có trường `context` (câu ví dụ) trong `words.json`.
 
 **Bắn máy bay:** chọn cấp **Dễ / Vừa / Khó** rồi bấm **Bắt đầu** (iPhone: để bật bàn phím; khung chơi tự co vừa phần trên bàn phím). Dễ rơi chậm (15s), ít mục tiêu, hiện sẵn chữ cái đầu; Vừa 11s; Khó 8s và đông hơn. Mỗi cấp một kỷ lục, cấp lần trước được chọn sẵn. **Muốn hạ mục tiêu nào thì gõ từ của nó** — game không tự chọn thay bạn. Mọi mục tiêu có từ bắt đầu bằng chữ đang gõ đều hiện tiến độ (`s t u _ _ _ _ _`). Khi chữ đang gõ còn khớp nhiều từ (`re` → `reckon` / `reach out`), game không chọn thay: đạn vẫn bắn ra theo từng chữ nhưng lơ lửng chờ trên tàu; chữ tiếp theo chốt mục tiêu và toàn bộ đạn chờ lao vào nó. Đổi ý giữa chừng cứ gõ từ khác, không cần xoá. Tàu của bạn nghiêng mình bay sang phía mục tiêu đang bắn. Hai từ trùng đầu như `give` / `give up`: gõ tiếp `up` để hạ `give up`, hoặc **Enter** để hạ `give`; Enter khi chưa gõ trọn từ nào thì xoá chữ đang gõ. Dấu cách, gạch nối tự bỏ qua. Gõ sai chỉ làm đạn bay trượt, không trừ điểm; sai 3 chữ trên cùng một mục tiêu thì từ đó được ôn trước. Mục tiêu chạm tàu: mất 1 ❤️, từ hiện màu đỏ và vào danh sách ôn trước. Đóng bàn phím, chuyển app, bấm ⏸ hoặc Esc thì tạm dừng. Nên tắt Telex/Unikey khi chơi.
 
@@ -113,7 +123,7 @@ Bỏ ván giữa chừng (đổi tab hoặc bấm ←) thì không tính điểm
 
 ## Pháp Sư Lexoria
 
-Chip riêng (khác 5 game "Chơi nhanh" ở trên) trong hàng game, mở khi có ≥8 từ đã học. Pháp sư (chọn nam/nữ) đánh quái theo cốt truyện 4 chương × 7 trận + chế độ **Luyện phép** (không giới hạn ngày) và **vô tận** (sau khi hết 28 trận truyện).
+Thẻ lớn đầu tab Chơi (khác 5 game "Chơi nhanh" ở trên), mở khi có ≥8 từ đã học. Pháp sư (chọn nam/nữ) đánh quái theo cốt truyện 4 chương × 7 trận + chế độ **Luyện phép** (không giới hạn ngày) và **vô tận** (sau khi hết 28 trận truyện).
 
 - Đề hiện `emoji + nghĩa Việt`; **gõ đúng từ tiếng Anh = niệm chú**. Gõ càng nhanh, sát thương phép càng cao; đang gõ đúng thì thời gian trận chậm hẳn lại (buông tay hoặc gõ sai >1,5 giây thì trở lại bình thường).
 - Bậc chiêu (1–3 sao) không tính theo ngưỡng tuyệt đối, mà xếp hạng **tương đối trong chính bộ từ người chơi đang có**: 30% từ khó nhất luôn ra chiêu bậc 3, 40% giữa ra bậc 2, còn lại bậc 1 — người mới học vẫn thấy đủ 3 bậc chiêu ngay từ đầu.
@@ -126,7 +136,7 @@ Chip riêng (khác 5 game "Chơi nhanh" ở trên) trong hàng game, mở khi c�
 - Buff "Ôn từ": ôn xong hết thẻ đến hạn trong ngày (không tính từ mới) sẽ được cộng thêm hiệu quả cho trận hôm đó.
 - **Không đụng lịch SM-2**: giống các game khác, trả lời sai chỉ đẩy từ đó vào `gameMiss` để lên đầu phiên ôn kế tiếp — Pháp Sư Lexoria không tự ghi điểm, không đổi `ef`/`ivl`/`due`.
 - Tiến trình (`eng.boss.v1`: cấp, XP, cây kỹ năng, giới tính, trường phái, dạng tiến hoá mỗi hệ, trận đã thắng, vết thương trận dở) đồng bộ đa máy như tiến độ học, và nằm trong file **Tải backup**. **Khôi phục backup luôn gộp** tiến trình Pháp sư (lấy XP/cấp cao hơn, dồn các trận đã thắng, dạng tiến hoá lấy máy chọn sau) — không bao giờ làm tụt cấp hay xoá tiến trình đang có, dù đăng nhập hay không.
-- Nút **Xoá tiến độ** (Góc của bạn) chỉ xoá lịch ôn SM-2 — **không đụng tiến trình Pháp sư**, giống cách nó không đụng kỷ lục các game khác.
+- Nút **Xoá tiến độ** (tab Tôi → Vùng nguy hiểm) chỉ xoá lịch ôn SM-2 — **không đụng tiến trình Pháp sư**, giống cách nó không đụng kỷ lục các game khác.
 
 **Credit hình ảnh**: toàn bộ sprite pixel (pháp sư, quái, trùm, VFX, sân đấu, chân dung) dùng gói
 [**Ninja Adventure** by pixel-boy & AAA](https://pixel-boy.itch.io/ninja-adventure-asset-pack) — **CC0** (miễn phí,
@@ -136,13 +146,13 @@ bằng `tools/copy-boss-sprites.js` (cần gói gốc ở `assets/ninja-adventur
 
 ## Bộ từ
 
-Bộ từ đọc từ **API `/api/words` (DB)** nếu có, hoặc **fallback `words.json`** nếu lỗi/offline. Người dùng không nạp, thêm, sửa hay xoá từ được. Tab Quản lý chỉ hiện danh sách từ để xem.
+Bộ từ đọc từ **API `/api/words` (DB)** nếu có, hoặc **fallback `words.json`** nếu lỗi/offline. Người dùng không nạp, thêm, sửa hay xoá từ được. Tab Tiến bộ → Thư viện từ chỉ hiện danh sách để xem.
 
 - Client: tải từ API trước (cache qua service worker network-first); lỗi 404, 503 hoặc offline → dùng `words.json`. Chỉ lấy tiến độ (pruneSrs) khi bộ từ đến từ API — bản fallback có thể lệch DB nên không bao giờ được xoá tiến độ.
 - Chỉnh sửa: sửa `words.json` (+ tạo lại audio `python tools/generate_edge_tts_audio.py` nếu cần) → commit → deploy → server tự cập nhật DB từ `words.json` + `audio/index.json` khi nhận thấy hash nội dung đổi. Không chạy CLI với file local lên production.
 - Trường: `word`, `meaning` (bắt buộc), `ipa`, `pos`, `context`, `contextVi`, `source`, `emoji`, `image`, `mnemonic`, `outputPrompt`. `id` sinh từ `word` nếu thiếu.
 - Tiến độ gắn theo `id`: sửa nội dung từ thì tiến độ giữ nguyên; **gỡ từ khỏi `words.json` thì tiến độ của từ đó bị xoá** ở lần mở kế tiếp khi bộ từ từ API (tải từ file không xoá gì).
-- Backup (Góc của bạn → Tải backup) chỉ gồm tiến độ, giáo án, cài đặt, kỷ lục game. Khôi phục backup bản cũ có kèm bộ từ thì phần bộ từ bị bỏ qua.
+- Backup (tab Tôi → Tải backup) chỉ gồm tiến độ, giáo án, cài đặt, kỷ lục game. Khôi phục backup bản cũ có kèm bộ từ thì phần bộ từ bị bỏ qua.
 - Thành phần (~5030 mục): 2500 từ Oxford 3000/5000 (A1–B2) + ~2530 mục **Spoken core** cho giao tiếp với người bản địa — `source` = `Spoken core · phrasal verb` (703), `· chunk` (841 cụm nói sẵn), `· discourse` (166 từ nối/rút gọn như gonna, I mean), `· word` (818 từ đơn khẩu ngữ lọc từ tần suất phụ đề phim).
 - Thứ tự = thứ tự thẻ mới: mục phim đầu, rồi lặp 2 Oxford : 1 Spoken; trong Spoken xoay vòng chunk → word → phrasal verb → discourse. Oxford hết (~thẻ 3750) thì phần Spoken còn lại nối cuối.
 - Thêm mục Spoken theo đợt: `node tools/spoken-core-batch.js check <batch.json>` (kiểm id = slug(word), trùng, IPA, context chứa từ liền mạch, emoji/prompt riêng…) → `merge <batch.json>` (gộp + sắp lại) → tạo MP3. `reorder` chỉ sắp lại, chạy lại không đổi gì.
@@ -164,7 +174,7 @@ Tạo ra `audio/<sha1-12>.mp3` (một file per từ+ngữ cảnh) + `audio/index
 
 ## Sao lưu
 
-Dữ liệu nằm trong trình duyệt + domain đang dùng. Góc của bạn → **Tải backup** (tiến độ + giáo án + hôm nay + kỷ lục game + tiến trình Pháp Sư Lexoria) → **Khôi phục** ở máy khác. Backup của bản cũ (Leitner) tự chuyển sang SM-2 khi khôi phục; tiến độ cũ trong trình duyệt cũng tự chuyển lần đầu mở bản mới (bản cũ giữ nguyên ở key `eng.srs.v1`). Riêng tiến trình Pháp sư luôn **gộp**, không bị backup cũ hơn ghi đè (xem mục Pháp Sư Lexoria).
+Dữ liệu nằm trong trình duyệt + domain đang dùng. Tab Tôi → **Tải backup** (tiến độ + giáo án + hôm nay + kỷ lục game + tiến trình Pháp Sư Lexoria) → **Khôi phục** ở máy khác. Backup của bản cũ (Leitner) tự chuyển sang SM-2 khi khôi phục; tiến độ cũ trong trình duyệt cũng tự chuyển lần đầu mở bản mới (bản cũ giữ nguyên ở key `eng.srs.v1`). Riêng tiến trình Pháp sư luôn **gộp**, không bị backup cũ hơn ghi đè (xem mục Pháp Sư Lexoria).
 
 ## Phím tắt (desktop)
 

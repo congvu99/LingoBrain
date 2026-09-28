@@ -128,12 +128,32 @@ describe('typeChar · khoá & bắn', () => {
     stepPlanes(st, 0.01, half);
     assert.equal(st.bullets.length === 1 || t.pending === 0, true, 'đạn mất mà pending vẫn treo');
   });
-  it('trúng đạn → mục tiêu giật lên (vy nhỏ hơn tốc độ hành trình)', () => {
+  it('trúng đạn → mục tiêu bị hãm (vy nhỏ hơn tốc độ hành trình)', () => {
     const st = createPlaneState(mkPlaneWords(['stubborn']), 360, 640);
     spawnUntil(st, 1);
     const t = st.targets[0];
     typeChar(st, 's', half); flyBullets(st);
     assert.ok(t.vy < t.cruise, 'vy=' + t.vy + ' cruise=' + t.cruise);
+  });
+  it('gõ liên tục: mục tiêu chỉ khựng lại, không bay ngược lên, không bị đẩy ngang (nhãn không nhảy)', () => {
+    const st = createPlaneState(mkPlaneWords(['stubborn']), 360, 640);
+    spawnUntil(st, 1);
+    const t = st.targets[0];
+    t.kind = 'rock'; t.vx = 0; t.x = 180; t.y = 200;
+    let prev = t.y;
+    for (const ch of 'stubbor') {
+      typeChar(st, ch, half);
+      for (let i = 0; i < 20; i++) {
+        stepPlanes(st, 0.01, half);
+        assert.ok(t.y >= prev - 1e-9, 'y lùi ' + prev + ' → ' + t.y); prev = t.y;
+      }
+    }
+    assert.equal(t.vx, 0);
+  });
+  it('khung thấp (bàn phím ảo mở) rơi chậm hơn, có trần; khung cao không đổi', () => {
+    assert.equal(shortFieldSlowdown(700), 1);
+    assert.ok(shortFieldSlowdown(400) > 1);
+    assert.equal(shortFieldSlowdown(200), shortFieldSlowdown(100));
   });
 });
 

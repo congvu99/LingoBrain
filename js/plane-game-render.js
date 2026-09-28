@@ -131,7 +131,8 @@ function drawLabel(ctx, st, t, locked) {
     ctx.font = '700 11px ' + RENDER_MONO; L.pw = ctx.measureText(L.prog).width; ctx.font = '600 13px ' + RENDER_FONT;
   }
   const prog = L.prog, bw = Math.max(lw, L.pw) + 16, bh = 22 + L.lines.length * 16;
-  const x = Math.min(Math.max(t.x, bw / 2 + 2), st.w - bw / 2 - 2), y = t.y + t.r + 8;
+  // làm tròn px: chữ canvas ở toạ độ lẻ bị khử răng cưa khác nhau mỗi khung → trông rung
+  const x = Math.round(Math.min(Math.max(t.x, bw / 2 + 2), st.w - bw / 2 - 2)), y = Math.round(t.y + t.r + 8);
   roundRectPath(ctx, x - bw / 2, y, bw, bh, 9);
   ctx.fillStyle = 'rgba(8,12,34,.78)'; ctx.fill();
   ctx.strokeStyle = locked ? '#5ee7ff' : 'rgba(255,255,255,.18)'; ctx.lineWidth = locked ? 1.5 : 1; ctx.stroke();
@@ -142,7 +143,7 @@ function drawLabel(ctx, st, t, locked) {
   ctx.fillText(prog, x, y + 15 + L.lines.length * 16);
 }
 
-/* Vẽ trọn 1 khung: nền → mục tiêu → đạn → tàu mình → hạt → nhãn (nhãn trên cùng để luôn đọc được) → chớp */
+/* Vẽ trọn 1 khung: nền → mục tiêu → đạn → tàu mình → hạt → nhãn (nhãn trên cùng, ngoài rung màn để luôn đọc được) → chớp */
 function drawPlaneScene(ctx, st, fx, time) {
   const s = spaceShake(fx);
   ctx.save(); ctx.translate(s.x, s.y);
@@ -152,7 +153,7 @@ function drawPlaneScene(ctx, st, fx, time) {
   drawBullets(ctx, st);
   drawPlayerShip(ctx, st, time);
   drawSpaceFx(fx, ctx);
-  for (const t of st.targets) if (!t.doomed) drawLabel(ctx, st, t, t.uid === st.lock || cands.indexOf(t) >= 0);
   ctx.restore();
+  for (const t of st.targets) if (!t.doomed) drawLabel(ctx, st, t, t.uid === st.lock || cands.indexOf(t) >= 0);
   drawSpaceFlash(fx, ctx);
 }

@@ -4,6 +4,15 @@
 
 const GAME_IDS = ['scramble', 'sprint', 'cloze', 'planes', 'fruit', 'boss'];   // rollback Pháp sư = gỡ 'boss' khỏi đây (server giữ hợp đồng)
 const GAME_LABEL = { scramble: 'Xếp chữ', sprint: 'Chạy 60 giây', cloze: 'Điền câu tốc độ', planes: 'Bắn máy bay', fruit: 'Chém chữ', boss: 'Pháp sư' };
+// tab Chơi: mỗi game nói rõ luyện gì + mất bao lâu
+const GAME_META = {
+  scramble: { purpose: 'Chính tả, không cần bàn phím', length: '10 từ · ~2 phút' },
+  sprint: { purpose: 'Phản xạ: thấy từ, chọn nghĩa', length: '60 giây' },
+  cloze: { purpose: 'Từ nào hợp câu nào', length: '60 giây' },
+  planes: { purpose: 'Nhớ chủ động + gõ nhanh', length: '~3 phút' },
+  fruit: { purpose: 'Phân biệt từ na ná', length: '~2 phút' },
+  boss: { purpose: 'Gõ đúng từ để niệm chú — 1 trận truyện mỗi ngày', length: '' }
+};
 const MIN_LEARNED = 8;          // đủ từ để sinh 3 đáp án nhiễu
 const SCRAMBLE_ROUND = 10;      // số từ mỗi ván Xếp chữ
 const TIMED_ROUND = 60;         // từ bốc sẵn mỗi vòng của ván tính giờ (60s được ~25-30 câu)
@@ -20,9 +29,19 @@ const SCRAMBLE_TRIES = 10;      // số lần xáo lại tối đa để khác t
    - dùng được cả trên chuỗi thô lẫn chuỗi đã escape HTML (từ chứa `&` như AT&T) */
 const WORD_CHAR = 'A-Za-zÀ-ɏ0-9';
 const INFLECT = '(?:s|es|ed|d|ing|ly|er|est)?';
+const reEsc = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+/* Biến thể chính tả ở đuôi: big→bigger (nhân đôi phụ âm), study→studied (y→i), make→making (bỏ e).
+   Thiếu các dạng này thì câu ví dụ "bigger" không bị che → lộ đáp án ở bước 1 / điền câu. */
+function inflectedForms(word) {
+  const w = String(word), src = reEsc(w), last = w.slice(-1).toLowerCase(), stem = reEsc(w.slice(0, -1));
+  const forms = [src + INFLECT];
+  if (/[bdfgklmnprtvz]/.test(last) && /[aeiou][bdfgklmnprtvz]$/i.test(w)) forms.push(src + reEsc(w.slice(-1)) + '(?:ed|ing|er|est|y)');
+  if (last === 'y' && w.length > 2) forms.push(stem + 'i(?:es|ed|er|est|ly)');
+  if (last === 'e' && w.length > 2) forms.push(stem + '(?:ing|ity)');
+  return forms;
+}
 function wordRx(word, flags) {
-  const src = String(word).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  return new RegExp('(^|[^' + WORD_CHAR + '])(' + src + INFLECT + ')(?![' + WORD_CHAR + '])', flags || 'i');
+  return new RegExp('(^|[^' + WORD_CHAR + '])(' + inflectedForms(word).join('|') + ')(?![' + WORD_CHAR + '])', flags || 'i');
 }
 
 // ký tự được ghim tại chỗ, không xáo: dấu cách, gạch nối, nháy đơn

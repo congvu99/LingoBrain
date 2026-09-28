@@ -1,7 +1,7 @@
 /* Khoá localStorage, helper chung, trạng thái toàn cục của app.
    Nạp sau js/srs-scheduler.js (cần migrateV1) và js/boss-progress-sync-merge.js (cần cleanBoss). */
 
-const APP_VERSION = '2.24.8';
+const APP_VERSION = '2.25.0';
 const K_DECK = 'eng.deck.v1', K_SRS = 'eng.srs.v2', K_SRS_V1 = 'eng.srs.v1',
       K_CFG = 'eng.cfg.v1', K_PLAN = 'eng.plan.v1', K_DAY = 'eng.day.v1',
       K_GAMEMISS = 'eng.gamemiss.v1', K_GAMESCORE = 'eng.gamescore.v1', K_BOSS = 'eng.boss.v1',
@@ -45,7 +45,7 @@ function saveBoss() { save(K_BOSS, bossProg); }
 // từ sai đã vào hàng đợi phiên này rồi thì không cần giữ trong localStorage nữa
 function consumeGameMiss() { if (gameMiss.length) { gameMiss = []; save(K_GAMEMISS, gameMiss); } }
 let queue = [], cur = null, step = 1, mode = 'type', revealed = false, tab = 'plan';
-let session = { streak: {} };                 // learning steps trong phiên (không lưu)
+let session = { streak: {}, done: 0, graded: 0, pass: 0, fresh: 0, forgot: [] };   // learning steps + đếm của phiên (không lưu)
 
 // tiến độ học: v2; nếu chưa có thì chuyển từ v1 (giữ nguyên v1 làm dự phòng)
 let srs = load(K_SRS, null);

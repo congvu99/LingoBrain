@@ -1,41 +1,88 @@
-/* Điều hướng tab, gắn sự kiện tab Quản lý, phím tắt, khởi động. Nạp cuối cùng. */
+/* Điều hướng 4 tab + lớp toàn màn (#stage: phiên ôn / game), gắn sự kiện tab Tôi, phím tắt, khởi động. Nạp cuối cùng. */
 
-const TITLES = { plan: 'Hôm nay, mình học nhé!', game: 'Thêm từ mới, thêm tự tin.', manage: 'Góc học của riêng bạn.' };
-const PAGE_INTRO = {
-  plan: ['HÀNH TRÌNH MỖI NGÀY', 'Một chút tiếng Anh. Thêm một chút tự tin.'],
-  game: ['ÔN TỪ & GHI NHỚ', 'Gặp lại từ quen, khám phá điều mới.'],
-  manage: ['THEO CÁCH CỦA BẠN', 'Theo dõi bộ từ và tạo một lịch học vừa sức.']
-};
-function showTab(t) {
-  closeGame();                           // bỏ ván đang chơi: không lưu điểm, vẫn lưu từ sai
-  tab = t;
-  ['plan', 'game', 'manage'].forEach(k => {
-    $('#tab-' + k).hidden = t !== k;
-    const b = $('#nav-' + k); b.classList.toggle('on', t === k); b.setAttribute('aria-current', t === k ? 'page' : 'false');
+const TABS = ['plan', 'play', 'progress', 'manage'];
+let stage = null;            // null | 'review' | 'game' — đang mở lớp toàn màn thì ẩn tab + thanh điều hướng
+let stageLeaving = false;    // đã gọi history.back, chờ popstate (chặn bấm ✕ hai lần làm lùi ra khỏi app)
+
+function paintTab(full) {
+  TABS.forEach(k => {
+    $('#tab-' + k).hidden = tab !== k;
+    const b = $('#nav-' + k); b.classList.toggle('on', tab === k); b.setAttribute('aria-current', tab === k ? 'page' : 'false');
   });
-  $('#hTitle').textContent = TITLES[t];
-  $('#pageEyebrow').textContent = PAGE_INTRO[t][0];
-  $('#pageSubtitle').textContent = PAGE_INTRO[t][1];
-  $('#hSub').hidden = t !== 'game';
-  $('#hSub').textContent = t === 'game' ? deck.words.length + ' từ' : '';
-  $('#appScroll').scrollTo(0, 0);        // document bị khoá cuộn, nội dung cuộn trong #appScroll
-  if (t === 'plan') renderPlan();
-  if (t === 'game') renderQuiet();       // vào tab không tự đọc thẻ, chờ người dùng bấm nghe
-  if (t === 'manage') { renderList(); renderPlanEdit(); }
-  const main = $('main'); if (main) main.focus({ preventScroll: true });
+  if (tab === 'plan') renderPlan();
+  if (tab === 'play') renderGameChips();
+  if (tab === 'progress') renderProgress();
+  if (tab === 'manage' && full) renderPlanEdit();   // vẽ lại khung sửa làm mất chữ đang gõ → chỉ khi vừa vào tab
+  updateDots();
+  if (full) {
+    $('#appScroll').scrollTo(0, 0);        // document bị khoá cuộn, nội dung cuộn trong #appScroll
+    const main = $('main'); if (main) main.focus({ preventScroll: true });
+  }
 }
+// vẽ lại nhẹ tab đang hiện (sau khi hàng đợi / tiến độ đổi) — không cuộn, không cướp focus
+function refreshTab() { if (!stage) paintTab(false); }
+function showTab(t) {
+  tab = t;
+  if (stage) closeStage();                 // leaveStage vẽ tab mới
+  else paintTab(true);
+}
+
+/* ---- lớp toàn màn ----
+   Mở: đẩy 1 mục history để nút/vuốt "quay lại" của hệ điều hành đóng lớp thay vì rời app.
+   Đổi loại (game → ôn) khi đang mở: không đẩy thêm mục. */
+function openStage(kind) {
+  if (!stage) {
+    try { history.pushState({ lbStage: 1 }, ''); } catch (e) {}
+    $('#main').hidden = true; $('#stage').hidden = false;
+    document.documentElement.classList.add('in-stage');
+  }
+  stage = kind;
+  // game: chỉ hiện ✕ khi màn đang vẽ không có nút ← riêng (CSS :has(#gQuit)) — màn nào cũng phải có lối thoát
+  $('#stage').classList.toggle('is-game', kind === 'game');
+  $('#appScroll').scrollTo(0, 0);
+}
+function closeStage() {
+  if (!stage || stageLeaving) return;
+  if (history.state && history.state.lbStage) {
+    stageLeaving = true;
+    history.back();
+    setTimeout(() => { if (stageLeaving) leaveStage(); }, 500);   // popstate không tới (trình duyệt lạ) → vẫn thoát
+  } else leaveStage();
+}
+function leaveStage() {
+  stageLeaving = false;
+  if (!stage) return;
+  closeGame();                             // bỏ ván đang chơi: không lưu điểm, vẫn lưu từ sai
+  if (typeof stopSpeaking === 'function') stopSpeaking();
+  stage = null;
+  $('#stage').hidden = true; $('#main').hidden = false;
+  document.documentElement.classList.remove('in-stage');
+  $('#app').innerHTML = '';
+  paintTab(true);
+}
+window.addEventListener('popstate', () => { if (stage) leaveStage(); else stageLeaving = false; });
+
+function startReview() { openStage('review'); render(); }
+function setStageProgress(done, total) {
+  const p = $('#stageProg');
+  $('#stageFill').style.width = (total ? Math.round(done / total * 100) : 0) + '%';
+  p.setAttribute('aria-valuemax', total); p.setAttribute('aria-valuenow', done);
+  p.setAttribute('aria-valuetext', done + ' trên ' + total + ' thẻ');
+  $('#stageCount').textContent = total ? done + '/' + total : '';
+}
+
+function liveQueueIds() { return (cur ? [cur.id] : []).concat(queue); }
 function updateDots() {
-  const left = plan.length - planDone();
-  const d1 = $('#dotPlan'); d1.hidden = left <= 0; d1.textContent = left;
-  const s = deckSummary(deck, srs, Date.now()), n = s.due + Math.min(s.fresh, cfg.newPerDay);
-  const d2 = $('#dotGame'); d2.hidden = n <= 0; d2.textContent = n > 99 ? '99+' : n;
+  const n = liveQueueIds().length;
+  const d = $('#dotPlan'); d.hidden = n <= 0; d.textContent = n > 99 ? '99+' : n;
+  d.setAttribute('aria-label', n + ' thẻ cần ôn hôm nay');
 }
 
 function bindUI() {
-  $('#nav-plan').onclick = () => showTab('plan');
-  $('#btnTodayStart').onclick = () => showTab('game');
-  $('#nav-game').onclick = () => showTab('game');
-  $('#nav-manage').onclick = () => showTab('manage');
+  TABS.forEach(k => { $('#nav-' + k).onclick = () => showTab(k); });
+  $('#stageClose').onclick = () => { closeStage(); if (session.done) toast('Đã lưu ' + session.done + ' thẻ'); };
+  $('#btnHabits').onclick = () => { habitsOpen = !habitsOpen; renderPlan(); };
+  $('#libBox').addEventListener('toggle', () => { if ($('#libBox').open) renderList(); });
 
   $('#btnResetDay').onclick = () => { if (!confirm('Bỏ tích toàn bộ việc hôm nay?')) return; day.done = {}; save(K_DAY, day); renderPlan(); toast('Đã đặt lại'); };
   $('#btnPlanSave').onclick = () => { collectPlanEdit(); plan = plan.filter(t => t.title.trim()); save(K_PLAN, plan); renderPlanEdit(); renderPlan(); toast('✅ Đã lưu giáo án'); };
@@ -63,7 +110,7 @@ function bindUI() {
     srs = {}; save(K_SRS, srs);
     gameMiss = []; save(K_GAMEMISS, gameMiss);   // từ sai gắn với tiến độ cũ, giữ lại vô nghĩa. Kỷ lục game thì giữ.
     // bossProg (Pháp Sư Lexoria) KHÔNG bị xoá ở đây (user chốt, giống kỷ lục game) — nút này chỉ xoá lịch SM-2
-    restartSession(); renderList(); toast('Đã xoá tiến độ');
+    restartSession(); toast('Đã xoá tiến độ');
   };
 
   // phím tắt desktop: Space tiếp tục · 1–4 chấm · S nghe lại
@@ -79,7 +126,8 @@ function bindUI() {
       else quitGame();
       return;
     }
-    if (tab !== 'game') return;
+    if (stage !== 'review') return;
+    if (e.key === 'Escape') { closeStage(); return; }
     if (e.key === ' ') { e.preventDefault(); const b = $('#b-next') || $('#b-reveal') || $('#b-check') || $('#b-done'); if (b && !b.hidden) b.click(); }
     if (e.key.toLowerCase() === 's' && cur) speak(cur.context || cur.word);
     if (step === 4 && '1234'.indexOf(e.key) >= 0) { const b = document.querySelector('.grade .g' + (+e.key - 1)); if (b) b.click(); }
@@ -119,5 +167,5 @@ async function boot() {
   renderAccount(); bindSyncLifecycle();
   showTab('plan');
   syncNow({ initial: true, miss: initialMiss });   // chưa đăng nhập → không làm gì
-  setInterval(() => { if (day.date !== dkey() && tab === 'plan') renderPlan(); }, 60000);
+  setInterval(() => { if (day.date !== dkey() && tab === 'plan' && !stage) renderPlan(); }, 60000);
 }

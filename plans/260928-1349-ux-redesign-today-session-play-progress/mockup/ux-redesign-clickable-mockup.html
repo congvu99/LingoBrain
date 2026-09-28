@@ -1,0 +1,545 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LingoBrain Mockup</title>
+<style>
+:root{
+  --paper:#F5F7F5;--paper-2:#EDF2EF;--card:#FFFFFF;--ink:#203B3A;--ink-muted:#586D68;--line:#DCE5E1;
+  --accent:#176A60;--accent-ink:#FFFFFF;--accent-wash:#E1F2EB;--peach:#F6DBC6;--peach-ink:#84512D;
+  --ok:#24734F;--bad:#B13E3E;--bad-wash:#FBE9E7;--hero:#194F49;--shadow:0 1px 2px rgba(20,50,45,.06),0 6px 20px rgba(20,50,45,.06);
+  --desk:#E4EAE7;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#101F20;--paper-2:#1E3332;--card:#192C2C;--ink:#E8F2EA;--ink-muted:#B1C5BD;--line:#2B4443;
+  --accent:#9BDFC5;--accent-ink:#0E2A26;--accent-wash:#234B40;--peach:#493A30;--peach-ink:#FFD2AF;
+  --ok:#A1DBAE;--bad:#FFADA4;--bad-wash:#3E2524;--hero:#1B4640;--shadow:none;--desk:#0A1516;}}
+:root[data-theme="dark"]{
+  --paper:#101F20;--paper-2:#1E3332;--card:#192C2C;--ink:#E8F2EA;--ink-muted:#B1C5BD;--line:#2B4443;
+  --accent:#9BDFC5;--accent-ink:#0E2A26;--accent-wash:#234B40;--peach:#493A30;--peach-ink:#FFD2AF;
+  --ok:#A1DBAE;--bad:#FFADA4;--bad-wash:#3E2524;--hero:#1B4640;--shadow:none;--desk:#0A1516;}
+*{box-sizing:border-box;margin:0}
+body{background:var(--desk);color:var(--ink);font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;min-height:100dvh}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.mono{font-family:ui-monospace,"SF Mono",Menlo,monospace}
+.layout{display:flex;gap:40px;justify-content:center;align-items:flex-start;padding:32px 16px}
+/* ---------- side panel ---------- */
+.panel{width:340px;position:sticky;top:32px}
+.panel h1{font-size:22px;line-height:1.25}
+.panel .lead{color:var(--ink-muted);font-size:14px;margin:6px 0 18px}
+.jump{display:grid;gap:6px}
+.jump button{display:flex;justify-content:space-between;align-items:center;text-align:left;padding:10px 14px;border-radius:12px;background:var(--card);border:1px solid var(--line);font-size:14px;min-height:44px}
+.jump button[aria-current="true"]{border-color:var(--accent);background:var(--accent-wash);font-weight:600}
+.jump small{color:var(--ink-muted);font-size:12px}
+.note{margin-top:18px;padding:14px 16px;border-radius:16px;background:var(--card);border:1px solid var(--line);font-size:14px}
+.note b{display:block;margin-bottom:6px;font-size:12px;letter-spacing:.06em;color:var(--accent)}
+.note ul{padding-left:18px;display:grid;gap:4px}
+.theme-row{display:flex;gap:6px;margin-top:14px}
+.theme-row button{flex:1;padding:8px;border-radius:10px;border:1px solid var(--line);background:var(--card);font-size:13px;min-height:40px}
+.theme-row button[aria-pressed="true"]{border-color:var(--accent);font-weight:600}
+/* ---------- phone ---------- */
+.phone{width:390px;height:844px;flex:none;border-radius:48px;background:var(--paper);position:relative;overflow:hidden;
+  box-shadow:0 0 0 10px #1c2a29,0 0 0 11px #3a4a48,0 30px 60px rgba(0,0,0,.25)}
+.status{height:47px;display:flex;justify-content:space-between;align-items:center;padding:0 30px;font-size:15px;font-weight:600}
+.scroll{position:absolute;inset:47px 0 84px;overflow-y:auto;padding:4px 18px 24px}
+.tabbar{position:absolute;left:0;right:0;bottom:0;height:84px;background:var(--card);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);padding:6px 6px 22px}
+.tabbar button{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11.5px;color:var(--ink-muted);position:relative}
+.tabbar .ic{width:52px;height:30px;border-radius:15px;display:grid;place-items:center}
+.tabbar button[aria-current="page"]{color:var(--accent);font-weight:700}
+.tabbar button[aria-current="page"] .ic{background:var(--accent-wash)}
+.badge[hidden]{display:none}
+.badge{position:absolute;top:-2px;left:calc(50% + 8px);background:var(--bad);color:#fff;font-size:11px;font-weight:700;min-width:20px;height:20px;border-radius:10px;padding:0 5px;display:grid;place-items:center}
+svg.i{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+svg.i.sm{width:18px;height:18px}
+/* ---------- common ---------- */
+.hello{display:flex;justify-content:space-between;align-items:center;margin:8px 0 16px}
+.hello h2{font-size:24px;line-height:1.2}
+.hello p{font-size:14px;color:var(--ink-muted)}
+.streak{display:flex;align-items:center;gap:5px;background:var(--peach);color:var(--peach-ink);font-weight:700;font-size:14px;padding:6px 12px;border-radius:999px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:18px;box-shadow:var(--shadow)}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--ink-muted);text-transform:uppercase}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:52px;border-radius:14px;font-weight:700;font-size:17px}
+.btn-primary{background:var(--accent);color:var(--accent-ink)}
+.btn-soft{background:var(--accent-wash);color:var(--accent)}
+.btn-line{border:1px solid var(--line);background:var(--card)}
+.sec-h{display:flex;justify-content:space-between;align-items:baseline;margin:22px 2px 10px}
+.sec-h h3{font-size:17px}
+.link{color:var(--accent);font-weight:600;font-size:14px;display:flex;align-items:center;gap:2px;min-height:44px}
+.muted{color:var(--ink-muted)}
+.small{font-size:14px}
+/* home */
+.session{background:var(--hero);color:#fff;border:0}
+.session .eyebrow{color:#BFE3D6}
+.session .big{font-size:40px;font-weight:800;line-height:1.1;margin:8px 0 2px}
+.session .big small{font-size:18px;font-weight:600;opacity:.85}
+.session .split{display:flex;gap:14px;font-size:14px;opacity:.92;margin-bottom:16px}
+.session .split span{display:flex;align-items:center;gap:6px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.session .btn{background:#F7DFC8;color:#3C2A1C}
+.session .prog{height:8px;border-radius:4px;background:rgba(255,255,255,.18);margin:4px 0 14px;overflow:hidden}
+.session .prog i{display:block;height:100%;background:#9BDFC5;border-radius:4px}
+.habit{display:flex;gap:12px;align-items:center;padding:14px 16px}
+.chk{width:30px;height:30px;border-radius:50%;border:2px solid var(--line);flex:none;display:grid;place-items:center}
+.chk.on{background:var(--ok);border-color:var(--ok);color:#fff}
+.habit .t{font-weight:600;font-size:15px;line-height:1.3}
+.habit .m{font-size:13px;color:var(--ink-muted)}
+.habits{padding:0;overflow:hidden}
+.habits .habit+.habit{border-top:1px solid var(--line)}
+.habit.done .t{text-decoration:line-through;color:var(--ink-muted)}
+.pill{font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--accent-wash);color:var(--accent)}
+.suggest{display:flex;gap:12px;align-items:center;margin-top:12px}
+.suggest .ic{width:44px;height:44px;border-radius:12px;background:var(--accent-wash);color:var(--accent);display:grid;place-items:center;flex:none}
+/* play */
+.feature{background:linear-gradient(135deg,#2C2250,#4B2F6E);color:#fff;border:0;position:relative;overflow:hidden}
+.feature .eyebrow{color:#D9C8FF}
+.feature h3{font-size:22px;margin:4px 0 2px}
+.feature .row{display:flex;justify-content:space-between;align-items:center;margin-top:14px}
+.feature .btn{width:auto;padding:0 20px;min-height:46px;background:#FFD87A;color:#3A2A00;font-size:15px}
+.feature .orb{position:absolute;right:-30px;top:-30px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,#9C7BFF 0,transparent 70%);opacity:.6}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.game{padding:14px;border-radius:18px;text-align:left;display:flex;flex-direction:column;gap:6px;min-height:132px}
+.game .ic{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:var(--accent-wash);color:var(--accent)}
+.game b{font-size:15px}
+.game .p{font-size:13px;color:var(--ink-muted);line-height:1.3}
+.game .f{margin-top:auto;display:flex;justify-content:space-between;font-size:12.5px;color:var(--ink-muted)}
+.game .f .best{color:var(--peach-ink);font-weight:700}
+.game.locked{opacity:.62}
+.game.locked .ic{background:var(--paper-2);color:var(--ink-muted)}
+.lockr{font-size:12px;color:var(--ink-muted);display:flex;gap:4px;align-items:center;margin-top:auto}
+.nudge{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:14px;background:var(--peach);color:var(--peach-ink);font-size:14px;margin-bottom:14px}
+.nudge b{margin-left:auto;white-space:nowrap}
+/* progress */
+.kpis{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:8px}
+.kpi{padding:14px 12px;border-radius:18px}
+.kpi b{font-size:26px;display:block;line-height:1.1}
+.kpi span{font-size:12.5px;color:var(--ink-muted)}
+.stack{display:flex;height:12px;border-radius:6px;overflow:hidden;margin:10px 0 8px;background:var(--paper-2)}
+.stack i:first-child{background:var(--accent)} .stack i:last-child{background:#E3A574}
+.legend{display:flex;gap:14px;font-size:13px;color:var(--ink-muted)}
+.legend span{display:flex;align-items:center;gap:6px}
+.fc{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;align-items:end;height:110px;margin-top:10px}
+.fc div{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;color:var(--ink-muted)}
+.fc i{width:100%;border-radius:6px 6px 3px 3px;background:var(--accent);opacity:.45}
+.fc .today i{opacity:1}
+.fc b{font-size:12px;color:var(--ink)}
+.heat{display:grid;grid-template-columns:repeat(15,1fr);gap:4px;margin-top:10px}
+.heat i{aspect-ratio:1;border-radius:4px;background:var(--paper-2)}
+.heat .l1{background:color-mix(in srgb,var(--accent) 30%,var(--paper-2))}
+.heat .l2{background:color-mix(in srgb,var(--accent) 60%,var(--paper-2))}
+.heat .l3{background:var(--accent)}
+.hl{display:flex;align-items:center;gap:4px;justify-content:flex-end;font-size:11px;color:var(--ink-muted);margin-top:6px}
+.hl i{width:11px;height:11px;border-radius:3px;display:inline-block}
+.rowlist{padding:0}
+.rowlist .r{display:flex;align-items:center;gap:10px;padding:0 16px;min-height:52px;width:100%;text-align:left}
+.rowlist .r+.r{border-top:1px solid var(--line)}
+.rowlist .r .x{margin-left:auto;display:flex;align-items:center;gap:6px;color:var(--ink-muted);font-size:13px}
+.lapse{font-size:12px;font-weight:700;color:var(--bad);background:var(--bad-wash);padding:2px 8px;border-radius:999px}
+/* me */
+.danger{border-color:color-mix(in srgb,var(--bad) 40%,var(--line))}
+.danger .r{color:var(--bad)}
+.avatar{width:52px;height:52px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-weight:800;font-size:20px}
+.stepper{display:flex;align-items:center;gap:4px}
+.stepper button{width:34px;height:34px;border-radius:10px;border:1px solid var(--line);display:grid;place-items:center}
+.stepper b{min-width:30px;text-align:center}
+/* ---------- stage ---------- */
+.stage{position:absolute;inset:0;background:var(--paper);display:flex;flex-direction:column;z-index:40;animation:up .25s ease-out}
+@keyframes up{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
+.stage[hidden]{display:none}
+.sbar{display:flex;align-items:center;gap:10px;padding:4px 14px 8px}
+.iconbtn{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;color:var(--ink-muted)}
+.sprog{flex:1;height:8px;background:var(--paper-2);border-radius:4px;overflow:hidden}
+.sprog i{display:block;height:100%;background:var(--accent);border-radius:4px;transition:width .3s}
+.count{font-size:14px;font-weight:700;min-width:48px;text-align:right}
+.sbody{flex:1;overflow-y:auto;padding:12px 22px 20px;display:flex;flex-direction:column}
+.sfoot{padding:12px 18px 34px;background:var(--paper);border-top:1px solid var(--line);display:grid;gap:10px}
+.kind{display:flex;gap:8px;align-items:center;font-size:13px;font-weight:700;color:var(--accent);letter-spacing:.04em;text-transform:uppercase}
+.kind .steps{display:flex;gap:4px}
+.kind .steps i{width:18px;height:5px;border-radius:3px;background:var(--line)}
+.kind .steps i.on{background:var(--accent)}
+.center{flex:1;display:flex;flex-direction:column;justify-content:center;gap:14px}
+.sent{font-size:23px;line-height:1.45}
+.blank{display:inline-block;width:70px;border-bottom:3px solid var(--accent);transform:translateY(-4px)}
+.src{font-size:13px;color:var(--ink-muted)}
+.tools{display:flex;gap:8px;flex-wrap:wrap}
+.tool{display:flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border-radius:12px;border:1px solid var(--line);background:var(--card);font-size:15px;font-weight:600}
+.vi{padding:12px 14px;border-radius:12px;background:var(--paper-2);font-size:15px}
+.word{text-align:center}
+.word .emo{font-size:56px;line-height:1}
+.word h2{font-size:44px;line-height:1.1;margin-top:8px}
+.word .pos{font-size:12px;font-weight:700;padding:3px 8px;border-radius:6px;background:var(--paper-2);color:var(--ink-muted);vertical-align:middle;margin-left:6px}
+.word .ipa{font-family:ui-monospace,Menlo,monospace;color:var(--ink-muted);margin-top:4px}
+.word .mean{font-size:21px;margin-top:10px}
+.mnem{padding:12px 14px;border-radius:14px;background:var(--peach);color:var(--peach-ink);font-size:14.5px}
+.hi{background:var(--accent-wash);color:var(--accent);font-weight:700;border-radius:4px;padding:0 3px}
+.input{min-height:56px;border-radius:14px;border:2px solid var(--line);background:var(--card);padding:0 16px;display:flex;align-items:center;font-size:18px;color:var(--ink-muted)}
+.input.typed{color:var(--ink);border-color:var(--accent)}
+.feedback{display:flex;gap:10px;align-items:center;padding:12px 14px;border-radius:14px;background:var(--accent-wash);color:var(--ok);font-weight:600}
+.grades{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.g{border-radius:14px;min-height:72px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-weight:700;font-size:15px;border:1px solid var(--line);background:var(--card)}
+.g small{font-weight:500;font-size:12px;color:var(--ink-muted)}
+.g0{color:var(--bad)} .g2{border-color:var(--accent);background:var(--accent-wash);color:var(--accent)}
+.sum{text-align:center}
+.ring{width:132px;height:132px;margin:0 auto 10px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--accent) 0 88%,var(--paper-2) 0)}
+.ring div{width:106px;height:106px;border-radius:50%;background:var(--paper);display:grid;place-items:center;font-size:30px;font-weight:800}
+.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.chip{display:flex;align-items:center;gap:6px;min-height:40px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:14px;font-weight:600}
+.statline{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}
+.statline div{padding:12px 6px;border-radius:14px;background:var(--card);border:1px solid var(--line)}
+.statline b{display:block;font-size:20px}
+.statline span{font-size:12px;color:var(--ink-muted)}
+.anno{position:absolute;z-index:20;right:10px;background:#FFE58A;color:#3A2E00;font-size:12px;font-weight:600;padding:4px 9px;border-radius:8px;box-shadow:0 3px 10px rgba(0,0,0,.18);pointer-events:none;max-width:210px;line-height:1.3}
+body.no-anno .anno{display:none}
+@media (max-width:820px){
+  .layout{flex-direction:column;align-items:center;padding:16px}
+  .panel{position:static;width:100%;max-width:390px;order:2}
+}
+@media (max-width:430px){
+  .phone{width:100%;height:calc(100dvh - 32px);min-height:640px;border-radius:28px;box-shadow:0 0 0 1px var(--line)}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 11v3M5.5 12.5h3M15.5 12h.01M18 14h.01"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-vol" viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></symbol>
+  <symbol id="i-turtle" viewBox="0 0 24 24"><path d="M4 15a8 6 0 0 1 16 0z"/><path d="M20 15h2M6 15v3M18 15v3M8 12l4-3 4 3"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></symbol>
+  <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 1-9z"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+  <symbol id="i-letters" viewBox="0 0 24 24"><rect x="3" y="6" width="7" height="7" rx="1.5"/><rect x="14" y="11" width="7" height="7" rx="1.5"/><path d="M5.5 11l1-3 1 3M16 16.5h3"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></symbol>
+  <symbol id="i-text" viewBox="0 0 24 24"><path d="M4 7h16M4 12h6M14 12h6M4 17h10"/><path d="M10 12h4" stroke-dasharray="1 2"/></symbol>
+  <symbol id="i-plane" viewBox="0 0 24 24"><path d="M12 2l3 8 7 3-7 2-3 7-3-7-7-2 7-3z"/></symbol>
+  <symbol id="i-blade" viewBox="0 0 24 24"><path d="M4 20 18 6l2-2M14 4l6 6M4 20l3-1-2-2z"/></symbol>
+  <symbol id="i-sync" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14-5l-2 2M4 13a8 8 0 0 0 14 5l2-2M4 4v4h4M20 20v-4h-4"/></symbol>
+  <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></symbol>
+  <symbol id="i-save" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19V5"/></symbol>
+  <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+</svg>
+
+<div class="layout">
+  <aside class="panel">
+    <h1>LingoBrain · UX mới</h1>
+    <p class="lead">Mockup bấm được. Bấm trực tiếp trong điện thoại hoặc nhảy nhanh bằng danh sách. Nhãn vàng = điểm thay đổi so với bản hiện tại.</p>
+    <div class="jump" id="jump"></div>
+    <div class="theme-row" role="group" aria-label="Giao diện">
+      <button data-theme-set="auto" aria-pressed="true">Theo máy</button>
+      <button data-theme-set="light" aria-pressed="false">Sáng</button>
+      <button data-theme-set="dark" aria-pressed="false">Tối</button>
+    </div>
+    <div class="theme-row"><button id="toggleAnno" aria-pressed="true">Hiện nhãn thay đổi</button></div>
+    <div class="note" id="note"></div>
+  </aside>
+
+  <div class="phone" id="phone">
+    <div class="status"><span>9:41</span><span class="mono" style="font-size:13px">▮▮▮ 5G ▭</span></div>
+    <div class="scroll" id="scroll"></div>
+    <nav class="tabbar" aria-label="Điều hướng chính">
+      <button data-tab="home"><span class="ic"><svg class="i"><use href="#i-home"/></svg></span>Hôm nay<span class="badge" id="badge">45</span></button>
+      <button data-tab="play"><span class="ic"><svg class="i"><use href="#i-play"/></svg></span>Chơi</button>
+      <button data-tab="progress"><span class="ic"><svg class="i"><use href="#i-chart"/></svg></span>Tiến bộ</button>
+      <button data-tab="me"><span class="ic"><svg class="i"><use href="#i-user"/></svg></span>Tôi</button>
+    </nav>
+    <section class="stage" id="stage" hidden aria-label="Phiên ôn từ">
+      <div class="status"><span>9:41</span><span class="mono" style="font-size:13px">▮▮▮ 5G ▭</span></div>
+      <div class="sbar">
+        <button class="iconbtn" id="stageClose" aria-label="Thoát phiên, tiến độ đã lưu"><svg class="i"><use href="#i-x"/></svg></button>
+        <div class="sprog" role="progressbar" aria-label="Tiến độ phiên" aria-valuemin="0" aria-valuemax="45"><i id="sprog"></i></div>
+        <span class="count mono" id="scount">12/45</span>
+      </div>
+      <div class="sbody" id="sbody"></div>
+      <div class="sfoot" id="sfoot"></div>
+    </section>
+  </div>
+</div>
+
+<script>
+const S = { tab: 'home', done: false, stage: null, habitsOpen: false, newPerDay: 5 };
+const icon = (id, cls = '') => `<svg class="i ${cls}"><use href="#i-${id}"/></svg>`;
+const anno = (top, text) => `<span class="anno" style="top:${top}px">${text}</span>`;
+
+const NOTES = {
+  home: ['Hôm nay', 'Mở app → 1 câu hỏi, 1 nút', ['Bỏ hero quảng cáo + tiêu đề lặp (~190px)', '45 = đúng số thẻ phiên sẽ phát (cũ: 60 / 55 / 45)', 'Giáo án 7 việc → "Thói quen", chỉ hiện việc tiếp theo', 'Chỉ 1 badge; bỏ badge giáo án']],
+  homeDone: ['Hôm nay · xong', 'Trạng thái sau phiên', ['Báo lượt kế tiếp thay vì ô số trống', '"Học thêm" là nút phụ', 'Game xuất hiện như phần thưởng, gắn với từ vừa quên']],
+  s1: ['Phiên · từ mới bước 1', 'Toàn màn, không tab bar', ['✕ thoát + đếm 12/45 của PHIÊN', 'Nhãn bước chỉ hiện cho từ mới', 'Nút chính cố định ở vùng ngón cái']],
+  s2: ['Phiên · từ mới bước 2', '"Mã hoá kép" → "Ghi nhớ"', ['Bố cục căn giữa, từ 44px', 'Mẹo nhớ tách khối riêng', 'Nghe / Chậm gom 1 hàng']],
+  test: ['Phiên · từ ôn lại', 'Không còn 2 chấm "đã xong" giả', ['Nhãn = dạng kiểm tra', 'Ô gõ nằm sát nút Kiểm tra', 'Phản hồi đúng/sai có chữ + icon, không chỉ màu']],
+  grade: ['Phiên · chấm nhớ', 'Nút chấm có chữ + lần ôn kế', ['"Nhớ · 3 ngày" giúp hiểu SM-2 mà không cần giải thích', 'Cố định đáy, 72px/nút']],
+  summary: ['Phiên · kết thúc', 'Kết phiên có ý nghĩa', ['% nhớ của phiên này', 'Từ vừa quên bấm được để nghe', 'Gợi ý game dùng đúng các từ đó']],
+  play: ['Chơi', 'Game tách khỏi màn ôn', ['Pháp sư Lexoria = thẻ nổi bật', 'Mỗi game: luyện gì · bao lâu · kỷ lục', 'Lý do khoá hiện sẵn (cũ: phải bấm mới thấy toast)', 'Nhắc ôn trước nhưng không khoá']],
+  progress: ['Tiến bộ', 'Số liệu có chỗ riêng', ['Đã học = Đang nhớ + Đã thuộc (1 thanh)', '"Chưa học 4913" chỉ còn trong Thư viện', 'Heatmap có chú thích', 'Hay quên: hàng bấm được, có mũi tên']],
+  me: ['Tôi', 'Cài đặt gom nhóm rõ', ['Nhịp học dùng stepper thay ô number', 'Sửa thói quen, sao lưu tách hàng', 'Xoá tiến độ nằm trong vùng nguy hiểm, cuối trang']]
+};
+const JUMP = [['home', 'Hôm nay'], ['homeDone', 'Hôm nay · đã xong'], ['s1', 'Phiên · từ mới (1)'], ['s2', 'Phiên · ghi nhớ (2)'], ['test', 'Phiên · từ ôn lại'], ['grade', 'Phiên · chấm nhớ'], ['summary', 'Phiên · kết thúc'], ['play', 'Chơi'], ['progress', 'Tiến bộ'], ['me', 'Tôi']];
+
+/* ---------------- tabs ---------------- */
+function home() {
+  const sessionCard = S.done
+    ? `<div class="card session">
+         <div class="eyebrow">Phiên hôm nay</div>
+         <div class="big" style="display:flex;align-items:center;gap:10px;font-size:30px">${icon('check')} Xong rồi</div>
+         <div class="split"><span>45 thẻ · nhớ 88%</span><span>Mai: 13 thẻ</span></div>
+         <button class="btn" style="background:rgba(255,255,255,.14);color:#fff" data-go="more">Học thêm 5 từ mới</button>
+       </div>
+       <div class="card suggest" style="margin-top:12px">
+         <span class="ic">${icon('bolt')}</span>
+         <div style="flex:1"><div style="font-weight:700;font-size:15px">Chạy 60 giây với 6 từ vừa quên</div><div class="small muted">Củng cố nhanh, không ảnh hưởng lịch ôn</div></div>
+         ${icon('chev', 'sm')}
+       </div>`
+    : `<div class="card session">
+         <div class="eyebrow">Phiên hôm nay</div>
+         <div class="big">45 <small>thẻ · ~9 phút</small></div>
+         <div class="split"><span><i class="dot" style="background:#9BDFC5"></i>40 ôn lại</span><span><i class="dot" style="background:#F7DFC8"></i>5 từ mới</span></div>
+         <div class="prog"><i style="width:27%"></i></div>
+         <button class="btn" data-go="s1">Tiếp tục · 12/45</button>
+       </div>`;
+  const habits = [
+    ['07:00', 'Xem clip mới (không phụ đề)', '10 phút', true],
+    ['07:10', 'Xem lại có phụ đề Anh', '15 phút', true],
+    ['12:00', 'Shadowing 5 câu hay nhất', '15 phút', true],
+    ['20:00', 'Nghe 1 bài hát chủ đề tuần', '15 phút', false, true],
+    ['20:20', 'Ghi âm kể lại clip sáng', '10 phút', false],
+    ['trong ca', 'Bắt chuyện với khách', '1 câu', false],
+    ['21:00', 'Ôn từ vựng', '5 phút', S.done]
+  ];
+  const shown = S.habitsOpen ? habits : habits.filter(h => h[4]);
+  const doneN = habits.filter(h => h[3]).length;
+  return `
+    <div class="hello"><div><h2>Chào buổi chiều</h2><p>Thứ Hai, 28/9</p></div>
+      <span class="streak">${icon('flame', 'sm')} 12 ngày</span></div>
+    ${sessionCard}
+    <div class="sec-h"><h3>Thói quen <span class="muted small" style="font-weight:600">${doneN}/7</span></h3>
+      <button class="link" data-go="habits">${S.habitsOpen ? 'Thu gọn' : 'Xem tất cả'} ${icon('chev', 'sm')}</button></div>
+    <div class="card habits">
+      ${shown.map(h => `<div class="habit${h[3] ? ' done' : ''}">
+        <button class="chk${h[3] ? ' on' : ''}" aria-label="${h[3] ? 'Bỏ đánh dấu' : 'Hoàn thành'}: ${h[1]}">${h[3] ? icon('check', 'sm') : ''}</button>
+        <div style="flex:1"><div class="t">${h[1]}</div><div class="m">${h[0]} · ${h[2]}</div></div>
+        ${h[4] ? '<span class="pill">Tiếp theo</span>' : ''}</div>`).join('')}
+    </div>
+    ${anno(S.done ? 82 : 120, S.done ? 'Xong phiên → báo lượt kế + gợi ý game' : '1 CTA, số = phiên thật')}
+    ${anno(S.done ? 566 : 482, 'Giáo án gập lại, 1 chạm để mở')}`;
+}
+
+function play() {
+  const games = [
+    ['letters', 'Xếp chữ', 'Chính tả, không cần bàn phím', '10 từ · 2p', '★ 8/10'],
+    ['bolt', 'Chạy 60 giây', 'Phản xạ nhìn từ ra nghĩa', '60 giây', '★ 420'],
+    ['plane', 'Bắn máy bay', 'Nhớ chủ động + gõ nhanh', '~3 phút', '★ 1.250'],
+    ['blade', 'Chém chữ', 'Phân biệt từ na ná', '~2 phút', '★ 380']
+  ];
+  return `
+    <div class="hello"><div><h2>Chơi</h2><p>Luyện thêm, không làm giãn lịch ôn</p></div></div>
+    ${S.done ? '' : `<div class="nudge">${icon('book', 'sm')} Còn 33 thẻ cần ôn <b data-go="s1" role="button" tabindex="0">Ôn trước ›</b></div>`}
+    <div class="card feature">
+      <span class="orb"></span>
+      <div class="eyebrow">Pháp sư Lexoria · Lv 7</div>
+      <h3>Chương 2 · Trận 4</h3>
+      <div class="small" style="opacity:.85">Gõ đúng từ để niệm chú. 1 trận truyện mỗi ngày.</div>
+      <div class="row"><span class="small" style="opacity:.8">Hệ Băng · 2 điểm kỹ năng</span><button class="btn">Vào trận</button></div>
+    </div>
+    <div class="sec-h"><h3>Chơi nhanh</h3></div>
+    <div class="grid2">
+      ${games.map(g => `<button class="card game"><span class="ic">${icon(g[0])}</span><b>${g[1]}</b><span class="p">${g[2]}</span><span class="f"><span>${g[3]}</span><span class="best">${g[4]}</span></span></button>`).join('')}
+      <div class="card game locked" style="grid-column:1/-1;min-height:auto;flex-direction:row;align-items:center;gap:12px">
+        <span class="ic">${icon('text')}</span>
+        <div style="flex:1"><b>Điền câu tốc độ</b><div class="lockr">${icon('lock', 'sm')} Cần thêm 3 từ có câu ví dụ</div></div>
+      </div>
+    </div>
+    ${anno(S.done ? 110 : 64, 'Nhắc ôn trước, không khoá')}
+    ${anno(S.done ? 400 : 454, 'Mỗi game nói rõ luyện gì')}
+    ${anno(S.done ? 700 : 754, 'Lý do khoá hiện sẵn')}`;
+}
+
+function progress() {
+  const fc = [45, 13, 13, 13, 13, 13, 4], days = ['Nay', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'];
+  const heat = [0,0,0,0,0,0,0,0,0,0,1,2,1,2,3,0,1,2,3,3,2,3,3,2,1,3,3,2,3,3];
+  return `
+    <div class="hello"><div><h2>Tiến bộ</h2><p>5033 từ trong bộ</p></div></div>
+    <div class="kpis">
+      <div class="card kpi"><b>120</b><span>từ đã học</span></div>
+      <div class="card kpi"><b>93%</b><span>nhớ 30 ngày</span></div>
+      <div class="card kpi"><b>12</b><span>ngày liên tiếp</span></div>
+    </div>
+    <div class="card" style="margin-top:10px">
+      <div class="eyebrow">120 từ đã học</div>
+      <div class="stack" role="img" aria-label="80 đang nhớ, 40 đã thuộc"><i style="width:66.7%"></i><i style="width:33.3%"></i></div>
+      <div class="legend"><span><i class="dot" style="background:var(--accent)"></i>Đang nhớ 80</span><span><i class="dot" style="background:#E3A574"></i>Đã thuộc 40</span></div>
+    </div>
+    <div class="card" style="margin-top:10px">
+      <div class="eyebrow">Lịch ôn 7 ngày tới</div>
+      <div class="fc">${fc.map((n, i) => `<div class="${i ? '' : 'today'}"><b>${n}</b><i style="height:${Math.max(6, n / 45 * 76)}px"></i><span>${days[i]}</span></div>`).join('')}</div>
+    </div>
+    <div class="card" style="margin-top:10px">
+      <div class="eyebrow">30 ngày qua</div>
+      <div class="heat">${heat.map(l => `<i class="l${l}"></i>`).join('')}</div>
+      <div class="hl">ít <i style="background:var(--paper-2)"></i><i class="l1" style="background:color-mix(in srgb,var(--accent) 30%,var(--paper-2))"></i><i style="background:color-mix(in srgb,var(--accent) 60%,var(--paper-2))"></i><i style="background:var(--accent)"></i> nhiều</div>
+    </div>
+    <div class="sec-h"><h3>Hay quên nhất</h3><span class="small muted">bấm để ôn ngay</span></div>
+    <div class="card rowlist">
+      ${[['reckon', 2], ['how have you been', 2], ['would', 2]].map(w => `<button class="r"><b>${w[0]}</b><span class="x"><span class="lapse">quên ${w[1]} lần</span>${icon('chev', 'sm')}</span></button>`).join('')}
+    </div>
+    <div class="card rowlist" style="margin-top:10px">
+      <button class="r">${icon('list')}<b>Thư viện từ</b><span class="x">Chưa học 4913 · Đã học 120 ${icon('chev', 'sm')}</span></button>
+    </div>
+    ${anno(170, 'Đã học = Đang nhớ + Đã thuộc')}
+    ${anno(930, '"4913" chỉ còn ở đây')}`;
+}
+
+function me() {
+  const row = (ic, t, x = '') => `<button class="r">${icon(ic)}<span>${t}</span><span class="x">${x}${icon('chev', 'sm')}</span></button>`;
+  return `
+    <div class="hello"><div><h2>Tôi</h2></div></div>
+    <div class="card" style="display:flex;gap:14px;align-items:center">
+      <span class="avatar">L</span>
+      <div style="flex:1"><b>Linh</b><div class="small muted" style="display:flex;align-items:center;gap:4px">${icon('sync', 'sm')} Đã đồng bộ · 2 phút trước</div></div>
+    </div>
+    <div class="sec-h"><h3>Nhịp học</h3></div>
+    <div class="card rowlist">
+      <div class="r"><span>Từ mới mỗi ngày</span><span class="x stepper"><button aria-label="Giảm" data-go="dec">${icon('minus', 'sm')}</button><b class="mono" id="npd">${S.newPerDay}</b><button aria-label="Tăng" data-go="inc">${icon('plus', 'sm')}</button></span></div>
+      <div class="r"><span>Tối đa thẻ ôn / phiên</span><span class="x stepper"><button aria-label="Giảm">${icon('minus', 'sm')}</button><b class="mono">40</b><button aria-label="Tăng">${icon('plus', 'sm')}</button></span></div>
+    </div>
+    <div class="sec-h"><h3>Dữ liệu</h3></div>
+    <div class="card rowlist">
+      ${row('sliders', 'Sửa thói quen', '7 việc')}
+      ${row('save', 'Tải backup')}
+      ${row('sync', 'Khôi phục từ file')}
+    </div>
+    <div class="sec-h"><h3 style="color:var(--bad)">Vùng nguy hiểm</h3></div>
+    <div class="card rowlist danger">
+      <button class="r">${icon('trash')}<span>Xoá tiến độ học từ</span><span class="x" style="color:var(--bad)">Không xoá Pháp sư</span></button>
+    </div>
+    <p class="small muted" style="margin:14px 4px">Bản ghi âm chỉ lưu trên máy này, không nằm trong backup.</p>
+    ${anno(250, 'Stepper thay ô number')}
+    ${anno(560, 'Xoá tiến độ tách riêng')}`;
+}
+
+/* ---------------- stage (session) ---------------- */
+const STAGE = {
+  s1: { n: 12, body: () => `
+      <div class="kind">Từ mới <span class="steps"><i class="on"></i><i></i><i></i><i></i><i></i></span></div>
+      <div class="center">
+        <div class="sent">The lobster's claws are <span class="blank" aria-label="chỗ trống"></span> than human hands.</div>
+        <div class="src">Oxford 3000 · A1</div>
+        <div class="tools"><button class="tool">${icon('vol', 'sm')} Nghe câu</button><button class="tool" data-go="vi">Xem dịch</button></div>
+        <div class="vi" id="vi" hidden>Càng tôm hùm to hơn bàn tay người.</div>
+        <p class="small muted">Đoán nghĩa chỗ trống trước khi xem từ.</p>
+      </div>${anno(96, 'Chỉ từ mới có thanh 5 bước')}`,
+    foot: () => `<button class="btn btn-primary" data-go="s2">Xem từ</button>` },
+  s2: { n: 12, body: () => `
+      <div class="kind">Ghi nhớ <span class="steps"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span></div>
+      <div class="center">
+        <div class="word"><div class="emo" aria-hidden="true">🦞</div><h2>big<span class="pos">adj</span></h2><div class="ipa">/bɪɡ/</div><div class="mean">to, lớn</div></div>
+        <div class="mnem">"Big" nghe như "bích" — bức tường bích to đùng.</div>
+        <div class="sent" style="font-size:18px">The lobster's claws are <span class="hi">bigger</span> than human hands.</div>
+        <div class="tools" style="justify-content:center"><button class="tool">${icon('vol', 'sm')} Từ</button><button class="tool">${icon('vol', 'sm')} Câu</button><button class="tool">${icon('turtle', 'sm')} Chậm</button></div>
+      </div>`,
+    foot: () => `<button class="btn btn-primary" data-go="test">Tự kiểm tra</button>` },
+  test: { n: 13, typed: false, body: () => `
+      <div class="kind">Ôn lại · Nghe rồi gõ</div>
+      <div class="center">
+        <p class="muted">Nghe rồi gõ lại từ. Chưa hiện nghĩa.</p>
+        <div class="tools"><button class="tool">${icon('vol', 'sm')} Nghe từ</button><button class="tool">${icon('vol', 'sm')} Câu</button><button class="tool">${icon('turtle', 'sm')} Chậm</button></div>
+        <label class="small" style="font-weight:600">Bạn nghe được từ gì?</label>
+        <div class="input${STAGE.test.typed ? ' typed' : ''}">${STAGE.test.typed ? 'reckon' : 'gõ từ vừa nghe…'}</div>
+        ${STAGE.test.typed ? `<div class="feedback">${icon('check')} Đúng: <b>reckon</b> — cho rằng, nghĩ là</div>` : ''}
+      </div>${anno(96, 'Không còn chấm "đã xong" giả')}`,
+    foot: () => STAGE.test.typed
+      ? `<button class="btn btn-primary" data-go="grade">Tiếp</button>`
+      : `<button class="btn btn-primary" data-go="type">Kiểm tra</button><button class="btn" style="min-height:44px;font-size:15px;color:var(--ink-muted)">Không nhớ, xem đáp án</button>` },
+  grade: { n: 13, body: () => `
+      <div class="kind">Ôn lại · Chấm độ nhớ</div>
+      <div class="center">
+        <div class="word"><h2 style="font-size:36px">reckon</h2><div class="ipa">/ˈrek.ən/</div><div class="mean">cho rằng, nghĩ là</div></div>
+        <div class="sent" style="font-size:18px;text-align:center">I <span class="hi">reckon</span> it'll rain later.</div>
+        <p class="small muted" style="text-align:center">Bạn nhớ từ này thế nào?</p>
+      </div>${anno(560, 'Mỗi nút cho biết lần ôn kế')}`,
+    foot: () => `<div class="grades">
+        <button class="g g0" data-go="summary">Quên<small>1 phút</small></button>
+        <button class="g" data-go="summary">Khó<small>2 ngày</small></button>
+        <button class="g g2" data-go="summary">Nhớ<small>6 ngày</small></button>
+        <button class="g" data-go="summary">Dễ<small>12 ngày</small></button></div>` },
+  summary: { n: 45, body: () => `
+      <div class="center sum">
+        <div class="ring" role="img" aria-label="Nhớ 88%"><div>88%</div></div>
+        <h2 style="font-size:26px">Xong phiên hôm nay</h2>
+        <div class="statline"><div><b>45</b><span>thẻ</span></div><div><b>5</b><span>từ mới</span></div><div><b>9p</b><span>thời gian</span></div></div>
+        <p class="small muted">6 từ vừa quên — sẽ gặp lại sớm</p>
+        <div class="chips">${['reckon', 'would', 'give up', 'stubborn', 'a', 'no'].map(w => `<button class="chip">${icon('vol', 'sm')}${w}</button>`).join('')}</div>
+      </div>`,
+    foot: () => `<button class="btn btn-primary" data-go="finish">Xong</button><button class="btn btn-soft">${icon('bolt', 'sm')} Chơi 60 giây với 6 từ này</button>` }
+};
+
+function renderStage() {
+  const st = STAGE[S.stage];
+  document.getElementById('sbody').innerHTML = st.body();
+  document.getElementById('sfoot').innerHTML = st.foot();
+  document.getElementById('sprog').style.width = (st.n / 45 * 100) + '%';
+  document.getElementById('scount').textContent = st.n + '/45';
+  document.querySelector('.sprog').setAttribute('aria-valuenow', st.n);
+}
+
+/* ---------------- routing ---------------- */
+const TABS = { home, play, progress, me };
+function render() {
+  const stage = document.getElementById('stage');
+  stage.hidden = !S.stage;
+  if (S.stage) renderStage();
+  document.getElementById('scroll').innerHTML = TABS[S.tab]();
+  document.querySelectorAll('[data-tab]').forEach(b => b.setAttribute('aria-current', b.dataset.tab === S.tab ? 'page' : 'false'));
+  document.getElementById('badge').hidden = S.done;
+  const key = S.stage || (S.tab === 'home' && S.done ? 'homeDone' : S.tab);
+  document.querySelectorAll('#jump button').forEach(b => b.setAttribute('aria-current', b.dataset.jump === key));
+  const [t, sub, items] = NOTES[key];
+  document.getElementById('note').innerHTML = `<b>${t.toUpperCase()}</b><div style="font-weight:600;margin-bottom:6px">${sub}</div><ul>${items.map(i => `<li>${i}</li>`).join('')}</ul>`;
+}
+function jump(key) {
+  STAGE.test.typed = false;
+  if (key === 'homeDone') { S.tab = 'home'; S.done = true; S.stage = null; }
+  else if (STAGE[key]) { S.stage = key; }
+  else { S.tab = key; S.stage = null; if (key === 'home') S.done = false; }
+  render();
+}
+
+document.getElementById('jump').innerHTML = JUMP.map(([k, l]) => `<button data-jump="${k}">${l}<small>${STAGE[k] ? 'toàn màn' : 'tab'}</small></button>`).join('');
+document.addEventListener('click', e => {
+  const j = e.target.closest('[data-jump]'); if (j) return jump(j.dataset.jump);
+  const t = e.target.closest('[data-tab]'); if (t) { S.tab = t.dataset.tab; S.stage = null; document.getElementById('scroll').scrollTop = 0; return render(); }
+  const th = e.target.closest('[data-theme-set]');
+  if (th) {
+    const v = th.dataset.themeSet;
+    if (v === 'auto') document.documentElement.removeAttribute('data-theme'); else document.documentElement.dataset.theme = v;
+    document.querySelectorAll('[data-theme-set]').forEach(b => b.setAttribute('aria-pressed', b === th));
+    return;
+  }
+  if (e.target.closest('#toggleAnno')) {
+    const on = document.body.classList.toggle('no-anno');
+    e.target.closest('#toggleAnno').setAttribute('aria-pressed', !on);
+    return;
+  }
+  if (e.target.closest('#stageClose')) { S.stage = null; return render(); }
+  const g = e.target.closest('[data-go]'); if (!g) return;
+  const go = g.dataset.go;
+  if (go === 'habits') { S.habitsOpen = !S.habitsOpen; return render(); }
+  if (go === 'vi') { document.getElementById('vi').hidden = false; g.hidden = true; return; }
+  if (go === 'type') { STAGE.test.typed = true; return renderStage(); }
+  if (go === 'finish') { S.stage = null; S.done = true; S.tab = 'home'; return render(); }
+  if (go === 'more') { S.done = false; return jump('s1'); }
+  if (go === 'inc' || go === 'dec') { S.newPerDay = Math.min(50, Math.max(1, S.newPerDay + (go === 'inc' ? 1 : -1))); document.getElementById('npd').textContent = S.newPerDay; return; }
+  if (STAGE[go]) { STAGE.test.typed = false; S.stage = go; return render(); }
+});
+render();
+</script>
+</body>
+</html>

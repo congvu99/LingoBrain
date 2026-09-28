@@ -1,62 +1,79 @@
-/* Game từ vựng — phần giao diện. Khung dùng chung (chip, vòng đời ván, màn kết thúc)
+/* Game từ vựng — phần giao diện. Khung dùng chung (thẻ game ở tab Chơi, vòng đời ván, màn kết thúc)
    Phần vẽ từng dạng câu hỏi nằm ở js/word-game-rounds.js (nạp trước file này).
    Ranh giới: không gọi applyGrade, không ghi srs. Từ sai chỉ đi qua gameMiss. */
 
 let game = null;   // null = không chơi | { id, seq, words, i, right, wrong, score, streak, bestStreak, miss[], locked, over }
 let gameSeq = 0;   // số thứ tự ván, để callback treo của ván cũ tự nhận ra mình đã lỗi thời
 
-/* ---- chip chọn game ---- */
+/* ---- tab Chơi: thẻ game ---- */
 
 function gameOpen(id, a) { return a[id].ok; }
 
 function gameLockReason(id, a) {
   if (id === 'cloze' && a.cloze.have < MIN_LEARNED && a.sprint.have >= MIN_LEARNED)
-    return 'Cần học thêm từ có câu ví dụ';
+    return 'Cần thêm ' + a.cloze.need + ' từ đã học có câu ví dụ';
   return 'Cần học thêm ' + a[id].need + ' từ nữa';
 }
 
-/* Game có cấp độ lưu kỷ lục riêng từng cấp → chip hiện kỷ lục của cấp đang chọn */
+/* Game có cấp độ lưu kỷ lục riêng từng cấp → thẻ hiện kỷ lục của cấp đang chọn */
 function gameBestKey(id) {
   return id === 'planes' ? planeScoreKey(cfg.planeLevel) : id === 'fruit' ? fruitScoreKey(cfg.fruitLevel) : id;
 }
 
-function gameChipsHtml(a) {
-  return GAME_IDS.map(id => {
-    // Pháp sư không có kỷ lục điểm: chip hiện cấp pháp sư
-    const best = id === 'boss' ? 'Lv ' + levelFromXp(bossProg.xp) : (gameScore[gameBestKey(id)] || {}).best;
-    const open = gameOpen(id, a);
-    // aria-disabled thay cho disabled: nút disabled không phát click nên trên điện thoại
-    // người dùng chạm vào sẽ không nhận được lời giải thích vì sao bị khoá
-    return '<button class="game-chip" data-game="' + id + '"' + (open ? '' : ' aria-disabled="true" title="' + esc(gameLockReason(id, a)) + '"') + '>' +
-      '<span>' + GAME_LABEL[id] + '</span>' +
-      (open ? (best ? '<b class="mono">' + (id === 'boss' ? '' : '★ ') + esc(best) + '</b>' : '') : '<b class="mono">🔒</b>') +
-      '</button>';
-  }).join('');
+const GAME_ICON = {
+  scramble: '<rect x="3" y="6" width="7" height="7" rx="1.5"/><rect x="14" y="11" width="7" height="7" rx="1.5"/>',
+  sprint: '<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>',
+  cloze: '<path d="M4 7h16M4 12h5M15 12h5M4 17h10"/>',
+  planes: '<path d="M12 2l3 8 7 3-7 2-3 7-3-7-7-2 7-3z"/>',
+  fruit: '<path d="M4 20 18 6l2-2M14 4l6 6"/>'
+};
+const gameIcon = id => '<span class="game-ic" aria-hidden="true"><svg viewBox="0 0 24 24">' + GAME_ICON[id] + '</svg></span>';
+
+// aria-disabled thay cho disabled: nút disabled không phát click nên trên điện thoại
+// người dùng chạm vào sẽ không nhận được lời giải thích vì sao bị khoá
+function gameCardHtml(id, a) {
+  const open = gameOpen(id, a), best = (gameScore[gameBestKey(id)] || {}).best;
+  return '<button class="card game-card" data-game="' + id + '"' + (open ? '' : ' aria-disabled="true"') + '>' +
+    gameIcon(id) + '<b>' + esc(GAME_LABEL[id]) + '</b><span class="game-purpose">' + esc(GAME_META[id].purpose) + '</span>' +
+    (open
+      ? '<span class="game-foot"><span>' + esc(GAME_META[id].length) + '</span>' + (best ? '<span class="game-best">★ ' + esc(best) + '</span>' : '') + '</span>'
+      : '<span class="game-lock">🔒 ' + esc(gameLockReason(id, a)) + '</span>') +
+    '</button>';
+}
+
+// Pháp sư Lexoria: thẻ nổi bật (RPG theo cốt truyện, không có kỷ lục điểm → hiện cấp + trận hôm nay)
+function bossFeatureHtml(a) {
+  const open = gameOpen('boss', a);
+  return '<button class="card boss-feature" data-game="boss"' + (open ? '' : ' aria-disabled="true"') + '>' +
+    '<span class="eyebrow">Pháp sư Lexoria · Lv ' + levelFromXp(bossProg.xp) + '</span>' +
+    '<b>' + esc(open ? bossBattleTitle(bossTodayOpts(cfg.bossLevel)) : 'Chưa mở') + '</b>' +
+    '<span class="game-purpose">' + esc(open ? GAME_META.boss.purpose : gameLockReason('boss', a)) + '</span>' +
+    (open ? '<span class="boss-cta">Vào sảnh</span>' : '') + '</button>';
 }
 
 function bindGameChips(root, a) {
-  root.querySelectorAll('.game-chip').forEach(b => {
+  root.querySelectorAll('[data-game]').forEach(b => {
     b.onclick = () => { if (gameOpen(b.dataset.game, a)) startGame(b.dataset.game); else toast('🔒 ' + gameLockReason(b.dataset.game, a)); };
   });
 }
 
-/* Đang chơi thì giấu mọi thứ quanh #app: chip (bấm sẽ thay ván mới, nuốt mất từ sai)
-   và bảng thống kê (bấm sẽ đổi hàng đợi ôn mà màn hình không phản ứng gì). */
-function syncGameChrome() {
-  const playing = !!game;
-  ['#gameChips', '#statsBox', '#deckStats'].forEach(sel => { const el = $(sel); if (el) el.hidden = playing; });
-}
+/* Đang chơi: game nằm trong lớp toàn màn (#stage) che hết tab + thanh điều hướng, nên không bấm nhầm được
+   thẻ game khác / thống kê giữa ván. Gọi ở mọi chỗ tạo `game` (startGame, sảnh Pháp sư). */
+function syncGameChrome() { if (game) openStage('game'); }
 
 function renderGameChips() {
   const box = $('#gameChips');
-  if (!box) return;
-  syncGameChrome();
-  if (game) return;
+  if (!box || game) return;
   const a = gameAvailability(deck, srs);          // quét bộ từ 1 lần, dùng lại cho cả vẽ lẫn gắn sự kiện
-  const anyOk = GAME_IDS.some(id => gameOpen(id, a));
-  box.innerHTML = '<span class="game-chips-label mono">Chơi nhanh</span>' + gameChipsHtml(a) +
-    (anyOk ? '' : '<span class="small muted">học thêm từ để mở khoá</span>');
+  const left = liveQueueIds().length;
+  box.innerHTML =
+    (left ? '<button class="nudge" id="btnNudgeReview">Còn ' + left + ' thẻ cần ôn hôm nay<b>Ôn trước ›</b></button>' : '') +
+    bossFeatureHtml(a) +
+    '<h2 class="sec-title">Chơi nhanh</h2>' +
+    '<div class="game-grid">' + GAME_IDS.filter(id => id !== 'boss').map(id => gameCardHtml(id, a)).join('') + '</div>' +
+    '<p class="small muted">Trả lời đúng không đổi lịch ôn; từ sai được đưa lên đầu phiên ôn kế tiếp.</p>';
   bindGameChips(box, a);
+  if (left) $('#btnNudgeReview').onclick = startReview;
 }
 
 /* ---- vòng đời một ván ---- */
@@ -153,7 +170,7 @@ function endGame() {
 
   const id = game.id;
   $('#gAgain').onclick = () => { game = null; startGame(id); };
-  $('#gToReview').onclick = () => { game = null; restartSession(); };
+  $('#gToReview').onclick = () => { game = null; openStage('review'); restartSession(); };
   $('#gDone').onclick = () => { game = null; render(); };
 }
 

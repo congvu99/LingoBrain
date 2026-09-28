@@ -164,3 +164,24 @@ describe('buildQueue — từ sai trong game', () => {
     assert.ok(q.indexOf('không-tồn-tại') < 0);
   });
 });
+
+describe('queueBreakdown — số "hôm nay" khớp đúng hàng đợi sẽ phát', () => {
+  const words = Array.from({ length: 60 }, (_, i) => ({ id: 'w' + i, word: 'w' + i }));
+  const deckQ = { words };
+  const srsQ = {};
+  words.slice(0, 50).forEach((w, i) => { srsQ[w.id] = { state: 'review', due: NOW - (i + 1) * D, ivl: 3, ef: 2.5 }; });
+  it('due vượt maxSession: tổng = min(due, max) + mới/ngày', () => {
+    const q = buildQueue(deckQ, srsQ, { newPerDay: 5, maxSession: 40 }, NOW, []);
+    const b = queueBreakdown(q, srsQ);
+    assert.equal(b.total, q.length); assert.equal(b.reviews, 40); assert.equal(b.fresh, 5); assert.equal(b.total, 45);
+  });
+  it('từ sai trong game lên đầu vẫn được đếm vào tổng', () => {
+    const q = buildQueue(deckQ, srsQ, { newPerDay: 5, maxSession: 10 }, NOW, ['w5']);
+    assert.equal(q[0], 'w5'); assert.equal(q.length, 16); assert.equal(queueBreakdown(q, srsQ).total, 16);
+  });
+  it('rỗng → 0 phút', () => assert.deepEqual(queueBreakdown([], {}), { total: 0, fresh: 0, reviews: 0, minutes: 0 }));
+  it('ước lượng phút làm tròn lên, tối thiểu 1', () => {
+    assert.equal(queueBreakdown(['w0'], srsQ).minutes, 1);
+    assert.equal(queueBreakdown(['w0', 'w55'], srsQ).minutes, 2);   // 10s + 60s
+  });
+});

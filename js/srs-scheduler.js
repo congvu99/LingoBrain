@@ -141,7 +141,18 @@ function pruneSrs(deck, srs) {
   return n;
 }
 
-// tóm tắt bộ từ cho 4 ô số
+/* Số "việc hôm nay" tính thẳng từ hàng đợi đang chạy (không tính lại từ bộ từ) → badge, nút Hôm nay,
+   thanh phiên luôn bằng đúng số thẻ sẽ phát. Thời gian là ước lượng: thẻ ôn ~10s, từ mới ~60s (5 bước). */
+const SECONDS_PER_REVIEW = 10, SECONDS_PER_NEW = 60;
+function queueBreakdown(ids, srs) {
+  let fresh = 0;
+  for (const id of ids) { const r = srs[id]; if (!r || r.state === 'new') fresh++; }
+  const reviews = ids.length - fresh;
+  const minutes = ids.length ? Math.max(1, Math.ceil((reviews * SECONDS_PER_REVIEW + fresh * SECONDS_PER_NEW) / 60)) : 0;
+  return { total: ids.length, fresh, reviews, minutes };
+}
+
+// tóm tắt bộ từ
 function deckSummary(deck, srs, now) {
   let due = 0, fresh = 0, learn = 0, mature = 0;
   for (const w of deck.words) {
@@ -180,4 +191,4 @@ function fuzzyMatch(answer, target) {
   return { ok: true, near };
 }
 
-if (typeof module !== 'undefined') module.exports = { DAY, LADDER, REQUEUE_GAP, slug, normWord, blankRec, migrateV1, sm2Ease, nextInterval, applyGrade, dueLabel, buildQueue, pruneSrs, deckSummary, fuzzyMatch, levenshtein, normAnswer };
+if (typeof module !== 'undefined') module.exports = { DAY, LADDER, REQUEUE_GAP, slug, normWord, blankRec, migrateV1, sm2Ease, nextInterval, applyGrade, dueLabel, buildQueue, queueBreakdown, pruneSrs, deckSummary, fuzzyMatch, levenshtein, normAnswer };

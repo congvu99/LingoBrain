@@ -1,0 +1,161 @@
+/* LingoBrain — 4 tab (Hôm nay · Chơi · Tiến bộ · Tôi) + lớp toàn màn #stage (phiên ôn / game).
+   Nạp sau css/paper-theme.css; chỉ dùng token ở đó nên sáng/tối/tăng tương phản tự theo. */
+
+:root{--session-cta:#F7DFC8;--session-cta-ink:#3C2A1C;--sw-new:#F7DFC8;--sw-review:#9BDFC5;--mature:#E3A574}
+@media (prefers-color-scheme:dark){:root{--mature:#D99A68}}
+
+/* ---- đầu mỗi tab: 1 tiêu đề + 1 dòng phụ (thay brand + eyebrow + H1 + subtitle ~190px) ---- */
+.tab-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:4px 0 18px}
+.tab-head h1{font:700 26px/1.2 var(--font-ui);letter-spacing:-.6px;margin:0}
+.tab-sub{margin:2px 0 0;font-size:14px;color:var(--ink-muted)}
+.streak{flex:none;display:inline-flex;align-items:center;gap:5px;padding:7px 12px;border-radius:999px;background:var(--peach);color:var(--peach-ink);font-size:14px}
+.streak svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linejoin:round}
+
+/* ---- thẻ "Phiên hôm nay": nút chính duy nhất của màn Hôm nay ---- */
+.session-card{background:var(--hero);color:var(--hero-text);border-radius:26px;padding:20px 20px 18px;box-shadow:var(--sh-2)}
+.session-card .eyebrow{color:var(--hero-muted);text-transform:uppercase;margin:0}
+.session-big{font:600 18px/1.2 var(--font-ui);margin:8px 0 6px;display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+.session-big b{font:800 44px/1 var(--font-ui);letter-spacing:-1.5px}
+.session-big span{color:var(--hero-muted);font-weight:500}
+.session-big.done-title{font:800 28px/1.15 var(--font-ui);align-items:center;gap:10px}
+.session-big.done-title svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.session-split{display:flex;gap:16px;flex-wrap:wrap;font-size:14px;color:var(--hero-muted);margin-bottom:16px}
+.session-split span{display:inline-flex;align-items:center;gap:7px}
+.sw{width:9px;height:9px;border-radius:50%;display:inline-block}
+.sw-review{background:var(--sw-review)} .sw-new{background:var(--sw-new)}
+.session-bar{height:8px;border-radius:999px;background:rgba(255,255,255,.18);overflow:hidden;margin:-4px 0 16px}
+.session-bar i{display:block;height:100%;border-radius:999px;background:var(--sw-review);transition:width 420ms var(--ease)}
+.session-cta{width:100%;min-height:56px;border:0;border-radius:16px;background:var(--session-cta);color:var(--session-cta-ink);
+  font:700 17px/1 var(--font-ui);box-shadow:0 4px 12px rgba(0,0,0,.08)}
+.session-cta:active{background:#EFCBAB;color:var(--session-cta-ink)}
+.session-cta.alt{background:rgba(255,255,255,.14);color:#fff;box-shadow:none}
+.session-cta.alt:active{background:rgba(255,255,255,.22);color:#fff}
+.suggest{display:flex;align-items:center;gap:12px;width:100%;text-align:left;margin:12px 0 0;padding:14px 16px;min-height:72px;border-radius:20px}
+.suggest-ic,.game-ic{flex:none;width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:var(--accent-wash);color:var(--accent)}
+.suggest-ic svg,.game-ic svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.suggest-t{flex:1;display:flex;flex-direction:column;gap:2px;line-height:1.35}
+.suggest-t span{font-size:13px;color:var(--ink-muted);font-weight:400}
+
+/* ---- tiêu đề mục + thói quen gập ---- */
+.sec-h{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:26px 2px 10px}
+.sec-h h2,.sec-title{font:650 18px/1.3 var(--font-ui);margin:0}
+.sec-title{margin:24px 2px 10px}
+.sec-count{font-size:14px;font-weight:600;color:var(--ink-muted)}
+.link-btn{min-height:44px;padding:0 4px;border:0;background:transparent;box-shadow:none;color:var(--accent);font-weight:650;font-size:14px}
+.link-btn:active{background:transparent;color:var(--accent)}
+.habit-note{display:flex;align-items:center;gap:10px;padding:16px 18px;font-size:15px;color:var(--ink-muted)}
+.habit-note svg{width:20px;height:20px;fill:none;stroke:var(--ok);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.task.now .badge-now{background:var(--accent-wash)}
+
+/* ---- tab Chơi ---- */
+.nudge{display:flex;align-items:center;gap:10px;width:100%;min-height:48px;margin:0 0 14px;padding:10px 16px;border:0;border-radius:14px;
+  background:var(--peach);color:var(--peach-ink);font-size:14px;text-align:left;box-shadow:none}
+.nudge b{margin-left:auto;white-space:nowrap}
+.nudge:active{background:var(--peach);color:var(--peach-ink)}
+.boss-feature{display:flex;flex-direction:column;align-items:flex-start;gap:4px;width:100%;text-align:left;margin:0;padding:20px;min-height:0;
+  border:0;border-radius:24px;background:linear-gradient(135deg,#2C2250,#4B2F6E);color:#fff;position:relative;overflow:hidden}
+.boss-feature::after{content:"";position:absolute;right:-40px;top:-40px;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,#9C7BFF55 0,transparent 70%)}
+.boss-feature .eyebrow{color:#D9C8FF;text-transform:uppercase;margin:0}
+.boss-feature b{font:700 22px/1.25 var(--font-ui)}
+.boss-feature .game-purpose{color:#E4DAFF}
+.boss-cta{margin-top:12px;align-self:flex-end;padding:12px 20px;border-radius:14px;background:#FFD87A;color:#3A2A00;font-weight:700;font-size:15px}
+.boss-feature:active{background:linear-gradient(135deg,#2C2250,#4B2F6E);color:#fff}
+.game-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.game-card{display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;margin:0;padding:14px;min-height:150px;border-radius:20px}
+.game-card b{font-size:15px;font-weight:700}
+.game-purpose{font-size:13px;line-height:1.35;color:var(--ink-muted);font-weight:400}
+.game-foot{margin-top:auto;display:flex;justify-content:space-between;width:100%;font-size:12.5px;color:var(--ink-muted);font-weight:500}
+.game-best{color:var(--peach-ink);font-weight:700}
+.game-lock{margin-top:auto;font-size:12.5px;line-height:1.35;color:var(--ink-muted);font-weight:500}
+.game-card[aria-disabled="true"],.boss-feature[aria-disabled="true"]{opacity:.62;box-shadow:none}
+.game-card[aria-disabled="true"] .game-ic{background:var(--paper-2);color:var(--ink-muted)}
+#tab-play>#gameChips>.small{margin:14px 2px 0}
+
+/* ---- tab Tiến bộ ---- */
+#statsBox>.card,#tab-progress>.card{margin-bottom:12px}
+.kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:12px}
+.kpi{margin:0;padding:14px 12px;border-radius:18px}
+.kpi b{display:block;font:750 26px/1.15 var(--font-ui);letter-spacing:-.6px}
+.kpi span{font-size:12.5px;color:var(--ink-muted);line-height:1.3;display:block;margin-top:2px}
+#statsBox .eyebrow{text-transform:uppercase;color:var(--ink-muted);margin:0 0 10px}
+.stack{display:flex;height:12px;border-radius:999px;overflow:hidden;background:var(--paper-2);margin-bottom:10px}
+.stack i:first-child{background:var(--accent)} .stack i:last-child{background:var(--mature)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:14px;margin-bottom:8px}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.swatch{width:10px;height:10px;border-radius:3px;display:inline-block}
+.sw-learn{background:var(--accent)} .sw-mature{background:var(--mature)}
+#statsBox .card>p.small{margin:0}
+.forecast{height:112px}
+.forecast i{background:var(--accent);opacity:.45;border-radius:6px 6px 2px 2px}
+.forecast .today i{opacity:1}
+.forecast .today span{color:var(--ink);font-weight:700}
+.heat-legend{display:flex;align-items:center;justify-content:flex-end;gap:4px;margin-top:8px;font-size:11px;color:var(--ink-muted)}
+.heat-legend i{width:11px;height:11px;border-radius:3px;background:var(--paper-2);border:1px solid var(--rule-soft)}
+.heat-legend i.l1{background:var(--mint)} .heat-legend i.l2{background:var(--ink-muted)} .heat-legend i.l3{background:var(--accent)}
+#statsBox .sec-h{margin-top:20px}
+.rowlist{padding:0;overflow:hidden}
+.rowlist .r{display:flex;align-items:center;gap:10px;width:100%;min-height:54px;padding:0 16px;margin:0;border:0;border-radius:0;
+  background:transparent;box-shadow:none;text-align:left;font-size:16px}
+.rowlist .r+.r{border-top:1px solid var(--rule-soft)}
+.rowlist .r b{font-family:var(--font-read);font-weight:600}
+.rowlist .r .x{margin-left:auto;display:flex;align-items:center;gap:8px;color:var(--ink-muted)}
+.rowlist .r:active{background:var(--paper-2);transform:none}
+.lapse{font-size:12px;font-weight:700;color:var(--bad);background:color-mix(in srgb,var(--bad) 12%,transparent);padding:3px 9px;border-radius:999px}
+.lib .list{max-height:420px}
+
+/* ---- tab Tôi ---- */
+.group-h{font:650 13px/1.4 var(--font-ui);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-muted);margin:24px 4px 8px}
+#tab-manage .card{margin-bottom:12px}
+.danger-h{color:var(--bad)}
+.card.danger{border-color:color-mix(in srgb,var(--bad) 35%,var(--rule-soft))}
+.btn-danger{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 45%,var(--rule));background:var(--card)}
+.btn-danger:active{background:color-mix(in srgb,var(--bad) 10%,var(--card));color:var(--bad)}
+
+/* ---- lớp toàn màn: ẩn thanh điều hướng, thanh trên = ✕ + tiến độ PHIÊN + n/N ---- */
+html.in-stage .tabbar{display:none}
+#stage{max-width:740px;margin:0 auto}
+.stage-bar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;margin:-8px -4px 12px;padding:8px 4px;background:var(--paper)}
+.icon-btn{flex:none;width:44px;height:44px;min-height:44px;padding:0;border:0;border-radius:12px;background:transparent;box-shadow:none;color:var(--ink-muted)}
+.icon-btn svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.icon-btn:active{background:var(--paper-2)}
+.stage-prog{flex:1;height:8px;border-radius:999px;background:var(--rule-soft);overflow:hidden}
+.stage-prog i{display:block;height:100%;width:0;border-radius:999px;background:var(--accent);transition:width 300ms var(--ease)}
+.stage-count{flex:none;min-width:52px;text-align:right;font:700 14px/1 var(--font-mono);font-variant-numeric:tabular-nums}
+#stage .card.page{border-top-width:1px;border-color:var(--rule-soft)}
+#stage .step-label{text-transform:uppercase;letter-spacing:.05em;font-size:12.5px}
+/* nút hành động chính dính đáy vùng cuộn: luôn trong tầm ngón cái dù thẻ dài */
+#stage #body>.row:last-child,#stage .grade{position:sticky;bottom:0;z-index:2;background:var(--card);
+  margin-inline:-6px;padding:12px 6px max(12px,env(safe-area-inset-bottom,0px))}
+#stage .grade button{min-height:76px;gap:4px}
+#stage .grade button b{font-size:16px}
+
+/* ---- màn kết phiên ---- */
+.session-end{text-align:center}
+.ring{--p:0;width:128px;height:128px;margin:6px auto 10px;border-radius:50%;display:grid;place-items:center;
+  background:conic-gradient(var(--accent) calc(var(--p) * 1%),var(--paper-2) 0)}
+.ring b{width:102px;height:102px;border-radius:50%;background:var(--card);display:grid;place-items:center;font:800 28px/1 var(--font-ui)}
+.session-end h2{margin:6px 0 4px;font-size:24px}
+.statline{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:14px 0}
+.statline div{padding:12px 6px;border-radius:14px;background:var(--paper-2)}
+.statline b{display:block;font:750 22px/1.2 var(--font-ui)}
+.statline span{font-size:12.5px;color:var(--ink-muted)}
+.word-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:8px 0 4px}
+.chip{min-height:44px;padding:0 14px;border-radius:999px;font-size:15px;font-family:var(--font-read)}
+.stack-actions{display:grid;gap:8px;margin-top:18px}
+
+@media (max-width:359px){
+  .session-big b{font-size:38px} .kpi b{font-size:22px} .game-grid{grid-template-columns:minmax(0,1fr)}
+}
+@media (min-width:1024px){
+  #stage{padding-top:12px}
+  .game-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media (hover:hover){
+  .game-card:not([aria-disabled="true"]):hover{border-color:var(--accent)}
+  .session-cta:hover{filter:brightness(.97)}
+}
+@media (max-width:599px){ #stage #body>.row:last-child .btn-primary{flex:1 0 100%;order:9;min-height:52px} #stage #body>.row:last-child .spacer{display:none} }
+/* lớp game: thanh ✕ chỉ là lối thoát dự phòng cho màn không có nút ← (vd. chọn pháp sư lần đầu) */
+#stage.is-game .stage-prog,#stage.is-game .stage-count{visibility:hidden}
+#stage.is-game:has(#gQuit) .stage-bar{display:none}
+#taskList>:only-child{grid-column:1/-1}

@@ -1,4 +1,4 @@
-/* Tab Giáo án: 7 việc theo giờ, checkbox, streak, ghi âm shadowing (lưu IndexedDB). */
+/* Thói quen (giáo án): 7 việc theo giờ, checkbox, streak, ghi âm shadowing (lưu IndexedDB). */
 
 const DEFAULT_PLAN = [
   { id: 't1', time: '07:00', dur: '10 phút', title: 'Xem video/clip mới (không phụ đề)', desc: 'Xem 1 lần, cố đoán nghĩa qua hình ảnh, chưa cần hiểu hết.' },
@@ -18,7 +18,8 @@ function rollDay() {
   if (day.date === t) return;
   // ngày lưu ở tương lai (đồng hồ máy từng chạy nhanh): chỉ đưa về hôm nay, không tính streak/lịch sử cho ngày không có thật
   if (day.date > t) { day.date = t; day.done = {}; save(K_DAY, day, { stamp: false }); return; }
-  const wasFull = plan.length && plan.every(x => day.done[x.id]);
+  // ngày đủ = có ôn ít nhất 1 thẻ (js/home-today-screen.js studiedOn) hoặc tích đủ thói quen như trước
+  const wasFull = (plan.length && plan.every(x => day.done[x.id])) || studiedOn(day.date);
   day.history = day.history || {};
   day.history[day.date] = Object.keys(day.done).length;
   const yesterday = dkey(Date.now() - DAY);
@@ -48,33 +49,35 @@ function currentTaskId() {
   return best;
 }
 
+/* Tab Hôm nay: phần đầu (lời chào, phiên hôm nay) ở js/home-today-screen.js; ở đây là danh sách thói quen.
+   Gập mặc định: chỉ việc tiếp theo — 6/7 việc làm ngoài app, không nên chiếm màn đầu. */
 function renderPlan() {
   rollDay();
+  renderHome();
   const done = planDone(), total = plan.length, cid = currentTaskId();
   $('#pDone').textContent = done + '/' + total;
-  const percent = total ? Math.round(done / total * 100) : 0;
-  $('#pBar').style.width = percent + '%';
-  $('#pPercent').textContent = percent + '%';
-  $('#planProgress').setAttribute('aria-valuenow', percent);
-  $('#planProgress').setAttribute('aria-valuetext', done + ' trên ' + total + ' hoạt động hoàn thành');
-  $('#pEncourage').textContent = total && done === total ? 'Bạn đã làm rất tốt. Hẹn gặp lại ngày mai!' : done ? 'Thêm một bước nhỏ, thêm một niềm vui.' : 'Mỗi bước nhỏ đều đáng tự hào.';
-  const summary = deckSummary(deck, srs, Date.now());
-  $('#btnTodayStart').innerHTML = (summary.learn || summary.mature ? 'Tiếp tục ôn từ' : 'Bắt đầu học từ') + ' <span aria-hidden="true">↗</span>';
-  $('#pStreak').textContent = day.streak || 0;
-  $('#planDate').textContent = new Date().toLocaleDateString('vi-VN', { weekday: 'long', day: 'numeric', month: 'numeric' });
+  $('#btnHabits').textContent = habitsOpen ? 'Thu gọn' : 'Xem tất cả';
+  $('#btnHabits').setAttribute('aria-expanded', habitsOpen);
+  $('#btnHabits').hidden = total <= 1;
+  $('#planFooter').hidden = !habitsOpen;
+  const next = cid || (plan.find(t => !day.done[t.id]) || {}).id;
+  const shown = habitsOpen ? plan : plan.filter(t => t.id === next);
 
-  $('#taskList').innerHTML = plan.map((t, index) => {
-    const isDone = !!day.done[t.id], isNow = (t.id === cid);
+  $('#taskList').innerHTML = !total
+    ? '<div class="card habit-note">Chưa có thói quen nào — thêm ở tab <b>Tôi</b>.</div>'
+    : !shown.length ? '<div class="card habit-note">' + ICON_CHECK + 'Xong hết thói quen hôm nay.</div>'
+    : shown.map(t => {
+    const isDone = !!day.done[t.id], isNow = (t.id === next);
     let acts = '';
     if (!isDone) {
       // 'add' (nạp từ) đã bỏ vì bộ từ chỉ lấy từ words.json; giáo án đã lưu còn act này → dẫn sang ôn từ
-      if (t.act === 'play' || t.act === 'add') acts = '<button class="btn-sm btn-primary" data-act="play" data-id="' + esc(t.id) + '">Vào ôn từ ngay →</button>';
+      if (t.act === 'play' || t.act === 'add') acts = '<button class="btn-sm" data-act="play" data-id="' + esc(t.id) + '">Vào ôn từ →</button>';
       if (t.act === 'rec') acts = '<button class="btn-sm" data-act="rec" data-id="' + esc(t.id) + '">⏺ Ghi âm</button>';
     }
     return '<div class="task' + (isDone ? ' done' : '') + (isNow ? ' now' : '') + '">' +
       '<button class="chk" data-chk="' + esc(t.id) + '" aria-label="' + (isDone ? 'Bỏ đánh dấu: ' : 'Hoàn thành: ') + esc(t.title) + '" aria-pressed="' + isDone + '">' + (isDone ? '✓' : '') + '</button>' +
       '<div class="t-main">' +
-        '<div class="t-meta"><span class="task-number" aria-hidden="true">' + String(index + 1).padStart(2, '0') + '</span><span class="t-time">' + esc(t.time) + '</span><span class="t-dur">' + esc(t.dur) + '</span>' + (isNow ? '<span class="badge-now">Gợi ý lúc này</span>' : '') + '</div>' +
+        '<div class="t-meta"><span class="t-time">' + esc(t.time) + '</span><span class="t-dur">' + esc(t.dur) + '</span>' + (isNow && !isDone ? '<span class="badge-now">Tiếp theo</span>' : '') + '</div>' +
         '<div class="t-title">' + esc(t.title) + '</div>' +
         '<div class="t-desc">' + esc(t.desc) + '</div>' +
         (acts ? '<div class="t-act">' + acts + '</div>' : '') +
@@ -84,7 +87,7 @@ function renderPlan() {
 
   $('#taskList').querySelectorAll('[data-chk]').forEach(b => b.onclick = () => toggleTask(b.dataset.chk));
   $('#taskList').querySelectorAll('[data-act]').forEach(b => b.onclick = () => {
-    if (b.dataset.act === 'play') showTab('game');
+    if (b.dataset.act === 'play') startReview();
     if (b.dataset.act === 'rec') startRec(b, b.dataset.id);
   });
   plan.filter(t => t.act === 'rec' && !day.done[t.id]).forEach(t => renderRecordings(t.id));

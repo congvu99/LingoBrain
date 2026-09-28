@@ -18,7 +18,11 @@ const PLANE_KILLS_PER_LEVEL = 5;
 const PLANE_MAX_DT = 0.05;         // kẹp bước thời gian: sau tạm dừng / giật khung không nhảy cóc
 const PLANE_WRONG_TO_MISS = 3;     // gõ sai ngần ấy chữ trên 1 mục tiêu → từ đó vào danh sách ôn trước (không trừ điểm)
 const BULLET_SPEED = 2.4;          // chiều cao khung / giây
-const BULLET_KICK = 0.22;          // mỗi viên trúng đẩy mục tiêu giật lên (chiều cao khung / giây)
+// mỗi viên trúng hãm mục tiêu (bớt ngần ấy lần tốc độ hành trình, không lùi ngược) rồi hồi dần: đứng khựng lại
+// cho dễ đọc thay vì giật lên xuống theo từng phím. Hồi chậm để thời gian được thêm mỗi phát ~ như cú giật cũ
+const BULLET_BRAKE = 1, HIT_RECOVER = 1.1;
+// khung thấp (điện thoại mở bàn phím ảo): nhãn chiếm phần lớn đường rơi → rơi chậm hơn, tối đa ×1.4
+const PLANE_REF_H = 560, PLANE_SHORT_SLOW_MAX = 1.4;
 // tàu mình: lò xo kéo về dưới mục tiêu đang khoá, giảm chấn hơi dưới tới hạn → trượt quá một chút rồi dừng
 const SHIP_SPRING = 16, SHIP_DAMP = 6.4, SHIP_IDLE_DAMP = 3, SHIP_MAX_V = 1.4, SHIP_MARGIN = 22, SHIP_MAX_BANK = 0.5;
 // bán kính theo bề ngang khung, kẹp min/max px. ≤4 chữ: thiên thạch nảy mép · 5–8: tàu địch lượn · ≥9: tàu mẹ
@@ -29,6 +33,7 @@ const planeDifficulty = id => PLANE_DIFFICULTIES[id] || PLANE_DIFFICULTIES.norma
 const planeScoreKey = id => { const d = planeDifficulty(id); return d.id === 'normal' ? 'planes' : 'planes-' + d.id; };
 const fallSeconds = (level, d) => d.fall / Math.pow(d.speedup, level);
 const maxPlanes = (level, d) => Math.min(d.cap, d.start + level);
+const shortFieldSlowdown = h => Math.min(PLANE_SHORT_SLOW_MAX, Math.max(1, PLANE_REF_H / h));
 
 function createPlaneState(words, w, h, difficultyId) {
   const st = { words: words || [], next: 0, targets: [], bullets: [], uid: 0, spawnIn: 0, lock: null, t: 0,
@@ -67,7 +72,7 @@ function spawnTarget(st, rand) {
     x = r + rand() * (st.w - 2 * r);
     if (!st.targets.some(t => t.y < st.h * 0.5 && Math.abs(t.x - x) < st.w * 0.28)) break;
   }
-  const cruise = st.h / (fallSeconds(st.level, st.diff) * lengthSlowdown(text) * (0.9 + rand() * 0.2));   // ±10%: không đều tăm tắp
+  const cruise = st.h / (fallSeconds(st.level, st.diff) * lengthSlowdown(text) * shortFieldSlowdown(st.h) * (0.9 + rand() * 0.2));   // ±10%: không đều tăm tắp
   const t = { uid: ++st.uid, word: w, text, letters: typedLetters(text), label: planeLabel(w), kind, r, x, y: -r, cruise,
     vx: kind === 'rock' ? (rand() - 0.5) * cruise * 1.2 : 0, vy: cruise,
     rot: kind === 'rock' ? rand() * 6.283 : 0, vr: kind === 'rock' ? (rand() - 0.5) * 2.4 : 0, phase: rand() * 6.283,
@@ -91,8 +96,7 @@ function moveTarget(st, t, dt) {
   } else if (t.kind === 'mother') {
     t.vx += (Math.cos(st.t * 0.7 + t.phase) * st.w * 0.07 - t.vx) * 1.5 * dt;
   }
-  t.vy += (t.cruise - t.vy) * 2.2 * dt;   // hồi về tốc độ hành trình sau cú giật của đạn
-  if (t.vy < 0 && t.y < t.r) t.vy = 0;    // giật tới mép trên thì dừng: không văng khỏi màn (nhãn mất theo)
+  t.vy += (t.cruise - t.vy) * Math.min(1, HIT_RECOVER * dt);   // hồi về tốc độ hành trình sau khi bị đạn hãm
   t.x += t.vx * dt; t.y += t.vy * dt; t.rot += t.vr * dt;
   if (t.x < t.r) { t.x = t.r; t.vx = Math.abs(t.vx) * 0.9; }
   if (t.x > st.w - t.r) { t.x = st.w - t.r; t.vx = -Math.abs(t.vx) * 0.9; }
@@ -144,8 +148,8 @@ function moveBullets(st, dt, ev, rand) {
       const dx = t.x - b.x, dy = t.y - b.y, d = Math.hypot(dx, dy);
       if (d <= Math.max(t.r * 0.7, s * dt)) {
         st.bullets.splice(st.bullets.indexOf(b), 1);
-        t.vy = Math.max(t.vy - BULLET_KICK * st.h, -t.cruise);   // giật lên, có trần
-        t.vx += b.vx * 0.03; t.vr += (rand() - 0.5) * 1.5;
+        t.vy = Math.max(0, t.vy - BULLET_BRAKE * t.cruise);   // không đẩy ngang: đá cộng dồn vx sẽ nảy mép ngày càng nhanh
+        if (t.kind === 'rock') t.vr += (rand() - 0.5) * 1.5;   // tàu tự đặt rot theo hướng lượn, tàu mẹ không nên xoay tròn
         ev.push({ type: 'hit', x: b.x, y: b.y, a: Math.atan2(b.vy, b.vx) });
         if (--t.pending <= 0 && t.doomed) destroyTarget(st, t, ev);
         continue;
@@ -188,6 +192,6 @@ function stepPlanes(st, dt, rand) {
 
 if (typeof module !== 'undefined') module.exports = {
   PLANE_LIVES, PLANE_DIFFICULTIES, PLANE_DIFFICULTY_IDS, PLANE_WRONG_TO_MISS,
-  planeDifficulty, planeScoreKey, fallSeconds, maxPlanes, createPlaneState, resizePlaneState,
+  planeDifficulty, planeScoreKey, fallSeconds, maxPlanes, shortFieldSlowdown, createPlaneState, resizePlaneState,
   stepPlanes, removeTarget
 };

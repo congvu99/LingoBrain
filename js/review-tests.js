@@ -31,7 +31,7 @@ function wireTyping(w, checkFn, revealHtml) {
 
 /* type — nghĩa Việt + câu che từ → gõ từ */
 function tType(w) {
-  $('#body').innerHTML = stepLabel(3, 'Nhớ lại chủ động · Gõ từ') +
+  $('#body').innerHTML = stepLabel(3, 'Gõ từ') +
     '<div class="meaning">' + esc(w.meaning) + '</div>' +
     (w.context ? '<div class="sentence sm">' + blanked(w) + '</div>' : '') +
     (w.source ? '<div class="src">' + esc(w.source) + '</div>' : '') +

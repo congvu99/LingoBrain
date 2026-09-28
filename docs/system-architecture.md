@@ -5,17 +5,19 @@ Cập nhật 2026-09-25. Web tĩnh + API Node.js. Dữ liệu người dùng tro
 ## File
 
 ```
-index.html               khung HTML + 3 tab, nạp script theo thứ tự
-css/paper-theme.css      giao diện giấy / e-reader (token trong docs/design-guidelines.md)
-js/srs-scheduler.js      SM-2, learning steps, hàng đợi, pruneSrs, migrate v1→v2, so khớp mờ   [thuần]
+index.html               khung HTML: 4 tab (plan=Hôm nay · play=Chơi · progress=Tiến bộ · manage=Tôi) + #stage, nạp script theo thứ tự
+css/paper-theme.css      token màu + thành phần chung + game (token trong docs/design-guidelines.md)
+css/app-tabs-and-stage.css 4 tab (đầu tab, thẻ Phiên hôm nay, thẻ game, Tiến bộ, Tôi) + lớp toàn màn #stage
+js/srs-scheduler.js      SM-2, learning steps, hàng đợi, queueBreakdown (số "hôm nay"), pruneSrs, migrate v1→v2, so khớp mờ   [thuần]
 js/app-storage.js        khoá localStorage, helper, trạng thái toàn cục
 js/speech-synthesis.js   TTS (MP3 Neural pregenerated + Web Speech API fallback)
 js/recording-store.js    IndexedDB ghi âm (10 bản/việc)
-js/daily-plan.js         tab Giáo án + ghi âm shadowing
+js/daily-plan.js         thói quen (giáo án, gập/mở trên tab Hôm nay) + ghi âm shadowing
+js/home-today-screen.js  tab Hôm nay (lời chào, chuỗi ngày, thẻ Phiên hôm nay, gợi ý game) + vẽ tab Tiến bộ
 js/review-mode-picker.js chọn dạng kiểm tra theo độ chín, sinh đáp án MCQ          [thuần]
-js/stats-dashboard.js    thống kê (computeStats thuần + renderStats)
+js/stats-dashboard.js    thống kê (computeStats + gradesBetween thuần; renderStats vẽ tab Tiến bộ)
 js/word-import.js        tải backup, danh sách từ chỉ xem, khôi phục tiến độ (bỏ qua deck)
-js/review-steps-learn.js vòng đời thẻ: bước 1,2,4,5, render, phiên
+js/review-steps-learn.js vòng đời thẻ: bước 1,2,4,5, render theo lớp đang mở, đếm phiên, màn kết phiên
 js/review-tests.js       bước 3: type · dictation · mcq · owncloze · speak
 js/word-games.js         game: pool có trọng số, xáo chữ, đáp án từ, combo, gom từ sai  [thuần]
 js/plane-game-text.js    Bắn máy bay: chuẩn hoá chữ gõ, nhãn nghĩa, loại mục tiêu theo độ dài  [thuần]
@@ -303,7 +305,16 @@ impact[0])`, mỗi khoá sprite ≤2 lần — có test `tests/boss-game-skill-v
 Kênh duy nhất từ game sang engine ôn là **danh sách từ sai**: `flushMiss()` nhét id lên đầu `queue` đang chạy và lưu ra `eng.gamemiss.v1`; `buildQueue(deck, srs, cfg, now, miss)` đẩy chúng lên đầu phiên ở lần dựng hàng đợi kế (lọc bỏ id đã biến mất khỏi bộ hoặc chưa học, không nhân đôi). `consumeGameMiss()` dọn khoá sau khi đã vào hàng đợi.
 
 - Chọn từ: trọng số `1 + lapses × 2` → từ hay quên ra nhiều hơn.
-- Đang chơi: `syncGameChrome()` giấu hàng chip và bảng thống kê, vì cả hai là anh em của `#app` nên không bị game vẽ đè; bấm vào chúng giữa ván sẽ đổi hàng đợi hoặc nuốt mất từ sai.
+- Đang chơi: `syncGameChrome()` mở lớp toàn màn `#stage` (js/app-shell.js `openStage('game')`) — tab, thẻ game và thống kê bị ẩn nên không bấm nhầm được giữa ván (bấm sẽ đổi hàng đợi hoặc nuốt mất từ sai).
+
+### Lớp toàn màn `#stage`
+
+- `stage` = null | 'review' | 'game'. `#app` (nơi 12 module ôn/game vẽ) nằm trong `#stage`; module game không cần biết gì về tab.
+- `openStage(kind)`: lần đầu đẩy 1 mục `history` (`{lbStage:1}`) để nút/vuốt back của hệ điều hành đóng lớp thay vì rời app; đổi loại khi đang mở (game → ôn) không đẩy thêm.
+- `closeStage()` → `history.back()` → `popstate` → `leaveStage()` (closeGame: dừng đồng hồ, lưu từ sai; dừng đọc; vẽ lại tab). Cờ `stageLeaving` + hẹn giờ 500ms chống bấm ✕ hai lần lùi khỏi app / popstate không tới.
+- `render()`: stage='review' → vẽ thẻ; stage='game' mà `game` đã null (Xong / ←) → đóng lớp; không có lớp → `refreshTab()` (vẽ nhẹ tab đang hiện).
+- Số "hôm nay" (badge tab, nút Bắt đầu, n/N) đều từ `liveQueueIds()` = thẻ đang làm + `queue` → luôn bằng số thẻ phiên sẽ phát.
+- Chuỗi ngày: ngày tính khi có ≥1 lượt chấm trong `srs.hist` (đã đồng bộ) hoặc tích đủ thói quen — không thêm trường vào `eng.day.v1` (sync-merge `cleanDay` sẽ xoá trường lạ).
 - Đồng hồ dùng mốc tuyệt đối `endsAt`, không cộng dồn mỗi tick → khoá màn hình giữa ván vẫn hết đúng giờ. `stopGameTimer()` chạy trong cả `endGame()` lẫn `closeGame()`.
 - Bỏ ván giữa chừng: không lưu điểm, không tăng `plays`, **vẫn lưu từ sai**. `startGame()` luôn `closeGame()` trước để không bao giờ bỏ rơi một ván đang chạy.
 - Mỗi ván có `game.seq`; `setTimeout` chờ sang câu kế so lại `seq` trước khi chạy, nếu không callback của ván cũ sẽ lái ván mới.
