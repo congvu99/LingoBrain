@@ -37,7 +37,7 @@ function gameCardHtml(id, a) {
     gameIcon(id) + '<b>' + esc(GAME_LABEL[id]) + '</b><span class="game-purpose">' + esc(GAME_META[id].purpose) + '</span>' +
     (open
       ? '<span class="game-foot"><span>' + esc(GAME_META[id].length) + '</span>' + (best ? '<span class="game-best">★ ' + esc(best) + '</span>' : '') + '</span>'
-      : '<span class="game-lock">🔒 ' + esc(gameLockReason(id, a)) + '</span>') +
+      : '<span class="game-lock-reason">🔒 ' + esc(gameLockReason(id, a)) + '</span>') +
     '</button>';
 }
 

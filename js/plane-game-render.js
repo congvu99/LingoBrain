@@ -120,27 +120,49 @@ function drawBullets(ctx, st) {
   ctx.globalCompositeOperation = 'source-over'; ctx.lineCap = 'butt';
 }
 
-/* Nhãn dưới mục tiêu: nghĩa Việt (tự xuống dòng), dòng cuối tiến độ "s t u _ _ _ _ _" (dấu cách giữ khoảng trống) */
-function drawLabel(ctx, st, t, locked) {
+/* Bố cục nhãn + khung { x, y, w, h, L } (x là tâm ngang, kẹp trong khung chơi). Dòng tiến độ chỉ dựng lại khi gõ thêm chữ.
+   Dùng chung cho vẽ và xét chồng lấn. */
+function labelBox(ctx, st, t) {
   ctx.font = '600 13px ' + RENDER_FONT;
-  const L = labelLayout(ctx, t, Math.min(190, st.w * 0.62)), lw = L.w;
-  if (L.progress !== t.progress) {            // dòng tiến độ chỉ dựng lại khi gõ thêm chữ
+  const L = labelLayout(ctx, t, Math.min(190, st.w * 0.62));
+  if (L.progress !== t.progress) {
     L.progress = t.progress;
     const hintAt = st.diff.hint && !t.progress ? skipFixed(t.text, 0) : -1;   // cấp Dễ: hiện sẵn chữ đầu để đọc
     L.prog = t.text.split('').map((c, i) => c === ' ' ? ' ' : i < t.progress || i === hintAt ? c : '_').join(' ');
     ctx.font = '700 11px ' + RENDER_MONO; L.pw = ctx.measureText(L.prog).width; ctx.font = '600 13px ' + RENDER_FONT;
   }
-  const prog = L.prog, bw = Math.max(lw, L.pw) + 16, bh = 22 + L.lines.length * 16;
-  // làm tròn px: chữ canvas ở toạ độ lẻ bị khử răng cưa khác nhau mỗi khung → trông rung
-  const x = Math.round(Math.min(Math.max(t.x, bw / 2 + 2), st.w - bw / 2 - 2)), y = Math.round(t.y + t.r + 8);
-  roundRectPath(ctx, x - bw / 2, y, bw, bh, 9);
-  ctx.fillStyle = 'rgba(8,12,34,.78)'; ctx.fill();
+  const w = Math.max(L.w, L.pw) + 16, h = 22 + L.lines.length * 16;
+  return { x: Math.min(Math.max(t.x, w / 2 + 2), st.w - w / 2 - 2), y: t.y + t.r + 8, w, h, L };
+}
+
+const boxesOverlap = (a, b) => Math.abs(a.x - b.x) * 2 < a.w + b.w && a.y < b.y + b.h && b.y < a.y + a.h;
+
+/* Nhãn dưới mục tiêu: nghĩa Việt (tự xuống dòng), dòng cuối tiến độ "s t u _ _ _ _ _" (dấu cách giữ khoảng trống) */
+function drawLabel(ctx, t, box, locked) {
+  const { x, y, w, h, L } = box;
+  roundRectPath(ctx, x - w / 2, y, w, h, 9);
+  ctx.fillStyle = locked ? 'rgba(8,12,34,.94)' : 'rgba(8,12,34,.78)'; ctx.fill();
   ctx.strokeStyle = locked ? '#5ee7ff' : 'rgba(255,255,255,.18)'; ctx.lineWidth = locked ? 1.5 : 1; ctx.stroke();
   ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
-  ctx.fillStyle = '#f2f5ff';
+  ctx.font = '600 13px ' + RENDER_FONT; ctx.fillStyle = '#f2f5ff';
   L.lines.forEach((line, i) => ctx.fillText(line, x, y + 16 + i * 16));
   ctx.font = '700 11px ' + RENDER_MONO; ctx.fillStyle = t.progress ? '#5ee7ff' : '#8f98c4';
-  ctx.fillText(prog, x, y + 15 + L.lines.length * 16);
+  ctx.fillText(L.prog, x, y + 15 + L.lines.length * 16);
+}
+
+/* Nhãn đang gõ (khoá / ứng viên) vẽ sau cùng để không bị nhãn khác đè; nhãn khác chồng lên nó thì mờ đi */
+function drawLabels(ctx, st, cands) {
+  const hot = [], cold = [];
+  for (const t of st.targets) {
+    if (t.doomed) continue;
+    (t.uid === st.lock || cands.indexOf(t) >= 0 ? hot : cold).push({ t, box: labelBox(ctx, st, t) });
+  }
+  for (const c of cold) {
+    ctx.globalAlpha = hot.some(h => boxesOverlap(h.box, c.box)) ? 0.25 : 1;
+    drawLabel(ctx, c.t, c.box, false);
+  }
+  ctx.globalAlpha = 1;
+  for (const h of hot) drawLabel(ctx, h.t, h.box, true);
 }
 
 /* Vẽ trọn 1 khung: nền → mục tiêu → đạn → tàu mình → hạt → nhãn (nhãn trên cùng, ngoài rung màn để luôn đọc được) → chớp */
@@ -154,6 +176,6 @@ function drawPlaneScene(ctx, st, fx, time) {
   drawPlayerShip(ctx, st, time);
   drawSpaceFx(fx, ctx);
   ctx.restore();
-  for (const t of st.targets) if (!t.doomed) drawLabel(ctx, st, t, t.uid === st.lock || cands.indexOf(t) >= 0);
+  drawLabels(ctx, st, cands);
   drawSpaceFlash(fx, ctx);
 }

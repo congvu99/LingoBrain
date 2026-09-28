@@ -66,7 +66,7 @@
 .game-purpose{font-size:13px;line-height:1.35;color:var(--ink-muted);font-weight:400}
 .game-foot{margin-top:auto;display:flex;justify-content:space-between;width:100%;font-size:12.5px;color:var(--ink-muted);font-weight:500}
 .game-best{color:var(--peach-ink);font-weight:700}
-.game-lock{margin-top:auto;font-size:12.5px;line-height:1.35;color:var(--ink-muted);font-weight:500}
+.game-lock-reason{margin-top:auto;font-size:12.5px;line-height:1.35;color:var(--ink-muted);font-weight:500}
 .game-card[aria-disabled="true"],.boss-feature[aria-disabled="true"]{opacity:.62;box-shadow:none}
 .game-card[aria-disabled="true"] .game-ic{background:var(--paper-2);color:var(--ink-muted)}
 #tab-play>#gameChips>.small{margin:14px 2px 0}
