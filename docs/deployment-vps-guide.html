@@ -83,17 +83,17 @@ th{background:var(--surface-2)}
 <nav class="toc" aria-label="Mục lục">
   <ol>
     <li><a href="#vars">Thông số của bạn</a></li>
-    <li><a href="#c0">0. Tổng thể &amp; dữ liệu</a></li>
+    <li><a href="#c0">0. Tổng thể</a></li>
     <li><a href="#c1">1. Repo đã sẵn sàng</a></li>
     <li><a href="#c2">2. Clone + .env</a></li>
-    <li><a href="#c3">3. Lấy dữ liệu từ Nhân Hòa</a></li>
-    <li><a href="#c4">4. Nạp dữ liệu + chạy app</a></li>
-    <li><a href="#c5">5. Tên miền + kiểm tra</a></li>
-    <li><a href="#c6">6. Chuyển người dùng sang</a></li>
-    <li><a href="#c7">7. Cập nhật &amp; vận hành</a></li>
-    <li><a href="#c8">8. Backup &amp; khôi phục</a></li>
-    <li><a href="#c9">9. Xử lý sự cố</a></li>
-    <li><a href="#c10">Câu hỏi còn mở</a></li>
+    <li><a href="#c3">3. Chạy app</a></li>
+    <li><a href="#c4">4. Tên miền + kiểm tra</a></li>
+    <li><a href="#c5">5. Người dùng cũ</a></li>
+    <li><a href="#c6">6. Cập nhật &amp; vận hành</a></li>
+    <li><a href="#c7">7. Backup &amp; khôi phục</a></li>
+    <li><a href="#c8">8. Xử lý sự cố</a></li>
+    <li><a href="#pa">Phụ lục A. Chuyển dữ liệu Nhân Hòa</a></li>
+    <li><a href="#q">Câu hỏi còn mở</a></li>
   </ol>
 </nav>
 
@@ -101,7 +101,7 @@ th{background:var(--surface-2)}
 <header class="hero">
   <button class="theme-toggle" type="button" id="themeToggle">Sáng / Tối</button>
   <h1>Deploy LingoBrain lên VPS</h1>
-  <p>Chạy LingoBrain (Node.js + PostgreSQL) trên chính VPS đang chạy BookSnap, dùng chung Caddy. <b>Chuyển luôn dữ liệu</b> (tài khoản, tiến độ) từ Nhân Hòa sang. Mỗi lệnh ghi <b>chạy ở đâu</b>. Bắt đầu khi code đã push lên GitHub. Mất khoảng 30–45 phút.</p>
+  <p>Chạy LingoBrain (Node.js + PostgreSQL) trên VPS đang chạy BookSnap, dùng chung Caddy. Bắt đầu khi code đã push lên GitHub. Bộ từ + audio <b>tự tạo lại</b> từ repo, không cần lấy dữ liệu từ Nhân Hòa. Làm lần lượt chương 2 → 4, mất khoảng 15–20 phút.</p>
 </header>
 
 <section id="vars">
@@ -116,16 +116,17 @@ th{background:var(--surface-2)}
   <div class="box">
     <strong>Nhãn trên mỗi khối lệnh</strong>
     <span style="background:#3b5bab;color:#fff;padding:1px 6px;border-radius:4px;font-size:12px">WINDOWS</span> máy tính của bạn ·
-    <span style="background:var(--accent);color:#fff;padding:1px 6px;border-radius:4px;font-size:12px">SERVER</span> phiên <code>ssh vps</code> (user <code>deploy</code>) ·
+    <span style="background:var(--accent);color:#fff;padding:1px 6px;border-radius:4px;font-size:12px">SERVER</span> phiên <code>ssh vps</code>, user <code>deploy</code> ·
     <span style="background:#7a4fa3;color:#fff;padding:1px 6px;border-radius:4px;font-size:12px">FILE</span> nội dung một file.
+    Mỗi khối lệnh: bấm <b>Copy</b>, dán <b>nguyên khối</b> (dán thiếu dòng đầu là nguồn lỗi hay gặp nhất).
   </div>
   <div class="box warn">
     <strong>Điều kiện trước</strong>
-    Đã làm xong chương 1–5 của <a href="../../BookSnap/docs/deployment-vps-guide.html">hướng dẫn VPS BookSnap</a>: SSH bằng key (<code>ssh vps</code>), firewall, Docker, DuckDNS, Caddy dùng chung + mạng <code>web</code>. Tài liệu này chỉ thêm LingoBrain vào đó.
+    Đã làm xong chương 1–5 của <a href="../../BookSnap/docs/deployment-vps-guide.html">hướng dẫn VPS BookSnap</a>: SSH bằng key (<code>ssh vps</code>), firewall, Docker, DuckDNS, Caddy dùng chung + mạng <code>web</code>, thư mục <code>/srv/apps</code> thuộc user <code>deploy</code>.
   </div>
 </section>
 
-<h2 id="c0"><span class="n">0</span>Tổng thể &amp; dữ liệu cần chuyển</h2>
+<h2 id="c0"><span class="n">0</span>Tổng thể</h2>
 <div class="diagram">
   <div class="node"><b>Người dùng</b><small>https://<span data-v="APP"></span>.<span data-v="DOMAIN"></span></small></div>
   <div class="arrow">→</div>
@@ -135,107 +136,79 @@ th{background:var(--surface-2)}
   <div class="arrow">→</div>
   <div class="node"><b>db (Postgres 17)</b><small>volume <code>lingobrain_pgdata</code>, mạng riêng, Caddy không thấy</small></div>
 </div>
-
 <table>
-  <tr><th>Dữ liệu</th><th>Đang nằm ở</th><th>Đưa lên VPS bằng</th></tr>
-  <tr><td>Bộ từ <code>words.json</code>, 10 065 MP3 (<code>audio/</code>, ~179 MB), sprite <code>img/</code></td><td>Git</td><td>Tự đi theo <code>git clone</code> → nằm trong image. Server tự nạp bộ từ vào DB lúc khởi động (<code>deck seeded</code>)</td></tr>
-  <tr><td>Tài khoản, phiên đăng nhập, tiến độ đồng bộ (<code>users</code>, <code>sessions</code>, <code>progress</code>)</td><td>PostgreSQL Nhân Hòa</td><td><b>pg_dump → scp → pg_restore</b> (chương 3–4). Đây là phần "dữ liệu" phải chuyển tay</td></tr>
-  <tr><td>Cache giọng đọc câu tự gõ (<code>tts_clips</code>)</td><td>PostgreSQL Nhân Hòa</td><td>Bỏ qua dữ liệu (chỉ giữ bảng), server tự tạo lại. Tiết kiệm tới ~600 MB</td></tr>
-  <tr><td>Tiến độ trên máy người <b>chưa đăng nhập</b></td><td>localStorage trình duyệt</td><td>Gắn theo tên miền → xem <a href="#c6">chương 6</a></td></tr>
-  <tr><td>Bản ghi âm shadowing</td><td>IndexedDB trên máy</td><td>Không chuyển được nếu đổi tên miền (không nằm trong backup)</td></tr>
+  <tr><th>Dữ liệu</th><th>Trên VPS mới</th></tr>
+  <tr><td>Bộ từ <code>words.json</code>, 10 065 MP3 (<code>audio/</code>), sprite <code>img/</code></td><td>Đi theo <code>git clone</code> vào image. Lần chạy đầu server <b>tự nạp</b> bộ từ + audio index vào DB (<code>deck seeded</code>)</td></tr>
+  <tr><td>Tài khoản, tiến độ đồng bộ</td><td>Bắt đầu trống. Người dùng đăng ký lại (<a href="#c5">chương 5</a>). Muốn giữ tài khoản cũ → <a href="#pa">Phụ lục A</a></td></tr>
+  <tr><td>Cache giọng đọc câu tự gõ</td><td>Tự tạo dần khi có người dùng</td></tr>
 </table>
 
 <h2 id="c1"><span class="n">1</span>Repo đã sẵn sàng</h2>
-<p>Hướng dẫn bắt đầu từ lúc <b>code đã push lên GitHub</b>. Repo đã có sẵn các file deploy:</p>
+<p>Repo đã có sẵn các file deploy, không phải tạo gì trên server:</p>
 <table>
   <tr><th>File</th><th>Vai trò</th></tr>
   <tr><td><code>Dockerfile</code></td><td>Node 22 alpine, chạy bằng user <code>node</code>, HEALTHCHECK gọi <code>/</code></td></tr>
-  <tr><td><code>compose.yml</code></td><td>2 service: <code>app</code> (nối mạng <code>web</code>, alias <code>lingobrain</code>) + <code>db</code> Postgres 17 (mạng riêng, không mở cổng). <code>TRUST_PROXY_HOPS=1</code> vì chỉ có Caddy đứng trước</td></tr>
-  <tr><td><code>.dockerignore</code></td><td>Bỏ <code>assets/</code> (109 MB sprite gốc), <code>tests/</code>, <code>docs/</code>, <code>.git</code>… khỏi image. Giữ <code>tools/</code> để chạy <code>seed-database.js</code></td></tr>
+  <tr><td><code>compose.yml</code></td><td><code>app</code> (mạng <code>web</code>, alias <code>lingobrain</code>) + <code>db</code> Postgres 17 (mạng riêng, không mở cổng). Mật khẩu DB lấy từ <code>.env</code></td></tr>
+  <tr><td><code>.dockerignore</code></td><td>Bỏ <code>assets/</code> (109 MB), <code>tests/</code>, <code>docs/</code>, <code>.git</code> khỏi image</td></tr>
   <tr><td><code>deploy/deploy.sh</code></td><td>pull → build (tag = commit) → backup → thay container → đợi <code>/api/words</code> 200 → lỗi thì quay về bản cũ</td></tr>
-  <tr><td><code>deploy/backup.sh</code></td><td><code>pg_dump</code> vào <code>/srv/backups/lingobrain</code>, bỏ dữ liệu cache TTS, giữ 14 ngày</td></tr>
-  <tr><td><code>.gitattributes</code></td><td>Ép <code>*.sh</code> dùng LF (máy Windows đang bật <code>autocrlf</code>)</td></tr>
+  <tr><td><code>deploy/backup.sh</code></td><td><code>pg_dump</code> vào <code>/srv/backups/lingobrain</code>, giữ 14 ngày</td></tr>
+  <tr><td><code>.gitattributes</code></td><td>Ép <code>*.sh</code> dùng LF (Windows đang bật <code>autocrlf</code>)</td></tr>
 </table>
-<div class="box warn"><strong>Trước khi làm tiếp</strong>Trên trang GitHub của repo phải thấy <code>compose.yml</code> và thư mục <code>deploy/</code>. Chưa thấy = chưa push, server sẽ clone thiếu file.</div>
+<div class="box warn"><strong>Kiểm tra</strong>Trang GitHub của repo phải thấy <code>compose.yml</code> và thư mục <code>deploy/</code>. Chưa thấy = chưa push.</div>
 
 <h2 id="c2"><span class="n">2</span>Clone code + file bí mật <code>.env</code></h2>
+<div class="box danger"><strong>Chạy bằng user deploy</strong>Dấu nhắc phải là <code>deploy@…$</code>, không phải <code>root@…#</code>. Đang root thì gõ <code>su - deploy</code> trước. Chạy bằng root → file thuộc root → <code>chmod: Operation not permitted</code>, <code>deploy.sh</code>/cron backup lỗi quyền.</div>
 <div class="cmd"><span class="where">Server</span><pre><code>cd /srv/apps
 git clone --depth 1 <span data-v="REPO"></span> lingobrain
-cd lingobrain
+cd /srv/apps/lingobrain
+git log --oneline -1
 ls Dockerfile compose.yml deploy/
-printf 'DB_PASSWORD=%s\n' "$(openssl rand -hex 24)" &gt; .env
+[ -f .env ] || printf 'DB_PASSWORD=%s\n' "$(openssl rand -hex 24)" &gt; .env
 chmod 600 .env
+ls -l .env
 mkdir -p /srv/backups/lingobrain</code></pre></div>
 <ul class="explain">
-  <li><b>--depth 1</b>: chỉ lấy commit mới nhất (repo có ~300 MB MP3 + sprite trong lịch sử). <code>git pull</code> về sau vẫn chạy bình thường.</li>
-  <li>Mật khẩu DB dạng hex → không cần URL-encode trong <code>DATABASE_URL</code> (khác lỗi <code>@</code> hồi dùng Nhân Hòa).</li>
+  <li><b>git clone</b> in <code>Cloning into 'lingobrain'...</code> rồi <code>Updating files … done</code>. Repo có ~180 MB MP3, mất 1–2 phút.</li>
+  <li><b>git log</b> in mã commit mới nhất trên GitHub. <b>ls</b> in đủ <code>Dockerfile compose.yml</code> + <code>backup.sh deploy.sh</code>.</li>
+  <li><b>[ -f .env ] ||</b>: chỉ tạo <code>.env</code> khi chưa có. Postgres chỉ nhận mật khẩu ở lần tạo DB đầu tiên → ghi đè <code>.env</code> sau đó làm app mất kết nối DB.</li>
+  <li><b>ls -l .env</b> phải là <code>-rw------- 1 deploy deploy</code>. Chủ là <code>root</code> = đã chạy nhầm bằng root → làm lại bên dưới.</li>
   <li>Muốn đổi giọng/giới hạn TTS: thêm <code>TTS_VOICE=…</code>, <code>TTS_DAILY_MAX=…</code> vào <code>.env</code>.</li>
-  <li>Repo private → dùng deploy key (chương 10 hướng dẫn BookSnap).</li>
 </ul>
 
-<h2 id="c3"><span class="n">3</span>Lấy dữ liệu từ Nhân Hòa</h2>
-<p>Cần 1 file dump của DB <code>lingoBrain</code>. Trước tiên chạy câu này trên DB Nhân Hòa (console/SQL panel) và <b>ghi lại kết quả</b> để so ở chương 4:</p>
-<div class="cmd"><span class="where file">SQL (Nhân Hòa)</span><pre><code>SELECT version();
-SELECT (SELECT count(*) FROM users) AS users, (SELECT count(*) FROM progress) AS progress;</code></pre></div>
-<div class="box warn"><strong>Phiên bản PostgreSQL</strong>Nếu <code>version()</code> ≥ 18: dừng lại, đổi image <code>db</code> trong <code>compose.yml</code> <b>ở repo</b> (bản 18 còn đổi đường dẫn volume) → push → trên server <code>git pull --ff-only</code>, rồi mới sang chương 4. Không sửa file trực tiếp trên server, nếu không <code>deploy.sh</code> sẽ kẹt ở bước pull.</div>
-
-<p>Chọn <b>một</b> trong 2 cách:</p>
-<h3>Cách A: tải bản backup từ panel Nhân Hòa</h3>
-<p>Database → PostgreSQL (lingoBrain) → Backup → <b>Backup now</b> → tải file về, ví dụ <code>D:\backup\lingobrain\</code>. File có thể là <code>.dump</code> (định dạng custom) hoặc <code>.sql</code>/<code>.sql.gz</code> (SQL thường) — chương 4 có lệnh cho cả hai.</p>
-
-<h3>Cách B: dump thẳng từ VPS (khi DB bật được cổng public tạm thời)</h3>
-<div class="cmd"><span class="where">Server</span><pre><code>read -rs PGPASSWORD &amp;&amp; export PGPASSWORD
-docker run --rm -e PGPASSWORD postgres:17 pg_dump \
-  -h <span class="v">HOST_PUBLIC_NHANHOA</span> -p <span class="v">CONG</span> -U sa -d lingoBrain \
-  -Fc --no-owner --no-acl --exclude-table-data=tts_clips \
-  &gt; /srv/backups/lingobrain/nhanhoa.dump
-unset PGPASSWORD
-chmod 600 /srv/backups/lingobrain/nhanhoa.dump
-ls -lh /srv/backups/lingobrain/</code></pre></div>
+<h3>Làm lại từ đầu (clone lỗi / lỡ chạy bằng root)</h3>
+<div class="cmd"><span class="where">Server</span><pre><code>cd /srv/apps
+ls -la lingobrain
+docker volume ls | grep lingobrain</code></pre></div>
+<p>Chỉ xoá khi <code>docker volume ls</code> <b>không in gì</b> (chưa có DB) hoặc DB chưa có dữ liệu thật:</p>
+<div class="cmd"><span class="where">Server</span><pre><code>cd /srv/apps
+sudo rm -rf /srv/apps/lingobrain
+docker volume rm lingobrain_pgdata 2&gt;/dev/null || true</code></pre></div>
 <ul class="explain">
-  <li><b>read -rs</b>: gõ mật khẩu không hiện, không lưu vào lịch sử lệnh.</li>
-  <li>Dump xong <b>tắt ngay cổng public</b> trên Nhân Hòa.</li>
+  <li><b>cd /srv/apps</b> trước: xoá thư mục mình đang đứng bên trong thì mọi lệnh sau báo <code>No such file or directory</code>, <code>git clone</code> cũng không chạy.</li>
+  <li>Xoá xong chạy lại nguyên khối lệnh đầu chương 2.</li>
 </ul>
 
-<h3>Đưa file từ Windows lên VPS (nếu dùng cách A)</h3>
-<div class="cmd"><span class="where win">Windows</span><pre><code>scp D:\backup\lingobrain\<span class="v">ten-file-backup</span> vps:/srv/backups/lingobrain/</code></pre></div>
-<div class="box danger"><strong>File dump chứa hash mật khẩu người dùng</strong>Không gửi qua chat/email. Nạp xong thì xoá bản trên Windows (hoặc cất vào nơi mã hoá).</div>
-
-<h2 id="c4"><span class="n">4</span>Nạp dữ liệu rồi mới chạy app</h2>
-<p>Thứ tự quan trọng: <b>chỉ bật DB → nạp dump → rồi mới chạy app</b>. App chạy trước sẽ tự tạo bảng rỗng và tự nạp bộ từ, dễ đụng dữ liệu.</p>
+<h2 id="c3"><span class="n">3</span>Chạy app</h2>
 <div class="cmd"><span class="where">Server</span><pre><code>cd /srv/apps/lingobrain
-docker compose up -d --wait db</code></pre></div>
-
-<h3>Nếu file là <code>.dump</code></h3>
-<div class="cmd"><span class="where">Server</span><pre><code>docker compose exec -T db pg_restore -U lingo -d lingobrain \
-  --no-owner --no-acl --clean --if-exists --exit-on-error \
-  &lt; /srv/backups/lingobrain/<span class="v">nhanhoa.dump</span></code></pre></div>
-
-<h3>Nếu file là <code>.sql</code> / <code>.sql.gz</code></h3>
-<div class="cmd"><span class="where">Server</span><pre><code>gunzip -cf /srv/backups/lingobrain/<span class="v">nhanhoa.sql.gz</span> \
-  | grep -vE '^(ALTER .* OWNER TO|GRANT |REVOKE )' \
-  | docker compose exec -T db psql -U lingo -d lingobrain -v ON_ERROR_STOP=1 -q</code></pre></div>
-<ul class="explain">
-  <li>Bỏ các lệnh gán chủ sở hữu cho user <code>sa</code> (không tồn tại ở VPS) → mọi bảng thuộc <code>lingo</code>. <code>gunzip -cf</code> đọc được cả file chưa nén.</li>
-  <li><b>ON_ERROR_STOP</b>: lỗi giữa chừng thì dừng, không nạp nửa vời. Lỗi → xoá volume làm lại: <code>docker compose down -v</code> (chỉ làm ở bước này, khi chưa có dữ liệu thật).</li>
-</ul>
-
-<h3>So số liệu với Nhân Hòa</h3>
-<div class="cmd"><span class="where">Server</span><pre><code>docker compose exec db psql -U lingo -d lingobrain -c \
-  "SELECT (SELECT count(*) FROM users) AS users, (SELECT count(*) FROM progress) AS progress, (SELECT count(*) FROM words) AS words;"</code></pre></div>
-<p><code>users</code>, <code>progress</code> phải <b>bằng đúng</b> số ghi ở chương 3.</p>
-
-<h3>Chạy app</h3>
-<div class="cmd"><span class="where">Server</span><pre><code>bash deploy/deploy.sh
+bash deploy/deploy.sh
 docker compose ps
 docker compose logs --tail 30 app</code></pre></div>
 <ul class="explain">
-  <li>Lần đầu build 1–3 phút. Kết thúc bằng <code>deploy ok: &lt;commit&gt;</code>.</li>
-  <li>Log phải có <code>listening on :3000</code> → <code>schema ready</code> → <code>deck up to date</code> hoặc <code>deck seeded: … words</code>.</li>
-  <li><code>ps</code>: cả <code>app</code> và <code>db</code> là <code>Up … (healthy)</code>.</li>
+  <li>Script tự bật DB, build image, chạy app, đợi app sẵn sàng. Lần đầu build 1–3 phút. Kết thúc bằng <code>deploy ok: &lt;commit&gt;</code>.</li>
+  <li>Log app: <code>listening on :3000</code> → <code>schema ready</code> → <code>deck seeded: 5033 words, 10065 audio (+5033 ~0 -0)</code>. Lần deploy sau là <code>deck up to date</code>.</li>
+  <li><code>ps</code>: <code>app</code> và <code>db</code> đều <code>Up … (healthy)</code>.</li>
+  <li>Báo <code>deploy FAILED</code>: đọc 60 dòng log script in ra, tra <a href="#c8">chương 8</a>.</li>
 </ul>
 
-<h2 id="c5"><span class="n">5</span>Gắn tên miền + kiểm tra</h2>
+<h3>Tài khoản chủ (tuỳ chọn)</h3>
+<div class="cmd"><span class="where">Server</span><pre><code>cd /srv/apps/lingobrain
+docker compose exec -e ADMIN_USERNAME=<span class="v">ten-tai-khoan</span> app sh -c 'read -rs ADMIN_PASSWORD; export ADMIN_PASSWORD; node tools/seed-database.js --skip-deck'</code></pre></div>
+<ul class="explain">
+  <li>Gõ mật khẩu (không hiện) rồi Enter. Hoặc bỏ qua, đăng ký thẳng trong app như người dùng thường.</li>
+  <li>Đã có tài khoản đó, muốn đổi mật khẩu: thêm <code>--reset-owner-password</code> sau <code>--skip-deck</code>.</li>
+</ul>
+
+<h2 id="c4"><span class="n">4</span>Gắn tên miền + kiểm tra</h2>
 <div class="cmd"><span class="where">Server</span><pre><code>cat &gt; /srv/caddy/conf/sites/lingobrain.caddy &lt;&lt;'EOF'
 <span data-v="APP"></span>.<span data-v="DOMAIN"></span> {
 	encode zstd gzip
@@ -246,58 +219,51 @@ cd /srv/caddy
 docker compose exec caddy caddy validate --config /etc/caddy/Caddyfile
 docker compose exec -w /etc/caddy caddy caddy reload</code></pre></div>
 <ul class="explain">
-  <li><b>encode</b>: <code>words.json</code>/<code>/api/words</code> ~2,6 MB → nén còn vài trăm KB, iPhone tải nhanh hơn hẳn.</li>
-  <li>DuckDNS tự trỏ mọi tên con về IP, không cần tạo thêm.</li>
+  <li><b>encode</b>: <code>/api/words</code> ~2,6 MB → nén còn vài trăm KB.</li>
+  <li>DuckDNS tự trỏ mọi tên con về IP, không cần tạo thêm. <code>validate</code> phải in <code>Valid configuration</code>.</li>
 </ul>
 
 <div class="cmd"><span class="where win">Windows</span><pre><code>curl.exe -sI https://<span data-v="APP"></span>.<span data-v="DOMAIN"></span>/
 curl.exe -s -o NUL -w "%{http_code} %{size_download}\n" -H "Accept-Encoding: gzip" https://<span data-v="APP"></span>.<span data-v="DOMAIN"></span>/api/words
-curl.exe -s -o NUL -w "%{http_code}\n" https://<span data-v="APP"></span>.<span data-v="DOMAIN"></span>/package.json
-curl.exe -s -o NUL -w "%{http_code}\n" https://<span data-v="APP"></span>.<span data-v="DOMAIN"></span>/.env</code></pre></div>
+curl.exe -s -o NUL -w "%{http_code}\n" https://<span data-v="APP"></span>.<span data-v="DOMAIN"></span>/package.json</code></pre></div>
 <ul class="explain">
-  <li>Lệnh 1: <code>200</code>, có <code>Strict-Transport-Security</code> và <code>Content-Security-Policy</code> (chứng tỏ app nhận đúng <code>X-Forwarded-Proto: https</code>).</li>
+  <li>Lệnh 1: <code>200</code>, có <code>Strict-Transport-Security</code> + <code>Content-Security-Policy</code>.</li>
   <li>Lệnh 2: <code>200</code>, kích thước nhỏ hơn nhiều so với 2,6 MB (đã nén).</li>
-  <li>Lệnh 3, 4: <code>404</code>.</li>
+  <li>Lệnh 3: <code>404</code> (file hệ thống không bị lộ).</li>
 </ul>
 <div class="cmd"><span class="where">Server</span><pre><code>sudo ss -tlnp | grep -v 127.0.0.</code></pre></div>
-<p>Chỉ thấy 22, 80, 443. Thấy <code>3000</code> hoặc <code>5432</code> = có cổng lọt ra ngoài, xem lại <code>compose.yml</code>.</p>
+<p>Chỉ thấy 22, 80, 443. Thấy <code>3000</code> hoặc <code>5432</code> = có cổng lọt ra ngoài.</p>
 <ul class="check">
-  <li>Mở trang trên trình duyệt, <b>đăng nhập bằng tài khoản cũ</b> → tab Tiến bộ hiện đúng số từ đã học.</li>
-  <li>iPhone Safari: mở trang → Thêm vào màn hình chính → tắt mạng, mở lại vẫn chạy.</li>
+  <li>Mở <code>https://<span data-v="APP"></span>.<span data-v="DOMAIN"></span></code> → có ổ khoá, đăng ký tài khoản được.</li>
+  <li>iPhone Safari: Thêm vào màn hình chính → tắt mạng, mở lại vẫn chạy.</li>
   <li>Ôn 1 thẻ trên máy A, mở máy B cùng tài khoản → thấy thay đổi.</li>
 </ul>
 
-<h2 id="c6"><span class="n">6</span>Chuyển người dùng sang</h2>
-<p>Dữ liệu trên máy (localStorage, PWA đã cài) gắn chặt với <b>tên miền</b>. Đổi tên miền = trình duyệt coi như web mới.</p>
+<h2 id="c5"><span class="n">5</span>Người dùng cũ</h2>
+<p>Tiến độ trên máy (localStorage, PWA đã cài) gắn với <b>tên miền</b>. Server mới không có tài khoản cũ.</p>
 <table>
   <tr><th></th><th>Giữ tên miền cũ (trỏ DNS về VPS)</th><th>Tên miền mới (DuckDNS)</th></tr>
-  <tr><td>Tiến độ trên máy</td><td>Giữ nguyên, PWA không cần cài lại</td><td>Không thấy ở web mới</td></tr>
-  <tr><td>Người đã đăng nhập</td><td>Vẫn đăng nhập (bảng <code>sessions</code> đã chuyển), app tự đồng bộ</td><td>Đăng nhập lại → tự kéo tiến độ từ server</td></tr>
-  <tr><td>Người chưa đăng nhập</td><td>Không phải làm gì</td><td>Web cũ: tab Tôi → <b>Tải backup</b> → web mới: <b>Khôi phục</b> (gộp, không ghi đè)</td></tr>
-  <tr><td>Ghi sau lúc dump</td><td>Không mất: máy người dùng còn bản gốc, lần đồng bộ sau tự gộp lên server mới</td><td>Nằm lại ở Nhân Hòa; người dùng dùng Tải backup/Khôi phục như trên</td></tr>
-  <tr><td>Điều kiện</td><td>Bạn quản lý DNS của tên miền đó (không phải tên miền tạm của Nhân Hòa)</td><td>Không cần gì thêm</td></tr>
+  <tr><td>Người dùng làm gì</td><td><b>Đăng ký lại đúng tên cũ</b> → tiến độ còn trên máy tự gộp lên server mới</td><td>Web cũ: tab Tôi → <b>Tải backup</b> → web mới: đăng ký → <b>Khôi phục</b> (gộp, không ghi đè)</td></tr>
+  <tr><td>PWA đã cài</td><td>Giữ nguyên, tự lên bản mới</td><td>Cài lại từ tên miền mới</td></tr>
+  <tr><td>Bản ghi âm shadowing</td><td>Giữ nguyên</td><td>Mất (không nằm trong backup)</td></tr>
+  <tr><td>Điều kiện</td><td>Bạn quản lý DNS của tên miền đó</td><td>Không cần gì</td></tr>
 </table>
-<p><b>Khuyên dùng:</b> giữ tên miền cũ nếu có thể. Khi đó ở chương 5 thay <code><span data-v="APP"></span>.<span data-v="DOMAIN"></span></code> bằng tên miền cũ, và:</p>
-<ol>
-  <li>Trước 1 ngày: hạ TTL bản ghi DNS xuống 300 giây.</li>
-  <li>Hôm chuyển: dump lần cuối (chương 3) → nạp lại (chương 4, <code>docker compose stop app</code> trước khi <code>pg_restore --clean</code>, xong <code>docker compose start app</code>).</li>
-  <li>Đổi bản ghi A sang <code><span data-v="IP"></span></code>. Caddy tự xin chứng chỉ khi DNS trỏ đúng (có thể mất vài phút, Caddy tự thử lại).</li>
-</ol>
-<div class="box warn"><strong>Giữ Nhân Hòa chạy ≥ 7 ngày</strong>Để quay lại nếu có sự cố và để người dùng kịp tải backup. Sau đó <b>xoá hẳn DB Nhân Hòa</b> — nó vẫn giữ hash mật khẩu người dùng và mật khẩu <code>sa</code> đã từng lộ qua chat.</div>
+<p>Giữ tên miền cũ: ở chương 4 thay <code><span data-v="APP"></span>.<span data-v="DOMAIN"></span></code> bằng tên miền cũ, hạ TTL xuống 300 giây trước 1 ngày, rồi đổi bản ghi A sang <code><span data-v="IP"></span></code>. Caddy tự xin chứng chỉ khi DNS trỏ đúng (có thể mất vài phút).</p>
+<div class="box warn"><strong>Dọn Nhân Hòa</strong>Giữ bản Nhân Hòa ≥ 7 ngày để người dùng kịp Tải backup, sau đó xoá hẳn DB ở đó — nó vẫn giữ hash mật khẩu người dùng và mật khẩu <code>sa</code> từng lộ qua chat.</div>
 
-<h2 id="c7"><span class="n">7</span>Cập nhật &amp; vận hành</h2>
+<h2 id="c6"><span class="n">6</span>Cập nhật &amp; vận hành</h2>
 <h3>Phát hành bản mới (sau khi đã push)</h3>
 <div class="cmd"><span class="where win">Windows</span><pre><code>ssh vps "cd /srv/apps/lingobrain &amp;&amp; bash deploy/deploy.sh"</code></pre></div>
 <ul class="explain">
   <li>Push có đổi JS/CSS/HTML thì phải đã <b>tăng</b> <code>APP_VERSION</code> (<code>js/app-storage.js</code>) và <code>CACHE</code> (<code>sw.js</code>) khớp nhau, nếu không điện thoại giữ bản cũ.</li>
-  <li>Đổi <code>words.json</code>/<code>audio/</code>: deploy là đủ, server tự nạp lại bộ từ khi hash đổi.</li>
-  <li>Chỉ đổi <code>docs/</code>, <code>plans/</code>: không cần deploy.</li>
+  <li>Đổi <code>words.json</code>/<code>audio/</code>: deploy là đủ, server tự nạp lại bộ từ khi nội dung đổi.</li>
+  <li>Không sửa file trực tiếp trên server: sửa ở repo → push → deploy.</li>
 </ul>
 <table>
   <tr><th>Script in ra</th><th>Ý nghĩa</th><th>Làm gì</th></tr>
   <tr><td><code>deploy ok: …</code></td><td>Đang chạy commit mới</td><td>—</td></tr>
   <tr><td><code>already at …</code></td><td>Server đã chạy commit mới nhất</td><td>Quên push? Hoặc build lại: <code>FORCE=1 bash deploy/deploy.sh</code></td></tr>
-  <tr><td><code>deploy FAILED … rolled back</code></td><td>Bản mới không lên, đã quay về bản cũ, web vẫn chạy</td><td>Đọc 60 dòng log, sửa, push, chạy lại</td></tr>
+  <tr><td><code>deploy FAILED … rolled back</code></td><td>Bản mới không lên, đã quay về bản cũ, web vẫn chạy</td><td>Đọc log, sửa, push, chạy lại</td></tr>
   <tr><td><code>deploy khác đang chạy</code></td><td>Có lần deploy chưa xong</td><td>Đợi xong rồi chạy lại</td></tr>
 </table>
 
@@ -308,18 +274,18 @@ curl.exe -s -o NUL -w "%{http_code}\n" https://<span data-v="APP"></span>.<span 
   <tr><td>Đổi <code>.env</code></td><td><code>docker compose up -d --force-recreate app</code> (không cần build)</td></tr>
   <tr><td>Quay về bản cũ bằng tay</td><td><code>docker images lingobrain</code> → <code>IMAGE_TAG=<span class="v">ma-commit</span> docker compose up -d --no-build app</code></td></tr>
   <tr><td>Vào DB</td><td><code>docker compose exec db psql -U lingo -d lingobrain</code></td></tr>
-  <tr><td>Tạo / đổi mật khẩu tài khoản chủ</td><td><code>docker compose exec -e ADMIN_USERNAME=<span class="v">ten</span> app sh -c 'read -rs ADMIN_PASSWORD; export ADMIN_PASSWORD; node tools/seed-database.js --skip-deck'</code> (thêm <code>--reset-owner-password</code> nếu đã có)</td></tr>
+  <tr><td>Số tài khoản</td><td><code>docker compose exec db psql -U lingo -d lingobrain -c "select count(*) from users"</code></td></tr>
   <tr><td>RAM/CPU</td><td><code>docker stats</code> (app giới hạn 384 MB, db 512 MB)</td></tr>
 </table>
-<div class="box"><strong>Giám sát</strong>Thêm 1 monitor miễn phí (UptimeRobot/Better Stack) gọi <code>https://<span data-v="APP"></span>.<span data-v="DOMAIN"></span>/api/words</code> 5 phút/lần: bắt được cả app sập lẫn DB sập (web tĩnh vẫn 200 khi DB chết, nên đừng chỉ monitor <code>/</code>).</div>
+<div class="box"><strong>Giám sát</strong>Thêm monitor miễn phí (UptimeRobot) gọi <code>https://<span data-v="APP"></span>.<span data-v="DOMAIN"></span>/api/words</code> 5 phút/lần. Đừng chỉ monitor <code>/</code>: web tĩnh vẫn 200 khi DB chết.</div>
 
-<h2 id="c8"><span class="n">8</span>Backup &amp; khôi phục</h2>
+<h2 id="c7"><span class="n">7</span>Backup &amp; khôi phục</h2>
 <div class="cmd"><span class="where">Server</span><pre><code>cd /srv/apps/lingobrain &amp;&amp; bash deploy/backup.sh
 crontab -e</code></pre></div>
 <div class="cmd"><span class="where file">crontab (thêm dòng)</span><pre><code>45 3 * * * cd /srv/apps/lingobrain &amp;&amp; bash deploy/backup.sh &gt;&gt; /srv/backups/lingobrain.log 2&gt;&amp;1</code></pre></div>
 <ul class="explain">
-  <li>3:45 sáng (lệch 15 phút với backup BookSnap 3:30 để không chạy chồng). Kiểm tra: <code>tail /srv/backups/lingobrain.log</code> → <code>backup ok</code>.</li>
-  <li><code>pg_dump</code> chụp nhất quán khi app đang chạy, không cần dừng app.</li>
+  <li>3:45 sáng, lệch với backup BookSnap 3:30. Kiểm tra sau 1 ngày: <code>tail /srv/backups/lingobrain.log</code> → <code>backup ok</code>.</li>
+  <li>Chỉ dump tài khoản + tiến độ (vài MB). Bộ từ không cần backup vì luôn tạo lại được từ repo.</li>
 </ul>
 <div class="cmd"><span class="where win">Windows (hằng tuần)</span><pre><code>mkdir D:\backup\lingobrain
 scp "vps:/srv/backups/lingobrain/lingobrain-*.dump" D:\backup\lingobrain\</code></pre></div>
@@ -330,30 +296,57 @@ docker compose stop app
 docker compose exec -T db pg_restore -U lingo -d lingobrain --no-owner --no-acl --clean --if-exists --exit-on-error \
   &lt; /srv/backups/lingobrain/<span class="v">lingobrain-YYYYMMDD-HHMMSS.dump</span>
 docker compose start app</code></pre></div>
-<p>Khôi phục về bản cũ không làm mất tiến độ gần đây của người đã đăng nhập: máy họ vẫn giữ bản mới hơn và tự gộp lên khi đồng bộ.</p>
+<p>Tiến độ mới hơn bản backup vẫn còn trên máy người dùng và tự gộp lên khi họ đồng bộ.</p>
 
-<h2 id="c9"><span class="n">9</span>Xử lý sự cố</h2>
+<h2 id="c8"><span class="n">8</span>Xử lý sự cố</h2>
 <table>
   <tr><th>Hiện tượng</th><th>Nguyên nhân</th><th>Xử lý</th></tr>
-  <tr><td><code>$'\r': command not found</code></td><td>Script bị CRLF</td><td>Trên server: <code>sed -i 's/\r$//' deploy/*.sh</code>; lâu dài: Windows <code>git add --renormalize .</code> → commit → push</td></tr>
-  <tr><td><code>Not possible to fast-forward</code></td><td>Có file bị sửa trực tiếp trên server</td><td><code>git status</code>; bỏ thay đổi: <code>git reset --hard origin/main</code> (không đụng <code>.env</code>, <code>.deployed-tag</code> vì không nằm trong git)</td></tr>
-  <tr><td>502 Bad Gateway</td><td>App chưa chạy / sai alias</td><td><code>docker compose ps</code>; tên trong <code>lingobrain.caddy</code> phải trùng <code>aliases</code></td></tr>
-  <tr><td>Web mở được, đăng nhập báo 503</td><td>App không kết nối được DB</td><td><code>docker compose logs app | grep -i pg</code>; <code>docker compose ps db</code></td></tr>
-  <tr><td>Log không có <code>schema ready</code></td><td><code>DB_PASSWORD</code> bị đổi sau khi DB đã tạo</td><td>Postgres chỉ đọc mật khẩu lúc tạo volume lần đầu. Đặt lại: <code>docker compose exec db psql -U lingo -c "ALTER USER lingo PASSWORD '&lt;mật khẩu trong .env&gt;'"</code></td></tr>
-  <tr><td><code>/api/words</code> 503 "Bộ từ chưa được nạp"</td><td>Bảng <code>words</code> rỗng</td><td><code>docker compose restart app</code> (tự seed); vẫn lỗi: <code>docker compose exec app node tools/seed-database.js</code></td></tr>
-  <tr><td><code>pg_restore: unsupported version</code></td><td>Dump từ Postgres mới hơn 17</td><td>Đổi image db ở repo → push → <code>git pull --ff-only</code> → <code>docker compose down -v</code> → làm lại chương 4</td></tr>
-  <tr><td><code>pg_restore</code> báo role/owner</td><td>Thiếu <code>--no-owner --no-acl</code></td><td>Chạy lại đúng lệnh ở chương 4</td></tr>
-  <tr><td>Mọi người bị 429 khi đăng nhập</td><td><code>TRUST_PROXY_HOPS</code> sai</td><td>Phải là <code>1</code> (chỉ có Caddy đứng trước). Nếu đặt thêm Cloudflare proxy trước Caddy → <code>2</code></td></tr>
+  <tr><td><code>cd: lingobrain: No such file</code> + <code>ls: cannot access 'Dockerfile'</code></td><td>Dán thiếu dòng <code>cd /srv/apps</code> / <code>git clone</code>, hoặc sai user</td><td>Kiểm tra dấu nhắc là <code>deploy@…:/srv/apps$</code>, dán lại nguyên khối chương 2</td></tr>
+  <tr><td><code>fatal: destination path 'lingobrain' already exists</code></td><td>Đã có thư mục (clone trước đó, hoặc root tạo nhầm)</td><td>Có <code>.git</code> bên trong → bỏ dòng clone, chạy tiếp. Không có → <a href="#c2">làm lại từ đầu</a></td></tr>
+  <tr><td><code>chmod: … Operation not permitted</code>, file thuộc <code>root</code></td><td>Từng chạy lệnh bằng root</td><td><code>sudo chown -R deploy:deploy /srv/apps/lingobrain /srv/backups</code></td></tr>
+  <tr><td>Mọi lệnh báo <code>No such file or directory</code> dù file có</td><td>Đang đứng trong thư mục vừa bị xoá</td><td><code>cd /srv/apps</code> rồi làm lại</td></tr>
+  <tr><td><code>permission denied … docker.sock</code></td><td><code>deploy</code> chưa thuộc nhóm docker</td><td><code>sudo usermod -aG docker deploy</code> → <code>exit</code> → <code>ssh vps</code> lại</td></tr>
+  <tr><td><code>network web … not found</code></td><td>Chưa tạo mạng chung Caddy</td><td><code>docker network create web</code></td></tr>
+  <tr><td><code>$'\r': command not found</code></td><td>Script bị CRLF</td><td><code>sed -i 's/\r$//' deploy/*.sh</code></td></tr>
+  <tr><td><code>Not possible to fast-forward</code></td><td>Có file bị sửa trực tiếp trên server</td><td><code>git reset --hard origin/main</code> (không đụng <code>.env</code>)</td></tr>
+  <tr><td>502 Bad Gateway</td><td>App chưa chạy / sai alias</td><td><code>docker compose ps</code>; tên trong <code>lingobrain.caddy</code> phải là <code>lingobrain:3000</code></td></tr>
+  <tr><td>Đăng ký/đăng nhập báo 503</td><td>App không kết nối được DB</td><td><code>docker compose logs app | grep -i pg</code>; <code>docker compose ps db</code></td></tr>
+  <tr><td>Log không có <code>schema ready</code>, báo sai mật khẩu</td><td><code>.env</code> bị đổi sau khi DB đã tạo</td><td>Chưa có dữ liệu thật: <code>docker compose down -v</code> → <code>bash deploy/deploy.sh</code>. Có dữ liệu: <code>docker compose exec db psql -U lingo -c "ALTER USER lingo PASSWORD '&lt;mật khẩu trong .env&gt;'"</code></td></tr>
+  <tr><td><code>/api/words</code> 503 "Bộ từ chưa được nạp"</td><td>Chưa seed xong / seed lỗi</td><td><code>docker compose restart app</code>; vẫn lỗi: <code>docker compose exec app node tools/seed-database.js</code></td></tr>
+  <tr><td>Mọi người bị 429 khi đăng nhập</td><td><code>TRUST_PROXY_HOPS</code> sai</td><td>Phải là <code>1</code> (đã đặt trong <code>compose.yml</code>). Thêm Cloudflare proxy trước Caddy → <code>2</code></td></tr>
   <tr><td>Điện thoại vẫn thấy bản cũ</td><td>Quên tăng <code>APP_VERSION</code>/<code>CACHE</code></td><td>Tăng, push, deploy; đóng hẳn app rồi mở lại</td></tr>
-  <tr><td>Đầy ổ đĩa</td><td>Image cũ (~250 MB/bản), backup</td><td><code>docker system df</code>, <code>docker image prune -f</code>, <code>du -sh /srv/backups</code></td></tr>
+  <tr><td>Đầy ổ đĩa</td><td>Image cũ (~250 MB/bản), backup</td><td><code>docker system df</code>, <code>docker image prune -f</code></td></tr>
 </table>
 
-<h2 id="c10"><span class="n">?</span>Câu hỏi còn mở</h2>
+<h2 id="pa"><span class="n">A</span>Phụ lục: chuyển tài khoản cũ từ Nhân Hòa (tuỳ chọn)</h2>
+<p>Chỉ cần khi muốn giữ tài khoản + tiến độ trên server Nhân Hòa. Không làm thì bỏ qua.</p>
+<div class="box danger"><strong>Ghi đè toàn bộ DB trên VPS</strong>Tài khoản đã đăng ký trên VPS sẽ mất. Làm càng sớm càng tốt, trước khi báo người dùng dùng server mới.</div>
 <ol>
-  <li>Nhân Hòa đang chạy PostgreSQL bản mấy? (quyết định image <code>postgres:17</code> hay bản khác)</li>
-  <li>Panel Nhân Hòa có nút tải backup, hoặc bật được cổng public tạm cho DB không? (chọn cách A hay B ở chương 3)</li>
-  <li>Tên miền production hiện tại là gì, bạn có quản lý DNS của nó không? (quyết định giữ tên miền cũ hay chuyển sang DuckDNS)</li>
-  <li>Repo LingoBrain public hay private? (private → cần deploy key)</li>
+  <li>Trên Nhân Hòa: <code>SELECT version();</code> và <code>SELECT count(*) FROM users;</code> — ghi lại. Bản ≥ 18 → đổi image <code>db</code> trong <code>compose.yml</code> ở repo cho khớp trước.</li>
+  <li>Lấy file dump: panel Nhân Hòa → Database → Backup → tải về (<code>.dump</code> hoặc <code>.sql.gz</code>).</li>
+  <li>Đưa lên VPS:</li>
+</ol>
+<div class="cmd"><span class="where win">Windows</span><pre><code>scp D:\backup\lingobrain\<span class="v">ten-file-backup</span> vps:/srv/backups/lingobrain/</code></pre></div>
+<p>Nạp vào — file <code>.dump</code>:</p>
+<div class="cmd"><span class="where">Server</span><pre><code>cd /srv/apps/lingobrain
+docker compose stop app
+docker compose exec -T db pg_restore -U lingo -d lingobrain --no-owner --no-acl --clean --if-exists --exit-on-error \
+  &lt; /srv/backups/lingobrain/<span class="v">nhanhoa.dump</span>
+docker compose start app</code></pre></div>
+<p>Hoặc file <code>.sql</code> / <code>.sql.gz</code> (xoá DB rồi nạp lại từ đầu):</p>
+<div class="cmd"><span class="where">Server</span><pre><code>cd /srv/apps/lingobrain
+docker compose down -v
+docker compose up -d --wait db
+gunzip -cf /srv/backups/lingobrain/<span class="v">nhanhoa.sql.gz</span> \
+  | grep -vE '^(ALTER .* OWNER TO|GRANT |REVOKE )' \
+  | docker compose exec -T db psql -U lingo -d lingobrain -v ON_ERROR_STOP=1 -q
+FORCE=1 bash deploy/deploy.sh</code></pre></div>
+<p>Kiểm tra: <code>docker compose exec db psql -U lingo -d lingobrain -c "select count(*) from users"</code> bằng số ghi ở bước 1. Nạp xong xoá file dump trên Windows (chứa hash mật khẩu).</p>
+
+<h2 id="q"><span class="n">?</span>Câu hỏi còn mở</h2>
+<ol>
+  <li>Dùng tên miền nào lâu dài: tên miền cũ (cần quản lý DNS) hay DuckDNS? Quyết định cách người dùng cũ chuyển sang (chương 5).</li>
+  <li>Có cần giữ tài khoản cũ không? Có → làm Phụ lục A trước khi mở cho người dùng.</li>
 </ol>
 </main>
 </div>
