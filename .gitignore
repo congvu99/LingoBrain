@@ -27,3 +27,6 @@ Thumbs.db
 dist/
 build/
 
+
+# Deploy (VPS)
+.deployed-tag

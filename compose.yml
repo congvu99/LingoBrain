@@ -1,0 +1,42 @@
+name: lingobrain
+services:
+  app:
+    build: .
+    image: lingobrain:${IMAGE_TAG:-latest}
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://lingo:${DB_PASSWORD}@db:5432/lingobrain
+      PGSSL: "false"
+      TRUST_PROXY_HOPS: "1"
+      PORT: "3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      default:
+      web:
+        aliases: [lingobrain]
+    mem_limit: 384m
+
+  db:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: lingo
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: lingobrain
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lingo -d lingobrain"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    mem_limit: 512m
+
+volumes:
+  pgdata:
+networks:
+  web:
+    external: true

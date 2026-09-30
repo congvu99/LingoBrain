@@ -1,0 +1,14 @@
+.git
+.claude
+.vscode
+node_modules
+.env
+.env.*
+assets
+docs
+plans
+tests
+deploy
+tools/__pycache__
+*.md
+*.log
