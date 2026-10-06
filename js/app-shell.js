@@ -1,7 +1,7 @@
 /* Điều hướng 4 tab + lớp toàn màn (#stage: phiên ôn / game), gắn sự kiện tab Tôi, phím tắt, khởi động. Nạp cuối cùng. */
 
 const TABS = ['plan', 'play', 'progress', 'manage'];
-let stage = null;            // null | 'review' | 'game' — đang mở lớp toàn màn thì ẩn tab + thanh điều hướng
+let stage = null;            // null | 'review' | 'game' | 'dialogue' — đang mở lớp toàn màn thì ẩn tab + thanh điều hướng
 let stageLeaving = false;    // đã gọi history.back, chờ popstate (chặn bấm ✕ hai lần làm lùi ra khỏi app)
 
 function paintTab(full) {
@@ -31,6 +31,8 @@ function showTab(t) {
    Mở: đẩy 1 mục history để nút/vuốt "quay lại" của hệ điều hành đóng lớp thay vì rời app.
    Đổi loại (game → ôn) khi đang mở: không đẩy thêm mục. */
 function openStage(kind) {
+  // rời màn hội thoại sang loại khác: tắt micro / huỷ request như khi đóng hẳn
+  if (stage === 'dialogue' && kind !== 'dialogue' && typeof closeDialogue === 'function') closeDialogue();
   if (!stage) {
     try { history.pushState({ lbStage: 1 }, ''); } catch (e) {}
     $('#main').hidden = true; $('#stage').hidden = false;
@@ -53,6 +55,7 @@ function leaveStage() {
   stageLeaving = false;
   if (!stage) return;
   closeGame();                             // bỏ ván đang chơi: không lưu điểm, vẫn lưu từ sai
+  if (stage === 'dialogue' && typeof closeDialogue === 'function') closeDialogue();   // tắt micro, huỷ request, thu hồi blob
   if (typeof stopSpeaking === 'function') stopSpeaking();
   stage = null;
   $('#stage').hidden = true; $('#main').hidden = false;
@@ -63,11 +66,11 @@ function leaveStage() {
 window.addEventListener('popstate', () => { if (stage) leaveStage(); else stageLeaving = false; });
 
 function startReview() { openStage('review'); render(); }
-function setStageProgress(done, total) {
+function setStageProgress(done, total, unit) {
   const p = $('#stageProg');
   $('#stageFill').style.width = (total ? Math.round(done / total * 100) : 0) + '%';
   p.setAttribute('aria-valuemax', total); p.setAttribute('aria-valuenow', done);
-  p.setAttribute('aria-valuetext', done + ' trên ' + total + ' thẻ');
+  p.setAttribute('aria-valuetext', done + ' trên ' + total + ' ' + (unit || 'thẻ'));
   $('#stageCount').textContent = total ? done + '/' + total : '';
 }
 
@@ -80,7 +83,7 @@ function updateDots() {
 
 function bindUI() {
   TABS.forEach(k => { $('#nav-' + k).onclick = () => showTab(k); });
-  $('#stageClose').onclick = () => { closeStage(); if (session.done) toast('Đã lưu ' + session.done + ' thẻ'); };
+  $('#stageClose').onclick = () => { const wasReview = stage === 'review'; closeStage(); if (wasReview && session.done) toast('Đã lưu ' + session.done + ' thẻ'); };
   $('#btnHabits').onclick = () => { habitsOpen = !habitsOpen; renderPlan(); };
   $('#libBox').addEventListener('toggle', () => { if ($('#libBox').open) renderList(); });
 
@@ -126,6 +129,7 @@ function bindUI() {
       else quitGame();
       return;
     }
+    if (stage === 'dialogue' && e.key === 'Escape') { closeStage(); return; }
     if (stage !== 'review') return;
     if (e.key === 'Escape') { closeStage(); return; }
     if (e.key === ' ') { e.preventDefault(); const b = $('#b-next') || $('#b-reveal') || $('#b-check') || $('#b-done'); if (b && !b.hidden) b.click(); }

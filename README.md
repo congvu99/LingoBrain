@@ -1,12 +1,14 @@
 # LingoBrain — Giáo án + Ôn từ (SM-2, 5 dạng kiểm tra)
 
-Web tĩnh, **ưu tiên mobile**, giao diện xanh ngọc thân thiện, ưu tiên iPhone, không server, không AI. Tiến độ lưu trong `localStorage`. Cài được như app (PWA), chạy offline.
+Web tĩnh, **ưu tiên mobile**, giao diện xanh ngọc thân thiện, ưu tiên iPhone. Tiến độ lưu trong `localStorage`. Cài được như app (PWA), chạy offline.
+
+**AI tuỳ chọn (Gemini):** Chỉ được sử dụng cho tính năng hội thoại nhập vai hằng ngày; cần đăng nhập + kết nối mạng lần tạo đầu tiên. Tất cả các tính năng khác hoạt động hoàn toàn offline.
 
 ```
 eng/
 ├── index.html        khung app (4 tab + lớp toàn màn)
 ├── css/paper-theme.css
-├── js/               15 module nhỏ (xem docs/system-architecture.md)
+├── js/               76 module (xem docs/system-architecture.md)
 ├── sw.js, manifest.json   PWA (cache /api/words, /api/audio-index)
 ├── server.js + server/      Node.js (auth, sync, bộ từ từ DB qua API)
 ├── words.json        bộ từ (nguồn biên tập + seed input + fallback offline)
@@ -57,6 +59,8 @@ Trên điện thoại: mở link → **Thêm vào màn hình chính** (iOS: nút
 
 **Chuỗi ngày** tính một ngày khi hôm đó có chấm ít nhất 1 thẻ **hoặc** tích đủ thói quen; ngày hôm nay đã đủ thì hiện +1 ngay.
 
+**Gợi ý hội thoại AI:** Khi server bật Gemini và người dùng đã chấm ≥1 từ hôm nay, thẻ gợi ý "💬 Luyện hội thoại hôm nay" xuất hiện ở cả phần **đang ôn dở** lẫn **"Xong rồi"**. Bấm thẻ → màn nhập vai toàn màn: 10–14 lượt hội thoại do Gemini tạo từ các từ đã chấm hôm nay (≤8 từ). Lượt của AI có 🔊 phát giọng; lượt của bạn ẩn câu tiếng Anh (chỉ thấy gợi ý tiếng Việt + từ mục tiêu), ghi tạm được hoặc gõ → bấm "Xem câu mẫu" để xem chuẩn (có từ mục tiêu được tô đậm). Hết 3 lượt thành công/24 giờ → "Tạo đoạn khác (n/3)" mở dòng cache hoặc tạo mới tuỳ điều kiện. Xong hội thoại → t6 được tích tự động. Dữ liệu cache lưu riêng trên máy (không đồng bộ); chỉ danh sách từ vựng (word, part of speech, nghĩa Việt) được gửi tới Google, không ghi âm hay dữ liệu cá nhân.
+
 **Thói quen** (giáo án cũ): 7 việc theo giờ, mỗi việc 1 checkbox, tự reset sang ngày mới. Mặc định gập, chỉ hiện **việc tiếp theo**; bấm **Xem tất cả** để mở hết. Sửa ở tab Tôi.
 
 | Giờ | Việc | Nút phụ |
@@ -66,7 +70,7 @@ Trên điện thoại: mở link → **Thêm vào màn hình chính** (iOS: nút
 | 12:00 | Shadowing 5 câu | ⏺ Ghi âm |
 | 20:00 | Nghe bài hát chủ đề tuần | Vào ôn từ → |
 | 20:20 | Ghi âm kể lại clip sáng | ⏺ Ghi âm |
-| trong ca | Bắt chuyện 1 câu với khách | Vào ôn từ → |
+| trong ca | Bắt chuyện 1 câu với khách — AI hoặc thật | 💬 Hội thoại AI |
 | 21:00 | Ôn từ | Vào ôn từ |
 
 **Ghi âm**: gõ câu đang shadow → 🔊 nghe mẫu (MP3 Neural hoặc Web Speech) → ⏺ ghi → nghe lại A/B. Bản ghi lưu trên máy (IndexedDB), giữ 10 bản gần nhất mỗi việc, **không nằm trong backup**. iOS có thể xoá nếu 7 ngày không mở app.

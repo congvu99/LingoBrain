@@ -5,6 +5,8 @@ const root = path.join(__dirname, '..');
 const PURE_MODULES = [
   'js/boss-progress-sync-merge.js',   // sync-merge.js (trình duyệt/vm) và app-storage.js dùng global của nó → nạp đầu tiên
   'js/srs-scheduler.js',
+  'js/dialogue-word-match.js',   // dùng normAnswer của srs-scheduler.js (cũng được server require)
+  'js/daily-dialogue-word-picker.js',
   'js/sync-merge.js',
   'js/deck-source.js',
   'js/cloud-sync-engine.js',   // không phải thuần hẳn nhưng không đụng DOM ở top-level → test bằng stub

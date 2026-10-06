@@ -177,6 +177,12 @@
       const s = sanitizePayload({ plan: { data: [{ id: '"><img onerror=x>', title: 'x' }, { id: 't2', title: 'ok', act: 'evil' }], ts: 1 } }, NOW);
       assert.equal(s.plan.data.length, 1); assert.equal(s.plan.data[0].id, 't2'); assert.equal(s.plan.data[0].act, undefined);
     });
+    it('act "talk" (hội thoại AI) sống qua sanitizePayload + mergeSync', () => {
+      const local = sanitizePayload({ plan: { data: [{ id: 't6', title: 'Bắt chuyện', act: 'talk' }], ts: 5 } }, NOW);
+      assert.equal(local.plan.data[0].act, 'talk');
+      const merged = mergeSync(local, sanitizePayload({ plan: { data: [{ id: 't6', title: 'Bắt chuyện', act: 'talk' }], ts: 5 } }, NOW), { histMax: 20 });
+      assert.equal(merged.plan.data[0].act, 'talk');
+    });
     it('giới hạn số key: srs ≤ 10000, done/caption ≤ 30, history ≤ 400 ngày mới nhất (chống phình payload)', () => {
       const srs = {}, done = {}, caption = {}, history = {};
       for (let i = 0; i < 12000; i++) srs['w' + i] = {};

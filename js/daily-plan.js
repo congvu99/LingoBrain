@@ -6,7 +6,7 @@ const DEFAULT_PLAN = [
   { id: 't3', time: '12:00', dur: '15 phút', title: 'Shadowing 5 câu hay nhất', desc: 'Nghe từng câu → dừng → nói lại bắt chước ngữ điệu, lặp 3 lần/câu.', act: 'rec' },
   { id: 't4', time: '20:00', dur: '15 phút', title: 'Nghe 1 bài hát chủ đề tuần', desc: 'Nghe không lyric 2 lần → đọc lyric, gạch từ mới → hát nhẩm theo.', act: 'add' },
   { id: 't5', time: '20:20', dur: '10 phút', title: 'Ghi âm kể lại nội dung clip sáng', desc: 'Kể bằng lời của mình 2–3 câu, tự nghe lại so với bản gốc.', act: 'rec' },
-  { id: 't6', time: 'trong ca làm', dur: '1 câu / ca', title: 'Bắt chuyện với khách nước ngoài', desc: 'Chủ động hỏi/nhận xét 1 câu ngắn với khách — luyện phản xạ hội thoại thật.', act: 'add' },
+  { id: 't6', time: 'trong ca làm', dur: '1 câu / ca', title: 'Bắt chuyện với khách nước ngoài', desc: 'Chủ động hỏi/nhận xét 1 câu ngắn với khách — luyện phản xạ hội thoại thật. Không gặp khách thì nhập vai hội thoại AI.', act: 'talk' },
   { id: 't7', time: '21:00', dur: '5 phút', title: 'Ôn từ vựng kiểu nhớ lại chủ động', desc: 'Che nghĩa tiếng Việt, tự nhớ trước rồi mới lật xem — đúng thì tích, sai thì học lại.', act: 'play' }
 ];
 
@@ -28,6 +28,27 @@ function rollDay() {
   save(K_DAY, day, { stamp: false });   // sang ngày mới không phải người dùng sửa → không được đè việc máy khác đã tích hôm nay
 }
 function planDone() { return plan.filter(t => day.done[t.id]).length; }
+// việc mở hội thoại AI: act 'talk', hoặc t6 của giáo án lưu từ trước khi có tính năng (act 'add') — đổi lúc vẽ,
+// không ghi đè giáo án đã lưu (lưu lúc nạp sẽ bị bản đồng bộ đè lại)
+// t6 không còn act: app bản cũ (≤2.25) đồng bộ sẽ xoá act 'talk' vì chưa biết nó
+function isTalkTask(t) { return t.act === 'talk' || (t.id === 't6' && (t.act === 'add' || !t.act)); }
+// tích (không đảo) — dùng khi xong việc tự động; người dùng vẫn bỏ tích tay được
+function markPlanDone(id) {
+  rollDay();
+  if (!plan.some(t => t.id === id) || day.done[id]) return;
+  const wasAll = plan.every(t => day.done[t.id]);
+  day.done[id] = Date.now();
+  save(K_DAY, day);
+  if (!wasAll && plan.every(t => day.done[t.id])) toast('🎉 Xong hết giáo án hôm nay!');
+}
+// gọi từ js/daily-dialogue-roleplay-ui.js khi đi hết các lượt
+function onDialogueDone() {
+  rollDay();   // app mở qua nửa đêm: day.done còn là của hôm qua
+  const t = plan.find(x => isTalkTask(x) && !day.done[x.id]);
+  if (!t) return;
+  markPlanDone(t.id);
+  if (!plan.every(x => day.done[x.id])) toast('✅ Đã tích: ' + t.title);   // xong hết thì giữ toast 🎉 của markPlanDone
+}
 function toggleTask(id) {
   const wasAll = plan.every(t => day.done[t.id]);
   if (day.done[id]) delete day.done[id]; else day.done[id] = Date.now();
@@ -71,7 +92,8 @@ function renderPlan() {
     let acts = '';
     if (!isDone) {
       // 'add' (nạp từ) đã bỏ vì bộ từ chỉ lấy từ words.json; giáo án đã lưu còn act này → dẫn sang ôn từ
-      if (t.act === 'play' || t.act === 'add') acts = '<button class="btn-sm" data-act="play" data-id="' + esc(t.id) + '">Vào ôn từ →</button>';
+      if (t.act === 'play' || t.act === 'add' || t.act === 'talk') acts = '<button class="btn-sm" data-act="play" data-id="' + esc(t.id) + '">Vào ôn từ →</button>';
+      if (isTalkTask(t) && dialogueEnabledCached()) acts = '<button class="btn-sm" data-act="talk" data-id="' + esc(t.id) + '">💬 Hội thoại AI</button>';
       if (t.act === 'rec') acts = '<button class="btn-sm" data-act="rec" data-id="' + esc(t.id) + '">⏺ Ghi âm</button>';
     }
     return '<div class="task' + (isDone ? ' done' : '') + (isNow ? ' now' : '') + '">' +
@@ -89,6 +111,7 @@ function renderPlan() {
   $('#taskList').querySelectorAll('[data-act]').forEach(b => b.onclick = () => {
     if (b.dataset.act === 'play') startReview();
     if (b.dataset.act === 'rec') startRec(b, b.dataset.id);
+    if (b.dataset.act === 'talk') openDialogue();
   });
   plan.filter(t => t.act === 'rec' && !day.done[t.id]).forEach(t => renderRecordings(t.id));
   updateDots();

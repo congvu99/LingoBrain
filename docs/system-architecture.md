@@ -12,8 +12,12 @@ js/srs-scheduler.js      SM-2, learning steps, hàng đợi, queueBreakdown (s�
 js/app-storage.js        khoá localStorage, helper, trạng thái toàn cục
 js/speech-synthesis.js   TTS (MP3 Neural pregenerated + Web Speech API fallback)
 js/recording-store.js    IndexedDB ghi âm (10 bản/việc)
-js/daily-plan.js         thói quen (giáo án, gập/mở trên tab Hôm nay) + ghi âm shadowing
-js/home-today-screen.js  tab Hôm nay (lời chào, chuỗi ngày, thẻ Phiên hôm nay, gợi ý game) + vẽ tab Tiến bộ
+js/daily-plan.js         thói quen (giáo án, gập/mở trên tab Hôm nay) + ghi âm shadowing + `markPlanDone('t6')` khi xong hội thoại
+js/home-today-screen.js  tab Hôm nay (lời chào, chuỗi ngày, thẻ Phiên hôm nay, gợi ý game, gợi ý hội thoại) + vẽ tab Tiến bộ
+js/daily-dialogue-word-picker.js  chọn ≤8 từ hôm nay (thuần, dùng chung server + client)
+js/daily-dialogue-api-client.js   `POST /api/dialogue` với error handling (401, 429, 501, 503, timeout 35s, 1 lần retry JSON sai)
+js/daily-dialogue-roleplay-ui.js  lớp toàn màn nhập vai: load/cache, hiện lượt, ghi âm tạm, TTS, tô đậm từ mục tiêu, màn kết, tự tích t6
+js/dialogue-word-match.js  khớp từ trong câu (chuẩn hoá, xử lý cụm + đuôi -s/-ed/-ing) — dùng chung server + client tô đậm
 js/review-mode-picker.js chọn dạng kiểm tra theo độ chín, sinh đáp án MCQ          [thuần]
 js/stats-dashboard.js    thống kê (computeStats + gradesBetween thuần; renderStats vẽ tab Tiến bộ)
 js/word-import.js        tải backup, danh sách từ chỉ xem, khôi phục tiến độ (bỏ qua deck)
@@ -79,9 +83,13 @@ js/pwa-register.js       đăng ký service worker, tự cập nhật (kiểm tr
 js/deck-source.js        tải bộ từ từ /api/words (DB) → fallback words.json; pruneSrs chỉ khi từ API    [thuần]
 sw.js, manifest.json     PWA network-first /api/words + /api/audio-index (SW cache); audio/ cache-first riêng
 server.js                Node.js entry: routing, PWA, DB pool, auto-seed từ words.json + audio/index.json
-server/schema.sql        DDL: users, sessions, progress (tài khoản + đồng bộ) + words, audio_clips, deck_meta (bộ từ)
+server/schema.sql        DDL: users, sessions, progress (tài khoản + đồng bộ) + words, audio_clips, deck_meta (bộ từ) + dialogues (hội thoại nhập vai)
 server/database.js       Pool + readSchema, sslOption
-server/auth-and-sync-routes.js   POST /register · /login · PUT /sync · GET /progress
+server/auth-and-sync-routes.js   POST /register · /login · PUT /sync · GET /progress · GET /api/dialogue · POST /api/dialogue
+server/dialogue-routes.js   `GET /api/dialogue` (không auth: {enabled}) + `POST /api/dialogue` (auth: tạo/cache, hạn mức, single-flight)
+server/gemini-dialogue-provider.js   Gọi Gemini REST với structured JSON, abort được, không log prompt
+server/dialogue-content-validator.js   Tình huống + prompt, làm sạch/kiểm tra JSON hội thoại, tính từ thiếu (missing)
+server/request-guards.js (mod)  `withDeadline(budgetMs, req)` chung cho TTS và dialogue, huỷ được
 server/deck-routes.js    GET /api/words · /api/audio-index (ETag, If-None-Match, RAM cache, single-flight)
 server/deck-rows.js      wordsToRows, audioToRows, rowsToWords, contentHash (utils)
 server/deck-seeder.js    seedIfChanged, loadDeckFiles, seedDeck, advisory lock, shrink guard
@@ -109,6 +117,7 @@ Script là classic `<script src>` dùng global, không ES module → mở `file:
 | `words` | `id` (PK), 12 cột nội dung (snake_case), `sort_order`, `updated_at` | Bộ từ (seed từ words.json) |
 | `audio_clips` | `text` (PK), `file` (CHECK: `^[0-9a-f]{12}\.mp3$`) | Audio index (seed từ audio/index.json) |
 | `deck_meta` | `id` (PK = 1), `deck`, `updated`, `voice`, `content_hash`, `seeded_at` | Metadata: tên bộ, hash (để auto-seed), giọng TTS |
+| `dialogues` | `user_id` (FK, PK), `day` (date, PK), `data` (JSONB ≤32KB), `gen_count` (≥1), `updated_at` | Hội thoại nhập vai: 1 dòng/user/ngày, cache + lịch sử tạo |
 
 Auto-seed: so `content_hash` của `words.json` + `audio/index.json` với `deck_meta.content_hash` → khác → seed 1 transaction (advisory lock đầu tiên, chối shrink nếu < 50% bộ hiện tại).
 
@@ -126,6 +135,34 @@ Chưa seed / bảng rỗng → 503 {error: "Bộ từ chưa được nạp"} · 
 ```
 Response 200: {voice: "en-US-ChristopherNeural", items: {text: "file.mp3", ...}}
 Header, 304, 503 như /api/words
+```
+
+**GET /api/dialogue** — kiểm tra bật/tắt hội thoại (không auth)
+```
+Response 200: {enabled: true|false}
+Header: Cache-Control: no-store
+Không có GEMINI_API_KEY → {enabled: false}; server sẵn sàng → {enabled: true}
+```
+
+**POST /api/dialogue** — tạo hoặc lấy cache hội thoại (auth: Authorization: Bearer token)
+```
+Body: {day: "2026-10-06", ids: ["reckon", "figure-out"], regenerate: false}
+Response 200: {
+  day: "2026-10-06", genCount: 1, genMax: 3,
+  dialogue: {
+    scenario: "Ordering at a café", scenarioVi: "Gọi đồ ở quán cà phê",
+    roles: {you: "customer", them: "barista"},
+    turns: [{who: "them", en: "...", vi: "...", ids: []}, 
+            {who: "you", en: "...", vi: "...", hintVi: "...", ids: ["reckon"]}],
+    targetIds: ["reckon", "figure-out"], missing: []
+  }
+}
+Thứ tự lỗi: 501 (thiếu key, không cần token) → 401 (auth sai) → 400 (body/day/ids sai) → cache hit 200 → 429 (hết lượt) → 503 (Gemini)
+- `regenerate:false` + đã cache → trả cache (kể cả ids khác)
+- `regenerate:true` → tạo mới (nếu còn lượt)
+- Single-flight: 2 request cùng user/day chỉ gọi Gemini 1 lần
+- Hạn mức: 3 lần thành công/user/24h (mọi day), 6 lần thử/user/24h (RAM), 5/phút/IP, 30/ngày/IP, server cap từ DB
+- Ngân sách: 25s tính từ đầu request (abort được), client timeout 35s
 ```
 
 **POST /api/register** — đăng ký tài khoản (không auth)
@@ -158,6 +195,21 @@ Body: {data: {v, srsEpoch, srs, cfg, plan, day, gameScore, boss}}
 
 **Rate limit:** 120/min/IP (xem `TRUST_PROXY_HOPS` ở Bước 2). Chung limiter cho tất cả `/api/*`.
 
+## Nhập vai hội thoại AI (/api/dialogue)
+
+**Single-flight:** Mỗi (user, day) chỉ tạo thành công tối đa 3 lần/24h trượt (hạn mức bền qua restart từ DB). Nếu 2 request song song cùng user/day → single-flight bọc promise: lần đầu gọi Gemini, lần 2 chỉ await kết quả chung (không tính lượt thêm). Nếu client bỏ request sớm (close tab) → không gọi Gemini.
+
+**Quota:** 
+- User: SUM(gen_count) các dòng trong 24h qua → ≥3 → 429 (kể cả đổi ngày)
+- User (attempt): 6 lần thử/24h (RAM limiter, không bền restart) → 429
+- IP: 5/phút, 30/ngày → 429
+- Server: DIALOGUE_DAILY_MAX từ DB (mặc định 50), bền qua restart
+- JSON lỗi: gọi lại 1 lần nếu còn ≥8s, rồi 503
+
+**TTS coupling:** Mỗi hội thoại ~12 câu, nghe hết ≈ 12 lượt tạo TTS → `TTS_DAILY_MAX` nên ≥ 12 × `DIALOGUE_DAILY_MAX` + từ tự gõ.
+
+**Assumption:** Single process. Nếu deployment cluster sau → inflight + limiter RAM cần chia sẻ (Redis/Memcached), UPSERT có điều kiện vẫn đúng.
+
 ## Luồng bộ từ trên client
 
 1. **App mở:** `js/deck-source.js` gọi `fetchFirstOk()` → thử `/api/words` trước, lỗi (404/503/mất mạng) → fallback `words.json`
@@ -180,6 +232,7 @@ Body: {data: {v, srsEpoch, srs, cfg, plan, day, gameScore, boss}}
 | `eng.auth.v1` | `{token, username}` khi đăng nhập (dùng cho `/api/sync`) |
 | `eng.syncmeta.v1` | `{cfgTs, planTs, dayTs, srsEpoch, owner, syncedAt}` — mốc đồng bộ |
 | `eng.boss.v1` | Tiến trình Pháp Sư Lexoria: `{v, xp, wins:{date:beat}, day:{date,beat,dmg}\|null, alloc:{el:0..3}, gender:{v,ts}, element:{v,ts}, buffDate, evo:{el:{v,ts}}}` (`evo` phase 5: `v` = formId `<hệ>-a\|b[1\|2]` hoặc `''` = dạng gốc) — không có `deviceId` |
+| `eng.dialogue.v1` | **LOCAL MÁY (không đồng bộ):** `{user, day, genCount, genMax, dialogue, pos, done}` — cache hội thoại hôm nay, bắt theo tài khoản `eng.auth.v1` |
 | IndexedDB `lingobrain/recordings` | `{id, taskId, date, caption, blob, type}` |
 
 `bossProg` (biến toàn cục, `js/app-storage.js`) giữ `eng.boss.v1` đang hoạt động; `saveBoss()` = `save('eng.boss.v1', bossProg)`. Đồng bộ có thể **thay hẳn object** `bossProg` (`applySyncPayload`), nên mọi nơi ghi tiến trình phải đọc `bossProg` **tại thời điểm ghi**, không giữ tham chiếu cũ.
@@ -299,6 +352,12 @@ impact[0])`, mỗi khoá sprite ≤2 lần — có test `tests/boss-game-skill-v
 | `cloze` Điền câu tốc độ | từ nào hợp câu nào | 60s, câu khoét lỗ → chọn từ, combo | ≥8 từ đã học có `context` chứa chính từ đó |
 | `planes` Bắn máy bay | nhớ chủ động + chính tả | kiểu ZType trên canvas: mỗi chữ cái đúng = 1 viên đạn, chữ cuối nổ; 3 mạng, tăng tốc mỗi 5 lần hạ | ≥8 từ đã học có nghĩa |
 | `fruit` Chém chữ | phân biệt từ na ná | kiểu Fruit Ninja: đề nghĩa Việt, vuốt chém 1 quả đúng giữa bom na ná; 3 mạng, tăng tốc mỗi 5 lần đúng | ≥8 từ đã học có nghĩa, ≤16 ký tự |
+
+## Giáo án + Nhập vai hội thoại
+
+**Act 'talk':** Giáo án t6 (mặc định hoặc từ lưu trước) chứa `act: 'talk'` để hiện nút "💬 Hội thoại AI". Người dùng cũ có t6 với `act: 'add'` hoặc không có `act` → render-time coi là `isTalkTask` (không ghi đè giáo án đã lưu, tránh mất dữ liệu khi bản đồng bộ đè lại). Mặc định giáo án mới: t6 có `act: 'talk'`. `cleanPlan` trong `sync-merge.js` giữ nguyên `act ∈ {add, rec, play, talk}` → act 'talk' sống qua đồng bộ. Bản server cũ (≤2.25) sẽ xoá 'talk' vì chưa biết → **deploy server trước/cùng client**.
+
+**Hoàn thành hội thoại:** `onDialogueDone()` gọi `rollDay()` + `markPlanDone('t6')` → tích t6 (không đảo); người dùng vẫn bỏ tích tay được. Lên bản mới + server tắt → client nhận 404/501 → ẩn nút, không lỗi.
 
 **Ranh giới cứng: game không ghi gì vào SM-2.** Không gọi `applyGrade`, không đụng `ef/ivl/due/state/reps/lapses/hist`. Lý do: một ván 60s ≈ 25 lượt, đoán mò 4 đáp án đúng 25% → lịch ôn phình sai chỉ sau vài ván. Điểm cũng không vào `hist` nên tỉ lệ nhớ 7/30 ngày vẫn phản ánh ôn thật.
 

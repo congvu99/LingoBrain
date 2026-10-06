@@ -32,6 +32,7 @@ function renderHome() {
 function renderSessionCard() {
   const box = $('#sessionCard'), extra = $('#homeExtra');
   extra.innerHTML = '';
+  probeDialogue();   // hỏi server bật/tắt hội thoại AI (nhớ 10 phút); đổi trạng thái thì tự vẽ lại
   if (!deck.words.length) {
     box.innerHTML = '<div class="card empty"><h2>Chưa tải được bộ từ</h2><p class="muted">Kiểm tra kết nối mạng rồi thử lại.</p>' +
       '<button class="btn-primary" id="btnRetryDeck">Thử lại</button></div>';
@@ -50,6 +51,7 @@ function renderSessionCard() {
       (started ? '<div class="session-bar" role="progressbar" aria-label="Tiến độ phiên" aria-valuemin="0" aria-valuemax="' + total + '" aria-valuenow="' + session.done + '"><i style="width:' + pct + '%"></i></div>' : '') +
       '<button class="session-cta" id="btnStart">' + (started ? 'Tiếp tục · ' + session.done + '/' + total : 'Bắt đầu') + '</button></div>';
     $('#btnStart').onclick = startReview;
+    renderDialogueSuggest(extra, '');
     return;
   }
   // hết thẻ trong hàng đợi: tổng kết hôm nay + lượt kế + lối học thêm
@@ -65,11 +67,21 @@ function renderSessionCard() {
     (nNew ? '<button class="session-cta alt" id="btnMoreNew">Học thêm ' + nNew + ' từ mới</button>' : '') + '</div>';
   if (nNew) $('#btnMoreNew').onclick = () => { restartSession(); startReview(); };
   // xong phiên → gợi ý 1 game làm phần thưởng (không bao giờ đứng trước phiên ôn)
-  if (g.count && gameAvailability(deck, srs).sprint.ok) {
-    extra.innerHTML = '<button class="card suggest" id="btnSuggestGame"><span class="suggest-ic">' + ICON_BOLT + '</span>' +
-      '<span class="suggest-t"><b>Luyện thêm: Chạy 60 giây</b><span>Phản xạ nhìn từ ra nghĩa · không ảnh hưởng lịch ôn</span></span><span aria-hidden="true">›</span></button>';
-    $('#btnSuggestGame').onclick = () => startGame('sprint');
-  }
+  const game = g.count && gameAvailability(deck, srs).sprint.ok
+    ? '<button class="card suggest" id="btnSuggestGame"><span class="suggest-ic">' + ICON_BOLT + '</span>' +
+      '<span class="suggest-t"><b>Luyện thêm: Chạy 60 giây</b><span>Phản xạ nhìn từ ra nghĩa · không ảnh hưởng lịch ôn</span></span><span aria-hidden="true">›</span></button>'
+    : '';
+  renderDialogueSuggest(extra, game);   // gán #homeExtra 1 lần, không đè nhau
+  if (game) $('#btnSuggestGame').onclick = () => startGame('sprint');
+}
+
+// gợi ý hội thoại AI: khi server bật + hôm nay đã chấm ≥1 thẻ (đang ôn dở hay đã xong đều hiện); after = HTML gợi ý khác
+function renderDialogueSuggest(extra, after) {
+  const t = today(), n = gradesBetween(srs, t, t + DAY).count;
+  const on = dialogueEnabledCached() && n > 0;
+  extra.innerHTML = (on ? '<button class="card suggest" id="btnDialogue"><span class="suggest-ic" aria-hidden="true">💬</span>' +
+    '<span class="suggest-t"><b>Luyện hội thoại hôm nay</b><span>Nhập vai 1 tình huống đời sống với từ vừa ôn</span></span><span aria-hidden="true">›</span></button>' : '') + after;
+  if (on) $('#btnDialogue').onclick = () => openDialogue();
 }
 
 /* Tab Tiến bộ: số liệu + thư viện từ (thư viện chỉ vẽ khi mở — ~5000 dòng) */

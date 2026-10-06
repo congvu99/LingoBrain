@@ -2,7 +2,7 @@
    xem plans/260925-0957-neural-tts-api-for-typed-sentences/phase-01-*.md. Không log / lưu nguyên văn câu.
    createTtsRoutes({ pool, getProvider, enabled, cacheMax, dailyMax, now, log }) → { tts(req, ip), limiters }. */
 const crypto = require('crypto');
-const { createRateLimiter, createSemaphore } = require('./request-guards.js');
+const { createRateLimiter, createSemaphore, withDeadline } = require('./request-guards.js');
 const { etagMatches } = require('./deck-routes.js');
 
 const QUEUE_BUDGET_MS = 5000;   // hạn chờ hàng đợi + tạo, dưới timeout 6s của client
@@ -45,13 +45,6 @@ function createTtsRoutes({ pool, getProvider, enabled, cacheMax, dailyMax, now =
   const sem = createSemaphore(2, 10);   // tối đa 2 lần tạo đồng thời, hàng đợi 10
   const inflight = new Map();           // key → Promise<Buffer> (single-flight)
   let insertCount = 0;
-
-  function withDeadline(p, ms) {
-    return new Promise((resolve, reject) => {
-      const t = setTimeout(() => { const e = new Error('queue timeout'); e.code = 'BUSY'; reject(e); }, ms);
-      p.then(v => { clearTimeout(t); resolve(v); }, e => { clearTimeout(t); reject(e); });
-    });
-  }
 
   function sendAudio(req, buf, etag) {
     // private + Vary: cache dùng chung (proxy) không được trả MP3 cho request thiếu X-LB-TTS

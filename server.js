@@ -3,7 +3,9 @@
    TRUST_PROXY_HOPS (0 = không tin X-Forwarded-For; sau reverse proxy của nền tảng đặt 1),
    AUTO_SEED (mặc định bật; false = không tự nạp words.json + audio/index.json vào DB khi nội dung đổi),
    TTS_ENABLED (mặc định bật), TTS_VOICE (mặc định en-US-AndrewMultilingualNeural),
-   TTS_CACHE_MAX (mặc định 2000 dòng cache), TTS_DAILY_MAX (mặc định 1000 lượt tạo mới/ngày toàn server).
+   TTS_CACHE_MAX (mặc định 2000 dòng cache), TTS_DAILY_MAX (mặc định 1000 lượt tạo mới/ngày toàn server),
+   GEMINI_API_KEY (thiếu → hội thoại AI tắt), GEMINI_MODEL (mặc định gemini-3.6-flash),
+   DIALOGUE_DAILY_MAX (mặc định 50 hội thoại tạo thành công / 24h toàn server; mỗi đoạn nghe hết ≈ 12 lượt TTS).
    Web tĩnh không phụ thuộc DB: DB sập/sai thì trang vẫn mở, chỉ API trả 503. */
 const http = require('http');
 const { serveStatic, securityHeaders } = require('./server/static-file-server.js');
@@ -17,6 +19,9 @@ const TTS_ENABLED = process.env.TTS_ENABLED !== 'false';
 const TTS_VOICE = process.env.TTS_VOICE || 'en-US-AndrewMultilingualNeural';
 const TTS_CACHE_MAX = +process.env.TTS_CACHE_MAX || 2000;
 const TTS_DAILY_MAX = +process.env.TTS_DAILY_MAX || 1000;
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
+const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-3.6-flash';
+const DIALOGUE_DAILY_MAX = +process.env.DIALOGUE_DAILY_MAX || 50;
 
 let api = null;
 if (process.env.DATABASE_URL) {
@@ -38,7 +43,20 @@ if (process.env.DATABASE_URL) {
     } catch (e) { ttsLoadFailed = true; log('tts provider nạp lỗi: ' + e.message); return null; }
   }
   const tts = createTtsRoutes({ pool: db.pool, getProvider: getTtsProvider, enabled: TTS_ENABLED, cacheMax: TTS_CACHE_MAX, dailyMax: TTS_DAILY_MAX, log });
-  api = createApi({ pool: db.pool, isReady: () => db.ready, trustHops: TRUST_PROXY_HOPS, log, tts });
+  // hội thoại AI: không key → tắt; nạp provider lười, lỗi chỉ log 1 lần (không làm sập web tĩnh)
+  let dialogueProvider, dialogueLoadFailed = !GEMINI_API_KEY;
+  function getDialogueProvider() {
+    if (dialogueProvider) return dialogueProvider;
+    if (dialogueLoadFailed) return null;
+    try {
+      const { createGeminiDialogueProvider } = require('./server/gemini-dialogue-provider.js');
+      dialogueProvider = createGeminiDialogueProvider({ apiKey: GEMINI_API_KEY, model: GEMINI_MODEL });
+      return dialogueProvider;
+    } catch (e) { dialogueLoadFailed = true; log('dialogue provider nạp lỗi: ' + e.message); return null; }
+  }
+  const { createDialogueRoutes } = require('./server/dialogue-routes.js');
+  const dialogue = createDialogueRoutes({ pool: db.pool, getProvider: getDialogueProvider, dailyMax: DIALOGUE_DAILY_MAX, log });
+  api = createApi({ pool: db.pool, isReady: () => db.ready, trustHops: TRUST_PROXY_HOPS, log, tts, dialogue });
   const autoSeed = process.env.AUTO_SEED !== 'false';
   // chạy nền, không chặn listen; seed xong xoá cache bộ từ trong RAM
   db.start({ onReady: async () => {

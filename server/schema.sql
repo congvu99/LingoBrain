@@ -33,3 +33,12 @@ CREATE TABLE IF NOT EXISTS tts_clips (
   key text PRIMARY KEY CHECK (key ~ '^[0-9a-f]{64}$'), voice text NOT NULL,
   mp3 bytea NOT NULL CHECK (octet_length(mp3) BETWEEN 1024 AND 307200), created_at timestamptz NOT NULL DEFAULT now());
 CREATE INDEX IF NOT EXISTS tts_clips_created_at ON tts_clips (created_at);
+
+-- Hội thoại nhập vai /api/dialogue: 1 dòng / user / ngày (ngày theo máy người dùng, server cho lệch ±1).
+-- gen_count = số lần tạo thành công của dòng; hạn mức tính SUM trong 24h qua mọi dòng của user. Không log nội dung.
+CREATE TABLE IF NOT EXISTS dialogues (
+  user_id int NOT NULL REFERENCES users(id) ON DELETE CASCADE, day date NOT NULL,
+  data jsonb NOT NULL CHECK (octet_length(data::text) <= 32768),
+  gen_count int NOT NULL DEFAULT 1 CHECK (gen_count >= 1),
+  updated_at timestamptz NOT NULL DEFAULT now(), PRIMARY KEY (user_id, day));
+CREATE INDEX IF NOT EXISTS dialogues_updated_at ON dialogues (updated_at);

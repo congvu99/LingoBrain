@@ -58,6 +58,14 @@ function createSemaphore(n, maxQueue) {
   };
 }
 
+// promise p quá ms → reject code BUSY. Không huỷ p: việc đang chạy phải tự kiểm tra hạn / AbortSignal.
+function withDeadline(p, ms) {
+  return new Promise((resolve, reject) => {
+    const t = setTimeout(() => { const e = new Error('queue timeout'); e.code = 'BUSY'; reject(e); }, ms);
+    p.then(v => { clearTimeout(t); resolve(v); }, e => { clearTimeout(t); reject(e); });
+  });
+}
+
 // đọc body JSON object; quá maxBytes → {status:413}; hỏng/rỗng/không phải object/stream lỗi → {status:400}
 // Quá cỡ: vẫn đọc tiếp (bỏ dữ liệu) tới hết rồi mới báo 413 — cắt kết nối giữa chừng làm client nhận
 // ECONNRESET thay vì 413. Chỉ cắt khi vượt trần cứng 2×maxBytes để không đọc vô hạn.
@@ -86,4 +94,4 @@ function readJsonBody(req, maxBytes) {
   });
 }
 
-module.exports = { clientIp, isJsonRequest, createRateLimiter, createSemaphore, readJsonBody };
+module.exports = { clientIp, isJsonRequest, createRateLimiter, createSemaphore, withDeadline, readJsonBody };

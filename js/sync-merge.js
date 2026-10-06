@@ -140,7 +140,7 @@
     if (!Array.isArray(d)) return null;
     return d.filter(t => isObj(t) && typeof t.id === 'string' && okKey(t.id, TASK_ID)).slice(0, TASK_MAX).map(t => {
       const o = { id: t.id, time: text(t.time, 300), dur: text(t.dur, 300), title: text(t.title, 300), desc: text(t.desc, 300) };
-      if (['add', 'rec', 'play'].indexOf(t.act) >= 0) o.act = t.act;
+      if (['add', 'rec', 'play', 'talk'].indexOf(t.act) >= 0) o.act = t.act;   // talk = hội thoại AI nhập vai
       return o;
     });
   }

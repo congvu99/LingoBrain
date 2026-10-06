@@ -17,6 +17,12 @@ LingoBrain chuyển từ web tĩnh sang hybrid: **web tĩnh + API Node.js** ch�
 
 ---
 
+## Ghi chú quan trọng: Deploy order
+
+**Server trước/cùng client:** Khi deploy client mới với tính năng hội thoại nhập vai (v2.26.0+), server PHẢI được deploy cùng hoặc trước. Bản server cũ (≤2.25) sẽ xoá `act: 'talk'` khỏi giáo án qua đồng bộ vì chưa biết giá trị này → client mới sẽ mất nút "💬 Hội thoại AI" tạm thời. Rollback ngược lại: bỏ `GEMINI_API_KEY` → tính năng tắt, nút ẩn.
+
+---
+
 ## Bước 1: Tạo hoặc cấu hình resource Node trên Nhân Hòa
 
 1. **Trỏ repo:** Tạo resource mới hoặc cấu hình resource hiện tại
@@ -47,6 +53,9 @@ PORT=3000
 | `TRUST_PROXY_HOPS` | `1` | **Bắt buộc.** Mặc định 0 thì mọi người dùng chia chung 1 IP proxy → rate limit theo IP chặn nhầm cả nhóm. Đặt 1 để tin `X-Forwarded-For` của proxy Nhân Hòa. |
 | `PGSSL` | `false` | Mạng nội bộ không cần TLS. Nếu lỗi kết nối SSL → thử `true` + thêm `PGSSLROOTCERT=/path/to/ca.pem` |
 | `PORT` | `3000` | Cổng mặc định. Chỉnh nếu nền tảng yêu cầu khác |
+| `GEMINI_API_KEY` | API key Google Gemini | **Tuỳ chọn.** Thiếu → tính năng hội thoại AI tắt, nút ẩn. Tạo key ở Google AI Studio; chỉ đặt ở env server, không bao giờ xuống client. |
+| `GEMINI_MODEL` | `gemini-3.6-flash` (mặc định) | Model Gemini dùng tạo hội thoại (REST `generateContent`, `responseSchema`, `thinkingLevel: low`). |
+| `DIALOGUE_DAILY_MAX` | `50` (mặc định) | Tối đa hội thoại tạo thành công/24h toàn server. Nối với `TTS_DAILY_MAX`: mỗi hội thoại nghe hết ≈ 12 lượt tạo TTS → `TTS_DAILY_MAX` nên ≥ 12 × `DIALOGUE_DAILY_MAX` + từ tự gõ. |
 
 **Cảnh báo:** Mật khẩu chứa `@` phải URL-encode, không encode khác cũng được nhưng cẩn thận. Ví dụ:
 - Mật khẩu gốc: `MyPass@123`
@@ -279,8 +288,8 @@ Khi smoke test ✓ trên subdomain:
 ### Mỗi lần deploy, bump version:
 
 Mỗi lần push code mới, cập nhật:
-- `js/app-storage.js`: `APP_VERSION = "2.11.0"` (hoặc version tiếp theo)
-- `sw.js`: `CACHE = "lingobrain-2.11.0"` (phải trùng APP_VERSION)
+- `js/app-storage.js`: `APP_VERSION = "2.26.0"` (hoặc version tiếp theo)
+- `sw.js`: `CACHE = "lingobrain-v2.26.0"` (phải trùng APP_VERSION)
 - Test `tests/pwa-assets.test.js` xanh (kiểm tra đúp version)
 
 Client tự lên bản mới: SW mới `skipWaiting` ngay khi cài xong, trang tự tải lại lúc rảnh (không đang chơi / không đang gõ); mở lại app từ nền cũng kiểm tra bản mới. Bộ từ cập nhật tự động qua `/api/words` khi server nạp từ `words.json` (nếu hash khác).

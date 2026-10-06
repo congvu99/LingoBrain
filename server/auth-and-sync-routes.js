@@ -1,5 +1,6 @@
 /* API tài khoản + đồng bộ: POST /api/register · /api/login · /api/logout, PUT /api/sync;
-   bộ từ công khai: GET /api/words · /api/audio-index (server/deck-routes.js).
+   bộ từ công khai: GET /api/words · /api/audio-index (server/deck-routes.js);
+   hội thoại nhập vai: GET/POST /api/dialogue (server/dialogue-routes.js).
    Mọi phản hồi là JSON. Gộp dữ liệu dùng chung js/sync-merge.js với client. */
 const path = require('path');
 const { mergeSync, sanitizePayload } = require(path.join(__dirname, '..', 'js', 'sync-merge.js'));
@@ -15,7 +16,7 @@ const SESSION_DAYS = 180;
 
 function httpError(status, error) { const e = new Error(error); e.status = status; e.body = { error }; return e; }
 
-function createApi({ pool, isReady, trustHops, log, tts }) {
+function createApi({ pool, isReady, trustHops, log, tts, dialogue }) {
   const apiIp = createRateLimiter({ limit: 120, windowMs: 60000, maxKeys: 10000 });         // mọi request /api/* (token rác cũng tốn 1 query)
   const perIp = createRateLimiter({ limit: 20, windowMs: 60000, maxKeys: 10000 });          // mọi request auth
   const registers = createRateLimiter({ limit: 5, windowMs: 3600000, maxKeys: 10000 });     // đăng ký thành công / IP / giờ
@@ -24,7 +25,9 @@ function createApi({ pool, isReady, trustHops, log, tts }) {
   const scryptSlots = createSemaphore(2, 20);                                               // scrypt tốn CPU + 16MB RAM
   // tts tuỳ chọn: thiếu → GET /api/tts luôn trả 501 (test cũ gọi createApi không có tts vẫn chạy được)
   const ttsLimiters = tts ? tts.limiters : [];
-  setInterval(() => { const n = Date.now(); [apiIp, perIp, registers, loginFails, syncs, ...ttsLimiters].forEach(l => l.sweep(n)); }, 60000).unref();
+  // dialogue tuỳ chọn như tts: thiếu → GET {enabled:false}, POST 501
+  const dialogueLimiters = dialogue ? dialogue.limiters : [];
+  setInterval(() => { const n = Date.now(); [apiIp, perIp, registers, loginFails, syncs, ...ttsLimiters, ...dialogueLimiters].forEach(l => l.sweep(n)); }, 60000).unref();
 
   async function issueSession(db, userId) {
     const token = cred.newToken();
@@ -107,9 +110,18 @@ function createApi({ pool, isReady, trustHops, log, tts }) {
 
   const deck = createDeckRoutes({ pool });
   const ttsGet = tts ? (req => tts.tts(req, ipOf(req))) : (() => [501, { error: 'TTS đang tắt' }, { 'Cache-Control': 'no-store' }]);
+  const dialogueOn = () => !!(dialogue && dialogue.enabled());
+  const dialogueGet = () => [200, { enabled: dialogueOn() }];
+  // 501 trước bước đăng nhập (như TTS): tính năng tắt thì client ẩn nút, không đẩy người dùng đi đăng nhập
+  async function dialoguePost(req) {
+    if (!dialogueOn()) return [501, { error: 'Hội thoại AI đang tắt' }];
+    const { userId } = await authUser(req);
+    return dialogue.create(req, userId, ipOf(req));
+  }
   const ROUTES = { 'POST /api/register': register, 'POST /api/login': login, 'POST /api/logout': logout, 'PUT /api/sync': sync,
-    'GET /api/words': deck.words, 'GET /api/audio-index': deck.audioIndex, 'GET /api/tts': ttsGet };
-  const PATHS = ['/api/register', '/api/login', '/api/logout', '/api/sync', '/api/words', '/api/audio-index', '/api/tts'];
+    'GET /api/words': deck.words, 'GET /api/audio-index': deck.audioIndex, 'GET /api/tts': ttsGet,
+    'GET /api/dialogue': dialogueGet, 'POST /api/dialogue': dialoguePost };
+  const PATHS = ['/api/register', '/api/login', '/api/logout', '/api/sync', '/api/words', '/api/audio-index', '/api/tts', '/api/dialogue'];
 
   async function handleApi(req, res, https) {
     // body chuỗi/Buffer = sẵn dựng (bộ từ / MP3 TTS); extra ghi đè header mặc định (ETag, Cache-Control, Content-Type)
