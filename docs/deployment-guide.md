@@ -55,7 +55,9 @@ PORT=3000
 | `PORT` | `3000` | Cổng mặc định. Chỉnh nếu nền tảng yêu cầu khác |
 | `GEMINI_API_KEY` | API key Google Gemini | **Tuỳ chọn.** Thiếu → tính năng hội thoại AI tắt, nút ẩn. Tạo key ở Google AI Studio; chỉ đặt ở env server, không bao giờ xuống client. |
 | `GEMINI_MODEL` | `gemini-3.6-flash` (mặc định) | Model Gemini dùng tạo hội thoại (REST `generateContent`, `responseSchema`, `thinkingLevel: low`). |
-| `DIALOGUE_DAILY_MAX` | `50` (mặc định) | Tối đa hội thoại tạo thành công/24h toàn server. Nối với `TTS_DAILY_MAX`: mỗi hội thoại nghe hết ≈ 12 lượt tạo TTS → `TTS_DAILY_MAX` nên ≥ 12 × `DIALOGUE_DAILY_MAX` + từ tự gõ. |
+| `GEMINI_MODEL_FALLBACK` | (trống) | **Tuỳ chọn.** Model dự phòng khi `GEMINI_MODEL` bị Google trả 429 hết lượt (model chính bị bỏ qua theo `retryDelay` Google gửi (kẹp 30 giây–10 phút, thiếu thì 10 phút), trong lúc đó dùng model này). Gói miễn phí có thể cấp hạn riêng theo model — kiểm tra AI Studio. Ví dụ: `gemini-3.7-flash`. |
+| `DIALOGUE_LEARNER_CONTEXT` | (trống) | **Tuỳ chọn, nên đặt.** ≤300 ký tự mô tả người học: nghề, nơi sống, hay gặp người nước ngoài ở đâu (vd. `Barista at a cafe in Da Nang, often serves Korean and Australian tourists`). Gemini ưu tiên tình huống + chi tiết sát đời thật này. Không chứa `<` `>`. |
+| `DIALOGUE_DAILY_MAX` | `10` (mặc định) | Tối đa hội thoại tạo thành công/24h toàn server. Mặc định 10 khớp gói miễn phí Gemini (~20 request/ngày, reset ~14:00–15:00 giờ Việt, mỗi hội thoại ≈ 2 request). Nối với `TTS_DAILY_MAX`: mỗi hội thoại nghe hết ≈ 12 lượt tạo TTS → `TTS_DAILY_MAX` nên ≥ 12 × `DIALOGUE_DAILY_MAX` + từ tự gõ. Nâng lên khi chuyển gói trả phí. |
 
 **Cảnh báo:** Mật khẩu chứa `@` phải URL-encode, không encode khác cũng được nhưng cẩn thận. Ví dụ:
 - Mật khẩu gốc: `MyPass@123`

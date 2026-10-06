@@ -56,9 +56,17 @@ function run(file) { vm.runInContext(fs.readFileSync(path.join(root, file), 'utf
 run('tests/test-harness.js');
 PURE_MODULES.forEach(run);
 fs.readdirSync(__dirname).filter(f => /\.test\.js$/.test(f)).sort().forEach(f => run('tests/' + f));
-// test async (Node): mỗi mục {name, fn} hoặc hàm; timeout 10s để promise treo không làm treo runner
+// test async (Node): mỗi mục {name, fn} hoặc hàm; timeout 10s để promise treo không làm treo runner.
+// Timer KHÔNG unref: promise treo không còn việc nào giữ event loop thì Node thoát im lặng mã 0 (CI báo "đạt" sai)
+// → để timer giữ tiến trình tới khi báo lỗi timeout, xong thì xoá.
+let reported = false;
+process.on('exit', code => { if (!reported && code === 0) { console.log('runner thoát trước khi báo kết quả'); process.exitCode = 1; } });
 (async () => {
-  const withTimeout = p => Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error('timeout 10s')), 10000).unref())]);
+  const withTimeout = p => {
+    let timer;
+    const limit = new Promise((_, rej) => { timer = setTimeout(() => rej(new Error('timeout 10s')), 10000); });
+    return Promise.race([p, limit]).finally(() => clearTimeout(timer));
+  };
   for (const t of (ctx.__asyncTests || [])) {
     const name = t.name || 'async', fn = t.fn || t;
     let err = null;
@@ -66,5 +74,6 @@ fs.readdirSync(__dirname).filter(f => /\.test\.js$/.test(f)).sort().forEach(f =>
     ctx.describe('async', () => ctx.it(name, () => { if (err) throw err; }));
   }
   const ok = ctx.__reportTests(s => console.log(s));
+  reported = true;
   process.exit(ok ? 0 : 1);
 })();

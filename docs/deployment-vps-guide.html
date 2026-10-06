@@ -175,6 +175,41 @@ mkdir -p /srv/backups/lingobrain</code></pre></div>
   <li>Muốn đổi giọng/giới hạn TTS: thêm <code>TTS_VOICE=…</code>, <code>TTS_DAILY_MAX=…</code> vào <code>.env</code>.</li>
 </ul>
 
+<h3>Bật hội thoại AI (Gemini)</h3>
+<p>Để hiện nút "💬 Luyện hội thoại hôm nay" và cho người dùng tạo hội thoại nhập vai với Gemini, thêm các biến vào <code>.env</code>. Yêu cầu:</p>
+<ul class="explain">
+  <li><b>GEMINI_API_KEY</b> từ <a href="https://aistudio.google.com" target="_blank">Google AI Studio</a> (miễn phí, ~20 request/ngày). Thiếu key &rarr; nút ẩn, feature tắt.</li>
+  <li><b>GEMINI_MODEL_FALLBACK</b> (tuỳ chọn): khi model chính bị Google trả 429 hết lượt, chuyển sang model này; model chính bị bỏ qua theo thời gian Google yêu cầu (30 giây–10 phút).</li>
+  <li><b>DIALOGUE_LEARNER_CONTEXT</b> (tuỳ chọn, &le;300 ký tự): mô tả người học (vd. "Quản lý quán cà phê ở Đà Nẵng, thường phục vụ khách Hàn Quốc") &rarr; hội thoại sát đời thật hơn.</li>
+  <li><b>DIALOGUE_DAILY_MAX</b> (mặc định 10): tối đa hội thoại tạo thành công/24h toàn server. Gói miễn phí: đặt khoảng <b>một nửa</b> số lượt/ngày AI Studio cho phép (vd. 20 lượt &rarr; 10), vì mỗi hội thoại có thể tốn 2 lượt khi Gemini trả JSON hỏng. Nâng lên khi dùng gói trả phí; nhớ <code>TTS_DAILY_MAX</code> &ge; 12 &times; giá trị này + câu tự gõ.</li>
+</ul>
+<div class="cmd"><span class="where file">.env (thêm dòng)</span><pre><code><span class="c"># Hội thoại AI</span>
+<span class="v">GEMINI_API_KEY</span>=&lt;key từ Google AI Studio&gt;
+<span class="c"># Tuỳ chọn:</span>
+<span class="v">GEMINI_MODEL_FALLBACK</span>=gemini-3.7-flash
+<span class="v">DIALOGUE_LEARNER_CONTEXT</span>=Barista at a cafe in Da Nang, often serves Korean and Australian tourists
+<span class="v">DIALOGUE_DAILY_MAX</span>=10</code></pre></div>
+<ul class="explain">
+  <li><b>Sau khi thêm</b>: chạy <code>docker compose up -d --force-recreate app</code> để ứng dụng nhận biến mới.</li>
+  <li><b>Kiểm tra kích hoạt</b>: <code>docker compose exec -T app wget -qO- http://127.0.0.1:3000/api/dialogue</code> phải in <code>{&quot;enabled&quot;:true}</code>. Nếu <code>false</code> &rarr; chưa đặt key hoặc chưa recreate app (key sai vẫn <code>true</code>, lỗi sẽ hiện ở log là <code>code=UPSTREAM</code>).</li>
+  <li><b>Kiểm tra hoạt động</b>: đăng nhập app, chấm ít nhất 1 thẻ hôm nay, bấm nút "💬 Luyện hội thoại hôm nay" &rarr; chờ kết quả. Xem log: <code>docker compose logs --tail 50 app | grep dialogue</code> để tìm <code>dialogue ok ... ms=&lt;thời gian ms&gt;</code> (ms &lt; 25000 là bình thường) hoặc lỗi <code>dialogue fail code=...</code> (ý nghĩa bên dưới).</li>
+</ul>
+<div class="box warn">
+  <strong>Bảo mật</strong>
+  Không bao giờ commit file <code>.env</code> lên repo. Giữ <code>chmod 600 .env</code> để chỉ user <code>deploy</code> đọc được. Nếu lỡ lộ key: hủy nó ở <a href="https://aistudio.google.com" target="_blank">Google AI Studio</a> rồi tạo key mới.
+</div>
+
+<h3>Lỗi hội thoại (bảng tham khảo)</h3>
+<table>
+  <tr><th>Log hoặc lỗi</th><th>Nghĩa</th><th>Xử lý</th></tr>
+  <tr><td><code>dialogue ok</code></td><td>Thành công</td><td>—</td></tr>
+  <tr><td><code>dialogue fail code=QUOTA</code></td><td>Google hết lượt miễn phí (429). Tự thử lại sau thời gian Google yêu cầu (30 giây–10 phút; hết lượt ngày thì reset khoảng 14h–15h giờ VN), hoặc dùng fallback model</td><td>Chờ hoặc nâng cấp thành gói trả phí ở Google AI Studio</td></tr>
+  <tr><td><code>dialogue fail code=UPSTREAM</code></td><td>Lỗi từ Google (key sai, model không tồn tại, mạng) hoặc Gemini rỗng</td><td>Kiểm tra GEMINI_API_KEY, GEMINI_MODEL, kết nối mạng</td></tr>
+  <tr><td><code>dialogue fail code=INVALID</code></td><td>JSON hội thoại hỏng (Gemini trả dữ liệu sai format)</td><td>Server đã tự gọi lại 1 lần. Lặp lại nhiều &rarr; xem <code>finishReason</code> trong log (MAX_TOKENS / SAFETY) và báo dev</td></tr>
+  <tr><td><code>dialogue fail code=BUSY</code></td><td>Quá 25 giây (budget hết) hoặc client đã ngắt</td><td>Mạng chậm hoặc Gemini chậm &rarr; thử lại</td></tr>
+  <tr><td>Nút "💬" không hiện</td><td>Chưa đặt GEMINI_API_KEY, chưa đăng nhập, hoặc hôm nay chưa chấm thẻ nào</td><td>Kiểm tra <code>/api/dialogue</code> trả <code>{&quot;enabled&quot;:true}</code>, chạy <code>docker compose up -d --force-recreate app</code></td></tr>
+</table>
+
 <h3>Làm lại từ đầu (clone lỗi / lỡ chạy bằng root)</h3>
 <div class="cmd"><span class="where">Server</span><pre><code>cd /srv/apps
 ls -la lingobrain

@@ -141,6 +141,24 @@ describe('dialogue routes (Node)', () => {
       assert.equal((await d.create(req({ day: TODAY, ids: ['reckon'] }), 7, 'ipX'))[0], 429);
       assert.equal(st.calls, 6);
     } },
+    { name: 'dialogue: Google hết lượt (QUOTA) → 429 rõ lý do, không gọi lại, không tốn lượt', fn: async () => {
+      const st = { queue: [err('QUOTA')] }, d = make(st);
+      const [s, b] = await d.create(req({ day: TODAY, ids: ['reckon'] }), 7, 'ip');
+      assert.equal(s, 429); assert.ok(/hết lượt/.test(b.error));
+      assert.equal(st.calls, 1); assert.equal(Object.keys(st.rows).length, 0);
+    } },
+    { name: 'dialogue: Google đang chặn → 429 ngay, không trừ lượt thử; hết chặn vẫn tạo được', fn: async () => {
+      const st = {}; let wait = 120000;
+      const prov = Object.assign(fakeProvider(st), { quotaWaitMs: () => wait });
+      const d = createDialogueRoutes({ pool: fakePool(st), getProvider: () => prov, now: () => NOW, log: () => {} });
+      for (let i = 0; i < 8; i++) {
+        const [s, b] = await d.create(req({ day: TODAY, ids: ['reckon'] }), 7, 'ip');
+        assert.equal(s, 429); assert.ok(/2 phút/.test(b.error), b.error);
+      }
+      assert.equal(st.calls, 0);
+      wait = 0;
+      assert.equal((await d.create(req({ day: TODAY, ids: ['reckon'] }), 7, 'ip'))[0], 200, 'không bị khoá vì lượt thử');
+    } },
     { name: 'dialogue: JSON sai lần 1, đúng lần 2 → 200 (2 lời gọi); sai cả 2 → 503', fn: async () => {
       let st = { queue: [err('INVALID'), GOOD()] }, d = make(st);
       assert.equal((await d.create(req({ day: TODAY, ids: ['reckon'] }), 7, 'ip'))[0], 200);

@@ -5,14 +5,20 @@
    createDialogueRoutes({ pool, getProvider, perUserMax, dailyMax, budgetMs, now, log })
      → { enabled(), status(), create(req, userId, ip), limiters } */
 const { createRateLimiter, createSemaphore, withDeadline, readJsonBody } = require('./request-guards.js');
-const { pickScenario, validateDialogue } = require('./dialogue-content-validator.js');
+const { validateDialogue } = require('./dialogue-content-validator.js');
+const { pickScenarios } = require('./dialogue-prompt-builder.js');
 
-const BODY_MAX = 4096, IDS_IN_MAX = 50, WORDS_MAX = 8;
+const BODY_MAX = 4096, IDS_IN_MAX = 50, WORDS_MAX = 6;   // nhiều từ hơn → Gemini ép từ vào câu, hội thoại gượng
 const RETRY_MIN_MS = 8000;   // còn ít hơn thì không gọi lại khi JSON hỏng
 const DAY_MS = 86400000;
 
 function errRes(status, error, extra) { return [status, { error }, Object.assign({ 'Cache-Control': 'no-store' }, extra)]; }
 function codeError(code, message) { const e = new Error(message || code); e.code = code; return e; }
+// Google hết lượt: báo còn chờ bao lâu (Retry-After theo thời gian provider còn bỏ qua model)
+function quotaRes(waitMs) {
+  const sec = Math.max(30, Math.ceil(waitMs / 1000));
+  return errRes(429, 'AI tạm hết lượt (giới hạn của Google), thử lại sau ' + (sec < 120 ? sec + ' giây' : Math.ceil(sec / 60) + ' phút'), { 'Retry-After': String(sec) });
+}
 
 // 'YYYY-MM-DD' hợp lệ và cách ngày UTC hiện tại của server ≤ 1 ngày (người dùng ở múi giờ khác)
 function dayOk(day, nowMs) {
@@ -28,7 +34,7 @@ function cleanIds(ids) {
   return [...new Set(ids.filter(id => typeof id === 'string' && /^[A-Za-z0-9_-]{1,100}$/.test(id)))];
 }
 
-function createDialogueRoutes({ pool, getProvider, perUserMax = 3, dailyMax = 50, budgetMs = 25000, now = Date.now, log = console.log }) {
+function createDialogueRoutes({ pool, getProvider, perUserMax = 3, dailyMax = 10, budgetMs = 25000, now = Date.now, log = console.log }) {
   const attempts = createRateLimiter({ limit: perUserMax * 2, windowMs: DAY_MS, maxKeys: 10000 });   // lần thử / user / 24h
   const ipMinute = createRateLimiter({ limit: 5, windowMs: 60000, maxKeys: 10000 });
   const ipDay = createRateLimiter({ limit: 30, windowMs: DAY_MS, maxKeys: 10000 });
@@ -57,7 +63,7 @@ function createDialogueRoutes({ pool, getProvider, perUserMax = 3, dailyMax = 50
     try {
       const words = await loadWords(ids);
       if (!words.length) throw codeError('NOWORDS');
-      const scenario = pickScenario(day, prevCount);
+      const scenarios = pickScenarios(day, prevCount);   // Gemini chọn 1 trong 3 thẻ hợp từ nhất
       const job = sem.run(async () => {
         // tới lượt mà đã quá hạn hoặc client đã ngắt → không gọi Gemini cho kết quả sẽ vứt đi
         if (now() >= deadline) throw codeError('BUSY', 'queue timeout');
@@ -67,7 +73,7 @@ function createDialogueRoutes({ pool, getProvider, perUserMax = 3, dailyMax = 50
         for (let attempt = 0; attempt < 2; attempt++) {
           if (attempt && deadline - now() < RETRY_MIN_MS) break;
           calls++;
-          try { v = validateDialogue(await gen.generate({ scenario, words, signal: ac.signal }), words); }
+          try { v = validateDialogue(await gen.generate({ scenarios, words, signal: ac.signal }), words); }
           catch (e) { if (e.code !== 'INVALID') throw e; v = { ok: false, reason: 'json' }; }
           if (v.ok) break;
         }
@@ -114,6 +120,9 @@ function createDialogueRoutes({ pool, getProvider, perUserMax = 3, dailyMax = 50
     // inflight phải set NGAY (trước mọi await) — nếu không request thứ 2 lọt qua lúc request 1 đang chờ query hạn mức
     let p = busy && busy.p;
     if (!p) {
+      // Google đang báo hết lượt cho mọi model → từ chối trước khi trừ lượt thử / IP (không khoá người dùng 24h oan)
+      const wait = gen.quotaWaitMs ? gen.quotaWaitMs() : 0;
+      if (wait > 0) return quotaRes(wait);
       if (!attempts.check(String(userId), t0) || !ipMinute.check(ip, t0) || !ipDay.check(ip, t0)) {
         return errRes(429, 'Thử tạo quá nhiều lần, đợi một lúc rồi thử lại', { 'Retry-After': '60' });
       }
@@ -135,6 +144,7 @@ function createDialogueRoutes({ pool, getProvider, perUserMax = 3, dailyMax = 50
       if (e.code === 'SERVER_LIMIT') return errRes(429, 'Máy chủ đã đạt giới hạn hội thoại hôm nay, thử lại sau', { 'Retry-After': '3600' });
       if (e.code === 'NOWORDS') return errRes(400, 'Chưa có từ nào hôm nay');
       if (e.code === 'LIMIT') return errRes(429, 'Đã dùng hết ' + perUserMax + ' lần tạo hội thoại trong 24 giờ', { 'Retry-After': '3600' });
+      if (e.code === 'QUOTA') { log('dialogue fail code=QUOTA ms=' + (now() - t0) + ' ' + e.message); return quotaRes(gen.quotaWaitMs ? gen.quotaWaitMs() : 600000); }
       if (e.code === 'BUSY') { log('dialogue fail code=BUSY ms=' + (now() - t0)); return errRes(503, 'Máy chủ đang bận, thử lại sau', { 'Retry-After': '10' }); }
       if (e.code === 'UPSTREAM' || e.code === 'INVALID') { log('dialogue fail code=' + e.code + ' ms=' + (now() - t0) + ' ' + e.message); return errRes(503, 'Không tạo được hội thoại, thử lại sau'); }
       throw e;   // lỗi DB → handleApi (503 khi mất kết nối)

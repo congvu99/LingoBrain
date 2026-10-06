@@ -3,7 +3,7 @@
    cùng nhóm thì lượt chấm gần nhất trước. Bỏ id không còn trong bộ từ. Test: tests/daily-dialogue-word-picker.test.js */
 
 function pickTodayWords(deckWords, srs, from, to, max) {
-  const limit = max == null ? 8 : max;
+  const limit = max == null ? 6 : max;   // khớp WORDS_MAX của server: nhiều từ hơn → hội thoại gượng
   const inDeck = new Set((deckWords || []).map(w => w.id));
   const picked = [];
   for (const id in (srs || {})) {

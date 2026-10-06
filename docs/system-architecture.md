@@ -14,8 +14,8 @@ js/speech-synthesis.js   TTS (MP3 Neural pregenerated + Web Speech API fallback)
 js/recording-store.js    IndexedDB ghi âm (10 bản/việc)
 js/daily-plan.js         thói quen (giáo án, gập/mở trên tab Hôm nay) + ghi âm shadowing + `markPlanDone('t6')` khi xong hội thoại
 js/home-today-screen.js  tab Hôm nay (lời chào, chuỗi ngày, thẻ Phiên hôm nay, gợi ý game, gợi ý hội thoại) + vẽ tab Tiến bộ
-js/daily-dialogue-word-picker.js  chọn ≤8 từ hôm nay (thuần, dùng chung server + client)
-js/daily-dialogue-api-client.js   `POST /api/dialogue` với error handling (401, 429, 501, 503, timeout 35s, 1 lần retry JSON sai)
+js/daily-dialogue-word-picker.js  chọn ≤6 từ hôm nay: sai → mới → ôn (thuần)
+js/daily-dialogue-api-client.js   `POST /api/dialogue` với error handling (401, 429, 404/405/501 = tắt, 503, timeout 35s)
 js/daily-dialogue-roleplay-ui.js  lớp toàn màn nhập vai: load/cache, hiện lượt, ghi âm tạm, TTS, tô đậm từ mục tiêu, màn kết, tự tích t6
 js/dialogue-word-match.js  khớp từ trong câu (chuẩn hoá, xử lý cụm + đuôi -s/-ed/-ing) — dùng chung server + client tô đậm
 js/review-mode-picker.js chọn dạng kiểm tra theo độ chín, sinh đáp án MCQ          [thuần]
@@ -87,8 +87,9 @@ server/schema.sql        DDL: users, sessions, progress (tài khoản + đồng 
 server/database.js       Pool + readSchema, sslOption
 server/auth-and-sync-routes.js   POST /register · /login · PUT /sync · GET /progress · GET /api/dialogue · POST /api/dialogue
 server/dialogue-routes.js   `GET /api/dialogue` (không auth: {enabled}) + `POST /api/dialogue` (auth: tạo/cache, hạn mức, single-flight)
-server/gemini-dialogue-provider.js   Gọi Gemini REST với structured JSON, abort được, không log prompt
-server/dialogue-content-validator.js   Tình huống + prompt, làm sạch/kiểm tra JSON hội thoại, tính từ thiếu (missing)
+server/gemini-dialogue-provider.js   Gọi Gemini REST với structured JSON, abort được, không log prompt, fallback model + 10-min skip khi 429
+server/dialogue-prompt-builder.js      20 thẻ tình huống (vai, mục tiêu, trục trặc), system instruction "dùng được ngay" + đoạn mẫu, prompt 3 thẻ ứng viên, JSON schema
+server/dialogue-content-validator.js   Làm sạch/kiểm tra JSON hội thoại, tính từ thiếu (missing)
 server/request-guards.js (mod)  `withDeadline(budgetMs, req)` chung cho TTS và dialogue, huỷ được
 server/deck-routes.js    GET /api/words · /api/audio-index (ETag, If-None-Match, RAM cache, single-flight)
 server/deck-rows.js      wordsToRows, audioToRows, rowsToWords, contentHash (utils)
@@ -146,7 +147,7 @@ Không có GEMINI_API_KEY → {enabled: false}; server sẵn sàng → {enabled:
 
 **POST /api/dialogue** — tạo hoặc lấy cache hội thoại (auth: Authorization: Bearer token)
 ```
-Body: {day: "2026-10-06", ids: ["reckon", "figure-out"], regenerate: false}
+Body: {day: "2026-10-06", ids: ["reckon", "figure-out"], regenerate: false}  // ids: ≤6 từ
 Response 200: {
   day: "2026-10-06", genCount: 1, genMax: 3,
   dialogue: {
@@ -157,12 +158,13 @@ Response 200: {
     targetIds: ["reckon", "figure-out"], missing: []
   }
 }
-Thứ tự lỗi: 501 (thiếu key, không cần token) → 401 (auth sai) → 400 (body/day/ids sai) → cache hit 200 → 429 (hết lượt) → 503 (Gemini)
+Thứ tự lỗi: 501 (thiếu key, không cần token) → 401 (auth sai) → 400 (body/day/ids sai) → cache hit 200 → 429 (hết lượt người dùng / IP / trần server, hoặc Google hết lượt) → 503 (Gemini lỗi, JSON hỏng 2 lần, quá 25s)
 - `regenerate:false` + đã cache → trả cache (kể cả ids khác)
 - `regenerate:true` → tạo mới (nếu còn lượt)
 - Single-flight: 2 request cùng user/day chỉ gọi Gemini 1 lần
-- Hạn mức: 3 lần thành công/user/24h (mọi day), 6 lần thử/user/24h (RAM), 5/phút/IP, 30/ngày/IP, server cap từ DB
+- Hạn mức: 3 lần thành công/user/24h (mọi day), 6 lần thử/user/24h (RAM), 5/phút/IP, 30/ngày/IP, server cap DIALOGUE_DAILY_MAX từ DB
 - Ngân sách: 25s tính từ đầu request (abort được), client timeout 35s
+- Google 429 (hết lượt / quá nhanh): model bị bỏ qua theo `retryDelay` Google gửi (kẹp 30 giây–10 phút, thiếu thì 10 phút), thử `GEMINI_MODEL_FALLBACK` nếu có. Mọi model đang bị bỏ qua → server trả 429 "AI tạm hết lượt (giới hạn của Google), thử lại sau N phút/giây" với `Retry-After` = thời gian còn lại, **trước** khi trừ lượt thử của người dùng / IP (không khoá người dùng 24h oan).
 ```
 
 **POST /api/register** — đăng ký tài khoản (không auth)
@@ -203,8 +205,9 @@ Body: {data: {v, srsEpoch, srs, cfg, plan, day, gameScore, boss}}
 - User: SUM(gen_count) các dòng trong 24h qua → ≥3 → 429 (kể cả đổi ngày)
 - User (attempt): 6 lần thử/24h (RAM limiter, không bền restart) → 429
 - IP: 5/phút, 30/ngày → 429
-- Server: DIALOGUE_DAILY_MAX từ DB (mặc định 50), bền qua restart
+- Server: DIALOGUE_DAILY_MAX từ DB (mặc định 10 — khớp gói miễn phí Gemini ~20 request/ngày, ~2 request/hội thoại), bền qua restart
 - JSON lỗi: gọi lại 1 lần nếu còn ≥8s, rồi 503
+- **Google 429 (quota của Google):** main model bị bỏ qua theo `retryDelay` Google gửi (kẹp 30 giây–10 phút, thiếu thì 10 phút); nếu có GEMINI_MODEL_FALLBACK → thử model fallback (gói miễn phí có thể cấp hạn riêng theo model); hết cả 2 model → server trả 429
 
 **TTS coupling:** Mỗi hội thoại ~12 câu, nghe hết ≈ 12 lượt tạo TTS → `TTS_DAILY_MAX` nên ≥ 12 × `DIALOGUE_DAILY_MAX` + từ tự gõ.
 
