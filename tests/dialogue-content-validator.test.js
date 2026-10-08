@@ -158,6 +158,33 @@ describe('dialogue validator + provider (Node)', () => {
       assert.equal(err.code, 'UPSTREAM');
       assert.ok(/http 400 model=gemini-3.6-flash API_KEY_INVALID: API key not valid/.test(err.message), err.message);
     } },
+    { name: 'provider: 503 → gọi lại cùng model 1 lần, vẫn 503 → sang model dự phòng; 400 không gọi lại', fn: async () => {
+      const urls = [];
+      const mk = (statusFor, fallbackModel) => createGeminiDialogueProvider({ apiKey: 'k', model: 'main', fallbackModel, fetchImpl: async url => {
+        urls.push(url.indexOf('/main:') >= 0 ? 'main' : 'backup'); const st = statusFor(urls.length, url);
+        return { ok: st === 200, status: st, json: async () => (st === 200 ? reply(JSON.stringify({ ok: 1 })) : { error: { status: 'UNAVAILABLE', message: 'high demand' } }) };
+      } });
+      const args = { scenarios: P.pickScenarios('2026-10-06', 0), words: WORDS };
+      assert.deepEqual(await mk(n => (n === 1 ? 503 : 200)).generate(args), { ok: 1 });
+      assert.deepEqual(urls, ['main', 'main'], 'lần 2 cùng model thành công');
+      urls.length = 0;
+      assert.deepEqual(await mk((n, url) => (url.indexOf('/main:') >= 0 ? 503 : 200), 'backup').generate(args), { ok: 1 });
+      assert.deepEqual(urls, ['main', 'main', 'backup']);
+      urls.length = 0;
+      let code; try { await mk(() => 400).generate(args); } catch (e) { code = e.code; }
+      assert.equal(code, 'UPSTREAM'); assert.equal(urls.length, 1, '4xx không gọi lại');
+    } },
+    { name: 'provider: hết ngân sách (abort) trong lúc chờ gọi lại 503 → BUSY ngay', fn: async () => {
+      const ac = new AbortController();
+      const p = createGeminiDialogueProvider({ apiKey: 'k', model: 'main', fetchImpl: async () => { setTimeout(() => ac.abort(), 50); return { ok: false, status: 503, json: async () => ({}) }; } });
+      const t = Date.now(); let code;
+      try { await p.generate({ scenarios: P.pickScenarios('2026-10-06', 0), words: WORDS, signal: ac.signal }); } catch (e) { code = e.code; }
+      assert.equal(code, 'BUSY'); assert.ok(Date.now() - t < 800, 'không chờ đủ 1s khi đã abort');
+    } },
+    { name: 'system instruction: đoạn mẫu không còn nội dung quán cà phê, có lệnh không chép mẫu', fn: async () => {
+      assert.ok(/Do NOT reuse/.test(P.SYSTEM_INSTRUCTION));
+      assert.ok(!/oat milk|coconut|Forty-five/.test(P.SYSTEM_INSTRUCTION));
+    } },
     { name: 'provider: thiếu key / model lạ → ném khi tạo', fn: async () => {
       let n = 0;
       try { createGeminiDialogueProvider({ apiKey: '', model: 'm' }); } catch (e) { n++; }

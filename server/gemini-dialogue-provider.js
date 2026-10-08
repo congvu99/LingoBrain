@@ -1,6 +1,8 @@
 /* Gọi Gemini REST generateContent tạo hội thoại nhập vai (JSON theo RESPONSE_SCHEMA). Không SDK, dùng fetch (Node ≥18).
    Không log prompt / nội dung trả về. Lỗi: code 'UPSTREAM' (HTTP / mạng / rỗng) | 'INVALID' (JSON hỏng — được gọi lại)
    | 'QUOTA' (Google trả 429: hết lượt / quá nhanh) | 'BUSY' (bị abort / hết hạn).
+   5xx (thường 503 UNAVAILABLE "high demand" — gặp khá nhiều thực tế): gọi lại cùng model 1 lần sau ~1s, rồi chuyển
+   model dự phòng; mọi lần gọi dùng chung signal nên vẫn nằm trong ngân sách của route.
    429: model đó bị bỏ qua theo retryDelay Google gửi (kẹp 30s–10 phút; thiếu → 10 phút) — không gọi lời chắc chắn hỏng;
    có fallbackModel thì chuyển sang model đó (hạn mức miễn phí có thể tính riêng theo model — xem AI Studio).
    quotaWaitMs() > 0 = mọi model đang bị bỏ qua → route trả 429 ngay, KHÔNG trừ lượt thử của người dùng.
@@ -13,8 +15,18 @@ const { cleanText } = require('./dialogue-content-validator.js');
 const ENDPOINT = 'https://generativelanguage.googleapis.com/v1beta/models/';
 const QUOTA_BLOCK_MS = 10 * 60 * 1000, QUOTA_BLOCK_MIN_MS = 30 * 1000;
 const MODEL_RE = /^[a-z0-9.-]+$/i;
+const RETRY_5XX_DELAY_MS = 1000;
 
 function providerError(code, message) { const e = new Error(message); e.code = code; return e; }
+
+// chờ ms, dừng sớm (BUSY) nếu signal bị abort — hết ngân sách thì không chờ vô ích
+function sleep(ms, signal) {
+  return new Promise((resolve, reject) => {
+    if (signal && signal.aborted) return reject(providerError('BUSY', 'gemini aborted'));
+    const t = setTimeout(resolve, ms);
+    if (signal) signal.addEventListener('abort', () => { clearTimeout(t); reject(providerError('BUSY', 'gemini aborted')); }, { once: true });
+  });
+}
 
 // body lỗi 429 của Google: error.details[] có RetryInfo.retryDelay dạng "37s" (giới hạn theo phút → vài chục giây;
 // hết lượt ngày → lâu hơn). Không đọc được → mặc định 10 phút.
@@ -63,7 +75,11 @@ function createGeminiDialogueProvider({ apiKey, model, fallbackModel, learner, f
       blockedUntil.set(m, now() + ms);
       throw providerError('QUOTA', 'gemini 429 model=' + m + ' block=' + Math.round(ms / 1000) + 's');
     }
-    if (!res.ok) throw providerError('UPSTREAM', 'gemini http ' + res.status + ' model=' + m + ' ' + await errorReason(res));
+    if (!res.ok) {
+      const e = providerError('UPSTREAM', 'gemini http ' + res.status + ' model=' + m + ' ' + await errorReason(res));
+      e.retryable = res.status >= 500;   // Google quá tải / lỗi tạm thời; 4xx (key, model, schema) gọi lại vô ích
+      throw e;
+    }
     let data;
     try { data = await res.json(); } catch (e) { throw providerError(signal && signal.aborted ? 'BUSY' : 'UPSTREAM', 'gemini body không phải JSON'); }
     const cand = data && data.candidates && data.candidates[0];
@@ -87,10 +103,19 @@ function createGeminiDialogueProvider({ apiKey, model, fallbackModel, learner, f
     };
     const usable = models.filter(m => !(blockedUntil.get(m) > now()));
     if (!usable.length) throw providerError('QUOTA', 'mọi model đang tạm bỏ qua sau 429');
-    for (let i = 0; i < usable.length; i++) {
-      try { return await callModel(usable[i], body, signal); }
-      catch (e) { if (e.code !== 'QUOTA' || i === usable.length - 1) throw e; }   // chỉ 429 mới thử model kế
+    let last;
+    for (const m of usable) {
+      for (let attempt = 0; attempt < 2; attempt++) {
+        try { return await callModel(m, body, signal); }
+        catch (e) {
+          last = e;
+          if (e.code === 'QUOTA') break;                       // model này hết lượt → model kế
+          if (!e.retryable) throw e;                            // 4xx / BUSY / INVALID: không đổi model
+          if (attempt === 0) await sleep(RETRY_5XX_DELAY_MS, signal);   // 5xx: chờ chút, gọi lại 1 lần
+        }
+      }
     }
+    throw last;
   }
 
   // > 0: mọi model đang bị bỏ qua sau 429, còn bao lâu nữa (ms)

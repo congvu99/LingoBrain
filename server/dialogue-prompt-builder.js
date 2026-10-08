@@ -41,15 +41,13 @@ const SYSTEM_INSTRUCTION = [
   '- "hintVi": what the learner would THINK in Vietnamese in that moment (intent, not a translation), so they must build the English sentence themselves.',
   '- "vi": natural Vietnamese translation of the line.',
   '',
-  'Example of the style (shorter than required; real output needs the requested number of turns):',
-  'them: "Hi! Um, do you guys have oat milk?"',
-  'you: "Sorry, we just ran out." (hintVi: "Xin lỗi, hết sữa yến mạch rồi")',
-  'them: "Oh no. What else do you have?"',
-  'you: "I\'d recommend coconut milk. It\'s really popular." (hintVi: "Gợi ý sữa dừa, nhiều người thích")',
-  'them: "Is it sweet?"',
-  'you: "A little. I can make it less sweet if you like." (hintVi: "Hơi ngọt, có thể làm ít ngọt cho khách")',
-  'them: "Perfect, let\'s do that. How much is it?"',
-  'you: "Forty-five thousand dong. Cash or QR transfer?" (hintVi: "Báo giá 45 nghìn, hỏi trả tiền mặt hay quét QR")'
+  'Example of the STYLE only (shorter than required). Do NOT reuse its situation, items, places, prices or lines — write fresh content for the chosen situation:',
+  'them: "Excuse me, um, is the night market near here?"',
+  'you: "Yeah, but it\'s about two kilometers." (hintVi: "Có, nhưng cách khoảng 2 cây số")',
+  'them: "Oh, can I walk there?"',
+  'you: "You can, but it\'s pretty hot. I\'d take a Grab." (hintVi: "Đi bộ được nhưng nóng, nên đặt Grab")',
+  'them: "Sorry, a what?"',
+  'you: "Grab. It\'s like Uber. Want me to show you?" (hintVi: "Giải thích Grab giống Uber, đề nghị chỉ cách")'
 ].join('\n');
 
 const TURNS_MIN = 10, TURNS_MAX = 14, CANDIDATES = 3;
