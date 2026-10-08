@@ -28,6 +28,16 @@ async function retryDelayMs(res) {
   return QUOTA_BLOCK_MS;
 }
 
+// lý do lỗi Google trả (API_KEY_INVALID, NOT_FOUND model, INVALID_ARGUMENT schema…) để log chẩn đoán được.
+// Chỉ lấy reason/status + message của Google (không chứa prompt hay nội dung người dùng), cắt 120 ký tự.
+async function errorReason(res) {
+  try {
+    const e = ((await res.json()) || {}).error || {};
+    const info = (e.details || []).find(d => d && typeof d.reason === 'string');
+    return ((info && info.reason) || e.status || '') + ': ' + String(e.message || '').replace(/\s+/g, ' ').slice(0, 120);
+  } catch (err) { return '(body không phải JSON)'; }
+}
+
 function createGeminiDialogueProvider({ apiKey, model, fallbackModel, learner, fetchImpl = fetch, now = Date.now }) {
   if (!apiKey) throw new Error('thiếu GEMINI_API_KEY');
   if (!MODEL_RE.test(model || '')) throw new Error('GEMINI_MODEL không hợp lệ');
@@ -53,7 +63,7 @@ function createGeminiDialogueProvider({ apiKey, model, fallbackModel, learner, f
       blockedUntil.set(m, now() + ms);
       throw providerError('QUOTA', 'gemini 429 model=' + m + ' block=' + Math.round(ms / 1000) + 's');
     }
-    if (!res.ok) throw providerError('UPSTREAM', 'gemini http ' + res.status);
+    if (!res.ok) throw providerError('UPSTREAM', 'gemini http ' + res.status + ' model=' + m + ' ' + await errorReason(res));
     let data;
     try { data = await res.json(); } catch (e) { throw providerError(signal && signal.aborted ? 'BUSY' : 'UPSTREAM', 'gemini body không phải JSON'); }
     const cand = data && data.candidates && data.candidates[0];

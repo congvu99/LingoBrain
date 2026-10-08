@@ -150,6 +150,14 @@ describe('dialogue validator + provider (Node)', () => {
       try { await p.generate(args); } catch (e) { c2 = e.code; }
       assert.equal(c1, 'QUOTA'); assert.equal(c2, 'QUOTA'); assert.equal(calls, 1);
     } },
+    { name: 'provider: lỗi HTTP ghi lý do Google (API_KEY_INVALID…) vào message để log chẩn đoán', fn: async () => {
+      const body = { error: { code: 400, status: 'INVALID_ARGUMENT', message: 'API key not valid. Please pass a valid API key.', details: [{ reason: 'API_KEY_INVALID' }] } };
+      const p = createGeminiDialogueProvider({ apiKey: 'k', model: 'gemini-3.6-flash', fetchImpl: async () => ({ ok: false, status: 400, json: async () => body }) });
+      let err;
+      try { await p.generate({ scenarios: P.pickScenarios('2026-10-06', 0), words: WORDS }); } catch (e) { err = e; }
+      assert.equal(err.code, 'UPSTREAM');
+      assert.ok(/http 400 model=gemini-3.6-flash API_KEY_INVALID: API key not valid/.test(err.message), err.message);
+    } },
     { name: 'provider: thiếu key / model lạ → ném khi tạo', fn: async () => {
       let n = 0;
       try { createGeminiDialogueProvider({ apiKey: '', model: 'm' }); } catch (e) { n++; }
