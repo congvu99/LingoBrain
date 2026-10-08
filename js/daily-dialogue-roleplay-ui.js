@@ -4,7 +4,7 @@
    Chuỗi từ AI chỉ vào DOM qua textContent. closeDialogue() (gọi từ leaveStage/openStage) huỷ request, tắt micro,
    thu hồi blob URL. Mạng + bộ nhớ: js/daily-dialogue-api-client.js */
 
-let dlg = null;          // { c: bản lưu, rec, recUrl, typed, shown, words: Map id→word }
+let dlg = null;          // { c: bản lưu (+ answers: {lượt → câu đã gõ}), rec, recUrl, typed, shown, words: Map id→word }
 let dlgReq = 0, dlgAbort = null;
 
 function todayDialogueIds() { return pickTodayWords(deck.words, srs, today(), today() + DAY); }
@@ -68,6 +68,8 @@ function dlgStart(c) {
 function dlgSave() { if (dlg) saveDialogueCache(dlg.c); }
 function dlgGo(pos) {
   if (dlg.rec) { dlg.rec.cancel(); dlg.rec = null; }   // bỏ bản đang ghi dở, không để blob về muộn gắn nhầm lượt sau
+  const cur = dlg.c.dialogue.turns[dlg.c.pos];
+  if (cur && cur.who === 'you' && dlg.typed) dlg.c.answers = Object.assign({}, dlg.c.answers, { [dlg.c.pos]: dlg.typed });
   dlg.c.pos = pos; dlg.shown = false; dlg.typed = '';
   if (dlg.recUrl) { URL.revokeObjectURL(dlg.recUrl); dlg.recUrl = null; }
   const turns = dlg.c.dialogue.turns;
@@ -75,7 +77,19 @@ function dlgGo(pos) {
   else dlgSave();
   if (typeof stopSpeaking === 'function') stopSpeaking();
   dlgPaint();
-  $('#appScroll').scrollTo(0, 0);
+}
+
+// khung chat: cuộn tới lượt đang làm (lượt đầu / màn kết thì về đầu trang)
+function dlgScrollToCurrent() {
+  const el = document.querySelector('#app .dlg-current');
+  if (el && el.scrollIntoView) el.scrollIntoView({ block: 'start' });
+  else $('#appScroll').scrollTo(0, 0);
+}
+
+// câu người học đã gõ ở lượt i (đã lưu), hiện dưới bong bóng câu mẫu
+function dlgAnswerEl(i) {
+  const a = dlg.c.answers && dlg.c.answers[i];
+  return a ? dlgEl('p', 'dlg-typed', 'Bạn gõ: ' + a) : null;
 }
 
 // câu EN với từ mục tiêu tô đậm: dựng text node + <b>, vị trí lấy từ matchSpans (cùng quy tắc server dùng đo phủ)
@@ -126,16 +140,24 @@ function dlgPaint() {
     root.appendChild(dlgBtn('Bắt đầu', 'btn-primary dlg-next', () => dlgGo(0)));
   } else if (pos >= n) dlgPaintEnd(root);
   else {
-    if (pos > 0) { const prev = dlgBubble(d.turns[pos - 1], true); prev.classList.add('prev'); root.appendChild(prev); }
+    root.appendChild(dlgEl('p', 'eyebrow', d.scenarioVi));
+    // các lượt đã qua: đầy đủ câu + 🔊 + dịch (ẩn sau nút) + câu đã gõ — xem lại được cả đoạn trong lúc làm
+    for (let i = 0; i < pos; i++) {
+      const past = dlgBubble(d.turns[i], false); past.classList.add('past'); root.appendChild(past);
+      const ans = dlgAnswerEl(i); if (ans) root.appendChild(ans);
+    }
     const t = d.turns[pos];
+    const cur = dlgEl('div', 'dlg-current');
     if (t.who === 'them' || dlg.shown) {
-      root.appendChild(dlgBubble(t, false));
-      if (t.who === 'you' && dlg.typed) root.appendChild(dlgEl('p', 'dlg-typed', 'Bạn gõ: ' + dlg.typed));
-      if (t.who === 'you' && dlg.recUrl) root.appendChild(dlgPlayRec());
-      root.appendChild(dlgBtn(pos === n - 1 ? 'Xong' : 'Tiếp', 'btn-primary dlg-next', () => dlgGo(pos + 1)));
-    } else root.appendChild(dlgYourTurn(t));
+      cur.appendChild(dlgBubble(t, false));
+      if (t.who === 'you' && dlg.typed) cur.appendChild(dlgEl('p', 'dlg-typed', 'Bạn gõ: ' + dlg.typed));
+      if (t.who === 'you' && dlg.recUrl) cur.appendChild(dlgPlayRec());
+      cur.appendChild(dlgBtn(pos === n - 1 ? 'Xong' : 'Tiếp', 'btn-primary dlg-next', () => dlgGo(pos + 1)));
+    } else cur.appendChild(dlgYourTurn(t));
+    root.appendChild(cur);
   }
   dlgRender(root);
+  dlgScrollToCurrent();   // mọi lần vẽ lại (sang lượt, xem câu mẫu, ghi âm) giữ màn ở lượt đang làm
 }
 
 function dlgChips(ids) {
@@ -211,7 +233,7 @@ function dlgPaintEnd(root) {
   const d = dlg.c.dialogue;
   root.appendChild(dlgEl('p', 'eyebrow', 'Xong hội thoại'));
   root.appendChild(dlgEl('h2', 'dlg-title', d.scenarioVi));
-  for (const t of d.turns) root.appendChild(dlgBubble(t, true));
+  d.turns.forEach((t, i) => { root.appendChild(dlgBubble(t, true)); const ans = dlgAnswerEl(i); if (ans) root.appendChild(ans); });
   const miss = (d.missing || []).map(id => dlg.words.get(id)).filter(Boolean);
   if (miss.length) root.appendChild(dlgEl('p', 'small muted', 'Chưa xuất hiện trong đoạn này: ' + miss.join(', ')));
   const row = dlgEl('div', 'dlg-actions');

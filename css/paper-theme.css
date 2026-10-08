@@ -643,7 +643,10 @@ main>section:not([hidden]),#app>:not(.plane-game):not(.fruit-game):not(.boss-gam
 .dlg-bubble.them{align-self:flex-start;border-bottom-left-radius:4px}
 .dlg-bubble.you{align-self:flex-end;background:var(--accent-wash);border-color:transparent;border-bottom-right-radius:4px}
 .dlg-bubble.ask{max-width:100%;width:100%;align-self:stretch}
-.dlg-bubble.prev{opacity:.62}
+.dlg-bubble.past{opacity:.78}
+.dlg-bubble.past .dlg-en{font-size:16px}
+.dlg-current{display:flex;flex-direction:column;gap:12px;scroll-margin-top:72px;padding-top:4px;border-top:1px dashed var(--rule-soft)}
+.dlg-current .dlg-bubble.them{align-self:flex-start}.dlg-current .dlg-bubble.you{align-self:flex-end}
 .dlg-who{display:block;font:600 11px/1.4 var(--font-mono);text-transform:uppercase;letter-spacing:.05em;color:var(--ink-muted);margin-bottom:4px}
 .dlg-en{margin:0;font-size:18px;line-height:1.5}
 .dlg-en b{color:var(--accent);font-weight:700}
