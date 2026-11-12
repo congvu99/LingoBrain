@@ -1,6 +1,6 @@
 /* Service worker: cache-first cho toàn bộ file tĩnh. Đổi CACHE mỗi lần deploy để người dùng nhận bản mới.
    MP3 trong audio/ nằm ở cache riêng AUDIO_CACHE, cache dần khi phát, không xoá khi lên version. */
-const CACHE = 'lingobrain-v2.26.1';
+const CACHE = 'lingobrain-v2.26.2';
 const AUDIO_CACHE = 'lingobrain-audio';
 const ASSETS = [
   './',
@@ -238,6 +238,8 @@ self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
   const url = new URL(e.request.url);
   if (url.origin !== location.origin) return;
+  // /herox/ là game HeroX cùng origin, có SW riêng scope /herox/: bỏ qua để cache-first của LingoBrain không trả bản cũ hay index.html của LingoBrain cho HeroX
+  if (url.pathname.startsWith('/herox/')) return;
   // bộ từ / audio index từ DB: network-first, lỗi mạng hoặc máy chủ lỗi (≥500) → bản đã cache; chưa có cache → trả lỗi để client dùng file tĩnh
   const deckApi = /^\/api\/(words|audio-index)$/.exec(url.pathname);
   if (deckApi) {
